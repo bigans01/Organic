@@ -4,7 +4,8 @@
 
 Description: Header file for EnclaveCollectionBlueprint.cpp
 
-Summary: An EnclaveCollectionBlueprint will store metadata that will tell the Organic system how to "shape" a collection of enclaves. 
+Summary: An EnclaveCollectionBlueprint will store metadata that will tell the Organic system how to "shape" a collection of enclaves. It will include information on which chunks in the collection are solid, which solids are "exposed to the surface (air)",
+and has the ability to store EnclavePainters, which have the ability to change the block id of a series of blocks in a chunk.
 
 
 ------------------------------------------------------------------------------------------*/
