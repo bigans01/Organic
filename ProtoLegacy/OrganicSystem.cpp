@@ -38,7 +38,10 @@ void OrganicSystem::AddAndMaterializeCollection(int x, int y, int z)
 	tempKey.y = y;										// set temp key to input of y
 	tempKey.z = z;
 	EnclaveCollectionBlueprint *blueprintptr = &BlueprintMatrix.BlueprintMap[tempKey];
-	EnclaveCollections.AddNewCollectionWithBlueprint(tempKey, blueprintptr);
+	// multithreaded testing begins here
+	//EnclaveCollections.AddNewCollectionWithBlueprint(tempKey, blueprintptr);
+	EnclaveCollections.MultiAddNewCollectionWithBlueprint(4, tempKey, blueprintptr);
+
 	EnclaveCollection *collectionPtr = &EnclaveCollections.EnclaveCollectionMap[tempKey];
 	auto finish1 = std::chrono::high_resolution_clock::now();															// optional, for debugging
 	std::chrono::duration<double> elapsed1 = finish1 - start1;

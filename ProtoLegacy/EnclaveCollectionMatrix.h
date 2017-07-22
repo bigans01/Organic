@@ -41,6 +41,13 @@ public:
 	void AddNewCollection(int x, int y, int z);																					// adds a new collection, with the members of its key value being equivalent to x/y/z
 	void AddNewCollection(EnclaveKeyDef::EnclaveKey Key);																		// adds a new collection, with the given key value.
 	void AddNewCollectionWithBlueprint(EnclaveKeyDef::EnclaveKey Key, EnclaveCollectionBlueprint *blueprint);
+	void MultiAddNewCollectionWithBlueprint(int numThreads, EnclaveKeyDef::EnclaveKey Key, EnclaveCollectionBlueprint *blueprint);
+	void JobInstantiateAndPopulateEnclave(	int beginRange, 
+											int endRange, 
+											std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveCollection, EnclaveKeyDef::KeyHasher> &enclaveCollectionMapRef,
+											EnclaveCollection &collectionRef, 
+											EnclaveKeyDef::EnclaveKey Key, 
+											EnclaveCollectionBlueprint *blueprint);
 	Enclave& GetEnclaveFromCollection(EnclaveKeyDef::EnclaveKey Key, int x, int y, int z);										// returns a reference to the enclave located at the x/y/z coordinate within the collection that has a key of value Key
 	Enclave& GetEnclaveFromXYZ(int x, int y, int z);																			// returns the enlave located at the absolute value of x/y/z
 	void TracePathToBlock(int x, int y, int z);																					// testing purposes -- will output the coordinates taken to find a particualr block (i.e., prints x of the collection, then x of the chunk, then x of the block)

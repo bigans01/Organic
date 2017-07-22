@@ -98,15 +98,26 @@ int main()
 
 	unsigned char tempPaintables[8][8] = { 0 };
 	tempPaintables[0][0] = 64;								// flag a chunk to be paintable, -- in this case it is 0, 6, 0
+	tempPaintables[1][0] = 64;								// following lines are performance testing only
+	tempPaintables[2][0] = 64;
+	tempPaintables[3][0] = 64;
+	tempPaintables[4][0] = 64;
+	tempPaintables[5][0] = 64;
+	tempPaintables[6][0] = 64;
+	tempPaintables[7][0] = 64;
 
 	// set up a temporary paint job, add it to a list, and add the list to the blueprint's matrix here
-	EnclavePainter testPaint, testPaint2;								
+	EnclavePainter testPaint, testPaint2, testPaint3, testPaint4, testPaint5, testPaint6, testPaint7;								
 	testPaint.PaintData[0] = 64;				// sets a target "dirt" block within the chunk (?? check this later)
 	testPaint2.PaintData[0] = 32;				// sets another target block "grass" (for a different material) within the chunk (?? check this later)
+	testPaint3.PaintData[1] = 32;
+	testPaint4.PaintData[1] = 16;
 
 	EnclavePainterList testPaintList;			// create a paint list
 	testPaintList.PaintList[2] = testPaint;		// add the paint job for "dirt" to the list
 	testPaintList.PaintList[3] = testPaint2;	// add the paint job for "grass" to the list
+	testPaintList.PaintList[4] = testPaint3;
+	testPaintList.PaintList[5] = testPaint3;
 
 
 
@@ -122,6 +133,41 @@ int main()
 
 	EnclaveKeyDef::EnclaveKey tempPainterKey;
 	tempPainterKey.x = 0;
+	tempPainterKey.y = 6;
+	tempPainterKey.z = 0;
+	testBlueprint.AddNewPaintList(tempPainterKey, testPaintList);
+
+	tempPainterKey.x = 1;
+	tempPainterKey.y = 6;
+	tempPainterKey.z = 0;
+	testBlueprint.AddNewPaintList(tempPainterKey, testPaintList);
+
+	tempPainterKey.x = 2;
+	tempPainterKey.y = 6;
+	tempPainterKey.z = 0;
+	testBlueprint.AddNewPaintList(tempPainterKey, testPaintList);
+
+	tempPainterKey.x = 3;
+	tempPainterKey.y = 6;
+	tempPainterKey.z = 0;
+	testBlueprint.AddNewPaintList(tempPainterKey, testPaintList);
+
+	tempPainterKey.x = 4;
+	tempPainterKey.y = 6;
+	tempPainterKey.z = 0;
+	testBlueprint.AddNewPaintList(tempPainterKey, testPaintList);
+
+	tempPainterKey.x = 5;
+	tempPainterKey.y = 6;
+	tempPainterKey.z = 0;
+	testBlueprint.AddNewPaintList(tempPainterKey, testPaintList);
+
+	tempPainterKey.x = 6;
+	tempPainterKey.y = 6;
+	tempPainterKey.z = 0;
+	testBlueprint.AddNewPaintList(tempPainterKey, testPaintList);
+
+	tempPainterKey.x = 7;
 	tempPainterKey.y = 6;
 	tempPainterKey.z = 0;
 	testBlueprint.AddNewPaintList(tempPainterKey, testPaintList);

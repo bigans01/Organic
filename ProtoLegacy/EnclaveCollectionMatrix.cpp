@@ -6,6 +6,7 @@
 #include "EnclaveCollection.h"
 #include "EnclavePainterList.h"
 #include <chrono>
+#include <thread>
 
 
 typedef unsigned char(&ElevationMapRef)[8][8];												// forward declaration for return type below
@@ -86,7 +87,9 @@ void EnclaveCollectionMatrix::AddNewCollectionWithBlueprint(EnclaveKeyDef::Encla
 				//ElevationMapRef solidChunk = blueprint->GetSolidChunkData();						// ?? better optimized? unknown. compare to declaring outside of loop (7/18/2017)
 				//ElevationMapRef surfaceChunk = blueprint->GetSurfaceChunkData();
 				//ElevationMapRef paintableChunk = blueprint->GetPaintableChunkData();
-				if ((solidChunk[x][z] & chunkbitmask) == chunkbitmask)								// check for step 2.
+
+				// step 2 begins here
+				if ((solidChunk[x][z] & chunkbitmask) == chunkbitmask)								
 				{
 
 					//cout << x << " " << z << " " << chunkbitmask  << " HIT 1" << endl;
@@ -95,7 +98,8 @@ void EnclaveCollectionMatrix::AddNewCollectionWithBlueprint(EnclaveKeyDef::Encla
 					EnclaveCollection *collectionPtr = &EnclaveCollectionMap[Key];
 					collectionPtr->EnclaveArray[x][y][z].InitializeRenderArray(1);		// 
 			
-					if ((surfaceChunk[x][z] & chunkbitmask) == chunkbitmask)								// check for step 3 (Determine surfaces)
+					// step 3 begins here 
+					if ((surfaceChunk[x][z] & chunkbitmask) == chunkbitmask)								
 					{
 						// do stuff
 						//testout++;
@@ -108,7 +112,7 @@ void EnclaveCollectionMatrix::AddNewCollectionWithBlueprint(EnclaveKeyDef::Encla
 						collectionPtr->ActivateEnclaveForRendering(tempKey);
 
 																								
-					
+						// step 5 will go here ? 
 						for (int xx2 = 0; xx2 < 4; xx2++)
 						{
 							for (int zz2 = 0; zz2 < 4; zz2++)
@@ -116,12 +120,14 @@ void EnclaveCollectionMatrix::AddNewCollectionWithBlueprint(EnclaveKeyDef::Encla
 									//collectionPtr->UnveilSinglePoly(xx2, 3, zz2, 0, 1, 0, 2, 0);	// STEP 3b: get the top faces, set the top face bit (2) to 1. 
 								collectionPtr->EnclaveArray[tempKey.x][tempKey.y][tempKey.z].UnveilSinglePoly(xx2, 3, zz2, 0, 1, 0, 2, 0);	// STEP 3b: get the top faces, set the top face bit (2) to 1. 
 							}
-						}																			// step 5 will go here
+						}																			
 						
 					}
-					if ((paintableChunk[x][z] & chunkbitmask) == chunkbitmask)								// check for step 3 (Determine surfaces)
+
+					// step 4 begins here
+					if ((paintableChunk[x][z] & chunkbitmask) == chunkbitmask)								
 					{
-						cout << "Paintable chunk found! (" << x << ", " << y << ", " << z << ")" << endl;
+						//cout << "Paintable chunk found! (" << x << ", " << y << ", " << z << ")" << endl;
 						EnclavePainterList *painterListRef;
 						Enclave *tempEnclave = &collectionPtr->EnclaveArray[x][y][z];				// this line is used to get the current Enclave's unique key
 						//int keyToUse = KeyToSingle(tempEnclave->UniqueKey);
@@ -130,13 +136,13 @@ void EnclaveCollectionMatrix::AddNewCollectionWithBlueprint(EnclaveKeyDef::Encla
 						paintListIter = painterListRef->PaintList.begin();
 						for (paintListIter; paintListIter != painterListRef->PaintList.end(); paintListIter++)
 						{
-							cout << "block type to be painted: " << paintListIter->first << endl; // testing
+							//cout << "block type to be painted: " << paintListIter->first << endl; // testing
 						}
 
 
 					}
 
-					// step 4 will go here
+			
 
 
 
@@ -155,6 +161,165 @@ void EnclaveCollectionMatrix::AddNewCollectionWithBlueprint(EnclaveKeyDef::Encla
 	}
 }
 
+void EnclaveCollectionMatrix::MultiAddNewCollectionWithBlueprint(int numThreads, EnclaveKeyDef::EnclaveKey Key, EnclaveCollectionBlueprint *blueprint)
+{
+	//EnclaveCollection newCollection;				// set up initial collection by declaring a single enclave
+	Enclave stackEnclave(Key, 0, 0, 0);												// add an enclave, with a collection key of Key
+	EnclaveCollectionMap[Key].EnclaveArray[0][0][0] = stackEnclave;
+	//EnclaveCollectionMap[Key] = newCollection;		// map new collection
+
+	
+	if (numThreads == 2)
+	{
+		JobInstantiateAndPopulateEnclave(0, 3 + 1, EnclaveCollectionMap, EnclaveCollectionMap[Key], Key, blueprint);
+		//JobInstantiateAndPopulateEnclave(4, 7, EnclaveCollectionMap[Key], Key, blueprint);
+
+		//JobInstantiateAndPopulateEnclave(4, 7, std::ref(EnclaveCollectionMap[Key]), Key, std::ref(blueprint));
+		cout << "FIRST JOB COMPLETE! " << endl;
+		//std::thread t1(&EnclaveMultiJob::RunMultiJob2, EnclaveMultiJob(), start, end, std::ref(PrimeMatrix), std::ref(PROMISEitermap), &promiseref);
+		// t1.join;
+		std::thread t1(&EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclave, EnclaveCollectionMatrix(), 4, 7 + 1, std::ref(EnclaveCollectionMap), std::ref(EnclaveCollectionMap[Key]), Key, std::ref(blueprint));
+		t1.join();
+		cout << "SECOND JOB COMPLETE! " << endl;
+
+
+	}
+	
+	if (numThreads == 4)
+	{
+		/*
+		JobInstantiateAndPopulateEnclave(0, 7 + 1, EnclaveCollectionMap, EnclaveCollectionMap[Key], Key, blueprint);
+		cout << "FIRST JOB COMPLETE! " << endl;
+		*/
+
+		
+
+
+		JobInstantiateAndPopulateEnclave(0, 1 + 1, EnclaveCollectionMap, EnclaveCollectionMap[Key], Key, blueprint);
+		cout << "FIRST JOB COMPLETE! " << endl;
+
+		std::thread t1(&EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclave, EnclaveCollectionMatrix(), 2, 3 + 1, std::ref(EnclaveCollectionMap), std::ref(EnclaveCollectionMap[Key]), Key, std::ref(blueprint));
+		t1.join();
+		cout << "SECOND JOB COMPLETE! " << endl;
+		std::thread t2(&EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclave, EnclaveCollectionMatrix(), 4, 5 + 1, std::ref(EnclaveCollectionMap), std::ref(EnclaveCollectionMap[Key]), Key, std::ref(blueprint));
+		t2.join();
+		cout << "THIRD JOB COMPLETE! " << endl;
+		std::thread t3(&EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclave, EnclaveCollectionMatrix(), 6, 7 + 1, std::ref(EnclaveCollectionMap), std::ref(EnclaveCollectionMap[Key]), Key, std::ref(blueprint));
+		t3.join();
+		cout << "FOURTH JOB COMPLETE! " << endl;
+		
+	}
+}
+
+void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclave(int beginRange, int endRange, std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveCollection, EnclaveKeyDef::KeyHasher> &enclaveCollectionMapRef, EnclaveCollection &collectionRef, EnclaveKeyDef::EnclaveKey Key, EnclaveCollectionBlueprint *blueprint)
+{
+	/* Summary: this function performs enclave instantiations within a certain range. */
+
+	/* Order of operations:
+	1. Instantiate 512
+	2. determine solids
+	3. determine surfaces
+	4. painting
+	5. unveil polys
+	6. smoothing
+	7. attach to enclaves
+	*/
+
+
+	auto start = std::chrono::high_resolution_clock::now();			// option
+	int chunkbitmask = 1;																				// set initial value of bitmask to be 128 (which is the top chunk)
+	int chunkindex = 7;
+	typedef unsigned char(&ElevationMapRef)[8][8];
+	//ElevationMapRef solidChunk = blueprint.GetSolidChunkData[x][z];
+	ElevationMapRef solidChunk = blueprint->GetSolidChunkData();						// ?? better optimized? unknown. compare to declaring outside of loop (7/18/2017)
+	ElevationMapRef surfaceChunk = blueprint->GetSurfaceChunkData();
+	ElevationMapRef paintableChunk = blueprint->GetPaintableChunkData();
+	for (int x = beginRange; x < endRange; x++)
+	{
+		chunkbitmask = 1;
+		for (int y = 0; y < 8; y++)
+		{
+
+			for (int z = 0; z < 8; z++)
+			{
+
+				//ElevationMapRef solidChunk = blueprint->GetSolidChunkData();						// ?? better optimized? unknown. compare to declaring outside of loop (7/18/2017)
+				//ElevationMapRef surfaceChunk = blueprint->GetSurfaceChunkData();
+				//ElevationMapRef paintableChunk = blueprint->GetPaintableChunkData();
+
+				// step 2 begins here
+				if ((solidChunk[x][z] & chunkbitmask) == chunkbitmask)
+				{
+
+					//cout << x << " " << z << " " << chunkbitmask  << " HIT 1" << endl;
+					Enclave stackEnclave(Key, x, y, z);												// add an enclave, with a collection key of Key
+					//EnclaveCollectionMap[Key].EnclaveArray[x][y][z] = stackEnclave;					// copy the newly instantiated enclave onto the heap.
+					collectionRef.EnclaveArray[x][y][z] = stackEnclave;								//enclaveCollectionMapRef[Key]
+					//EnclaveCollection *collectionPtr = &collectionRef;								//enclaveCollectionMapRef[Key]
+					collectionRef.EnclaveArray[x][y][z].InitializeRenderArray(1);					// collectionPtr->
+
+					// step 3 begins here 
+					if ((surfaceChunk[x][z] & chunkbitmask) == chunkbitmask)
+					{
+						EnclaveKeyDef::EnclaveKey tempKey;
+						tempKey.x = x;
+						tempKey.y = y;
+						tempKey.z = z;
+
+						collectionRef.ActivateEnclaveForRendering(tempKey);
+
+
+						// step 5 will go here ? 
+						for (int xx2 = 0; xx2 < 4; xx2++)
+						{
+							for (int zz2 = 0; zz2 < 4; zz2++)
+							{
+								//collectionPtr->UnveilSinglePoly(xx2, 3, zz2, 0, 1, 0, 2, 0);	// STEP 3b: get the top faces, set the top face bit (2) to 1. 
+								collectionRef.EnclaveArray[tempKey.x][tempKey.y][tempKey.z].UnveilSinglePoly(xx2, 3, zz2, 0, 1, 0, 2, 0);	// STEP 3b: get the top faces, set the top face bit (2) to 1. 
+							}
+						}
+
+					}
+
+					// step 4 begins here
+					if ((paintableChunk[x][z] & chunkbitmask) == chunkbitmask)
+					{
+						//cout << "Paintable chunk found! (" << x << ", " << y << ", " << z << ")" << endl;
+						EnclavePainterList *painterListRef;
+						Enclave *tempEnclave = &collectionRef.EnclaveArray[x][y][z];								// this line is used to get the current Enclave's unique key
+						painterListRef = &blueprint->PaintListMatrix.PainterListMatrix[tempEnclave->UniqueKey];		// gets the list of the paint jobs to run for this specific chunk
+						std::unordered_map<int, EnclavePainter>::iterator paintListIter;
+						paintListIter = painterListRef->PaintList.begin();
+						for (paintListIter; paintListIter != painterListRef->PaintList.end(); paintListIter++)
+						{
+							//cout << "block type to be painted: " << paintListIter->first << endl; // testing
+						}
+
+
+					}
+
+
+
+
+
+				}
+				else
+				{
+					//cout << "HIT 2" << endl;
+					Enclave stackEnclave(Key, x, y, z);												// add an enclave, with a collection key of Key
+					enclaveCollectionMapRef[Key].EnclaveArray[x][y][z] = stackEnclave;					// copy the newly instantiated enclave onto the heap.
+					EnclaveCollection *collectionPtr = &EnclaveCollectionMap[Key];
+					collectionPtr->EnclaveArray[x][y][z].InitializeRenderArray();		// initialize contents of the newly heaped enclave.
+				}
+			}
+			chunkbitmask <<= 1;
+		}
+	}
+
+	auto finish = std::chrono::high_resolution_clock::now();															// optional, for debugging
+	std::chrono::duration<double> elapsed = finish - start;																// ""
+	std::cout << "Elapsed time (multi-threaded enclave instantiation: " << elapsed.count() << endl;	// ""
+}
 Enclave& EnclaveCollectionMatrix::GetEnclaveFromCollection(EnclaveKeyDef::EnclaveKey Key, int x, int y, int z)
 {
 	/* Summary: returns a reference to an enclave at enclave coordinate xyz, within the collection specified by input value of "Key" */
