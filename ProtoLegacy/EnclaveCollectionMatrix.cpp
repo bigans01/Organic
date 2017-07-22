@@ -187,14 +187,14 @@ void EnclaveCollectionMatrix::MultiAddNewCollectionWithBlueprint(int numThreads,
 	
 	if (numThreads == 4)
 	{
-		/*
+		/*	
 		JobInstantiateAndPopulateEnclave(0, 7 + 1, EnclaveCollectionMap, EnclaveCollectionMap[Key], Key, blueprint);
 		cout << "FIRST JOB COMPLETE! " << endl;
 		*/
 
 		
 
-
+		
 		JobInstantiateAndPopulateEnclave(0, 1 + 1, EnclaveCollectionMap, EnclaveCollectionMap[Key], Key, blueprint);
 		cout << "FIRST JOB COMPLETE! " << endl;
 
@@ -307,9 +307,9 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclave(int beginRange, i
 				{
 					//cout << "HIT 2" << endl;
 					Enclave stackEnclave(Key, x, y, z);												// add an enclave, with a collection key of Key
-					enclaveCollectionMapRef[Key].EnclaveArray[x][y][z] = stackEnclave;					// copy the newly instantiated enclave onto the heap.
-					EnclaveCollection *collectionPtr = &EnclaveCollectionMap[Key];
-					collectionPtr->EnclaveArray[x][y][z].InitializeRenderArray();		// initialize contents of the newly heaped enclave.
+					collectionRef.EnclaveArray[x][y][z] = stackEnclave;					// copy the newly instantiated enclave onto the heap.
+					//EnclaveCollection *collectionPtr = &collectionRef;
+					collectionRef.EnclaveArray[x][y][z].InitializeRenderArray();		// initialize contents of the newly heaped enclave.
 				}
 			}
 			chunkbitmask <<= 1;

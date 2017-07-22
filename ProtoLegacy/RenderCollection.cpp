@@ -384,7 +384,7 @@ void RenderCollection::UpdateManifestArray(EnclaveKeyDef::EnclaveKey Key)	// upd
 		
 		index2 = 0;
 		RenderCollectionArraySize = NewRenderArrayLength * 4;
-		//cout << "value of RenderCollectionArraySize: " << RenderCollectionArraySize << endl;
+		cout << "value of RenderCollectionArraySize: " << RenderCollectionArraySize << endl;
 		for (int z = 0; z < (NewRenderArrayLength/9); z++)
 		{
 			for (int aa = 0; aa < 3; aa++)
