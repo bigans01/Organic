@@ -18,6 +18,8 @@
 #include "RenderCollectionMatrix.h"
 #include "OrganicSystem.h"
 #include "EnclaveCollectionBlueprint.h"
+#include "EnclavePainter.h"
+#include "EnclavePainterList.h"
 #include <thread>
 
 //#define GLEW_STATIC
@@ -93,11 +95,36 @@ int main()
 			tempSolid[x][z] = 127;
 		}
 	}
+
+	unsigned char tempPaintables[8][8] = { 0 };
+	tempPaintables[0][0] = 64;								// flag a chunk to be paintable, -- in this case it is 0, 6, 0
+
+	// set up a temporary paint job, add it to a list, and add the list to the blueprint's matrix here
+	EnclavePainter testPaint, testPaint2;								
+	testPaint.PaintData[0] = 64;				// sets a target "dirt" block within the chunk (?? check this later)
+	testPaint2.PaintData[0] = 32;				// sets another target block "grass" (for a different material) within the chunk (?? check this later)
+
+	EnclavePainterList testPaintList;			// create a paint list
+	testPaintList.PaintList[2] = testPaint;		// add the paint job for "dirt" to the list
+	testPaintList.PaintList[3] = testPaint2;	// add the paint job for "grass" to the list
+
+
+
+
+
 	ElevationMapRef SurfaceChunks = tempSurface;
 	ElevationMapRef SolidChunks = tempSolid;
+	ElevationMapRef PaintableChunks = tempPaintables;
 
 	testBlueprint.SetSurfaceChunkData(SurfaceChunks);
 	testBlueprint.SetSolidChunkData(SolidChunks);
+	testBlueprint.SetPaintableChunkData(PaintableChunks);
+
+	EnclaveKeyDef::EnclaveKey tempPainterKey;
+	tempPainterKey.x = 0;
+	tempPainterKey.y = 6;
+	tempPainterKey.z = 0;
+	testBlueprint.AddNewPaintList(tempPainterKey, testPaintList);
 	
 	//ElevationMapRef SolidChunks;
 

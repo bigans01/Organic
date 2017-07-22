@@ -163,6 +163,8 @@
     <ClInclude Include="EnclaveCollectionMesh.h" />
     <ClInclude Include="EnclaveMultiJob.h" />
     <ClInclude Include="EnclavePainter.h" />
+    <ClInclude Include="EnclavePainterList.h" />
+    <ClInclude Include="EnclavePainterListMatrix.h" />
     <ClInclude Include="GoalMoveToLocation.h" />
     <ClInclude Include="ManifestCollectionMatrix.h" />
     <ClInclude Include="ManifestCollection.h" />

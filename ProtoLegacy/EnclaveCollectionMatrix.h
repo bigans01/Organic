@@ -48,5 +48,7 @@ public:
 	ElevationMapRef& GetElevationMapFromCollection(EnclaveKeyDef::EnclaveKey InKey);
 	PathTraceContainer GetCoordTrace(int value);																				// returns a PathTraceContainer that contains the x, y, or z value of the collection, chunk, and individual block that would be returned when finding the coordinate. (would be called 3 times
 																																// to get a true x/y/z coordinate.
+	int KeyToSingle(EnclaveKeyDef::EnclaveKey InKey);
+
 };
 #endif

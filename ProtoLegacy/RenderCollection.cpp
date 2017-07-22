@@ -248,7 +248,7 @@ void RenderCollection::UpdateManifestArray(EnclaveKeyDef::EnclaveKey Key)	// upd
 		auto test_finish2 = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<double> test_elapsed2 = test_finish2 - test_start2;
 		cout << "True array copy  = " << test_elapsed2.count() << endl;						// IMPORTANT NOTE: this is FASTER when dealing with large ranges of arrays, SLOWER when dealing with smaller.
-		for (int t = 0; t < (ArrayOneLength * 9); t++)
+		for (int t = 0; t < (ArrayOneLength * 9); t++) // ArrayOneLength * 9
 		{
 			//cout << "test data2: " << tempGLptr00[t] << endl;
 		}

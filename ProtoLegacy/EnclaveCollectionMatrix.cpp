@@ -4,6 +4,7 @@
 #include "EnclaveCollectionMatrix.h"
 #include "PathTraceContainer.h"
 #include "EnclaveCollection.h"
+#include "EnclavePainterList.h"
 #include <chrono>
 
 
@@ -69,6 +70,9 @@ void EnclaveCollectionMatrix::AddNewCollectionWithBlueprint(EnclaveKeyDef::Encla
 	int chunkindex = 7;
 	typedef unsigned char(&ElevationMapRef)[8][8];
 	//ElevationMapRef solidChunk = blueprint.GetSolidChunkData[x][z];
+	ElevationMapRef solidChunk = blueprint->GetSolidChunkData();						// ?? better optimized? unknown. compare to declaring outside of loop (7/18/2017)
+	ElevationMapRef surfaceChunk = blueprint->GetSurfaceChunkData();
+	ElevationMapRef paintableChunk = blueprint->GetPaintableChunkData();
 	//int testout = 0;
 	for (int x = 0; x < 8; x++)
 	{
@@ -79,8 +83,9 @@ void EnclaveCollectionMatrix::AddNewCollectionWithBlueprint(EnclaveKeyDef::Encla
 			for (int z = 0; z < 8; z++)
 			{
 
-				ElevationMapRef solidChunk = blueprint->GetSolidChunkData();						// ?? better optimized? unknown. compare to declaring outside of loop (7/18/2017)
-				ElevationMapRef surfaceChunk = blueprint->GetSurfaceChunkData();
+				//ElevationMapRef solidChunk = blueprint->GetSolidChunkData();						// ?? better optimized? unknown. compare to declaring outside of loop (7/18/2017)
+				//ElevationMapRef surfaceChunk = blueprint->GetSurfaceChunkData();
+				//ElevationMapRef paintableChunk = blueprint->GetPaintableChunkData();
 				if ((solidChunk[x][z] & chunkbitmask) == chunkbitmask)								// check for step 2.
 				{
 
@@ -102,7 +107,7 @@ void EnclaveCollectionMatrix::AddNewCollectionWithBlueprint(EnclaveKeyDef::Encla
 
 						collectionPtr->ActivateEnclaveForRendering(tempKey);
 
-																								// step 4 will go here
+																								
 					
 						for (int xx2 = 0; xx2 < 4; xx2++)
 						{
@@ -114,6 +119,26 @@ void EnclaveCollectionMatrix::AddNewCollectionWithBlueprint(EnclaveKeyDef::Encla
 						}																			// step 5 will go here
 						
 					}
+					if ((paintableChunk[x][z] & chunkbitmask) == chunkbitmask)								// check for step 3 (Determine surfaces)
+					{
+						cout << "Paintable chunk found! (" << x << ", " << y << ", " << z << ")" << endl;
+						EnclavePainterList *painterListRef;
+						Enclave *tempEnclave = &collectionPtr->EnclaveArray[x][y][z];				// this line is used to get the current Enclave's unique key
+						//int keyToUse = KeyToSingle(tempEnclave->UniqueKey);
+						painterListRef = &blueprint->PaintListMatrix.PainterListMatrix[tempEnclave->UniqueKey];		// gets the list of the paint jobs to run for this specific chunk
+						std::unordered_map<int, EnclavePainter>::iterator paintListIter;
+						paintListIter = painterListRef->PaintList.begin();
+						for (paintListIter; paintListIter != painterListRef->PaintList.end(); paintListIter++)
+						{
+							cout << "block type to be painted: " << paintListIter->first << endl; // testing
+						}
+
+
+					}
+
+					// step 4 will go here
+
+
 
 				}
 				else
@@ -251,3 +276,14 @@ ElevationMapRef& EnclaveCollectionMatrix::GetElevationMapFromCollection(EnclaveK
 	return EnclaveCollectionMap[InKey].ElevationMap;
 }
 
+int EnclaveCollectionMatrix::KeyToSingle(EnclaveKeyDef::EnclaveKey InKey)
+{
+	/* Summary: takes a single value between 0 to 63, and returns the x/y/z of the block within the chunk */
+
+	// int multi_to_single = (x * 16) + (y * 4) + z;				// convert from 3d array coords to single array
+
+	int x = InKey.x * 64;
+	int y = InKey.y * 16;
+	int z = InKey.z;
+	return x + y + z;
+}

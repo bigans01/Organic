@@ -4,7 +4,7 @@
 
 Description: Header file for EnclavePainter
 
-Summary: An EnclavePainter is an object
+Summary: An EnclavePainter is an object that updates the block types in a single enclave.
 
 
 ------------------------------------------------------------------------------------------*/
@@ -16,6 +16,7 @@ Summary: An EnclavePainter is an object
 
 class EnclavePainter {
 	public:
-
+		//int BlockId;
+		char PaintData[8];
 };
 #endif

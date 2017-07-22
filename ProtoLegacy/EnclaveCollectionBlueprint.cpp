@@ -26,6 +26,23 @@ void EnclaveCollectionBlueprint::SetSolidChunkData(ElevationMapRef solidChunk)
 	}
 }
 
+void EnclaveCollectionBlueprint::SetPaintableChunkData(ElevationMapRef paintableChunk)
+{
+	/* Summary: loads data into the PaintableChunks array*/
+	for (int x = 0; x < 8; x++)
+	{
+		for (int z = 0; z < 8; z++)
+		{
+			PaintableChunks[x][z] = paintableChunk[x][z];
+		}
+	}
+}
+
+void EnclaveCollectionBlueprint::AddNewPaintList(EnclaveKeyDef::EnclaveKey InKey, EnclavePainterList InPaintList)
+{
+	PaintListMatrix.PainterListMatrix[InKey] = InPaintList;
+}
+
 ElevationMapRef& EnclaveCollectionBlueprint::GetSurfaceChunkData()
 {
 	return SurfaceChunks;
@@ -34,4 +51,9 @@ ElevationMapRef& EnclaveCollectionBlueprint::GetSurfaceChunkData()
 ElevationMapRef& EnclaveCollectionBlueprint::GetSolidChunkData()
 {
 	return SolidChunks;
+}
+
+ElevationMapRef& EnclaveCollectionBlueprint::GetPaintableChunkData()
+{
+	return PaintableChunks;
 }
