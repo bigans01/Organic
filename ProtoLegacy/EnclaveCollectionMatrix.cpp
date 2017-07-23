@@ -214,25 +214,25 @@ void EnclaveCollectionMatrix::MultiAddNewCollectionWithBlueprint(int numThreads,
 		//std::packaged_task<void(int, int, EnclaveCollection, EnclaveKeyDef::EnclaveKey, EnclaveCollectionBlueprint*)> task(std::bind(&EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclave, this, 0, 1 + 1, std::ref(EnclaveCollectionMap[Key]), Key, std::ref(blueprint)));
 		
 		//std::packaged_task<void(int, int)> task(std::bind(&EnclaveCollectionMatrix::testfunction, this, 0, 1));												//// ?????? what?????? This works...investigate std::bind
-		//std::packaged_task<void(int, int)> task(std::bind(&EnclaveCollectionMatrix::testfunction,																											//// ?????? what?????? This works...investigate std::bind (use placeholders)
-										//		this, 
-										//		std::placeholders::_1, 
-										//		std::placeholders::_2
-										//		)
-										//	);			
+		std::packaged_task<void(int, int)> task(std::bind(&EnclaveCollectionMatrix::testfunction,																											//// ?????? what?????? This works...investigate std::bind (use placeholders)
+												this, 
+												std::placeholders::_1, 
+												std::placeholders::_2
+												)
+											);			
 
-		std::packaged_task<void(int, int, EnclaveCollection, EnclaveKeyDef::EnclaveKey, EnclaveCollectionBlueprint*)> task(std::bind(&EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclave,			//// use placeholders with std::bind
+		std::packaged_task<void(int, int, EnclaveCollection&, EnclaveKeyDef::EnclaveKey, EnclaveCollectionBlueprint*)> task2(std::bind(&EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclave,			//// use placeholders with std::bind
 																																		this, 
 																																		std::placeholders::_1,												// 0, 
 																																		std::placeholders::_2,																// 1 + 1, 
 																																		std::placeholders::_3,								// std::ref(EnclaveCollectionMap[Key])
 																																		std::placeholders::_4,																// Key
-																																		std::placeholders::_5													// std::ref(blueprint)
-																																	)
-																														);
+																																std::placeholders::_5													// std::ref(blueprint)
+																													)
+																													);
 
 		//task(0,1);
-		//task(0, 1 + 1, std::ref(EnclaveCollectionMap[Key]), Key, std::ref(blueprint));
+		task2(0, 1 + 1, std::ref(EnclaveCollectionMap[Key]), Key, std::ref(blueprint));
 
 
 		//std::packaged_task<void()> task(testfunction);
@@ -244,8 +244,12 @@ void EnclaveCollectionMatrix::MultiAddNewCollectionWithBlueprint(int numThreads,
 		//task(3, 3, 3);
 		//task();
 
-		JobInstantiateAndPopulateEnclave(0, 1 + 1,  EnclaveCollectionMap[Key], Key, blueprint);
+		//JobInstantiateAndPopulateEnclave(0, 1 + 1,  EnclaveCollectionMap[Key], Key, blueprint);
+
+		//std::thread t0(std::move(task), 0, 1 + 1, std::ref(EnclaveCollectionMap[Key]), Key, std::ref(blueprint));
+		//std::thread t0(std::move(task));
 		//cout << "FIRST JOB COMPLETE! " << endl;
+		//t0.join();
 
 		std::thread t1(&EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclave, EnclaveCollectionMatrix(), 2, 3 + 1,  std::ref(EnclaveCollectionMap[Key]), Key, std::ref(blueprint));
 		t1.join();
