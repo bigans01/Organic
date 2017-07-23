@@ -7,6 +7,9 @@
 #include "EnclavePainterList.h"
 #include <chrono>
 #include <thread>
+#include <future>
+#include <utility>
+#include <vector>
 
 
 typedef unsigned char(&ElevationMapRef)[8][8];												// forward declaration for return type below
@@ -161,6 +164,7 @@ void EnclaveCollectionMatrix::AddNewCollectionWithBlueprint(EnclaveKeyDef::Encla
 	}
 }
 
+
 void EnclaveCollectionMatrix::MultiAddNewCollectionWithBlueprint(int numThreads, EnclaveKeyDef::EnclaveKey Key, EnclaveCollectionBlueprint *blueprint)
 {
 	//EnclaveCollection newCollection;				// set up initial collection by declaring a single enclave
@@ -195,9 +199,51 @@ void EnclaveCollectionMatrix::MultiAddNewCollectionWithBlueprint(int numThreads,
 		cout << "FIRST JOB COMPLETE! " << endl;
 		*/
 
-		
+		// int, int, EnclaveCollection&, EnclaveKeyDef::EnclaveKey, EnclaveCollectionBlueprint
 
+		//std::packaged_task<void(int, int, EnclaveCollection, EnclaveKeyDef::EnclaveKey, EnclaveCollectionBlueprint*)> task(&EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclave);
+		//std::packaged_task<void(int, int, EnclaveCollection, EnclaveKeyDef::EnclaveKey, EnclaveCollectionBlueprint*)> task(std::bind(&EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclave, this, 1 + 1, std::ref(EnclaveCollectionMap[Key]), Key, std::ref(blueprint)));
+		//task(0, 1 + 1, std::ref(EnclaveCollectionMap[Key]), Key, std::ref(blueprint));
+
+		//std::packaged_task<int(int, int, int)> task(&EnclaveCollectionMatrix::TracePathToBlock);
+		//std::packaged_task<int(int, int, int)> task( std::bind(&EnclaveCollectionMatrix::TracePathToBlock,3,3,3) );
+		//vector<int> primesUpTo(int n);
+		//std::packaged_task<vector<int>(int)> task(&primesUpTo);
+
+
+		//std::packaged_task<void(int, int, EnclaveCollection, EnclaveKeyDef::EnclaveKey, EnclaveCollectionBlueprint*)> task(std::bind(&EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclave, this, 0, 1 + 1, std::ref(EnclaveCollectionMap[Key]), Key, std::ref(blueprint)));
 		
+		//std::packaged_task<void(int, int)> task(std::bind(&EnclaveCollectionMatrix::testfunction, this, 0, 1));												//// ?????? what?????? This works...investigate std::bind
+		//std::packaged_task<void(int, int)> task(std::bind(&EnclaveCollectionMatrix::testfunction,																											//// ?????? what?????? This works...investigate std::bind (use placeholders)
+										//		this, 
+										//		std::placeholders::_1, 
+										//		std::placeholders::_2
+										//		)
+										//	);			
+
+		std::packaged_task<void(int, int, EnclaveCollection, EnclaveKeyDef::EnclaveKey, EnclaveCollectionBlueprint*)> task(std::bind(&EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclave,			//// use placeholders with std::bind
+																																		this, 
+																																		std::placeholders::_1,												// 0, 
+																																		std::placeholders::_2,																// 1 + 1, 
+																																		std::placeholders::_3,								// std::ref(EnclaveCollectionMap[Key])
+																																		std::placeholders::_4,																// Key
+																																		std::placeholders::_5													// std::ref(blueprint)
+																																	)
+																														);
+
+		//task(0,1);
+		//task(0, 1 + 1, std::ref(EnclaveCollectionMap[Key]), Key, std::ref(blueprint));
+
+
+		//std::packaged_task<void()> task(testfunction);
+		//std::packaged_task<int(int, int)> task([](int a, int b) {
+		//	return std::pow(a, b);
+		//});
+
+		//std::packaged_task<int(int, int)> task(&f);
+		//task(3, 3, 3);
+		//task();
+
 		JobInstantiateAndPopulateEnclave(0, 1 + 1,  EnclaveCollectionMap[Key], Key, blueprint);
 		//cout << "FIRST JOB COMPLETE! " << endl;
 
@@ -447,4 +493,14 @@ int EnclaveCollectionMatrix::KeyToSingle(EnclaveKeyDef::EnclaveKey InKey)
 	int y = InKey.y * 16;
 	int z = InKey.z;
 	return x + y + z;
+}
+
+void EnclaveCollectionMatrix::testfunction(int beginRange,																			// this function is designed to be used with multi-threaded calls. See definition for more details.
+	int endRange
+	//EnclaveCollection &collectionRef,
+	//EnclaveKeyDef::EnclaveKey Key,
+	//EnclaveCollectionBlueprint *blueprint
+)
+{
+	//return 5;
 }
