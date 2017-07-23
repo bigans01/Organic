@@ -42,7 +42,7 @@ void RenderCollection::CombineManifestArrays()
 	RenderableManifestMeta.EnclaveManifestCount = 0;
 	//cout << "Information for RenderCollection at: " << this
 	//int testcount = 0;
-	for (ManMatrixIter; ManMatrixIter != ManifestCollectionPtr->ManMatrix.end(); ManMatrixIter++)
+	for (ManMatrixIter; ManMatrixIter != ManifestCollectionPtr->ManMatrix.end(); ++ManMatrixIter)
 	{
 		//cout << "test count = " << testcount++ << endl;
 		totaltrianglestorender += ManMatrixIter->second.TotalEnclaveTriangles;
@@ -75,7 +75,7 @@ void RenderCollection::CombineManifestArrays()
 	ManMatrixIter = ManifestCollectionPtr->ManMatrix.begin();
 	int beginindex = 0;
 	auto start4 = std::chrono::high_resolution_clock::now();
-	for (ManMatrixIter; ManMatrixIter != ManifestCollectionPtr->ManMatrix.end(); ManMatrixIter++)
+	for (ManMatrixIter; ManMatrixIter != ManifestCollectionPtr->ManMatrix.end(); ++ManMatrixIter)
 	{
 		tempManifestKeys[beginindex] = ManMatrixIter->second.UniqueKey;
 		//totaltrianglestorender += ManMatrixIter->second.TotalEnclaveTriangles;
@@ -104,7 +104,7 @@ void RenderCollection::CombineManifestArrays()
 	//beginindex = 0;
 	int currentBegin = 0;
 	auto start5 = std::chrono::high_resolution_clock::now();
-	for (ManMatrixIter; ManMatrixIter != ManifestCollectionPtr->ManMatrix.end(); ManMatrixIter++)
+	for (ManMatrixIter; ManMatrixIter != ManifestCollectionPtr->ManMatrix.end(); ++ManMatrixIter)
 	{
 
 
@@ -215,6 +215,8 @@ void RenderCollection::UpdateManifestArray(EnclaveKeyDef::EnclaveKey Key)	// upd
 	}
 	else   // UpdateType would be == 1 here
 	{
+		auto true_start = std::chrono::high_resolution_clock::now();
+
 		// ASSEMBLE FIRST ARRAY
 		auto start4 = std::chrono::high_resolution_clock::now();
 		int ArrayOneLength = 0;
@@ -237,21 +239,21 @@ void RenderCollection::UpdateManifestArray(EnclaveKeyDef::EnclaveKey Key)	// upd
 		auto test_finish1 = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<double> test_elapsed1 = test_finish1 - test_start1;
 
-		cout << "Looped array copy  = " << test_elapsed1.count() << endl;
-		for (int t = 0; t < 30; t++)
-		{
+		//cout << "Looped array copy  = " << test_elapsed1.count() << endl;
+		//for (int t = 0; t < 30; ++t)
+		//{
 			//cout << "test data: " << tempGLptr[t] << endl;
-		}
+		//}
 
 		auto test_start2 = std::chrono::high_resolution_clock::now();
 		std::copy(&*GLFloatPtr, (&*GLFloatPtr) + (ArrayOneLength * 9), &*tempGLptr00);
 		auto test_finish2 = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<double> test_elapsed2 = test_finish2 - test_start2;
-		cout << "True array copy  = " << test_elapsed2.count() << endl;						// IMPORTANT NOTE: this is FASTER when dealing with large ranges of arrays, SLOWER when dealing with smaller.
-		for (int t = 0; t < (ArrayOneLength * 9); t++) // ArrayOneLength * 9
-		{
+		//cout << "True array copy  = " << test_elapsed2.count() << endl;						// IMPORTANT NOTE: this is FASTER when dealing with large ranges of arrays, SLOWER when dealing with smaller.
+		//for (int t = 0; t < (ArrayOneLength * 9); t++) // ArrayOneLength * 9
+		//{
 			//cout << "test data2: " << tempGLptr00[t] << endl;
-		}
+		//}
 		delete[] tempGLptr00;
 
 		int index2 = 0;
@@ -284,7 +286,7 @@ void RenderCollection::UpdateManifestArray(EnclaveKeyDef::EnclaveKey Key)	// upd
 		GLfloat *tempGLptr3;
 		int startIndex = (ArrayOneLength *9) + (RenderableManifestMeta.MetaArray[FoundIndex].currentTriangleCount*9);						// start position of the 3rd array's scan of GLFloatPtr
 		tempGLptr3 = new GLfloat[ArrayThreeLength * 9];
-		for (int cc = 0; cc < (ArrayThreeLength * 9); cc++)
+		for (int cc = 0; cc < (ArrayThreeLength * 9); ++cc)
 		{
 			tempGLptr3[cc] = GLFloatPtr[startIndex++];
 		}
@@ -318,7 +320,7 @@ void RenderCollection::UpdateManifestArray(EnclaveKeyDef::EnclaveKey Key)	// upd
 		int pointedBegin = 0;
 		//auto finish6 = std::chrono::high_resolution_clock::now();
 		int startval = (ManifestCollectionPtr->ManMatrix[Key].TotalEnclaveTriangles) * 3;
-		for (int bb = 0; bb < startval; bb++)
+		for (int bb = 0; bb < startval; ++bb)
 		{
 
 			//GLFloatPtr[currentBegin] = tempGLptr[pointedBegin + 2];									// for first coord, x
@@ -363,15 +365,15 @@ void RenderCollection::UpdateManifestArray(EnclaveKeyDef::EnclaveKey Key)	// upd
 		GLfloat *newRenderArray;
 		newRenderArray = new GLfloat[NewRenderArrayLength];
 		int newRenderArrayBeginIndex = 0;
-		for (int cc = 0; cc < (ArrayOneLength * 9); cc++)	// insert array one.
+		for (int cc = 0; cc < (ArrayOneLength * 9); ++cc)	// insert array one.
 		{
 			newRenderArray[newRenderArrayBeginIndex++] = tempGLptr[cc];
 		}
-		for (int dd = 0; dd < (ArrayTwoLength * 9); dd++)		// insert array two.
+		for (int dd = 0; dd < (ArrayTwoLength * 9); ++dd)		// insert array two.
 		{
 			newRenderArray[newRenderArrayBeginIndex++] = tempGLptr2[dd];
 		}
-		for (int ee = 0; ee < (ArrayThreeLength * 9); ee++)
+		for (int ee = 0; ee < (ArrayThreeLength * 9); ++ee)
 		{
 			newRenderArray[newRenderArrayBeginIndex++] = tempGLptr3[ee];
 		}
@@ -384,7 +386,8 @@ void RenderCollection::UpdateManifestArray(EnclaveKeyDef::EnclaveKey Key)	// upd
 		
 		index2 = 0;
 		RenderCollectionArraySize = NewRenderArrayLength * 4;
-		cout << "value of RenderCollectionArraySize: " << RenderCollectionArraySize << endl;
+		//cout << "value of RenderCollectionArraySize: " << RenderCollectionArraySize << endl;
+		/*
 		for (int z = 0; z < (NewRenderArrayLength/9); z++)
 		{
 			for (int aa = 0; aa < 3; aa++)
@@ -392,7 +395,7 @@ void RenderCollection::UpdateManifestArray(EnclaveKeyDef::EnclaveKey Key)	// upd
 				//cout << "Final array; Triangle [" << z << "]: Point [" << aa << "] " << GLFloatPtr[index2++] << " " << GLFloatPtr[index2++] << " " << GLFloatPtr[index2++] << endl;
 			}
 		}
-		
+		*/
 
 		//cout << "Array 4 reassembly duration = " << elapsed7.count() << endl;
 
@@ -402,10 +405,12 @@ void RenderCollection::UpdateManifestArray(EnclaveKeyDef::EnclaveKey Key)	// upd
 		delete[] tempGLptr2;
 		delete[] tempGLptr3;
 
+		auto true_end = std::chrono::high_resolution_clock::now();
+		std::chrono::duration<double> true_elapsed = true_end - true_start;
+		std::cout << "Elapsed time (RenderCollection update):" << true_elapsed.count() << endl;
 
 		auto finish7 = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<double> elapsed7 = finish7 - start7;
-
 		
 	}
 

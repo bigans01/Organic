@@ -164,21 +164,24 @@ void EnclaveCollectionMatrix::AddNewCollectionWithBlueprint(EnclaveKeyDef::Encla
 void EnclaveCollectionMatrix::MultiAddNewCollectionWithBlueprint(int numThreads, EnclaveKeyDef::EnclaveKey Key, EnclaveCollectionBlueprint *blueprint)
 {
 	//EnclaveCollection newCollection;				// set up initial collection by declaring a single enclave
+	auto start = std::chrono::high_resolution_clock::now();
 	Enclave stackEnclave(Key, 0, 0, 0);												// add an enclave, with a collection key of Key
 	EnclaveCollectionMap[Key].EnclaveArray[0][0][0] = stackEnclave;
 	//EnclaveCollectionMap[Key] = newCollection;		// map new collection
-
+	auto finish = std::chrono::high_resolution_clock::now();															// optional, for debugging
+	std::chrono::duration<double> elapsed = finish - start;																// ""
+	//std::cout << "Elapsed time (multi thread dummy instantiation , " << elapsed.count() << "): " << elapsed.count() << endl;	// ""
 	
 	if (numThreads == 2)
 	{
-		JobInstantiateAndPopulateEnclave(0, 3 + 1, EnclaveCollectionMap, EnclaveCollectionMap[Key], Key, blueprint);
+		JobInstantiateAndPopulateEnclave(0, 3 + 1,  EnclaveCollectionMap[Key], Key, blueprint);
 		//JobInstantiateAndPopulateEnclave(4, 7, EnclaveCollectionMap[Key], Key, blueprint);
 
 		//JobInstantiateAndPopulateEnclave(4, 7, std::ref(EnclaveCollectionMap[Key]), Key, std::ref(blueprint));
 		cout << "FIRST JOB COMPLETE! " << endl;
 		//std::thread t1(&EnclaveMultiJob::RunMultiJob2, EnclaveMultiJob(), start, end, std::ref(PrimeMatrix), std::ref(PROMISEitermap), &promiseref);
 		// t1.join;
-		std::thread t1(&EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclave, EnclaveCollectionMatrix(), 4, 7 + 1, std::ref(EnclaveCollectionMap), std::ref(EnclaveCollectionMap[Key]), Key, std::ref(blueprint));
+		std::thread t1(&EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclave, EnclaveCollectionMatrix(), 4, 7 + 1,  std::ref(EnclaveCollectionMap[Key]), Key, std::ref(blueprint));
 		t1.join();
 		cout << "SECOND JOB COMPLETE! " << endl;
 
@@ -195,25 +198,27 @@ void EnclaveCollectionMatrix::MultiAddNewCollectionWithBlueprint(int numThreads,
 		
 
 		
-		JobInstantiateAndPopulateEnclave(0, 1 + 1, EnclaveCollectionMap, EnclaveCollectionMap[Key], Key, blueprint);
-		cout << "FIRST JOB COMPLETE! " << endl;
+		JobInstantiateAndPopulateEnclave(0, 1 + 1,  EnclaveCollectionMap[Key], Key, blueprint);
+		//cout << "FIRST JOB COMPLETE! " << endl;
 
-		std::thread t1(&EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclave, EnclaveCollectionMatrix(), 2, 3 + 1, std::ref(EnclaveCollectionMap), std::ref(EnclaveCollectionMap[Key]), Key, std::ref(blueprint));
+		std::thread t1(&EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclave, EnclaveCollectionMatrix(), 2, 3 + 1,  std::ref(EnclaveCollectionMap[Key]), Key, std::ref(blueprint));
 		t1.join();
-		cout << "SECOND JOB COMPLETE! " << endl;
-		std::thread t2(&EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclave, EnclaveCollectionMatrix(), 4, 5 + 1, std::ref(EnclaveCollectionMap), std::ref(EnclaveCollectionMap[Key]), Key, std::ref(blueprint));
+		//cout << "SECOND JOB COMPLETE! " << endl;
+		std::thread t2(&EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclave, EnclaveCollectionMatrix(), 4, 5 + 1,  std::ref(EnclaveCollectionMap[Key]), Key, std::ref(blueprint));
 		t2.join();
-		cout << "THIRD JOB COMPLETE! " << endl;
-		std::thread t3(&EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclave, EnclaveCollectionMatrix(), 6, 7 + 1, std::ref(EnclaveCollectionMap), std::ref(EnclaveCollectionMap[Key]), Key, std::ref(blueprint));
+		//cout << "THIRD JOB COMPLETE! " << endl;
+		std::thread t3(&EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclave, EnclaveCollectionMatrix(), 6, 7 + 1,  std::ref(EnclaveCollectionMap[Key]), Key, std::ref(blueprint));
 		t3.join();
-		cout << "FOURTH JOB COMPLETE! " << endl;
+		//cout << "FOURTH JOB COMPLETE! " << endl;
 		
 	}
 }
 
-void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclave(int beginRange, int endRange, std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveCollection, EnclaveKeyDef::KeyHasher> &enclaveCollectionMapRef, EnclaveCollection &collectionRef, EnclaveKeyDef::EnclaveKey Key, EnclaveCollectionBlueprint *blueprint)
+void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclave(int beginRange, int endRange, EnclaveCollection &collectionRef, EnclaveKeyDef::EnclaveKey Key, EnclaveCollectionBlueprint *blueprint)
 {
-	/* Summary: this function performs enclave instantiations within a certain range. */
+	/* Summary: this function performs enclave instantiations within a certain range; this "range" should be designed so that it 
+	   can be used with a packaged_task
+	*/
 
 	/* Order of operations:
 	1. Instantiate 512
@@ -242,21 +247,13 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclave(int beginRange, i
 
 			for (int z = 0; z < 8; z++)
 			{
-
-				//ElevationMapRef solidChunk = blueprint->GetSolidChunkData();						// ?? better optimized? unknown. compare to declaring outside of loop (7/18/2017)
-				//ElevationMapRef surfaceChunk = blueprint->GetSurfaceChunkData();
-				//ElevationMapRef paintableChunk = blueprint->GetPaintableChunkData();
-
-				// step 2 begins here
 				if ((solidChunk[x][z] & chunkbitmask) == chunkbitmask)
 				{
 
 					//cout << x << " " << z << " " << chunkbitmask  << " HIT 1" << endl;
-					Enclave stackEnclave(Key, x, y, z);												// add an enclave, with a collection key of Key
-					//EnclaveCollectionMap[Key].EnclaveArray[x][y][z] = stackEnclave;					// copy the newly instantiated enclave onto the heap.
-					collectionRef.EnclaveArray[x][y][z] = stackEnclave;								//enclaveCollectionMapRef[Key]
-					//EnclaveCollection *collectionPtr = &collectionRef;								//enclaveCollectionMapRef[Key]
-					collectionRef.EnclaveArray[x][y][z].InitializeRenderArray(1);					// collectionPtr->
+					Enclave stackEnclave(Key, x, y, z);											
+					collectionRef.EnclaveArray[x][y][z] = stackEnclave;						
+					collectionRef.EnclaveArray[x][y][z].InitializeRenderArray(1);				
 
 					// step 3 begins here 
 					if ((surfaceChunk[x][z] & chunkbitmask) == chunkbitmask)
@@ -274,7 +271,6 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclave(int beginRange, i
 						{
 							for (int zz2 = 0; zz2 < 4; zz2++)
 							{
-								//collectionPtr->UnveilSinglePoly(xx2, 3, zz2, 0, 1, 0, 2, 0);	// STEP 3b: get the top faces, set the top face bit (2) to 1. 
 								collectionRef.EnclaveArray[tempKey.x][tempKey.y][tempKey.z].UnveilSinglePoly(xx2, 3, zz2, 0, 1, 0, 2, 0);	// STEP 3b: get the top faces, set the top face bit (2) to 1. 
 							}
 						}

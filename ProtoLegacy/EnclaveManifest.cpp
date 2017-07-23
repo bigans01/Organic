@@ -54,7 +54,7 @@ void EnclaveManifest::AttachToEnclave(Enclave &in_ptr)	// "attaches" this manife
 	GLfloat GL_z = 0.5f;
 	int iteratorval, totaltuples = 0;														// more testing
 
-	for (int i = 0; i < RenderablePolyCount; i++)
+	for (int i = 0; i < RenderablePolyCount; ++i)
 	{
 		EnclavePolyArrayPtr = EnclavePtr.Sorted.RenderArray[i];			// point to the Enclave's sorted poly array 
 		//cout << "debug: RenderablePolyCount before crash: " << RenderablePolyCount << endl;
@@ -64,13 +64,13 @@ void EnclaveManifest::AttachToEnclave(Enclave &in_ptr)	// "attaches" this manife
 		//cout << ">> polyfacebitmask" << polyfacebitmask << endl;
 		EnclaveManifestOffset = SingleToMulti(EnclavePtr.Sorted.PolyArrayIndex[i]);			// set the offset values based on the xyz coords
 		//cout << "Offset: " << EnclaveManifestOffset.x << endl;
-		for (int j = 0; j < 6; j++)
+		for (int j = 0; j < 6; ++j)
 		{																	// iterate through each bit
 			iteratorval = 0;
 			if ((t1_flagsint & polyfacebitmask) == polyfacebitmask)			
 			{
 				//cout << "face will be rendered: " << j << " " << polyfacebitmask << endl;
-				for (int k = 0; k < 6; k++)		// 6 different vertexes = 1 face = 2 triangles = 18 floats
+				for (int k = 0; k < 6; ++k)		// 6 different vertexes = 1 face = 2 triangles = 18 floats
 				{
 					GL_x = 0.5f;
 					GL_y = 0.5f;

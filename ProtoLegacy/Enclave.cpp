@@ -44,11 +44,11 @@ void Enclave::InitializeRenderArray()
 	/* Summary: function called when enclave's arrays need to be initialized; this should be called 
 	immediately after the enclave is created on the heap, and before any other operations occur. */
 	int index = 0, i, j, k;			// declare variables for following loops
-	for (i = 0; i < 4; i++)
+	for (i = 0; i < 4; ++i)
 	{
-		for (j = 0; j < 4; j++)
+		for (j = 0; j < 4; ++j)
 		{
-			for (k = 0; k < 4; k++)
+			for (k = 0; k < 4; ++k)
 			{
 				//cout << "test initialize: " << endl;
 				Sorted.PolyArrayIndex[index] = index;			// for storing the true value -- between 1-64 (the individual element number as it exists in the array)? (sp?)
@@ -98,11 +98,11 @@ void Enclave::InitializeRenderArray()
 void Enclave::InitializeRenderArray(int blockid)
 {
 	int index = 0, i, j, k;			// declare variables for following loops
-	for (i = 0; i < 4; i++)
+	for (i = 0; i < 4; ++i)
 	{
-		for (j = 0; j < 4; j++)
+		for (j = 0; j < 4; ++j)
 		{
-			for (k = 0; k < 4; k++)
+			for (k = 0; k < 4; ++k)
 			{
 				//cout << "test initialize: " << endl;
 				Sorted.PolyArrayIndex[index] = index;			// for storing the true value -- between 1-64 (the individual element number as it exists in the array)? (sp?)
@@ -159,10 +159,10 @@ void Enclave::SortRenderArray() // this function performs sorting on RenderArray
 	int sortcount = 0;
 	EnclavePolyArray *tempPtr = Sorted.RenderArray[0];
 	int i = 1;														// set index of the first element to check during sort
-	for (i = 1; i < 64; i++)
+	for (i = 1; i < 64; ++i)
 	{
 		element_found = 0;					// stores total number of renderable elements (used later to determine the # of elements to look for in the for loop
-		for (j = i; j >= 1; j--)
+		for (j = i; j >= 1; --j)
 		{
 			if ((Sorted.RenderArray[j]->otherflags == 1) && (Sorted.RenderArray[j - 1]->otherflags == 0)) // if the current element = value of 0, and the next one is a value of 1, swap. NOTE: Check == vs =.  // && (Sorted.RenderArray[i - 1]->otherflags == 0)
 			{
@@ -214,7 +214,7 @@ void Enclave::UnveilSinglePoly(int x, int y, int z, int in_readorder, int in_oth
 	if (in_otherflags >= 1)
 	{
 		zeroindexcheck = 0;
-		for (i = 1; i < 64; i++)
+		for (i = 1; i < 64; ++i)
 		{
 
 			if (Sorted.PolyArrayIndex[i] == multi_to_single) // find the index of the element to change, by finding the
@@ -228,7 +228,7 @@ void Enclave::UnveilSinglePoly(int x, int y, int z, int in_readorder, int in_oth
 				if (OldFlags == 0)
 				{
 					//cout << "TEST2:::" << OldFlags << endl;
-					for (j = i; j >= 1; j--)
+					for (j = i; j >= 1; --j)
 					{
 						if ((Sorted.RenderArray[j]->otherflags >= 1) && (Sorted.RenderArray[j - 1]->otherflags == 0)) // swap values first
 						{
@@ -250,7 +250,7 @@ void Enclave::UnveilSinglePoly(int x, int y, int z, int in_readorder, int in_oth
 						}
 						//cout << "for loop count" << ++sortcount << endl;
 					}
-					TotalRenderable++;
+					++TotalRenderable;
 					// loop for each bit of in_t1 here
 					total_triangles += GetTotalTrianglesInBlock(in_t1);
 					zeroindexcheck = 1;
@@ -266,7 +266,7 @@ void Enclave::UnveilSinglePoly(int x, int y, int z, int in_readorder, int in_oth
 		}
 		if ((zeroindexcheck == 0) && (OldFlags == 0))	// do this, if the very first block to be sorted is the one at 0, 0, 0
 		{
-			TotalRenderable++;
+			++TotalRenderable;
 			total_triangles += GetTotalTrianglesInBlock(in_t1);
 			//cout << "Very first block is 0: " << total_triangles << endl;
 		}
@@ -292,14 +292,14 @@ void Enclave::VeilSinglePoly(int x, int y, int z, int in_readorder, int in_other
 	if (in_otherflags == 0)
 	{
 		//cout << "TEST (otherflags == 0) :::" << OldFlags << endl;
-		for (i = 0; i < 63; i++)
+		for (i = 0; i < 63; ++i)
 		{
 			if (Sorted.PolyArrayIndex[i] == multi_to_single) // find the index of the element to change, by finding the
 															 // match index that was converted from 3d to 1d to its appropriate index in Sorted.PolyArrayindex
 			{
 				if (OldFlags >= 1)
 				{
-					for (j = i; j < 63; j++) // don't touch the last element, stop at element 63 (which is at index 62)
+					for (j = i; j < 63; ++j) // don't touch the last element, stop at element 63 (which is at index 62)
 					{
 						if ((Sorted.RenderArray[j]->otherflags == 0) && (Sorted.RenderArray[j + 1]->otherflags >= 1)) // swap values first
 						{
@@ -319,7 +319,7 @@ void Enclave::VeilSinglePoly(int x, int y, int z, int in_readorder, int in_other
 							break;
 						}
 					}
-					TotalRenderable--;
+					--TotalRenderable;
 					// loop for each bit of in_t1 here
 					total_triangles -= GetTotalTrianglesInBlock(in_t1);
 					cout << "Total triangles in chunk so far: " << total_triangles << endl;
@@ -336,9 +336,9 @@ void Enclave::TestTopLayer()
 {
 	/* Summary: sets the otherflags for a pre-set number of blocks to 1*/
 	int i, j, k = 0;
-	for (i = 2; i < 4; i++)			// 2 is for testing, would be 8 sorted polygons.
+	for (i = 2; i < 4; ++i)			// 2 is for testing, would be 8 sorted polygons.
 	{
-		for (j = 0; j < 4; j++)
+		for (j = 0; j < 4; ++j)
 		{
 			Sorted.RenderArray[(i * 4) + j]->otherflags = 1;
 			//cout << "whoa!" << endl;
@@ -350,11 +350,11 @@ void Enclave::ViewOtherFlags()
 {
 	/* Summary: loops and outputs the other flags value for each individual block */
 	int index = 0, i, j, k;			// declare variables for following loops
-	for (i = 0; i < 4; i++)
+	for (i = 0; i < 4; ++i)
 	{
-		for (j = 0; j < 4; j++)
+		for (j = 0; j < 4; ++j)
 		{
-			for (k = 0; k < 4; k++)
+			for (k = 0; k < 4; ++k)
 			{
 				cout << Sorted.RenderArray[index]->otherflags << ":" << Sorted.PolyArrayIndex[index] << " "; // working
 				index++;
@@ -369,7 +369,7 @@ int Enclave::GetTotalTrianglesInBlock(char in_char)
 	/* Summary: gets the total number of triangles per block */
 	int bitmask = 32;
 	int return_triangles = 0;
-	for (int z = 0; z < 6; z++)
+	for (int z = 0; z < 6; ++z)
 	{
 		if ((in_char &  bitmask) == bitmask)
 		{
