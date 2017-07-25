@@ -19,6 +19,7 @@ void OrganicSystem::InterlockBaseCollections()
 
 void OrganicSystem::AddAndMaterializeCollection(int x, int y, int z)
 {
+
 	/*------------------------------------------------------------------------------------------------------------- 
 	Summary: this is a multi-step function that will create an EnclaveCollection with a key value of x/y/z:
 
@@ -29,7 +30,8 @@ void OrganicSystem::AddAndMaterializeCollection(int x, int y, int z)
 	5. Assign pointers to an appropriate instance of EnclaveCollectionMesh
 	
 	-------------------------------------------------------------------------------------------------------------*/
-
+	thread_pool *poolptr;
+	poolptr = &testpool2;
 	// STEP 1: add and instantiate 512 enclaves ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 	// NOTES: this step still needs to perform painting!
 	auto start1 = std::chrono::high_resolution_clock::now();			
@@ -40,13 +42,16 @@ void OrganicSystem::AddAndMaterializeCollection(int x, int y, int z)
 	EnclaveCollectionBlueprint *blueprintptr = &BlueprintMatrix.BlueprintMap[tempKey];
 	// multithreaded testing begins here
 	//EnclaveCollections.AddNewCollectionWithBlueprint(tempKey, blueprintptr);
-	EnclaveCollections.MultiAddNewCollectionWithBlueprint(4, tempKey, blueprintptr);
+	//EnclaveCollections.MultiAddNewCollectionWithBlueprint(4, tempKey, blueprintptr);
+	
+	EnclaveCollections.SetOrganicSystem(this);
+	EnclaveCollections.MultiAddNewCollectionWithBlueprint(2, tempKey, blueprintptr);
+	//EnclaveCollections.MultiAddNewCollectionWithBlueprint(1, tempKey, blueprintptr);
 
 	EnclaveCollection *collectionPtr = &EnclaveCollections.EnclaveCollectionMap[tempKey];
 	auto finish1 = std::chrono::high_resolution_clock::now();															// optional, for debugging
 	std::chrono::duration<double> elapsed1 = finish1 - start1;
 	cout << "Organic system phase 1: (Add collection, instantiate enclaves, determine solids, determine surface, perform painting, unveil polys): " << elapsed1.count() << endl;
-
 
 
 
@@ -130,4 +135,9 @@ void OrganicSystem::AddBlueprint(int x, int y, int z, EnclaveCollectionBlueprint
 	tempKey.y = y;										// set temp key to input of y
 	tempKey.z = z;										// set temp key to input of z
 	BlueprintMatrix.BlueprintMap[tempKey] = blueprint;	// add blueprint to the BlueprintMatrix's unordered map -- BlueprintMap
+}
+
+thread_pool& OrganicSystem::getpool()
+{
+	return testpool2;
 }

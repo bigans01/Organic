@@ -28,8 +28,10 @@ Dependents: none.
 #include "EnclaveCollectionBlueprint.h"
 #include <unordered_map>
 
+class OrganicSystem;
 class EnclaveCollectionMatrix {
 public:
+	OrganicSystem *OrganicPointer;
 	std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveCollection, EnclaveKeyDef::KeyHasher> EnclaveCollectionMap;				// unordered map which stores the collections
 	void AddNewCollection(int x, int y, int z);																						// adds a new collection, with the members of its key value being equivalent to x/y/z
 	void AddNewCollection(EnclaveKeyDef::EnclaveKey Key);																			// adds a new collection, with the given key value.
@@ -55,6 +57,8 @@ public:
 	PathTraceContainer GetCoordTrace(int value);																					// returns a PathTraceContainer that contains the x, y, or z value of the collection, chunk, and individual block that would be returned when finding the coordinate. (would be called 3 times
 																																	// to get a true x/y/z coordinate.
 	int KeyToSingle(EnclaveKeyDef::EnclaveKey InKey);
+
+	void SetOrganicSystem(OrganicSystem *organicRef);
 
 };
 #endif
