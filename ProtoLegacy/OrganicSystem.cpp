@@ -43,7 +43,7 @@ void OrganicSystem::AddAndMaterializeCollection(int x, int y, int z)
 	// multithreaded testing begins here
 	//EnclaveCollections.AddNewCollectionWithBlueprint(tempKey, blueprintptr);
 	//EnclaveCollections.MultiAddNewCollectionWithBlueprint(4, tempKey, blueprintptr);
-	
+	//
 	EnclaveCollections.SetOrganicSystem(this);
 	EnclaveCollections.MultiAddNewCollectionWithBlueprint(2, tempKey, blueprintptr);
 	//EnclaveCollections.MultiAddNewCollectionWithBlueprint(1, tempKey, blueprintptr);
@@ -142,7 +142,17 @@ thread_pool* OrganicSystem::getpool()
 	return testpool2;
 }
 
+thread_pool* OrganicSystem::getpool2()
+{
+	return testpool3;
+}
+
 void OrganicSystem::SetOrganicPool(thread_pool *thread_pool_ref)
 {
 	testpool2 = thread_pool_ref;
+}
+
+void OrganicSystem::SetOrganicPool2(thread_pool *thread_pool_ref)
+{
+	testpool3 = thread_pool_ref;
 }

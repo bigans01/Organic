@@ -181,19 +181,23 @@ void EnclaveCollectionMatrix::MultiAddNewCollectionWithBlueprint(int numThreads,
 	
 	if (numThreads == 1)
 	{
-		std::packaged_task<void(int, int, EnclaveCollection&, EnclaveKeyDef::EnclaveKey, EnclaveCollectionBlueprint*)> Job1(std::bind
-																																(
-																																	&EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclave,			//// use placeholders with std::bind
-																																	this,
-																																	std::placeholders::_1,												// 0, 
-																																	std::placeholders::_2,												// 1 + 1, 
-																																	std::placeholders::_3,												// std::ref(EnclaveCollectionMap[Key])
-																																	std::placeholders::_4,												// Key
-																																	std::placeholders::_5														// std::ref(blueprint)
-																																)
-																															);
-		std::thread t0(std::move(Job1), 0, 7 + 1, std::ref(EnclaveCollectionMap[Key]), Key, std::ref(blueprint));
-		t0.join();
+		thread_pool *tpref = OrganicPointer->getpool();
+		std::packaged_task<void()> Job1(std::bind
+		(
+			&EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclave,			//// use placeholders with std::bind
+			this,
+			0,												// 0, 
+			7 + 1,												// 1 + 1, 
+			std::ref(EnclaveCollectionMap[Key]),												// std::ref(EnclaveCollectionMap[Key])
+			Key,												// Key
+			std::ref(blueprint)														// std::ref(blueprint)
+		)
+		);
+		std::future<void> testfuture1 = tpref->submit(std::move(Job1));
+		testfuture1.get();
+
+		//std::thread t0(std::move(Job1));
+		//t0.join();
 	}
 
 	if (numThreads == 2)
@@ -277,6 +281,7 @@ void EnclaveCollectionMatrix::MultiAddNewCollectionWithBlueprint(int numThreads,
 		//std::future<void> testfuture2;
 		//thread_pool *flermpone = &OrganicPointer->getpool();
 		thread_pool *tpref = OrganicPointer->getpool();
+		thread_pool *tpref2 = OrganicPointer->getpool2();
 		//std::future<void> testfuture1 = tpref->submit(std::move(Job3));
 		//std::future<void> testfuture1 = OrganicPointer->getpool().submit(std::move(Job3));
 
@@ -285,12 +290,13 @@ void EnclaveCollectionMatrix::MultiAddNewCollectionWithBlueprint(int numThreads,
 
 		auto jobstart = std::chrono::high_resolution_clock::now();
 		std::future<void> testfuture1 = tpref->submit(std::move(Job3));
-		auto jobfinish = std::chrono::high_resolution_clock::now();
 		
-		std::future<void> testfuture2 = tpref->submit(std::move(Job4));
+		
+		std::future<void> testfuture2 = tpref2->submit(std::move(Job4));
+		auto jobfinish = std::chrono::high_resolution_clock::now();
 												// optional, for debugging
 		std::chrono::duration<double> jobelapsed = jobfinish - jobstart;
-		cout << "job submit test2 (): " << jobelapsed.count() << endl;
+		//cout << "job submit test2 (job 1): " << jobelapsed.count() << endl;
 
 		//testfuture1.wait();
 		//testfuture2.wait();
@@ -305,7 +311,7 @@ void EnclaveCollectionMatrix::MultiAddNewCollectionWithBlueprint(int numThreads,
 		//auto finish1 = std::chrono::high_resolution_clock::now();															// optional, for debugging
 		std::chrono::duration<double> elapsed1 = finish1 - start1;
 
-		cout << "future get test2 (): " << elapsed1.count() << endl;
+		//cout << "future get test2 (): " << elapsed1.count() << endl;
 
 
 		//OrganicPointer->getpool().submit(std::move(Job3));
@@ -476,7 +482,7 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclave(int beginRange, i
 						tempKey.y = y;
 						tempKey.z = z;
 
-						collectionRef.ActivateEnclaveForRendering(tempKey);
+						collectionRef.ActivateEnclaveForRendering(tempKey); // needs modification (7/26/2017)
 
 
 						// step 5 will go here ? 
@@ -506,8 +512,13 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclave(int beginRange, i
 
 
 					}
+					if ((paintableChunk[x][z] & chunkbitmask) == chunkbitmask)
+					{
+						for (int t = 0; t < 10000; t++)
+						{
 
-
+						}
+					}
 
 
 

@@ -33,6 +33,7 @@ public:
 	ManifestCollectionMatrix ManifestCollections;								// matrix of ManifestCollections (up to 512 chunks, unordered map)
 	RenderCollectionMatrix RenderCollections;									// matrix of RenderCollections
 	thread_pool *testpool2;
+	thread_pool *testpool3;
 	int flermp = 0;
 	OrganicSystem();															// default constructor
 	void InterlockBaseCollections();											// connects the 3 base collections together -- EnclaveCollections, ManifestCollections, RenderCollections.
@@ -40,7 +41,9 @@ public:
 	void ChangeSingleBlockMaterialAtXYZ(int x, int y, int z, int newmaterial);					// changes the material block at an x/y/z location
 	void AddBlueprint(int x, int y, int z, EnclaveCollectionBlueprint blueprint);
 	void SetOrganicPool(thread_pool *thread_pool_ref);
+	void SetOrganicPool2(thread_pool *thread_pool_ref);
 	thread_pool* getpool();
+	thread_pool* getpool2();
 };
 
 #endif

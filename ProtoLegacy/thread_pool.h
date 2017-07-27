@@ -166,7 +166,7 @@ public:
 	thread_pool() : done(false), joiner(threads)
 	{
 		{
-			unsigned const thread_count = 2;			// change this possibly...
+			unsigned const thread_count = 1;			// change this possibly...
 
 			try
 			{
