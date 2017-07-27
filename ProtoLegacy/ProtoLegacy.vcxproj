@@ -192,6 +192,7 @@
     <ClCompile Include="EnclaveMatrix.cpp" />
     <ClCompile Include="EnclaveCollectionMesh.cpp" />
     <ClCompile Include="EnclaveMultiJob.cpp" />
+    <ClCompile Include="function_wrapper.cpp" />
     <ClCompile Include="goalMoveToLocation.cpp" />
     <ClCompile Include="ManifestCollectionMatrix.cpp" />
     <ClCompile Include="ManifestCollection.cpp" />

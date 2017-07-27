@@ -31,27 +31,38 @@ class function_wrapper {
 		void call() { f(); }
 	};
 public:
-	template<typename F>
-	function_wrapper(F&& f):
-		impl(new impl_type<F>(std::move(f)))
-	{}
+	//template<typename F>
+	//function_wrapper(F&& f):
+	//	impl(new impl_type<F>(std::move(f)))
+	//{}
+	template<typename F> function_wrapper(F&& f);
 
 	void operator()() { impl->call(); }
 
 	function_wrapper() = default;
 
+	/*
 	function_wrapper(function_wrapper&& other):
 		impl(std::move(other.impl))
 	{}
+	*/
+	function_wrapper(function_wrapper&& other);
 
+	
+	/*
 	function_wrapper& operator=(function_wrapper&& other)
 	{
 		impl = std::move(other.impl);
 		return *this;
 	}
+	*/
+	function_wrapper& operator=(function_wrapper&& other);
 
+	//function_wrapper(const function_wrapper&) = delete;
 	function_wrapper(const function_wrapper&) = delete;
 	function_wrapper(function_wrapper&) = delete;
+
+
 	function_wrapper& operator=(const function_wrapper&) = delete;
 
 

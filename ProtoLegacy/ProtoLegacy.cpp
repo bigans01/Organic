@@ -20,6 +20,7 @@
 #include "EnclaveCollectionBlueprint.h"
 #include "EnclavePainter.h"
 #include "EnclavePainterList.h"
+#include "thread_pool.h"
 #include <thread>
 
 //#define GLEW_STATIC
@@ -180,7 +181,10 @@ int main()
 	
 
 	// STAGE 2: initialization of enclaves 
+	thread_pool mainthreadpool;
+	thread_pool* mainthreadpoolref = &mainthreadpool;
 	OrganicSystem Organic;
+	Organic.SetOrganicPool(mainthreadpoolref);
 	Organic.AddBlueprint(EnclaveCollectionTestKey.x, EnclaveCollectionTestKey.y, EnclaveCollectionTestKey.z, testBlueprint);	// add the test blueprint to the OrganicSystem
 	//cout << Organic.BlueprintMatrix.BlueprintMap[EnclaveCollectionTestKey].SolidChunks[0][0];
 	cout << "testing of solidChunk data in blueprints found in the OrganicSystem: " << endl;

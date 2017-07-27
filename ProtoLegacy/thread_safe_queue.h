@@ -23,7 +23,8 @@ private:
 	std::condition_variable data_cond;
 
 public:
-	thread_safe_queue() :
+	//thread_safe_queue();
+	thread_safe_queue() :							// somehow this works, but other constructor above + definition in .cpp does NOT! (7/25/2017)
 		head(new node), tail(head.get())
 	{}
 	thread_safe_queue(const thread_safe_queue& other) = delete;

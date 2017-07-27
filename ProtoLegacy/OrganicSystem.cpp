@@ -30,8 +30,8 @@ void OrganicSystem::AddAndMaterializeCollection(int x, int y, int z)
 	5. Assign pointers to an appropriate instance of EnclaveCollectionMesh
 	
 	-------------------------------------------------------------------------------------------------------------*/
-	thread_pool *poolptr;
-	poolptr = &testpool2;
+	//thread_pool *poolptr;
+	//poolptr = &testpool2;
 	// STEP 1: add and instantiate 512 enclaves ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 	// NOTES: this step still needs to perform painting!
 	auto start1 = std::chrono::high_resolution_clock::now();			
@@ -137,7 +137,12 @@ void OrganicSystem::AddBlueprint(int x, int y, int z, EnclaveCollectionBlueprint
 	BlueprintMatrix.BlueprintMap[tempKey] = blueprint;	// add blueprint to the BlueprintMatrix's unordered map -- BlueprintMap
 }
 
-thread_pool& OrganicSystem::getpool()
+thread_pool* OrganicSystem::getpool()
 {
 	return testpool2;
+}
+
+void OrganicSystem::SetOrganicPool(thread_pool *thread_pool_ref)
+{
+	testpool2 = thread_pool_ref;
 }

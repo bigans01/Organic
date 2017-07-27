@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include <stdio.h>
-#include "thread_safe_queue.h"
+//#include "thread_safe_queue.h"
 
+/*
 template<typename T> void thread_safe_queue<T>::push(T new_value)
 {
 	std::shared_ptr<T> new_data(
@@ -48,3 +49,6 @@ template<typename T> void thread_safe_queue<T>::empty()
 {
 	std::lock_guard<std::mutex> head_lock(head_mutex);
 }
+*/
+
+//template<typename T> thread_safe_queue<T>::thread_safe_queue() : head(new node), tail(head.get()) {}

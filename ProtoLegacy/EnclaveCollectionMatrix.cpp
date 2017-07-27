@@ -6,11 +6,14 @@
 #include "EnclaveCollection.h"
 #include "EnclavePainterList.h"
 #include "OrganicSystem.h"
+#include "thread_pool.h"
 #include <chrono>
 #include <thread>
 #include <future>
 #include <utility>
 #include <vector>
+
+class OrganicSystem;
 
 typedef unsigned char(&ElevationMapRef)[8][8];												// forward declaration for return type below
 void EnclaveCollectionMatrix::AddNewCollection(int x, int y, int z)
@@ -259,14 +262,54 @@ void EnclaveCollectionMatrix::MultiAddNewCollectionWithBlueprint(int numThreads,
 		//t1.join();
 
 		//std::thread t1(std::move(Job2), 4, 7 + 1, std::ref(EnclaveCollectionMap[Key]), Key, std::ref(blueprint));
-		std::thread t1(std::move(Job4));
-		t1.join();
+		
+		
+		//std::thread t0(std::move(Job3));
+		//t0.join();
+
+		//std::thread t1(std::move(Job4));
+		//t1.join();
+
+
 		//cout << "SECOND JOB COMPLETE! " << endl;
+
 
 		//std::future<void> testfuture2;
 		//thread_pool *flermpone = &OrganicPointer->getpool();
-		std::future<void> testfuture1 = OrganicPointer->getpool().submit(std::move(Job3));
-		//std::future<void> testfuture2 = OrganicPointer->getpool().submit(std::move(Job4));
+		thread_pool *tpref = OrganicPointer->getpool();
+		//std::future<void> testfuture1 = tpref->submit(std::move(Job3));
+		//std::future<void> testfuture1 = OrganicPointer->getpool().submit(std::move(Job3));
+
+		//tpref->submit(std::move(Job3));
+		//tpref->submit(std::move(Job4));
+
+		auto jobstart = std::chrono::high_resolution_clock::now();
+		std::future<void> testfuture1 = tpref->submit(std::move(Job3));
+		auto jobfinish = std::chrono::high_resolution_clock::now();
+		
+		std::future<void> testfuture2 = tpref->submit(std::move(Job4));
+												// optional, for debugging
+		std::chrono::duration<double> jobelapsed = jobfinish - jobstart;
+		cout << "job submit test2 (): " << jobelapsed.count() << endl;
+
+		//testfuture1.wait();
+		//testfuture2.wait();
+
+		auto start1 = std::chrono::high_resolution_clock::now();
+		testfuture1.get();
+		auto finish1 = std::chrono::high_resolution_clock::now();
+
+		//auto start1 = std::chrono::high_resolution_clock::now();
+		testfuture2.get();
+				//// use placeholders with std::bind
+		//auto finish1 = std::chrono::high_resolution_clock::now();															// optional, for debugging
+		std::chrono::duration<double> elapsed1 = finish1 - start1;
+
+		cout << "future get test2 (): " << elapsed1.count() << endl;
+
+
+		//OrganicPointer->getpool().submit(std::move(Job3));
+		//std::future<void> testfuture2 = OrganicPointer->getpool->submit(std::move(Job4));
 
 	}
 	
@@ -484,7 +527,7 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclave(int beginRange, i
 
 	auto finish = std::chrono::high_resolution_clock::now();															// optional, for debugging
 	std::chrono::duration<double> elapsed = finish - start;																// ""
-	std::cout << "Elapsed time (multi-threaded enclave instantiation: " << elapsed.count() << endl;	// ""
+	//std::cout << "Elapsed time (multi-threaded enclave instantiation: " << elapsed.count() << endl;	// ""
 }
 Enclave& EnclaveCollectionMatrix::GetEnclaveFromCollection(EnclaveKeyDef::EnclaveKey Key, int x, int y, int z)
 {
@@ -633,5 +676,6 @@ void EnclaveCollectionMatrix::SetOrganicSystem(OrganicSystem *organicRef)
 {
 	OrganicPointer = organicRef;
 	cout << "test of ORGANICREF: " << organicRef->flermp << endl;
+	
 
 }
