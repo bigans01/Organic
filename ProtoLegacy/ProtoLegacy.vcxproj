@@ -152,7 +152,9 @@
   <ItemGroup>
     <ClInclude Include="BasicEntity.h" />
     <ClInclude Include="common\shader.hpp" />
+    <ClInclude Include="dummwrapper.h" />
     <ClInclude Include="EnclaveCollection.h" />
+    <ClInclude Include="EnclaveCollectionActivateList.h" />
     <ClInclude Include="EnclaveCollectionBlueprint.h" />
     <ClInclude Include="EnclaveCollectionBlueprintMatrix.h" />
     <ClInclude Include="EnclaveCollectionMatrix.h" />

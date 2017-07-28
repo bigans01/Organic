@@ -5,6 +5,7 @@
 #include "PathTraceContainer.h"
 #include "EnclaveCollection.h"
 #include "EnclavePainterList.h"
+#include "EnclaveCollectionActivateList.h"
 #include "OrganicSystem.h"
 #include "thread_pool.h"
 #include <chrono>
@@ -12,6 +13,7 @@
 #include <future>
 #include <utility>
 #include <vector>
+#include "dummwrapper.h"
 
 class OrganicSystem;
 
@@ -196,6 +198,53 @@ void EnclaveCollectionMatrix::MultiAddNewCollectionWithBlueprint(int numThreads,
 		std::future<void> testfuture1 = tpref->submit(std::move(Job1));
 		testfuture1.get();
 
+	
+
+
+		////////////
+		struct S {
+			double operator()(char, int&);
+			float operator()(int) { return 1.0; }
+		};
+		std::result_of<S(char, int&)>::type d = 3.14;
+		//EnclaveCollectionMatrix::
+		//typedef typename std::result_of<FunctionType()>::type
+		//std::result_of<EnclaveCollectionMatrix::dummyjob(int)>::type;
+		
+		/*
+		std::packaged_task<int()> Job2(std::bind															/// WORKING INTS
+		(
+			&EnclaveCollectionMatrix::dummyjob2,
+			this,
+			2)
+		);
+
+		std::future<int> testval22 = tpref->submit3(std::move(Job2));
+		int retKey = testval22.get();
+		*/
+
+		std::packaged_task<EnclaveKeyDef::EnclaveKey()> Job6(std::bind
+		(
+			&EnclaveCollectionMatrix::dummyjob,			//// use placeholders with std::bind
+			this
+													// std::ref(blueprint)
+		)
+		);
+
+
+
+		
+
+		std::future<EnclaveKeyDef::EnclaveKey> testval33 = tpref->submit4(std::move(Job6));
+		EnclaveKeyDef::EnclaveKey testval44 = testval33.get();
+		cout << "FUCKING FINALLY: " << testval44.x << " " << testval44.y << " " << testval44.z << endl;
+		//std::future<EnclaveKeyDef::EnclaveKey> testval = Job2.get_future();
+		//typename std::result_of<T(int)>::type;
+		//std::future<int> testfuture2 = tpref->submit(std::move(Job2));
+		//std::future<std::result_of<typename &EnclaveCollectionMatrix::dummyjob(int)>::type> testfuture2 = tpref->submit(std::move(Job2));
+		//testfuture1.get();
+
+
 		//std::thread t0(std::move(Job1));
 		//t0.join();
 	}
@@ -207,6 +256,8 @@ void EnclaveCollectionMatrix::MultiAddNewCollectionWithBlueprint(int numThreads,
 		//JobInstantiateAndPopulateEnclave(0, 3 + 1,  EnclaveCollectionMap[Key], Key, blueprint);
 		//JobInstantiateAndPopulateEnclave(4, 7, EnclaveCollectionMap[Key], Key, blueprint);
 		//JobInstantiateAndPopulateEnclave(4, 7, std::ref(EnclaveCollectionMap[Key]), Key, std::ref(blueprint));
+
+		/*
 		auto start = std::chrono::high_resolution_clock::now();
 		std::packaged_task<void(int, int, EnclaveCollection&, EnclaveKeyDef::EnclaveKey, EnclaveCollectionBlueprint*)> Job1(std::bind
 																																(
@@ -230,6 +281,7 @@ void EnclaveCollectionMatrix::MultiAddNewCollectionWithBlueprint(int numThreads,
 																																	std::placeholders::_5														// std::ref(blueprint)
 																																)
 																															);
+			*/
 
 		std::packaged_task<void()> Job3(std::bind
 		(
@@ -282,6 +334,22 @@ void EnclaveCollectionMatrix::MultiAddNewCollectionWithBlueprint(int numThreads,
 		//thread_pool *flermpone = &OrganicPointer->getpool();
 		thread_pool *tpref = OrganicPointer->getpool();
 		thread_pool *tpref2 = OrganicPointer->getpool2();
+
+		std::packaged_task<EnclaveKeyDef::EnclaveKey()> Job6(std::bind
+		(
+			&EnclaveCollectionMatrix::dummyjob,			//// use placeholders with std::bind
+			this
+		)
+		);
+
+
+
+
+
+		std::future<EnclaveKeyDef::EnclaveKey> testval33 = tpref->submit4(std::move(Job6));
+		EnclaveKeyDef::EnclaveKey testval44 = testval33.get();
+		cout << "FUCKING FINALLY: " << testval44.x << " " << testval44.y << " " << testval44.z << endl;
+
 		//std::future<void> testfuture1 = tpref->submit(std::move(Job3));
 		//std::future<void> testfuture1 = OrganicPointer->getpool().submit(std::move(Job3));
 
@@ -449,7 +517,7 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclave(int beginRange, i
 	7. attach to enclaves
 	*/
 
-
+	EnclaveCollectionActivateList tempList;
 	auto start = std::chrono::high_resolution_clock::now();			// option
 	int chunkbitmask = 1;																				// set initial value of bitmask to be 128 (which is the top chunk)
 	int chunkindex = 7;
@@ -539,6 +607,7 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclave(int beginRange, i
 	auto finish = std::chrono::high_resolution_clock::now();															// optional, for debugging
 	std::chrono::duration<double> elapsed = finish - start;																// ""
 	//std::cout << "Elapsed time (multi-threaded enclave instantiation: " << elapsed.count() << endl;	// ""
+	//return tempList;
 }
 Enclave& EnclaveCollectionMatrix::GetEnclaveFromCollection(EnclaveKeyDef::EnclaveKey Key, int x, int y, int z)
 {
@@ -690,3 +759,19 @@ void EnclaveCollectionMatrix::SetOrganicSystem(OrganicSystem *organicRef)
 	
 
 }
+
+EnclaveKeyDef::EnclaveKey EnclaveCollectionMatrix::dummyjob()
+{
+	//return testval + testval;
+	EnclaveKeyDef::EnclaveKey dumbkey;
+	dumbkey.x = 5;
+	dumbkey.y = 6;
+	dumbkey.z = 7;
+	return dumbkey;
+}
+
+int EnclaveCollectionMatrix::dummyjob2(int testval)
+{
+	return 5;
+}
+

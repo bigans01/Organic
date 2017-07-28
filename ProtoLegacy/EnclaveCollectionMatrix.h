@@ -26,6 +26,7 @@ Dependents: none.
 #include "EnclaveCollection.h"
 #include "PathTraceContainer.h"
 #include "EnclaveCollectionBlueprint.h"
+#include "EnclaveCollectionActivateList.h"
 #include <unordered_map>
 
 class OrganicSystem;
@@ -42,7 +43,8 @@ public:
 											EnclaveCollection &collectionRef, 
 											EnclaveKeyDef::EnclaveKey Key, 
 											EnclaveCollectionBlueprint *blueprint);
-
+	EnclaveKeyDef::EnclaveKey dummyjob();
+	int dummyjob2(int testval);
 	void testfunction(int beginRange,																			// this function is designed to be used with multi-threaded calls. See definition for more details.
 					  int endRange
 					  //EnclaveCollection &collectionRef,
@@ -59,6 +61,8 @@ public:
 	int KeyToSingle(EnclaveKeyDef::EnclaveKey InKey);
 
 	void SetOrganicSystem(OrganicSystem *organicRef);
+
+
 
 };
 #endif

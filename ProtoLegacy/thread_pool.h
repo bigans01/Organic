@@ -13,6 +13,8 @@
 //#include "function_wrapper.h"
 #include "join_threads.h"
 
+class EnclaveCollectionActivateList;
+
 template<typename T>
 class thread_safe_queue
 {
@@ -120,10 +122,52 @@ public:
 	function_wrapper& operator=(const function_wrapper&) = delete;
 };
 
+class function_wrapper2
+{
+	struct impl_base {
+		virtual void call() = 0;
+		virtual ~impl_base() {}
+	};
+
+	std::unique_ptr<impl_base> impl;
+	template<typename F>
+	struct impl_type : impl_base
+	{
+		F f;
+		impl_type(F&& f_) : f(std::move(f_)) {}
+		void call() { f(); }
+		//int call() { f(); }
+	};
+public:
+	template<typename F>
+	function_wrapper2(F&& f) :
+		impl(new impl_type<F>(std::move(f)))
+	{}
+
+	void operator()() { impl->call(); }
+
+	function_wrapper2() = default;
+
+	function_wrapper2(function_wrapper2&& other) :
+		impl(std::move(other.impl))
+	{}
+
+	function_wrapper2& operator=(function_wrapper2&& other)
+	{
+		impl = std::move(other.impl);
+		return *this;
+	}
+
+	function_wrapper2(const function_wrapper&) = delete;
+	function_wrapper2(function_wrapper2&) = delete;
+	function_wrapper2& operator=(const function_wrapper2&) = delete;
+};
+
 class thread_pool
 {
 	std::atomic_bool done;
 	thread_safe_queue<function_wrapper> work_queue;								// DO SEARCH FOR (7/25/2017)
+	thread_safe_queue<function_wrapper2> work_queue2;
 	//thread_safe_queue<int> lolwhat;
 	std::vector<std::thread> threads;
 	join_threads joiner;
@@ -133,7 +177,7 @@ class thread_pool
 		while (!done)
 		{
 			function_wrapper task;
-
+			function_wrapper2 task2;
 
 			
 			if (work_queue.try_pop(task))
@@ -150,6 +194,18 @@ class thread_pool
 		}
 	}
 public:
+	/*
+	template<class Function, class ...Args>
+	std::future<typename std::result_of<Function(Args...)>::type>
+		submit2(Function &&f, Args &&...args) 
+	{
+		std::packaged_task<typename std::result_of<Function(Args...)>::type()> task(std::bind(f,args...));
+		auto res=task.get_future();
+		work_queue.push(std::packaged_task<void()>(std::move(task)));
+		return res;
+	}	
+	*/
+
 	template<typename FunctionType>
 	std::future<typename std::result_of<FunctionType()>::type>
 		submit(FunctionType f)
@@ -162,6 +218,50 @@ public:
 		work_queue.push(std::move(task));
 		return res;
 	}
+
+
+
+	template<class Function, class ...Args>
+	std::future<EnclaveKeyDef::EnclaveKey>
+		submit2(Function &&f, Args &&...args)
+	{
+		std::packaged_task<EnclaveKeyDef::EnclaveKey()> task(std::bind(f, args...));
+		std::future<EnclaveKeyDef::EnclaveKey> res = task.get_future();
+		work_queue2.push(std::packaged_task<EnclaveKeyDef::EnclaveKey()>(std::move(task)));
+		return res;
+	}
+
+
+
+	// currently being enhanced (submit3) THIS IS WORKING! YES -- returns an INT
+
+	template<typename FunctionType>
+	std::future<int>
+		submit3(FunctionType f)
+	{
+		typedef typename std::result_of<FunctionType()>::type
+			result_type;
+
+		std::packaged_task<int()> task(std::move(f));
+		std::future<int> res(task.get_future());
+		work_queue2.push(std::move(task));
+		return res;
+	}
+
+	// currently being enhanced (submit4)
+	template<typename FunctionType>
+	std::future<EnclaveKeyDef::EnclaveKey>
+		submit4(FunctionType f)
+	{
+		typedef typename std::result_of<FunctionType()>::type
+			result_type;
+
+		std::packaged_task<EnclaveKeyDef::EnclaveKey()> task(std::move(f));
+		std::future<EnclaveKeyDef::EnclaveKey> res(task.get_future());
+		work_queue.push(std::move(task));
+		return res;
+	}
+
 
 	thread_pool() : done(false), joiner(threads)
 	{
