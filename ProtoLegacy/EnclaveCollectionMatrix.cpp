@@ -335,21 +335,34 @@ void EnclaveCollectionMatrix::MultiAddNewCollectionWithBlueprint(int numThreads,
 		thread_pool *tpref = OrganicPointer->getpool();
 		thread_pool *tpref2 = OrganicPointer->getpool2();
 
-		std::packaged_task<EnclaveKeyDef::EnclaveKey()> Job6(std::bind
+		/*std::packaged_task<EnclaveKeyDef::EnclaveKey()> Job6(std::bind
 		(
 			&EnclaveCollectionMatrix::dummyjob,			//// use placeholders with std::bind
 			this
 		)
 		);
+		*/
 
 
 
+		// *********************************************************************************WORKING THREAD CODE*********************************************************************************
+		//std::packaged_task<int(int)> Job7(std::bind
+		//(
+		//	&EnclaveCollectionMatrix::dummyjob2,			//// use placeholders with std::bind
+		//	this,
+		//	std::placeholders::_1
+		//)
+		//);
 
 
-		std::future<EnclaveKeyDef::EnclaveKey> testval33 = tpref->submit4(std::move(Job6));
-		EnclaveKeyDef::EnclaveKey testval44 = testval33.get();
-		cout << "FUCKING FINALLY: " << testval44.x << " " << testval44.y << " " << testval44.z << endl;
 
+		
+		std::future<int> testval33 = tpref->submit5(&EnclaveCollectionMatrix::dummyjob2, this, 5, 8);
+		int testval44 = testval33.get();
+		cout << "FUCKING FINALLY: " << testval44 << "" << " YEAHHHH! "<< endl;
+		// *********************************************************************************WORKING THREAD CODE*********************************************************************************
+		
+		//tpref->submit6(&EnclaveCollectionMatrix::dummyjob2, this, 5);
 		//std::future<void> testfuture1 = tpref->submit(std::move(Job3));
 		//std::future<void> testfuture1 = OrganicPointer->getpool().submit(std::move(Job3));
 
@@ -770,8 +783,8 @@ EnclaveKeyDef::EnclaveKey EnclaveCollectionMatrix::dummyjob()
 	return dumbkey;
 }
 
-int EnclaveCollectionMatrix::dummyjob2(int testval)
+int EnclaveCollectionMatrix::dummyjob2(int testval, int testval2)
 {
-	return 5;
+	return testval+ testval2;
 }
 

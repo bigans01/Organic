@@ -44,7 +44,7 @@ public:
 											EnclaveKeyDef::EnclaveKey Key, 
 											EnclaveCollectionBlueprint *blueprint);
 	EnclaveKeyDef::EnclaveKey dummyjob();
-	int dummyjob2(int testval);
+	int dummyjob2(int testval, int testval2);
 	void testfunction(int beginRange,																			// this function is designed to be used with multi-threaded calls. See definition for more details.
 					  int endRange
 					  //EnclaveCollection &collectionRef,
