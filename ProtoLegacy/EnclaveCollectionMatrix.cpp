@@ -202,11 +202,6 @@ void EnclaveCollectionMatrix::MultiAddNewCollectionWithBlueprint(int numThreads,
 
 
 		////////////
-		struct S {
-			double operator()(char, int&);
-			float operator()(int) { return 1.0; }
-		};
-		std::result_of<S(char, int&)>::type d = 3.14;
 		//EnclaveCollectionMatrix::
 		//typedef typename std::result_of<FunctionType()>::type
 		//std::result_of<EnclaveCollectionMatrix::dummyjob(int)>::type;
@@ -223,21 +218,21 @@ void EnclaveCollectionMatrix::MultiAddNewCollectionWithBlueprint(int numThreads,
 		int retKey = testval22.get();
 		*/
 
-		std::packaged_task<EnclaveKeyDef::EnclaveKey()> Job6(std::bind
-		(
-			&EnclaveCollectionMatrix::dummyjob,			//// use placeholders with std::bind
-			this
-													// std::ref(blueprint)
-		)
-		);
+		//std::packaged_task<EnclaveKeyDef::EnclaveKey()> Job6(std::bind
+	//	(
+		//	&EnclaveCollectionMatrix::dummyjob,			//// use placeholders with std::bind
+		//	this
+		//											// std::ref(blueprint)
+		//)
+		//);
 
 
 
 		
 
-		std::future<EnclaveKeyDef::EnclaveKey> testval33 = tpref->submit4(std::move(Job6));
-		EnclaveKeyDef::EnclaveKey testval44 = testval33.get();
-		cout << "FUCKING FINALLY: " << testval44.x << " " << testval44.y << " " << testval44.z << endl;
+		//std::future<EnclaveKeyDef::EnclaveKey> testval33 = tpref->submit4(std::move(Job6));
+		//EnclaveKeyDef::EnclaveKey testval44 = testval33.get();
+		//cout << "FUCKING FINALLY: " << testval44.x << " " << testval44.y << " " << testval44.z << endl;
 		//std::future<EnclaveKeyDef::EnclaveKey> testval = Job2.get_future();
 		//typename std::result_of<T(int)>::type;
 		//std::future<int> testfuture2 = tpref->submit(std::move(Job2));
@@ -309,39 +304,12 @@ void EnclaveCollectionMatrix::MultiAddNewCollectionWithBlueprint(int numThreads,
 		);
 
 
-		//std::thread t0(std::move(Job1), 0, 3 + 1, std::ref(EnclaveCollectionMap[Key]), Key, std::ref(blueprint));
-		//t0.join();
-		//cout << "FIRST JOB COMPLETE! " << endl;
-		//std::thread t1(&EnclaveMultiJob::RunMultiJob2, EnclaveMultiJob(), start, end, std::ref(PrimeMatrix), std::ref(PROMISEitermap), &promiseref);
-		// t1.join;
-		//std::thread t1(&EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclave, EnclaveCollectionMatrix(), 4, 7 + 1,  std::ref(EnclaveCollectionMap[Key]), Key, std::ref(blueprint));
-		//t1.join();
-
-		//std::thread t1(std::move(Job2), 4, 7 + 1, std::ref(EnclaveCollectionMap[Key]), Key, std::ref(blueprint));
-		
-		
-		//std::thread t0(std::move(Job3));
-		//t0.join();
-
-		//std::thread t1(std::move(Job4));
-		//t1.join();
-
-
-		//cout << "SECOND JOB COMPLETE! " << endl;
-
-
 		//std::future<void> testfuture2;
 		//thread_pool *flermpone = &OrganicPointer->getpool();
 		thread_pool *tpref = OrganicPointer->getpool();
 		thread_pool *tpref2 = OrganicPointer->getpool2();
 
-		/*std::packaged_task<EnclaveKeyDef::EnclaveKey()> Job6(std::bind
-		(
-			&EnclaveCollectionMatrix::dummyjob,			//// use placeholders with std::bind
-			this
-		)
-		);
-		*/
+	
 
 
 
@@ -358,8 +326,11 @@ void EnclaveCollectionMatrix::MultiAddNewCollectionWithBlueprint(int numThreads,
 
 		
 		std::future<int> testval33 = tpref->submit5(&EnclaveCollectionMatrix::dummyjob2, this, 5, 8);
+		std::future<EnclaveKeyDef::EnclaveKey> dumbmike = tpref->submit5(&EnclaveCollectionMatrix::truelydumb, this, 5, 10);	// returns an enclave key...
 		int testval44 = testval33.get();
-		cout << "FUCKING FINALLY: " << testval44 << "" << " YEAHHHH! "<< endl;
+		EnclaveKeyDef::EnclaveKey dumbmikesvalue = dumbmike.get();
+		//cout << "FUCKING FINALLY: " << testval44 << "" << " YEAHHHH! "<< endl;
+		//cout << "WOOOOO!!! " << dumbmikesvalue.x << ", " << dumbmikesvalue.y << ", " << dumbmikesvalue.z << " " << endl;
 		// *********************************************************************************WORKING THREAD CODE*********************************************************************************
 		
 		//tpref->submit6(&EnclaveCollectionMatrix::dummyjob2, this, 5);
@@ -370,7 +341,14 @@ void EnclaveCollectionMatrix::MultiAddNewCollectionWithBlueprint(int numThreads,
 		//tpref->submit(std::move(Job4));
 
 		auto jobstart = std::chrono::high_resolution_clock::now();
-		std::future<void> testfuture1 = tpref->submit(std::move(Job3));
+		std::future<void> testfuture1 = tpref->submit5(&EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclave,			
+			this,
+			0,												
+			3 + 1,												
+			std::ref(EnclaveCollectionMap[Key]),												
+			Key,												
+			std::ref(blueprint));
+		//std::future<void> testfuture1 = tpref->submit(std::move(Job3));
 		
 		
 		std::future<void> testfuture2 = tpref2->submit(std::move(Job4));
@@ -755,15 +733,7 @@ int EnclaveCollectionMatrix::KeyToSingle(EnclaveKeyDef::EnclaveKey InKey)
 	return x + y + z;
 }
 
-void EnclaveCollectionMatrix::testfunction(int beginRange,																			// this function is designed to be used with multi-threaded calls. See definition for more details.
-	int endRange
-	//EnclaveCollection &collectionRef,
-	//EnclaveKeyDef::EnclaveKey Key,
-	//EnclaveCollectionBlueprint *blueprint
-)
-{
-	//return 5;
-}
+
 
 void EnclaveCollectionMatrix::SetOrganicSystem(OrganicSystem *organicRef)
 {
@@ -785,6 +755,15 @@ EnclaveKeyDef::EnclaveKey EnclaveCollectionMatrix::dummyjob()
 
 int EnclaveCollectionMatrix::dummyjob2(int testval, int testval2)
 {
-	return testval+ testval2;
+	return testval+ testval;
 }
 
+EnclaveKeyDef::EnclaveKey EnclaveCollectionMatrix::truelydumb(int value, int value2)
+{
+	//return testval + testval;
+	EnclaveKeyDef::EnclaveKey dumbkey;
+	dumbkey.x = value;
+	dumbkey.y = value2;
+	dumbkey.z = 7;
+	return dumbkey;
+}

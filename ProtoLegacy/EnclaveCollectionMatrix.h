@@ -43,21 +43,15 @@ public:
 											EnclaveCollection &collectionRef, 
 											EnclaveKeyDef::EnclaveKey Key, 
 											EnclaveCollectionBlueprint *blueprint);
-	EnclaveKeyDef::EnclaveKey dummyjob();
-	int dummyjob2(int testval, int testval2);
-	void testfunction(int beginRange,																			// this function is designed to be used with multi-threaded calls. See definition for more details.
-					  int endRange
-					  //EnclaveCollection &collectionRef,
-					  //EnclaveKeyDef::EnclaveKey Key,
-					  //EnclaveCollectionBlueprint *blueprint
-					);
+	EnclaveKeyDef::EnclaveKey dummyjob();																							// testing, remove later
+	EnclaveKeyDef::EnclaveKey truelydumb(int value, int value2);																	// testing, remove later
+	int dummyjob2(int testval, int testval2);																						// testing, remove later
 	Enclave& GetEnclaveFromCollection(EnclaveKeyDef::EnclaveKey Key, int x, int y, int z);											// returns a reference to the enclave located at the x/y/z coordinate within the collection that has a key of value Key
 	Enclave& GetEnclaveFromXYZ(int x, int y, int z);																				// returns the enlave located at the absolute value of x/y/z
 	void TracePathToBlock(int x, int y, int z);																						// testing purposes -- will output the coordinates taken to find a particualr block (i.e., prints x of the collection, then x of the chunk, then x of the block)
 	typedef unsigned char(&ElevationMapRef)[8][8];																					// typedef for returning an array of 8x8 chars
 	ElevationMapRef& GetElevationMapFromCollection(EnclaveKeyDef::EnclaveKey InKey);
-	PathTraceContainer GetCoordTrace(int value);																					// returns a PathTraceContainer that contains the x, y, or z value of the collection, chunk, and individual block that would be returned when finding the coordinate. (would be called 3 times
-																																	// to get a true x/y/z coordinate.
+	PathTraceContainer GetCoordTrace(int value);																					// returns a PathTraceContainer that contains the x, y, or z value of the collection, chunk, and individual block that would be returned when finding the coordinate. (would be called 3 times																																// to get a true x/y/z coordinate.
 	int KeyToSingle(EnclaveKeyDef::EnclaveKey InKey);
 
 	void SetOrganicSystem(OrganicSystem *organicRef);

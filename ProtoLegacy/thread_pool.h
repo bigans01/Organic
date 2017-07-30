@@ -221,69 +221,22 @@ public:
 
 
 
+
+
+
+	//*****call this for a task that returns a value
 	template<class Function, class ...Args>
-	std::future<EnclaveKeyDef::EnclaveKey>
-		submit2(Function &&f, Args &&...args)
-	{
-		std::packaged_task<EnclaveKeyDef::EnclaveKey()> task(std::bind(f, args...));
-		std::future<EnclaveKeyDef::EnclaveKey> res = task.get_future();
-		work_queue2.push(std::packaged_task<EnclaveKeyDef::EnclaveKey()>(std::move(task)));
-		return res;
-	}
-
-
-
-	// currently being enhanced (submit3) THIS IS WORKING! YES -- returns an INT
-
-	template<typename FunctionType>
-	std::future<int>
-		submit3(FunctionType f)
-	{
-		typedef typename std::result_of<FunctionType()>::type
-			result_type;
-
-		std::packaged_task<int()> task(std::move(f));
-		std::future<int> res(task.get_future());
-		work_queue2.push(std::move(task));
-		return res;
-	}
-
-	// currently being enhanced (submit4)
-	template<typename FunctionType>
-	std::future<EnclaveKeyDef::EnclaveKey>
-		submit4(FunctionType f)
-	{
-		//typedef typename std::result_of<FunctionType()>::type
-		//	result_type;
-
-		std::packaged_task<EnclaveKeyDef::EnclaveKey()> task(std::move(f));
-		std::future<EnclaveKeyDef::EnclaveKey> res(task.get_future());
-		work_queue.push(std::move(task));
-		return res;
-	}
-
-	//*************WORKING THREAD FUNCTION CALL************************
-	template<class Function, class ...Args>
-	std::future<int>
+	std::future<typename std::result_of<Function(Args...)>::type>
 		submit5(Function &&f, Args &&...args)
 	{
-		//typedef typename std::result_of<FunctionType()>::type
-			//result_type;
 
 		std::packaged_task<typename std::result_of<Function(Args...)>::type()> task(std::bind(f, args...));
-		//std::future<int> res(task.get_future());
 		auto res = task.get_future();
 		work_queue.push(std::move(task));
-		//task(5);
 		return res;
 	}
 
-	template<class Function, class ...Args>
-	std::future<int>
-		submit6(Function &&f, Args &&...args)
-	{
 
-	}
 
 	thread_pool() : done(false), joiner(threads)
 	{
