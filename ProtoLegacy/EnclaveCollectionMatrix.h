@@ -27,6 +27,7 @@ Dependents: none.
 #include "PathTraceContainer.h"
 #include "EnclaveCollectionBlueprint.h"
 #include "EnclaveCollectionActivateList.h"
+#include "EnclaveCollectionActivateListT2.h"
 #include <unordered_map>
 
 class OrganicSystem;
@@ -43,6 +44,18 @@ public:
 											EnclaveCollection &collectionRef, 
 											EnclaveKeyDef::EnclaveKey Key, 
 											EnclaveCollectionBlueprint *blueprint);
+	EnclaveCollectionActivateList JobInstantiateAndPopulateEnclaveBeta(	int beginRange,																		// this function is designed for multithreading; it will return a list of enclaves that need to be rendered as a result
+												int endRange,																		// of this job being run.			
+												EnclaveCollection &collectionRef,
+												EnclaveKeyDef::EnclaveKey Key,
+												EnclaveCollectionBlueprint *blueprint);
+	void JobInstantiateAndPopulateEnclaveAlpha(int beginRange,																		// this function is designed for multithreading; it will return a list of enclaves that need to be rendered as a result
+		int endRange,																												// of this job being run.			
+		EnclaveCollection &collectionRef,
+		EnclaveKeyDef::EnclaveKey Key,
+		EnclaveCollectionBlueprint *blueprint,
+		EnclaveCollectionActivateListT2 &activateListRef);
+
 	EnclaveKeyDef::EnclaveKey dummyjob();																							// testing, remove later
 	EnclaveKeyDef::EnclaveKey truelydumb(int value, int value2);																	// testing, remove later
 	int dummyjob2(int testval, int testval2);																						// testing, remove later

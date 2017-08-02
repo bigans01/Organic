@@ -17,6 +17,7 @@ public:
 	//EnclaveCollectionActivateList operator()();
 	int count = 0;
 	EnclaveKeyDef::EnclaveKey activatables[512];
+	char flagArray[8][8];
 };
 
 #endif

@@ -34,7 +34,7 @@ void OrganicSystem::AddAndMaterializeCollection(int x, int y, int z)
 	//poolptr = &testpool2;
 	// STEP 1: add and instantiate 512 enclaves ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 	// NOTES: this step still needs to perform painting!
-	auto start1 = std::chrono::high_resolution_clock::now();			
+			
 	EnclaveKeyDef::EnclaveKey tempKey;
 	tempKey.x = x;										// set temp key to input of x
 	tempKey.y = y;										// set temp key to input of y
@@ -45,11 +45,12 @@ void OrganicSystem::AddAndMaterializeCollection(int x, int y, int z)
 	//EnclaveCollections.MultiAddNewCollectionWithBlueprint(4, tempKey, blueprintptr);
 	//
 	EnclaveCollections.SetOrganicSystem(this);
+	auto start1 = std::chrono::high_resolution_clock::now();
 	EnclaveCollections.MultiAddNewCollectionWithBlueprint(2, tempKey, blueprintptr);
 	//EnclaveCollections.MultiAddNewCollectionWithBlueprint(1, tempKey, blueprintptr);
-
+	auto finish1 = std::chrono::high_resolution_clock::now();
 	EnclaveCollection *collectionPtr = &EnclaveCollections.EnclaveCollectionMap[tempKey];
-	auto finish1 = std::chrono::high_resolution_clock::now();															// optional, for debugging
+															// optional, for debugging
 	std::chrono::duration<double> elapsed1 = finish1 - start1;
 	cout << "Organic system phase 1: (Add collection, instantiate enclaves, determine solids, determine surface, perform painting, unveil polys): " << elapsed1.count() << endl;
 
@@ -69,7 +70,7 @@ void OrganicSystem::AddAndMaterializeCollection(int x, int y, int z)
 
 	auto finish3 = std::chrono::high_resolution_clock::now();															// optional, for debugging
 	std::chrono::duration<double> elapsed3 = finish3 - start3;
-	cout << "Organic system phase 2: (Attachment to enclaves): " << elapsed3.count() << endl;
+	//cout << "Organic system phase 2: (Attachment to enclaves): " << elapsed3.count() << endl;
 
 
 	// STEP 3: prepare 3d rendering arrays ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
@@ -77,7 +78,7 @@ void OrganicSystem::AddAndMaterializeCollection(int x, int y, int z)
 	RenderCollections.CreateRenderArrayFromManifestCollection(tempKey);	// STEP 6: prepare 3d rendering arrays
 	auto finish4 = std::chrono::high_resolution_clock::now();															// optional, for debugging
 	std::chrono::duration<double> elapsed4 = finish4 - start4;
-	cout << "Organic system phase 3: (Create OpenGL vertex data array): " << elapsed4.count() << endl;
+	//cout << "Organic system phase 3: (Create OpenGL vertex data array): " << elapsed4.count() << endl;
 }
 
 void OrganicSystem::ChangeSingleBlockMaterialAtXYZ(int x, int y, int z, int newmaterial)
