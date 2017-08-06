@@ -22,6 +22,7 @@ OrganicSystem object contains all objects necessary to preserve information on t
 #include "RenderCollectionMatrix.h"
 #include "EnclaveCollectionBlueprint.h"
 #include "EnclaveCollectionBlueprintMatrix.h"
+#include "OrganicTextureDictionary.h"
 //#include "thread_pool.h"
 
 class thread_pool;
@@ -32,6 +33,7 @@ public:
 	EnclaveCollectionMatrix EnclaveCollections;									// matrix of EnclaveCollections (512 chunks, dynamically allocated array)
 	ManifestCollectionMatrix ManifestCollections;								// matrix of ManifestCollections (up to 512 chunks, unordered map)
 	RenderCollectionMatrix RenderCollections;									// matrix of RenderCollections
+	OrganicTextureDictionary TextureDictionary;
 	thread_pool *testpool2;
 	thread_pool *testpool3;
 	int flermp = 0;
@@ -42,6 +44,7 @@ public:
 	void AddBlueprint(int x, int y, int z, EnclaveCollectionBlueprint blueprint);
 	void SetOrganicPool(thread_pool *thread_pool_ref);
 	void SetOrganicPool2(thread_pool *thread_pool_ref);
+	void AddOrganicTextureMetaArray(string mapname);
 	thread_pool* getpool();
 	thread_pool* getpool2();
 };

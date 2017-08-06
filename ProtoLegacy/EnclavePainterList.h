@@ -18,7 +18,8 @@ Summary: An EnclavePainter is an object that contains a list of EnclavePainters.
 
 class EnclavePainterList {
 	public:
-		std::unordered_map<int, EnclavePainter> PaintList;
+		std::unordered_map<int, EnclavePainter> PaintList;	// PaintList consists of a key which serves as the ID of the block to paint; EnclavePainter determines which of the blocks 
+															// in the Enclave to paint, where the the value of the block is equivalent to the value of the key in the key/element pair.
 };
 
 #endif

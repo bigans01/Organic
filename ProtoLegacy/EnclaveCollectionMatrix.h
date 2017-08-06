@@ -39,26 +39,26 @@ public:
 	void AddNewCollection(EnclaveKeyDef::EnclaveKey Key);																			// adds a new collection, with the given key value.
 	void AddNewCollectionWithBlueprint(EnclaveKeyDef::EnclaveKey Key, EnclaveCollectionBlueprint *blueprint);						// single-threaded call for adding a collection with a blueprint.
 	void MultiAddNewCollectionWithBlueprint(int numThreads, EnclaveKeyDef::EnclaveKey Key, EnclaveCollectionBlueprint *blueprint);	// function that will prepare several worker threads for enclave instantiation.
+
 	void JobInstantiateAndPopulateEnclave(	int beginRange,																			// this function is designed to be used with multi-threaded calls. See definition for more details.
 											int endRange,																			
 											EnclaveCollection &collectionRef, 
 											EnclaveKeyDef::EnclaveKey Key, 
 											EnclaveCollectionBlueprint *blueprint);
-	EnclaveCollectionActivateList JobInstantiateAndPopulateEnclaveBeta(	int beginRange,																		// this function is designed for multithreading; it will return a list of enclaves that need to be rendered as a result
-												int endRange,																		// of this job being run.			
-												EnclaveCollection &collectionRef,
-												EnclaveKeyDef::EnclaveKey Key,
-												EnclaveCollectionBlueprint *blueprint);
-	void JobInstantiateAndPopulateEnclaveAlpha(int beginRange,																		// this function is designed for multithreading; it will return a list of enclaves that need to be rendered as a result
-		int endRange,																												// of this job being run.			
-		EnclaveCollection &collectionRef,
-		EnclaveKeyDef::EnclaveKey Key,
-		EnclaveCollectionBlueprint *blueprint,
-		EnclaveCollectionActivateListT2 &activateListRef);
 
-	EnclaveKeyDef::EnclaveKey dummyjob();																							// testing, remove later
-	EnclaveKeyDef::EnclaveKey truelydumb(int value, int value2);																	// testing, remove later
-	int dummyjob2(int testval, int testval2);																						// testing, remove later
+	EnclaveCollectionActivateList JobInstantiateAndPopulateEnclaveBeta(	int beginRange,												// this function is designed for multithreading; it will return a list of enclaves that need to be rendered as a result
+																		int endRange,												// of this job being run.			
+																		EnclaveCollection &collectionRef,
+																		EnclaveKeyDef::EnclaveKey Key,
+																		EnclaveCollectionBlueprint *blueprint);
+	void JobInstantiateAndPopulateEnclaveAlpha(	int beginRange,																		// this function is designed for multithreading; it will return a list of enclaves that need to be rendered as a result
+												int endRange,																		// of this job being run. It is the defacto job to call when dealing with populating/instantiating Enclaves	
+												EnclaveCollection &collectionRef,													// as part of a multithreaded operation.
+												EnclaveKeyDef::EnclaveKey Key,
+												EnclaveCollectionBlueprint *blueprint,
+												EnclaveCollectionActivateListT2 &activateListRef);
+																						
+
 	Enclave& GetEnclaveFromCollection(EnclaveKeyDef::EnclaveKey Key, int x, int y, int z);											// returns a reference to the enclave located at the x/y/z coordinate within the collection that has a key of value Key
 	Enclave& GetEnclaveFromXYZ(int x, int y, int z);																				// returns the enlave located at the absolute value of x/y/z
 	void TracePathToBlock(int x, int y, int z);																						// testing purposes -- will output the coordinates taken to find a particualr block (i.e., prints x of the collection, then x of the chunk, then x of the block)

@@ -7,6 +7,8 @@
 #include "EnclaveKeyDef.h"
 #include "EnclaveMatrix.h"
 #include "EnclaveManifest.h"
+#include "OrganicTextureDictionary.h"
+#include "OrganicSystem.h"
 
 
 void ManifestCollection::AddManifestToMatrix(int x, int y, int z)
@@ -39,8 +41,8 @@ void ManifestCollection::AddManifestToMatrix(int x, int y, int z, EnclaveKeyDef:
 	tempkey.x = x;
 	tempkey.y = y;
 	tempkey.z = z;
-
-	EnclaveManifest tempmanifest(x, y, z);
+	OrganicTextureDictionary *tempDictionaryRef = &CollectionMatrixRef->OrganicPointer->TextureDictionary;
+	EnclaveManifest tempmanifest(x, y, z, tempDictionaryRef);
 
 	ManMatrix[tempkey] = tempmanifest;
 	//EnclaveManifest *tptr;

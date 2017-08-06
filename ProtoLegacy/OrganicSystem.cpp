@@ -3,6 +3,7 @@
 #include <iostream>
 #include <chrono>
 #include "OrganicSystem.h"
+#include "OrganicTextureMeta.h"
 
 OrganicSystem::OrganicSystem()
 {
@@ -15,6 +16,7 @@ void OrganicSystem::InterlockBaseCollections()
 	/* Summary: manually sets the required pointers for each of the base collections (EnclaveCollections, ManifestCollections, RenderCollections */
 	ManifestCollections.SetCollectionMatrixRef(&EnclaveCollections);		// point the ManifestCollection to EnclaveCollection
 	RenderCollections.SetManifestCollectionMatrixPtr(&ManifestCollections); // point the RenderCollection to the ManifestCollection
+	RenderCollections.SetEnclaveCollectionMatrixPtr(&EnclaveCollections);
 }
 
 void OrganicSystem::AddAndMaterializeCollection(int x, int y, int z)
@@ -52,13 +54,14 @@ void OrganicSystem::AddAndMaterializeCollection(int x, int y, int z)
 	EnclaveCollection *collectionPtr = &EnclaveCollections.EnclaveCollectionMap[tempKey];
 															// optional, for debugging
 	std::chrono::duration<double> elapsed1 = finish1 - start1;
-	cout << "Organic system phase 1: (Add collection, instantiate enclaves, determine solids, determine surface, perform painting, unveil polys): " << elapsed1.count() << endl;
+	//cout << "Organic system phase 1: (Add collection, instantiate enclaves, determine solids, determine surface, perform painting, unveil polys): " << elapsed1.count() << endl;
 
 
 
 	// STEP 2: iterate through surface enclaves and attach them |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 	auto start3 = std::chrono::high_resolution_clock::now();
 	ManifestCollections.AddNewCollection(tempKey);
+	auto finish3 = std::chrono::high_resolution_clock::now();
 	int manifestCounter = collectionPtr->totalRenderableEnclaves;
 	EnclaveKeyDef::EnclaveKey innerTempKey;
 	for (int a = 0; a < manifestCounter; a++)
@@ -68,7 +71,7 @@ void OrganicSystem::AddAndMaterializeCollection(int x, int y, int z)
 		ManifestCollections.AttachManifestToCollectedEnclave(tempKey, innerTempKey.x, innerTempKey.y, innerTempKey.z);
 	}
 
-	auto finish3 = std::chrono::high_resolution_clock::now();															// optional, for debugging
+																// optional, for debugging
 	std::chrono::duration<double> elapsed3 = finish3 - start3;
 	//cout << "Organic system phase 2: (Attachment to enclaves): " << elapsed3.count() << endl;
 
@@ -156,4 +159,14 @@ void OrganicSystem::SetOrganicPool(thread_pool *thread_pool_ref)
 void OrganicSystem::SetOrganicPool2(thread_pool *thread_pool_ref)
 {
 	testpool3 = thread_pool_ref;
+}
+
+void OrganicSystem::AddOrganicTextureMetaArray(string mapname)
+{
+	OrganicTextureMeta tempMeta(0);
+	TextureDictionary.Dictionary[mapname].Index[1] = tempMeta;								// set up the texture meta for a block id of 1.
+	OrganicTextureMeta *tempMetaRef = &TextureDictionary.Dictionary[mapname].Index[1];		// set up a reference to the new texture data for the block
+
+	// set up some data 
+	tempMetaRef->BlockData.FaceIndex[0].FaceData[0].U = 2;
 }

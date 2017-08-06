@@ -174,7 +174,13 @@
     <ClInclude Include="ManifestCollection.h" />
     <ClInclude Include="Movegoal.h" />
     <ClInclude Include="function_wrapper.h" />
+    <ClInclude Include="OrganicBlockMeta.h" />
+    <ClInclude Include="OrganicFaceMeta.h" />
     <ClInclude Include="OrganicSystem.h" />
+    <ClInclude Include="OrganicTextureCoords.h" />
+    <ClInclude Include="OrganicTextureDictionary.h" />
+    <ClInclude Include="OrganicTextureMeta.h" />
+    <ClInclude Include="OrganicTextureMetaArray.h" />
     <ClInclude Include="PathTraceContainer.h" />
     <ClInclude Include="ProtoLegacy.h" />
     <ClInclude Include="RenderCollection.h" />
@@ -200,6 +206,8 @@
     <ClCompile Include="ManifestCollectionMatrix.cpp" />
     <ClCompile Include="ManifestCollection.cpp" />
     <ClCompile Include="OrganicSystem.cpp" />
+    <ClCompile Include="OrganicTextureDictionary.cpp" />
+    <ClCompile Include="OrganicTextureMeta.cpp" />
     <ClCompile Include="ProtoLegacy.cpp" />
     <ClCompile Include="RenderCollection.cpp" />
     <ClCompile Include="RenderCollectionMatrix.cpp" />

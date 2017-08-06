@@ -21,9 +21,11 @@ void RenderCollectionMatrix::CreateRenderArrayFromManifestCollection(EnclaveKeyD
 
 	//auto start3 = std::chrono::high_resolution_clock::now();
 	RenderMatrix[Key].SetManifestCollectionPtr(&ManifestCollectionMatrixPtr->ManiCollectionMap[Key]);	// set the pointer in the temp value
+	RenderMatrix[Key].SetEnclaveCollectionPtr(&EnclaveCollectionMatrixPtr->EnclaveCollectionMap[Key]);
 	//auto finish3 = std::chrono::high_resolution_clock::now();
 	//std::chrono::duration<double> elapsed3 = finish3 - start3;
 	//cout << "---------------create render array from manifest call time: " << elapsed3.count() << endl;
+
 	RenderMatrix[Key].CombineManifestArrays();															// combine arrays
 	
 }
@@ -33,6 +35,12 @@ void RenderCollectionMatrix::SetManifestCollectionMatrixPtr(ManifestCollectionMa
 	/* Summary: manually sets the ManifestCollectionMatrixPtr; for use with OrganicSystem objects */
 
 	ManifestCollectionMatrixPtr = manifestcollectionmatrixref;
+}
+
+void RenderCollectionMatrix::SetEnclaveCollectionMatrixPtr(EnclaveCollectionMatrix *enclavecollectionmatrixref)
+{
+	EnclaveCollectionMatrixPtr = enclavecollectionmatrixref;
+	cout << "ptr gets called..." << endl;
 }
 
 RenderCollectionMatrix::RenderCollectionMatrix(ManifestCollectionMatrix *manifestcollectionmatrixref)

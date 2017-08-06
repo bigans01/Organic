@@ -27,7 +27,9 @@ Dependents: -a valid instance of a ManifestCollection (preferably with the same 
 class RenderCollection {
 public:
 	void SetManifestCollectionPtr(ManifestCollection *manifestcollectionref);			// sets the pointer to the corresponding ManifestCollection that this RenderCollection will be associated with. 
+	void SetEnclaveCollectionPtr(EnclaveCollection *enclavecollectionref);
 	ManifestCollection *ManifestCollectionPtr;											// the pointer to the related ManifestCollection.
+	EnclaveCollection *EnclaveCollectionPtr;											// pointer to the associated EnclaveCollection.
 	void CombineManifestArrays();														// iterates through all elements found in the ManifestCollection, and generates a dynamic array that is pointed to by GLFloatPtr.
 	void UpdateManifestArray(EnclaveKeyDef::EnclaveKey Key);							// rebuilds the dynamic array pointed to by GLFloatPtr by updating a single enclave manifest; designed for single enclave operations.
 	GLfloat *GLFloatPtr;																// the pointer to this RenderCollection's dynamically created 3d array.

@@ -17,6 +17,6 @@ Summary: An EnclavePainter is an object that updates the block types in a single
 class EnclavePainter {
 	public:
 		//int BlockId;
-		char PaintData[8];
+		char PaintData[8];			// determines which of the 64 blocks in an Enclave will be painted.
 };
 #endif

@@ -27,9 +27,11 @@ class RenderCollectionMatrix
 	public:
 		std::unordered_map<EnclaveKeyDef::EnclaveKey, RenderCollection, EnclaveKeyDef::KeyHasher> RenderMatrix;			// the unordered map of RenderCollections.
 		ManifestCollectionMatrix *ManifestCollectionMatrixPtr;															// pointer to the ManifestCollectionMatrix, where the ManifestCollections will be found.
+		EnclaveCollectionMatrix *EnclaveCollectionMatrixPtr;
 		void CreateRenderArrayFromManifestCollection(EnclaveKeyDef::EnclaveKey Key);									// creates a new 3d vertex data array, for the RenderCollection having a value of Key, 
 																														// by iterating through all elements of the ManifestCollection that has a value of Key.
 		void SetManifestCollectionMatrixPtr(ManifestCollectionMatrix *manifestcollectionmatrixref);
+		void SetEnclaveCollectionMatrixPtr(EnclaveCollectionMatrix *enclavecollectionmatrixref);
 		RenderCollectionMatrix(ManifestCollectionMatrix *manifestcollectionmatrixref);									// sets the ManifestCollectionMatrixPtr value; default constructor.
 		RenderCollectionMatrix();																						// constructor designed for use in OrganicSystem objects
 };

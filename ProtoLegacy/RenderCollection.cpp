@@ -9,8 +9,14 @@
 
 void RenderCollection::SetManifestCollectionPtr(ManifestCollection *manifestcollectionref)
 {
-	/* Summary: sets the value of ManifestCollectionPtr to a valid reference of ManifestCollection*/
+	/* Summary: sets the value of ManifestCollectionPtr to a valid reference of a ManifestCollection*/
 	ManifestCollectionPtr = manifestcollectionref;
+}
+
+void RenderCollection::SetEnclaveCollectionPtr(EnclaveCollection *enclavecollectionref)
+{
+	/* Summary: sets the value of EnclaveCollectionPtr to a valid reference of a EnclaveCollection*/
+	EnclaveCollectionPtr = enclavecollectionref;
 }
 
 void RenderCollection::CombineManifestArrays()
@@ -33,15 +39,50 @@ void RenderCollection::CombineManifestArrays()
 	// 1))) First iterator pass: find number of manifests to attach to, create a temp array for this
 	std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveManifest, EnclaveKeyDef::KeyHasher>::iterator ManMatrixIter;
 	ManMatrixIter = ManifestCollectionPtr->ManMatrix.begin();
+//	EnclaveCollectionPtr->RenderableEnclaves;
+	//EnclaveKeyDef::EnclaveKey *tempKeyArray[512] = EnclaveCollectionPtr->RenderableEnclaves;
+
 	int totaltrianglestorender = 0;
 
 	int totalenclavesfound = 0;
 	//EnclaveKeyDef::EnclaveKey *tempManifestKeys = new EnclaveKeyDef::EnclaveKey[2];
 
-	auto start3 = std::chrono::high_resolution_clock::now();
+	
 	RenderableManifestMeta.EnclaveManifestCount = 0;
 	//cout << "Information for RenderCollection at: " << this
 	//int testcount = 0;
+	 
+	auto teststart1 = std::chrono::high_resolution_clock::now();
+
+
+	/*
+	int testcount = EnclaveCollectionPtr->totalRenderableEnclaves;
+	EnclaveKeyDef::EnclaveKey dumbkey;
+	int dumbval;
+	for (int x = 0; x < testcount; x++)
+	{
+		EnclaveKeyDef::EnclaveKey tempKey = EnclaveCollectionPtr->RenderableEnclaves[x];
+		EnclaveManifest *tempManifestPtr = &ManifestCollectionPtr->ManMatrix[tempKey];
+
+		totaltrianglestorender += tempManifestPtr->TotalEnclaveTriangles;
+
+		tempManifestPtr->RenderCollectionRef = this;
+		tempManifestPtr->IsRenderCollectionRefSet = 1;
+
+		RenderableManifestMeta.MetaArray[RenderableManifestMeta.EnclaveManifestCount].EnclaveManifestKey = tempManifestPtr->UniqueKey;
+		RenderableManifestMeta.MetaArray[RenderableManifestMeta.EnclaveManifestCount].currentTriangleCount = tempManifestPtr->TotalEnclaveTriangles;
+		RenderableManifestMeta.CollectionTriangleCount += RenderableManifestMeta.MetaArray[RenderableManifestMeta.EnclaveManifestCount].currentTriangleCount;
+		RenderableManifestMeta.EnclaveManifestCount++;
+		//dumbkey = tempManifestPtr->UniqueKey;
+		//dumbval = tempManifestPtr->TotalEnclaveTriangles;
+
+	}
+	auto testend1 = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> elapsedtest3 = testend1 - teststart1;
+	std::cout << "Alternate Render Collection test, step 1 " << elapsedtest3.count() << "): "  << testcount << endl;
+	*/
+
+	auto start3 = std::chrono::high_resolution_clock::now();
 	for (ManMatrixIter; ManMatrixIter != ManifestCollectionPtr->ManMatrix.end(); ++ManMatrixIter)
 	{
 		//cout << "test count = " << testcount++ << endl;
@@ -94,7 +135,7 @@ void RenderCollection::CombineManifestArrays()
 
 	GLFloatPtr = new GLfloat[totaltrianglestorender*9];	// 9 floats per triangle
 	RenderCollectionArraySize = totaltrianglestorender * 4 * 9;
-	cout << "value of RenderCollectionArraySize: " << RenderCollectionArraySize << endl;
+	//cout << "value of RenderCollectionArraySize: " << RenderCollectionArraySize << endl;
 
 	int index = 0;
 	//int index = (totaltrianglestorender*9)-1;

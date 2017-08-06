@@ -25,6 +25,7 @@ void EnclaveManifest::AttachToEnclave(Enclave &in_ptr)	// "attaches" this manife
 	if (IsEnclaveGLPtrLoaded == 1)						// check to see if it was loaded already, on a previous call.
 	{
 		delete[] EnclaveGLPtr;							// delete old array
+		delete[] TextureGLPtr;
 	}
 
 	IsEnclaveGLPtrLoaded = 1;
@@ -33,8 +34,17 @@ void EnclaveManifest::AttachToEnclave(Enclave &in_ptr)	// "attaches" this manife
 	//cout << "Info for Enclave at: " << EnclavePtr.UniqueKey.x << ", " << EnclavePtr.UniqueKey.y << ", " << EnclavePtr.UniqueKey.z << " " << endl;
 	//cout << "Total triangles from attached enclave:" << EnclavePtr->GetTotalTrianglesInEnclave() << endl;
 
+
+	//TextureDictionary.Dictionary[mapname].Index[1] = tempMeta;		
+	//OrganicTextureMeta *tempMetaRef = &TextureDictionary.Dictionary[mapname].Index[1];		// set up a reference to the new texture data for the block
+	//tempMetaRef->BlockData.FaceIndex[0].FaceData[0].U = 2;
+
+	int testval2 = TextureDictionaryRef->Dictionary["base"].Index[1].BlockData.FaceIndex[0].FaceData[0].U;
+	//cout << "testing of new Texture data: " << testval2 << endl;
+
 	//EnclaveManifestRenderables = new EnclaveManifest::EnclaveManifestTuple[EnclavePtr->GetTotalTrianglesInEnclave()];				// FIX THIS!
 	EnclaveGLPtr = new GLfloat[(EnclavePtr.GetTotalTrianglesInEnclave())*9];
+	TextureGLPtr = new GLfloat[(EnclavePtr.GetTotalTrianglesInEnclave()) * 6];						// new array would be GetTotalTrianglesInEnclave*6 (a pair of UV coordinates per vertex)
 	TotalEnclaveTriangles = EnclavePtr.GetTotalTrianglesInEnclave();
 	//cout << "test: TotalEnclaveTriangles ->" << TotalEnclaveTriangles << endl;
 	RenderablePolyCount = EnclavePtr.TotalRenderable;						// don't perform unnecessary loops through all 64 elements, only go x times (where x is number of polygons to render)
@@ -52,7 +62,7 @@ void EnclaveManifest::AttachToEnclave(Enclave &in_ptr)	// "attaches" this manife
 	GLfloat GL_x = 0.5f;		// instantiate within stack frame
 	GLfloat GL_y = 0.5f;
 	GLfloat GL_z = 0.5f;
-	int iteratorval, totaltuples = 0;														// more testing
+	int iteratorval, totaltuples = 0;														
 
 	for (int i = 0; i < RenderablePolyCount; ++i)
 	{
@@ -153,7 +163,14 @@ EnclaveManifest::EnclaveManifest(int x, int y, int z)		// declares the enclave's
 	//TestTopLayer();
 	//SortRenderArray();
 }
-;
+
+EnclaveManifest::EnclaveManifest(int x, int y, int z, OrganicTextureDictionary *texturedictionaryptr)
+{
+	this->UniqueKey.x = x;
+	this->UniqueKey.y = y;
+	this->UniqueKey.z = z;
+	this->TextureDictionaryRef = texturedictionaryptr;
+}
 
 EnclaveManifest::~EnclaveManifest()
 {
@@ -164,6 +181,7 @@ EnclaveManifest::~EnclaveManifest()
 	{
 		//cout << "delete flag entry in destructor..." << endl;
 		delete[] EnclaveGLPtr;
+		delete[] TextureGLPtr;
 		IsEnclaveGLPtrLoaded = 0;
 	}
 }

@@ -24,30 +24,34 @@ Dependents: a valid instance of Enclave
 #include <GL/glew.h>
 #include "Enclave.h"
 #include "EnclaveCollectionMatrix.h"
+#include "OrganicTextureDictionary.h"
 //#include "RenderCollection.h"
 
-class RenderCollection;														// why did this work? (7/2/2017) (forward declaration solved compiler issue) 
+class RenderCollection;																		// why did this work? (7/2/2017) (forward declaration solved compiler issue) 
 
 class EnclaveManifest {
 
 public:
-	int IsEnclaveGLPtrLoaded = 0;											// flag that determines whether or not an array of 3d data currently exists for this manifest									// currently unused
-	int RenderablePolyCount = 0;											// the number of currently "unveiled" polygons in the enclave
-	int TotalEnclaveTriangles = 0;											// the total number of triangles that will be rendered in this enclave manifest
-	GLfloat *EnclaveGLPtr;													// pointer to the array of OpenGL floats, which will be used by an instnce of RenderCollection.
-	RenderCollection *RenderCollectionRef;									// pointer to the RenderCollection that this EnclaveManifest belongs to; this is used to signal 
-																			// the RenderCollection that this instance of EnclaveManifest has changed
-	int IsRenderCollectionRefSet = 0;										// determines whether or not the pointer RenderCollectionRef is set
-	Enclave EnclavePtr;														// pointer to the enclave to gain data from
-	Enclave::EnclavePolyArray *EnclavePolyArrayPtr;							// pointer to the sorted array in the enclave. in the Sorted struct. (see Enclave.h)
-	int polyfacebitmask = 32;												// bitmask for determining which faces of a polygon will be rendered
+	int IsEnclaveGLPtrLoaded = 0;															// flag that determines whether or not an array of 3d data currently exists for this manifest									// currently unused
+	int RenderablePolyCount = 0;															// the number of currently "unveiled" polygons in the enclave
+	int TotalEnclaveTriangles = 0;															// the total number of triangles that will be rendered in this enclave manifest
+	GLfloat *EnclaveGLPtr;																	// pointer to the array of OpenGL floats, which will be used by an instnce of RenderCollection.
+	GLfloat *TextureGLPtr;
+	RenderCollection *RenderCollectionRef;													// pointer to the RenderCollection that this EnclaveManifest belongs to; this is used to signal 
+																							// the RenderCollection that this instance of EnclaveManifest has changed
+	OrganicTextureDictionary *TextureDictionaryRef;
+	int IsRenderCollectionRefSet = 0;														// determines whether or not the pointer RenderCollectionRef is set
+	Enclave EnclavePtr;																		// pointer to the enclave to gain data from
+	Enclave::EnclavePolyArray *EnclavePolyArrayPtr;											// pointer to the sorted array in the enclave. in the Sorted struct. (see Enclave.h)
+	int polyfacebitmask = 32;																// bitmask for determining which faces of a polygon will be rendered
 
-	EnclaveKeyDef::EnclaveKey UniqueKey;									// the unique EnclaveKey of this manifest
-	EnclaveManifest(int x, int y, int z);									// constructor which sets the value of the EnclaveManifest's UniqueKey
-	EnclaveManifest();														// potentially unused
+	EnclaveKeyDef::EnclaveKey UniqueKey;													// the unique EnclaveKey of this manifest
+	EnclaveManifest(int x, int y, int z);													// constructor which sets the value of the EnclaveManifest's UniqueKey
+	EnclaveManifest(int x, int y, int z, OrganicTextureDictionary *texturedictionaryptr);
+	EnclaveManifest();																		// potentially unused
 
-	struct EnclaveManifestTuple {											// 3 floats per vertex, up to 16 possible points per "block", 64 blocks
-		GLfloat x = 0.0f;													// instantiate
+	struct EnclaveManifestTuple {															// 3 floats per vertex, up to 16 possible points per "block", 64 blocks
+		GLfloat x = 0.0f;																	// instantiate
 		GLfloat y = 0.0f;
 		GLfloat z = 0.0f;
 	};

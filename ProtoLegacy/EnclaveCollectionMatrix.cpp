@@ -174,14 +174,10 @@ void EnclaveCollectionMatrix::AddNewCollectionWithBlueprint(EnclaveKeyDef::Encla
 void EnclaveCollectionMatrix::MultiAddNewCollectionWithBlueprint(int numThreads, EnclaveKeyDef::EnclaveKey Key, EnclaveCollectionBlueprint *blueprint)
 {
 	
-	//EnclaveCollection newCollection;				// set up initial collection by declaring a single enclave
-	auto truestart = std::chrono::high_resolution_clock::now();
-	Enclave stackEnclave(Key, 0, 0, 0);		
-										// add an enclave, with a collection key of Key
-	EnclaveCollectionMap[Key].EnclaveArray[0][0][0] = stackEnclave;
-	EnclaveCollection *collectionMapRef = &EnclaveCollectionMap[Key];
 
-	//EnclaveCollectionMap[Key] = newCollection;		// map new collection
+	auto truestart = std::chrono::high_resolution_clock::now();
+	EnclaveCollectionMap[Key].totalRenderableEnclaves = 0;
+	EnclaveCollection *collectionMapRef = &EnclaveCollectionMap[Key];
 	auto truefinish = std::chrono::high_resolution_clock::now();															// optional, for debugging
 	std::chrono::duration<double> trueelapsed = truefinish - truestart;																// ""
 	//std::cout << "Elapsed time (multi thread dummy instantiation , " << trueelapsed.count() << "): " << endl; //<< elapsed.count() << endl;	// ""
@@ -300,12 +296,13 @@ void EnclaveCollectionMatrix::MultiAddNewCollectionWithBlueprint(int numThreads,
 
 	if (numThreads == 2)
 	{
+		/*
 		// TRUE MULTITHREAD TEST BEGINS HERE.
 		//cout << "2 threads called to run..." << endl;
 		//JobInstantiateAndPopulateEnclave(0, 3 + 1,  EnclaveCollectionMap[Key], Key, blueprint);
 		//JobInstantiateAndPopulateEnclave(4, 7, EnclaveCollectionMap[Key], Key, blueprint);
 		//JobInstantiateAndPopulateEnclave(4, 7, std::ref(EnclaveCollectionMap[Key]), Key, std::ref(blueprint));
-
+		*/
 		/*
 		auto start = std::chrono::high_resolution_clock::now();
 		std::packaged_task<void(int, int, EnclaveCollection&, EnclaveKeyDef::EnclaveKey, EnclaveCollectionBlueprint*)> Job1(std::bind
@@ -357,17 +354,10 @@ void EnclaveCollectionMatrix::MultiAddNewCollectionWithBlueprint(int numThreads,
 		)
 		);
 		*/
-
-		//std::future<void> testfuture2;
-		//thread_pool *flermpone = &OrganicPointer->getpool();
 		//auto jobstart = std::chrono::high_resolution_clock::now();
 		thread_pool *tpref = OrganicPointer->getpool();
 		thread_pool *tpref2 = OrganicPointer->getpool2();
 		//auto jobfinish = std::chrono::high_resolution_clock::now();
-	
-
-
-
 		// *********************************************************************************WORKING THREAD CODE*********************************************************************************
 		//std::packaged_task<int(int)> Job7(std::bind
 		//(
@@ -375,11 +365,7 @@ void EnclaveCollectionMatrix::MultiAddNewCollectionWithBlueprint(int numThreads,
 		//	this,
 		//	std::placeholders::_1
 		//)
-		//);
-
-
-
-		
+		//);	
 		//std::future<int> testval33 = tpref->submit5(&EnclaveCollectionMatrix::dummyjob2, this, 5, 8);
 		//auto start1 = std::chrono::high_resolution_clock::now();
 		//std::future<EnclaveKeyDef::EnclaveKey> dumbmike = tpref->submit5(&EnclaveCollectionMatrix::truelydumb, this, 5, 10);	// returns an enclave key...
@@ -388,8 +374,8 @@ void EnclaveCollectionMatrix::MultiAddNewCollectionWithBlueprint(int numThreads,
 		//EnclaveKeyDef::EnclaveKey dumbmikesvalue = dumbmike.get();
 		//cout << "FUCKING FINALLY: " << testval44 << "" << " YEAHHHH! "<< endl;
 		//cout << "WOOOOO!!! " << dumbmikesvalue.x << ", " << dumbmikesvalue.y << ", " << dumbmikesvalue.z << " " << endl;
-		// *********************************************************************************WORKING THREAD CODE*********************************************************************************
-		
+		// *********************************************************************************WORKING THREAD CODE*********************************************************************************	
+		/*
 		//tpref->submit6(&EnclaveCollectionMatrix::dummyjob2, this, 5);
 		//std::future<void> testfuture1 = tpref->submit(std::move(Job3));
 		//std::future<void> testfuture1 = OrganicPointer->getpool().submit(std::move(Job3));
@@ -399,9 +385,10 @@ void EnclaveCollectionMatrix::MultiAddNewCollectionWithBlueprint(int numThreads,
 		
 		//EnclaveCollectionActivateList list1;
 		//EnclaveCollectionActivateList list2;
-
+		*/
 		EnclaveCollectionActivateListT2 listT2_1;
 		EnclaveCollectionActivateListT2 listT2_2;
+		/*
 		//auto jobfinish = std::chrono::high_resolution_clock::now();
 		//EnclaveCollectionActivateListT2 listT2_3;
 		//EnclaveCollectionActivateListT2 listT2_4;
@@ -409,8 +396,7 @@ void EnclaveCollectionMatrix::MultiAddNewCollectionWithBlueprint(int numThreads,
 		//EnclaveCollectionActivateListT2 listT2_5;
 		//EnclaveCollectionActivateListT2 listT2_6;
 		//auto jobfinish = std::chrono::high_resolution_clock::now();
-		
-
+		*/
 		/*
 		auto start1 = std::chrono::high_resolution_clock::now();
 		std::future<EnclaveCollectionActivateList> testfuture1 = tpref->submit5(&EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveBeta, this, 0,3 + 1,std::ref(EnclaveCollectionMap[Key]),Key,	std::ref(blueprint));
@@ -419,31 +405,12 @@ void EnclaveCollectionMatrix::MultiAddNewCollectionWithBlueprint(int numThreads,
 		EnclaveCollectionActivateList returnedList2 = testfuture2.get();
 		auto finish1 = std::chrono::high_resolution_clock::now();
 		*/
-
-		
 		auto start1 = std::chrono::high_resolution_clock::now();
 		std::future<void> testfuture3 = tpref->submit5(&EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha, this, 0, 3 + 1, std::ref(EnclaveCollectionMap[Key]), Key, std::ref(blueprint), std::ref(listT2_1));
 		std::future<void> testfuture4 = tpref2->submit5(&EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha, this, 4, 7 + 1, std::ref(EnclaveCollectionMap[Key]), Key, std::ref(blueprint), std::ref(listT2_2));
 		testfuture3.wait();
 		testfuture4.wait();
 		auto finish1 = std::chrono::high_resolution_clock::now();
-		
-
-		//std::future<void> testfuture2 = tpref2->submit(std::move(Job4));
-		
-												// optional, for debugging
-		//std::chrono::duration<double> jobelapsed = jobfinish - jobstart;
-		//cout << "job submit test2 (job 1): " << jobelapsed.count() << endl;
-
-
-		//auto finish1 = std::chrono::high_resolution_clock::now();
-
-
-		//auto finish1 = std::chrono::high_resolution_clock::now();
-		
-
-
-
 		/*
 		for (int x = 0; x < returnedList1.count; x++)			// populate from first list.
 		{
@@ -458,9 +425,6 @@ void EnclaveCollectionMatrix::MultiAddNewCollectionWithBlueprint(int numThreads,
 		}
 		*/
 
-
-
-		
 		auto loopstart = std::chrono::high_resolution_clock::now();
 
 		int chunkbitmask = 1;
@@ -486,7 +450,7 @@ void EnclaveCollectionMatrix::MultiAddNewCollectionWithBlueprint(int numThreads,
 					}
 
 				}
-			//cout << "chunkbitmask: (" << y << ")" << chunkbitmask << endl;
+				//cout << "chunkbitmask: (" << y << ")" << chunkbitmask << endl;
 				chunkbitmask <<= 1;
 				bitmaskval++;
 			
@@ -520,26 +484,13 @@ void EnclaveCollectionMatrix::MultiAddNewCollectionWithBlueprint(int numThreads,
 				bitmaskval2++;
 			}
 		}
-		
-
-				//// use placeholders with std::bind
+	
 		//auto finish1 = std::chrono::high_resolution_clock::now();															// optional, for debugging
-		//auto finish1 = std::chrono::high_resolution_clock::now();
 		auto loopend = std::chrono::high_resolution_clock::now();
 		//std::chrono::duration<double> elapsed2 = loopend - loopstart;
 		//cout << "NEW Loop time: " << elapsed2.count() << endl;
-
-
-
-
 		std::chrono::duration<double> elapsed1 = finish1 - start1;
-
 		//cout << "Future get time: " << elapsed1.count() << endl;
-
-
-		//OrganicPointer->getpool().submit(std::move(Job3));
-		//std::future<void> testfuture2 = OrganicPointer->getpool->submit(std::move(Job4));
-		//return;
 	}
 	
 	if (numThreads == 4)
@@ -739,13 +690,7 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclave(int beginRange, i
 
 
 					}
-					if ((paintableChunk[x][z] & chunkbitmask) == chunkbitmask)
-					{
-						for (int t = 0; t < 10000; t++)
-						{
-
-						}
-					}
+					
 
 
 
@@ -771,6 +716,22 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclave(int beginRange, i
 
 EnclaveCollectionActivateList EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveBeta(int beginRange, int endRange, EnclaveCollection &collectionRef, EnclaveKeyDef::EnclaveKey Key, EnclaveCollectionBlueprint *blueprint)
 {
+	/************ THIS FUNCTION IS CURRENTLY UNUSED ************/
+
+	/* Summary: this function performs enclave instantiations within a certain range; this "range" should be designed so that it
+	can be used with a packaged_task
+	*/
+
+	/* Order of operations:
+	1. Instantiate 512
+	2. determine solids
+	3. determine surfaces
+	4. painting
+	5. unveil polys
+	6. smoothing
+	7. attach to enclaves
+	*/
+
 	EnclaveCollectionActivateList tempList;
 	auto start = std::chrono::high_resolution_clock::now();			// option
 	int chunkbitmask = 1;																				// set initial value of bitmask to be 128 (which is the top chunk)
@@ -873,7 +834,21 @@ EnclaveCollectionActivateList EnclaveCollectionMatrix::JobInstantiateAndPopulate
 
 void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha(int beginRange,	int endRange, EnclaveCollection &collectionRef, EnclaveKeyDef::EnclaveKey Key, EnclaveCollectionBlueprint *blueprint, EnclaveCollectionActivateListT2 &activateListRef)
 {
-	//EnclaveCollectionActivateList *tempList;
+	/* Summary: this function performs enclave instantiations within a certain range; this "range" should be designed so that it
+	can be used with a packaged_task. It takes in the parameter, "activateListRef" as a pointer to an instance of 
+	EnclaveCollectionActivateListT2 -- where it will be the only thread writing to this instance; this instance will contain a list
+	of Enclaves to be renedered for a particular EnclaveCollection.
+	*/
+
+	/* Order of operations:
+	1. Instantiate 512
+	2. determine solids
+	3. determine surfaces
+	4. painting
+	5. unveil polys
+	6. smoothing
+	7. attach to enclaves
+	*/
 	
 	auto start = std::chrono::high_resolution_clock::now();			// option
 	int chunkbitmask = 1;																				// set initial value of bitmask to be 128 (which is the top chunk)
@@ -907,12 +882,6 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha(int beginRan
 						tempKey.y = y;
 						tempKey.z = z;
 
-						//cout << "whoa boy its" <<  sizeof(EnclaveKeyDef::EnclaveKey) << endl;
-						//collectionRef.ActivateEnclaveForRendering(tempKey); // needs modification (7/26/2017)
-
-						// ****NEW LOGIC HERE
-						//cout << "HIT!!" << endl;
-						//cout << x << " " << z << " " << y << " HIT 1" << endl;
 						activateListRef.flagArray[x][z] = chunkbitmask;
 
 
@@ -946,15 +915,7 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha(int beginRan
 					}
 
 
-					/*
-					if ((paintableChunk[x][z] & chunkbitmask) == chunkbitmask)
-					{
-					for (int t = 0; t < 500000; t++)
-					{
 
-					}
-					}
-					*/
 
 
 				}
@@ -1119,27 +1080,3 @@ void EnclaveCollectionMatrix::SetOrganicSystem(OrganicSystem *organicRef)
 
 }
 
-EnclaveKeyDef::EnclaveKey EnclaveCollectionMatrix::dummyjob()
-{
-	//return testval + testval;
-	EnclaveKeyDef::EnclaveKey dumbkey;
-	dumbkey.x = 5;
-	dumbkey.y = 6;
-	dumbkey.z = 7;
-	return dumbkey;
-}
-
-int EnclaveCollectionMatrix::dummyjob2(int testval, int testval2)
-{
-	return testval+ testval;
-}
-
-EnclaveKeyDef::EnclaveKey EnclaveCollectionMatrix::truelydumb(int value, int value2)
-{
-	//return testval + testval;
-	EnclaveKeyDef::EnclaveKey dumbkey;
-	dumbkey.x = value;
-	dumbkey.y = value2;
-	dumbkey.z = 7;
-	return dumbkey;
-}

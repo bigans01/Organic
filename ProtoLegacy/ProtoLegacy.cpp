@@ -97,6 +97,7 @@ int main()
 		}
 	}
 
+	auto bluestart = std::chrono::high_resolution_clock::now();
 	unsigned char tempPaintables[8][8] = { 0 };
 	tempPaintables[0][0] = 64;								// flag a chunk to be paintable, -- in this case it is 0, 6, 0
 	tempPaintables[1][0] = 64;								// following lines are performance testing only
@@ -172,7 +173,7 @@ int main()
 	tempPainterKey.y = 6;
 	tempPainterKey.z = 0;
 	testBlueprint.AddNewPaintList(tempPainterKey, testPaintList);
-	
+	auto blueend = std::chrono::high_resolution_clock::now();
 	//ElevationMapRef SolidChunks;
 
 
@@ -188,9 +189,15 @@ int main()
 	thread_pool* mainthreadpoolref2 = &mainthreadpool2;
 
 	OrganicSystem Organic;
-	Organic.SetOrganicPool(mainthreadpoolref);
-	Organic.SetOrganicPool2(mainthreadpoolref2);
+	Organic.SetOrganicPool(mainthreadpoolref);				// set the Organic instance's first worker thread
+	Organic.SetOrganicPool2(mainthreadpoolref2);			// set the Organic instance's second worker thread
+	Organic.AddOrganicTextureMetaArray("base");					// set up the texture map; first ever map will be named "base"
+
+	//auto bluestart = std::chrono::high_resolution_clock::now();
 	Organic.AddBlueprint(EnclaveCollectionTestKey.x, EnclaveCollectionTestKey.y, EnclaveCollectionTestKey.z, testBlueprint);	// add the test blueprint to the OrganicSystem
+	//auto blueend = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> blueelapsed = blueend - bluestart;
+	std::cout << "Elapsed time (Blueprint addition): " << blueelapsed.count() << endl;
 	//cout << Organic.BlueprintMatrix.BlueprintMap[EnclaveCollectionTestKey].SolidChunks[0][0];
 	cout << "testing of solidChunk data in blueprints found in the OrganicSystem: " << endl;
 	for (int x = 0; x < 8; x++)
@@ -396,26 +403,28 @@ int main()
 	testkey2.y = 0;
 	testkey2.z = 0;
 	// set up manifest collection
-	ManifestCollections.AddNewCollection(testkey);							// Step 1: create a collection that has same Key as an existing EnclaveCollection
-	ManifestCollections.AttachManifestToCollectedEnclave(testkey, 1, 0, 0);	// Step 2: add a single(or multiple) manifest(s) to the ManifestCollection (same key as EnclaveCollection). This only needs to be called once per Enclave. (for parallelism/multi-threading safety)
-	ManifestCollections.AttachManifestToCollectedEnclave(testkey, 2, 0, 0);	// attaches a manifest to a manifest collection that has a key of "testkey," and x/y/z coord of following 3 arguments
-	ManifestCollections.AttachManifestToCollectedEnclave(testkey, 3, 0, 0);
-	ManifestCollections.AttachManifestToCollectedEnclave(testkey, 4, 0, 0);
-	ManifestCollections.AttachManifestToCollectedEnclave(testkey, 5, 0, 0);
-	ManifestCollections.AttachManifestToCollectedEnclave(testkey, 6, 0, 0);
-	ManifestCollections.AttachManifestToCollectedEnclave(testkey, 7, 0, 0);
-
-	ManifestCollections.AddNewCollection(testkey2);
-	ManifestCollections.AttachManifestToCollectedEnclave(testkey2, 0, 0, 0);
-	ManifestCollections.AttachManifestToCollectedEnclave(testkey2, 1, 0, 0);
-	ManifestCollections.AttachManifestToCollectedEnclave(testkey2, 2, 0, 0);
+	//ManifestCollections.AddNewCollection(testkey);							// Step 1: create a collection that has same Key as an existing EnclaveCollection
+	//ManifestCollections.AttachManifestToCollectedEnclave(testkey, 1, 0, 0);	// Step 2: add a single(or multiple) manifest(s) to the ManifestCollection (same key as EnclaveCollection). This only needs to be called once per Enclave. (for parallelism/multi-threading safety)
+	//ManifestCollections.AttachManifestToCollectedEnclave(testkey, 2, 0, 0);	// attaches a manifest to a manifest collection that has a key of "testkey," and x/y/z coord of following 3 arguments
+	//ManifestCollections.AttachManifestToCollectedEnclave(testkey, 3, 0, 0);
+	//ManifestCollections.AttachManifestToCollectedEnclave(testkey, 4, 0, 0);
+	//ManifestCollections.AttachManifestToCollectedEnclave(testkey, 5, 0, 0);
+	//ManifestCollections.AttachManifestToCollectedEnclave(testkey, 6, 0, 0);
+	//ManifestCollections.AttachManifestToCollectedEnclave(testkey, 7, 0, 0);
+	//
+	//ManifestCollections.AddNewCollection(testkey2);
+	//cout << "debug line" << endl;
+	//ManifestCollections.AttachManifestToCollectedEnclave(testkey2, 0, 0, 0);
+	//ManifestCollections.AttachManifestToCollectedEnclave(testkey2, 1, 0, 0);
+	//ManifestCollections.AttachManifestToCollectedEnclave(testkey2, 2, 0, 0);
 
 	
 
 	// set up final array(s) for OpenGL rendering here
 	//ManifestCollections.GetColletedEnclaveManifestAt(testkey, 3, 0, 0);
 	auto start7 = std::chrono::high_resolution_clock::now();
-	RenderCollections.CreateRenderArrayFromManifestCollection(testkey2);										//change here... OLD: testkey
+	cout << "debug line 2" << endl;
+	//RenderCollections.CreateRenderArrayFromManifestCollection(testkey2);										//change here... OLD: testkey
 	auto finish7 = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> elapsed7 = finish7 - start7;
 	std::cout << "Elapsed time (Creating Render Array test: " << collectcount << "): " << elapsed7.count() << endl;
@@ -429,7 +438,7 @@ int main()
 	tempEnclave->UnveilSinglePoly(3, 2, 0, 0, 1, 0, 40, 0);
 
 	auto start2 = std::chrono::high_resolution_clock::now();
-	ManifestCollections.UpdateAttachedManifest(testkey2, 0, 0, 0);				// problem is after this call	// change here... OLD: testkey
+	//ManifestCollections.UpdateAttachedManifest(testkey2, 0, 0, 0);				// problem is after this call	// change here... OLD: testkey
 	auto finish2 = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> elapsed2 = finish2 - start2;
 	std::cout << "Elapsed time (Creating Render Array test 2: , " << count << "): " << elapsed2.count() << endl;
