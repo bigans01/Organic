@@ -97,7 +97,7 @@ int main()
 		}
 	}
 
-	auto bluestart = std::chrono::high_resolution_clock::now();
+	//auto bluestart = std::chrono::high_resolution_clock::now();
 	unsigned char tempPaintables[8][8] = { 0 };
 	tempPaintables[0][0] = 64;								// flag a chunk to be paintable, -- in this case it is 0, 6, 0
 	tempPaintables[1][0] = 64;								// following lines are performance testing only
@@ -169,15 +169,29 @@ int main()
 	tempPainterKey.z = 0;
 	testBlueprint.AddNewPaintList(tempPainterKey, testPaintList);
 
+	
 	tempPainterKey.x = 7;
 	tempPainterKey.y = 6;
 	tempPainterKey.z = 0;
-	testBlueprint.AddNewPaintList(tempPainterKey, testPaintList);
-	auto blueend = std::chrono::high_resolution_clock::now();
+	//auto bluestart = std::chrono::high_resolution_clock::now();
+	//testBlueprint.AddNewPaintList2(tempPainterKey, testPaintList);
+
+
+
+
+
+
+
+
+
+	//auto blueend = std::chrono::high_resolution_clock::now();
 	//ElevationMapRef SolidChunks;
 
-
-
+	EnclaveCollectionBlueprint testBlueprint2;
+	EnclaveKeyDef::EnclaveKey bpkeytest;
+	bpkeytest.x = 0;
+	bpkeytest.y = 0;
+	bpkeytest.z = 1;
 	
 	
 
@@ -193,9 +207,10 @@ int main()
 	Organic.SetOrganicPool2(mainthreadpoolref2);			// set the Organic instance's second worker thread
 	Organic.AddOrganicTextureMetaArray("base");					// set up the texture map; first ever map will be named "base"
 
-	//auto bluestart = std::chrono::high_resolution_clock::now();
 	Organic.AddBlueprint(EnclaveCollectionTestKey.x, EnclaveCollectionTestKey.y, EnclaveCollectionTestKey.z, testBlueprint);	// add the test blueprint to the OrganicSystem
-	//auto blueend = std::chrono::high_resolution_clock::now();
+	auto bluestart = std::chrono::high_resolution_clock::now();
+	Organic.AddBlueprint(bpkeytest.x, bpkeytest.y, bpkeytest.z, testBlueprint2);
+	auto blueend = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> blueelapsed = blueend - bluestart;
 	std::cout << "Elapsed time (Blueprint addition): " << blueelapsed.count() << endl;
 	//cout << Organic.BlueprintMatrix.BlueprintMap[EnclaveCollectionTestKey].SolidChunks[0][0];

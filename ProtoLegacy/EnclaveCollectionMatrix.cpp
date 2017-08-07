@@ -185,7 +185,7 @@ void EnclaveCollectionMatrix::MultiAddNewCollectionWithBlueprint(int numThreads,
 	auto prime_begin = std::chrono::high_resolution_clock::now();
 	if (numThreads == 1)
 	{
-		cout << "1 thread called to run..." << endl;
+		//cout << "1 thread called to run..." << endl;
 		thread_pool *tpref = OrganicPointer->getpool();
 		/*
 		thread_pool *tpref = OrganicPointer->getpool();

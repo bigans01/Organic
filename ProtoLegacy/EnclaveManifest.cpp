@@ -7,6 +7,7 @@ using namespace std;
 #include <iostream>
 #include <GL/glew.h>
 #include <vector>
+#include <chrono>
 
 #include "EnclaveManifest.h"
 #include "RenderCollection.h"
@@ -38,13 +39,27 @@ void EnclaveManifest::AttachToEnclave(Enclave &in_ptr)	// "attaches" this manife
 	//TextureDictionary.Dictionary[mapname].Index[1] = tempMeta;		
 	//OrganicTextureMeta *tempMetaRef = &TextureDictionary.Dictionary[mapname].Index[1];		// set up a reference to the new texture data for the block
 	//tempMetaRef->BlockData.FaceIndex[0].FaceData[0].U = 2;
+	//Organic.AddAndMaterializeCollection(0, 0, 0);
 
-	int testval2 = TextureDictionaryRef->Dictionary["base"].Index[1].BlockData.FaceIndex[0].FaceData[0].U;
+	OrganicTextureMeta *textureMetaRef;
+	//OrganicTextureMeta textureMetaCopy;
+	OrganicTextureMetaArray *textureMetaArrayRef;
+	textureMetaArrayRef = &TextureDictionaryRef->Dictionary["base"];
+
+	//auto orgstart = std::chrono::high_resolution_clock::now();
+	//int testval2 = TextureDictionaryRef->Dictionary["base"].Index[1].BlockData.FaceIndex[0].FaceData[0].U;
+	//auto orgend = std::chrono::high_resolution_clock::now();
+	//std::chrono::duration<double> orgelapsed = orgend - orgstart;
+	//std::cout << "Elapsed time (Organic collection instantiation): " << orgelapsed.count() << endl;
 	//cout << "testing of new Texture data: " << testval2 << endl;
 
 	//EnclaveManifestRenderables = new EnclaveManifest::EnclaveManifestTuple[EnclavePtr->GetTotalTrianglesInEnclave()];				// FIX THIS!
+	//auto orgstart = std::chrono::high_resolution_clock::now();
 	EnclaveGLPtr = new GLfloat[(EnclavePtr.GetTotalTrianglesInEnclave())*9];
 	TextureGLPtr = new GLfloat[(EnclavePtr.GetTotalTrianglesInEnclave()) * 6];						// new array would be GetTotalTrianglesInEnclave*6 (a pair of UV coordinates per vertex)
+	//auto orgend = std::chrono::high_resolution_clock::now();
+	//std::chrono::duration<double> orgelapsed = orgend - orgstart;
+	//std::cout << "Elapsed time (2x dynamic array allocation time): " << orgelapsed.count() << endl;
 	TotalEnclaveTriangles = EnclavePtr.GetTotalTrianglesInEnclave();
 	//cout << "test: TotalEnclaveTriangles ->" << TotalEnclaveTriangles << endl;
 	RenderablePolyCount = EnclavePtr.TotalRenderable;						// don't perform unnecessary loops through all 64 elements, only go x times (where x is number of polygons to render)
@@ -62,7 +77,7 @@ void EnclaveManifest::AttachToEnclave(Enclave &in_ptr)	// "attaches" this manife
 	GLfloat GL_x = 0.5f;		// instantiate within stack frame
 	GLfloat GL_y = 0.5f;
 	GLfloat GL_z = 0.5f;
-	int iteratorval, totaltuples = 0;														
+	int iteratorval, totaltuples = 0, texturetuples = 0;														
 
 	for (int i = 0; i < RenderablePolyCount; ++i)
 	{
@@ -72,6 +87,12 @@ void EnclaveManifest::AttachToEnclave(Enclave &in_ptr)	// "attaches" this manife
 		polyfacebitmask = 32;
 		//cout << ">> t1 flags" << t1_flagsint << endl;
 		//cout << ">> polyfacebitmask" << polyfacebitmask << endl;
+
+		//textureMetaCopy = TextureDictionaryRef->Dictionary["base"].Index[1];
+		//textureMetaRef = &TextureDictionaryRef->Dictionary["base"].Index[1];
+		//textureMetaArrayRef = &TextureDictionaryRef->Dictionary["base"];
+		textureMetaRef = &textureMetaArrayRef->Index[1];
+
 		EnclaveManifestOffset = SingleToMulti(EnclavePtr.Sorted.PolyArrayIndex[i]);			// set the offset values based on the xyz coords
 		//cout << "Offset: " << EnclaveManifestOffset.x << endl;
 		for (int j = 0; j < 6; ++j)
@@ -96,6 +117,9 @@ void EnclaveManifest::AttachToEnclave(Enclave &in_ptr)	// "attaches" this manife
 					EnclaveGLPtr[totaltuples++] = TempTuple.x;
 					EnclaveGLPtr[totaltuples++] = TempTuple.y;
 					EnclaveGLPtr[totaltuples++] = TempTuple.z;
+
+					TextureGLPtr[texturetuples++] = textureMetaRef->BlockData.FaceIndex[0].FaceData[0].U;
+					TextureGLPtr[texturetuples++] = textureMetaRef->BlockData.FaceIndex[0].FaceData[0].U;
 					//EnclaveManifestRenderables[totaltuples++] = TempTuple;	
 
 					// switch out 0 to appropriate value (insert incrementing value?)

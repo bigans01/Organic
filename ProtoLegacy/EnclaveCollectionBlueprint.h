@@ -28,6 +28,8 @@ public:
 	void SetSolidChunkData(ElevationMapRef solidData);		// will load the data for the solid chunk array
 	void SetPaintableChunkData(ElevationMapRef paintableData);
 	void AddNewPaintList(EnclaveKeyDef::EnclaveKey InKey, EnclavePainterList InPaintList);
+	void AddNewPaintList2(EnclaveKeyDef::EnclaveKey InKey, EnclavePainterList InPaintList);
+	int BPKeyToSingle(EnclaveKeyDef::EnclaveKey tempKey);
 	ElevationMapRef& GetSurfaceChunkData();
 	ElevationMapRef& GetSolidChunkData();
 	ElevationMapRef& GetPaintableChunkData();

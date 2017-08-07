@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include <stdio.h>
+#include <chrono>
 #include "EnclaveCollectionBlueprint.h"
 
 typedef unsigned char(&ElevationMapRef)[8][8];
@@ -40,7 +41,28 @@ void EnclaveCollectionBlueprint::SetPaintableChunkData(ElevationMapRef paintable
 
 void EnclaveCollectionBlueprint::AddNewPaintList(EnclaveKeyDef::EnclaveKey InKey, EnclavePainterList InPaintList)
 {
+	//auto bluestart = std::chrono::high_resolution_clock::now();
 	PaintListMatrix.PainterListMatrix[InKey] = InPaintList;
+	//auto blueend = std::chrono::high_resolution_clock::now();
+	//auto bluestart = std::chrono::high_resolution_clock::now();
+	//int returnval = BPKeyToSingle(InKey);
+	//PaintListMatrix.PainterListMatrix2[returnval] = InPaintList;
+	//auto blueend = std::chrono::high_resolution_clock::now();
+	//std::chrono::duration<double> blueelapsed = blueend - bluestart;
+	//std::cout << "Elapsed time (Blueprint addition to int): " << blueelapsed.count() << std::endl;
+}
+
+void EnclaveCollectionBlueprint::AddNewPaintList2(EnclaveKeyDef::EnclaveKey InKey, EnclavePainterList InPaintList)
+{
+	//auto bluestart = std::chrono::high_resolution_clock::now();
+	//PaintListMatrix.PainterListMatrix[InKey] = InPaintList;
+	//auto blueend = std::chrono::high_resolution_clock::now();
+	//auto bluestart = std::chrono::high_resolution_clock::now();
+	int returnval = BPKeyToSingle(InKey);
+	PaintListMatrix.PainterListMatrix2[returnval] = InPaintList;
+	//auto blueend = std::chrono::high_resolution_clock::now();
+	//std::chrono::duration<double> blueelapsed = blueend - bluestart;
+	//std::cout << "Elapsed time (Blueprint addition to int): " << blueelapsed.count() << std::endl;
 }
 
 ElevationMapRef& EnclaveCollectionBlueprint::GetSurfaceChunkData()
@@ -56,4 +78,16 @@ ElevationMapRef& EnclaveCollectionBlueprint::GetSolidChunkData()
 ElevationMapRef& EnclaveCollectionBlueprint::GetPaintableChunkData()
 {
 	return PaintableChunks;
+}
+
+int EnclaveCollectionBlueprint::BPKeyToSingle(EnclaveKeyDef::EnclaveKey tempKey)
+{
+	/* Summary: takes a single value between 0 to 63, and returns the x/y/z of the block within the chunk */
+
+	// int multi_to_single = (x * 16) + (y * 4) + z;				// convert from 3d array coords to single array
+
+	int x = tempKey.x * 64;
+	int y = tempKey.y * 16;
+	int z = tempKey.z;
+	return x + y + z;
 }
