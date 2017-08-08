@@ -40,11 +40,21 @@ public:
 	OrganicSystem();															// default constructor
 	void InterlockBaseCollections();											// connects the 3 base collections together -- EnclaveCollections, ManifestCollections, RenderCollections.
 	void AddAndMaterializeCollection(int x, int y, int z);						// adds a new collection, and renders all top faces in all 64 top level chunks 
+	void MaterializeCollection(EnclaveKeyDef::EnclaveKey Key1, EnclaveKeyDef::EnclaveKey Key2);
 	void ChangeSingleBlockMaterialAtXYZ(int x, int y, int z, int newmaterial);					// changes the material block at an x/y/z location
 	void AddBlueprint(int x, int y, int z, EnclaveCollectionBlueprint blueprint);
+	void SetupFutureCollection(int x, int y, int z);
 	void SetOrganicPool(thread_pool *thread_pool_ref);
 	void SetOrganicPool2(thread_pool *thread_pool_ref);
 	void AddOrganicTextureMetaArray(string mapname);
+	void JobMaterializeCollection(EnclaveKeyDef::EnclaveKey Key1, 
+								  EnclaveCollectionBlueprintMatrix BlueprintMatrixRef, 
+								  EnclaveCollectionMatrix EnclaveCollectionsRef, 
+								  ManifestCollectionMatrix ManifestCollectionsRef, 
+								  RenderCollectionMatrix RenderCollectionsRef, 
+								  EnclaveCollection *CollectionRef,
+									ManifestCollection *ManifestCollectionRef
+									);
 	thread_pool* getpool();
 	thread_pool* getpool2();
 };

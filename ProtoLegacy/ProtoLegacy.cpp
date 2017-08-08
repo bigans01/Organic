@@ -196,18 +196,48 @@ int main()
 	
 
 	// STAGE 2: initialization of enclaves 
+
+	// *********** thread pool set up
 	thread_pool mainthreadpool;
 	thread_pool* mainthreadpoolref = &mainthreadpool;
 
 	thread_pool mainthreadpool2;
 	thread_pool* mainthreadpoolref2 = &mainthreadpool2;
 
+	
+
+
+
+
+	
 	OrganicSystem Organic;
 	Organic.SetOrganicPool(mainthreadpoolref);				// set the Organic instance's first worker thread
 	Organic.SetOrganicPool2(mainthreadpoolref2);			// set the Organic instance's second worker thread
 	Organic.AddOrganicTextureMetaArray("base");					// set up the texture map; first ever map will be named "base"
 
-	Organic.AddBlueprint(EnclaveCollectionTestKey.x, EnclaveCollectionTestKey.y, EnclaveCollectionTestKey.z, testBlueprint);	// add the test blueprint to the OrganicSystem
+	// *********** Enclave Collection load type 2: instantiate a set of collections
+
+	EnclaveKeyDef::EnclaveKey key1, key2;
+	key1.x = 5;
+	key1.y = 0;
+	key1.z = 1;
+
+	key2.x = 6;
+	key2.y = 0;
+	key2.z = 1;
+
+	// add/instantiate the new collections here
+	Organic.AddBlueprint(EnclaveCollectionTestKey.x, EnclaveCollectionTestKey.y, EnclaveCollectionTestKey.z, testBlueprint);
+	Organic.AddBlueprint(key1.x, key1.y, key1.z, testBlueprint);
+	Organic.AddBlueprint(key2.x, key2.y, key2.z, testBlueprint);
+	Organic.SetupFutureCollection(key1.x, key1.y, key1.z);
+	Organic.SetupFutureCollection(key2.x, key2.y, key2.z);
+
+	Organic.MaterializeCollection(key1, key2);
+
+	cout << "-------------------------PASS" << endl;
+	// *********** Enclave Collection load type 1: add and instantiate a single collection
+		// add the test blueprint to the OrganicSystem
 	auto bluestart = std::chrono::high_resolution_clock::now();
 	Organic.AddBlueprint(bpkeytest.x, bpkeytest.y, bpkeytest.z, testBlueprint2);
 	auto blueend = std::chrono::high_resolution_clock::now();

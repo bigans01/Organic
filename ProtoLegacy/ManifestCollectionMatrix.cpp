@@ -34,6 +34,14 @@ void ManifestCollectionMatrix::AttachManifestToCollectedEnclave(EnclaveKeyDef::E
 
 }
 
+void ManifestCollectionMatrix::AttachManifestToCollectedEnclave2(EnclaveKeyDef::EnclaveKey CollectionKey, int target_x, int target_y, int target_z, ManifestCollection *ManifestCollectionRef)
+{
+	/* Summary: attaches a manifest to an already collected enclave */
+	//EnclaveKeyDef::EnclaveKey tempkey;					// this key is for the exact enclave contained within each collection, not the key of the collections itself
+	ManifestCollectionRef->AddManifestToMatrix(target_x, target_y, target_z, CollectionKey);
+
+}
+
 void ManifestCollectionMatrix::GetCollectedEnclaveManifestAt(EnclaveKeyDef::EnclaveKey CollectionKey, int target_x, int target_y, int target_z)
 {
 	/* Summary: reserved for future use */

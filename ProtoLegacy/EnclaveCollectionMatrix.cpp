@@ -46,6 +46,12 @@ void EnclaveCollectionMatrix::AddNewCollection(int x, int y, int z)
 	//std::cout << "Elapsed time (512 chunk instantiations: , " << elapsed.count() << "): " << elapsed.count() << endl;	// ""
 }
 
+void EnclaveCollectionMatrix::AddNewCollectionSkeleton(EnclaveKeyDef::EnclaveKey Key)
+{
+	Enclave stackEnclave(Key, 0, 0, 0);											// add an enclave, with a collection key value of tempkey.
+	EnclaveCollectionMap[Key].EnclaveArray[0][0][0] = stackEnclave;
+}
+
 void EnclaveCollectionMatrix::AddNewCollection(EnclaveKeyDef::EnclaveKey Key)
 {
 	/* Summary: Adds a new collection into the matrix, which will have a EnclaveKey value of the input value "Key" */
@@ -884,7 +890,7 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha(int beginRan
 
 						activateListRef.flagArray[x][z] = chunkbitmask;
 
-
+						//cout << "cool..." << endl;
 
 						// step 5 will go here ? 
 						for (int xx2 = 0; xx2 < 4; xx2++)

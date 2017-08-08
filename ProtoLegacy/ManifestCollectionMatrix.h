@@ -35,6 +35,7 @@ public:
 	void SetCollectionMatrixRef(EnclaveCollectionMatrix *collectionmatrixref);
 	void AddNewCollection(EnclaveKeyDef::EnclaveKey Key);																		// adds a new ManifestCollection into ManiCollectionMap, the key in the map will be value of Key
 	void AttachManifestToCollectedEnclave(EnclaveKeyDef::EnclaveKey CollectionKey, int target_x, int target_y, int target_z);	// attaches a manifest to a collected enclave that is contained within the Enclave collection that has a value of CollectionKey
+	void AttachManifestToCollectedEnclave2(EnclaveKeyDef::EnclaveKey CollectionKey, int target_x, int target_y, int target_z, ManifestCollection *ManifestCollectionRef);  // testing  only
 	void GetCollectedEnclaveManifestAt(EnclaveKeyDef::EnclaveKey CollectionKey, int target_x, int target_y, int target_z);		// reserved for future use (unused)
 	void UpdateAttachedManifest(EnclaveKeyDef::EnclaveKey CollectionKey, int target_x, int target_y, int target_z);				// updates a specific manifest at x/y/z, which is contained within the manifest collection CollectionKey
 };
