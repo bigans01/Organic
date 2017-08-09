@@ -22,6 +22,7 @@ Dependents: a valid instance of a EnclaveCollectionMatrix
 #include "stdafx.h"
 #include <iostream>
 #include <unordered_map>
+#include <functional>
 #include "EnclaveKeyDef.h"
 #include "ManifestCollection.h"
 
@@ -29,6 +30,7 @@ class ManifestCollectionMatrix
 {
 public:
 	std::unordered_map<EnclaveKeyDef::EnclaveKey, ManifestCollection, EnclaveKeyDef::KeyHasher> ManiCollectionMap;				// un unordered map which stores the ManifestCollections
+	std::unordered_map<EnclaveKeyDef::EnclaveKey, reference_wrapper<ManifestCollection>, EnclaveKeyDef::KeyHasher> ManiCollectionMapRef;
 	EnclaveCollectionMatrix *CollectionMatrixRef;																				// a reference to a valid EnclaveCollectionMatrix
 	ManifestCollectionMatrix(EnclaveCollectionMatrix *collectionmatrixref);														// constructor which takes in a valid reference to an EnclaveCollectionMatrix
 	ManifestCollectionMatrix();																									// constructor used when creating this object in an OrganicSystem.
@@ -38,6 +40,9 @@ public:
 	void AttachManifestToCollectedEnclave2(EnclaveKeyDef::EnclaveKey CollectionKey, int target_x, int target_y, int target_z, ManifestCollection *ManifestCollectionRef);  // testing  only
 	void GetCollectedEnclaveManifestAt(EnclaveKeyDef::EnclaveKey CollectionKey, int target_x, int target_y, int target_z);		// reserved for future use (unused)
 	void UpdateAttachedManifest(EnclaveKeyDef::EnclaveKey CollectionKey, int target_x, int target_y, int target_z);				// updates a specific manifest at x/y/z, which is contained within the manifest collection CollectionKey
+	ManifestCollection& GetRefManiCollectionMap(EnclaveKeyDef::EnclaveKey FindKey);
+	int dumbval = 0;
+	reference_wrapper<int> heaptest[1]{ dumbval };
 };
 
 #endif

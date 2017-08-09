@@ -29,6 +29,8 @@ void ManifestCollection::AddManifestToMatrix(int x, int y, int z)
 	//ManMatrix.emplace(tempkey,EnclaveManifest (x, y, z));
 	//cout << "test AddManifestTomatrix: " << EnclaveMatrixRef->GetEnclaveFromMatrix(x, y, z).GetTotalTrianglesInEnclave() << endl;
 	ManMatrix[tempkey].AttachToEnclave(EnclaveMatrixRef->GetEnclaveFromMatrix(x, y, z));
+	//testmap2[0] = tempmanifest;
+	//testmap2.emplace(tempkey, std::ref(tempmanifest));
 }
 
 void ManifestCollection::AddManifestToMatrix(int x, int y, int z, EnclaveKeyDef::EnclaveKey Key)
@@ -112,5 +114,5 @@ EnclaveManifest& ManifestCollection::GetManifestFromMatrix(int x, int y, int z)	
 	tempkey.y = y;
 	tempkey.z = z;
 	//cout << "GetManifest entry..." << endl;
-	return ManMatrix[tempkey];
+	return std::ref(ManMatrix[tempkey]);
 }

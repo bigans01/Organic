@@ -19,11 +19,16 @@ Dependents: a valid instance of ManifestCollectionMatrix
 #include "EnclaveMatrix.h"
 #include "EnclaveManifest.h"
 #include "EnclaveCollectionMatrix.h"
+#include <functional>
 
 
 class ManifestCollection {
 public:
+	//std::unordered_map<EnclaveKeyDef::EnclaveKey, reference_wrapper<EnclaveManifest>, EnclaveKeyDef::KeyHasher> ManMatrix;
 	std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveManifest, EnclaveKeyDef::KeyHasher> ManMatrix;						// unordered map which stores the EnclaveManifests
+	//std::unordered_map<int, reference_wrapper<EnclaveManifest>> testmap;
+	//std::unordered_map<int, reference_wrapper<EnclaveManifest>> testmap2;
+	std::unordered_map<EnclaveKeyDef::EnclaveKey, reference_wrapper<EnclaveManifest>, EnclaveKeyDef::KeyHasher> testmap2;
 	std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveManifest, EnclaveKeyDef::KeyHasher>::iterator ManMatrixIter;		// an iterator for the above unordered map
 	EnclaveMatrix *EnclaveMatrixRef;																						// a reference to the Enclave (currently unused, potentially reserverd for later)
 	EnclaveCollectionMatrix *CollectionMatrixRef;																			// a reference to a valid instance of EnclaveCollectionMatrix
