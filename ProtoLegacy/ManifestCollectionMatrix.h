@@ -40,7 +40,7 @@ public:
 	void AttachManifestToCollectedEnclave2(EnclaveKeyDef::EnclaveKey CollectionKey, int target_x, int target_y, int target_z, ManifestCollection *ManifestCollectionRef);  // testing  only
 	void GetCollectedEnclaveManifestAt(EnclaveKeyDef::EnclaveKey CollectionKey, int target_x, int target_y, int target_z);		// reserved for future use (unused)
 	void UpdateAttachedManifest(EnclaveKeyDef::EnclaveKey CollectionKey, int target_x, int target_y, int target_z);				// updates a specific manifest at x/y/z, which is contained within the manifest collection CollectionKey
-	ManifestCollection& GetRefManiCollectionMap(EnclaveKeyDef::EnclaveKey FindKey);
+	//ManifestCollection& GetRefManiCollectionMap(EnclaveKeyDef::EnclaveKey FindKey);
 	int dumbval = 0;
 	reference_wrapper<int> heaptest[1]{ dumbval };
 };

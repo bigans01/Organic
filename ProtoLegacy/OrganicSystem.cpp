@@ -151,7 +151,7 @@ void OrganicSystem::JobMaterializeCollection(	EnclaveKeyDef::EnclaveKey Key1,
 
 	
 	//auto start5 = std::chrono::high_resolution_clock::now();
-	//EnclaveCollection *collectionPtr = &EnclaveCollectionsRef.EnclaveCollectionMap[Key1];
+	EnclaveCollection *collectionPtr = &EnclaveCollectionsRef.EnclaveCollectionMap[Key1];
 	int manifestCounter = CollectionRef->totalRenderableEnclaves;
 	auto start5 = std::chrono::high_resolution_clock::now();
 	//auto finish5 = std::chrono::high_resolution_clock::now();
@@ -159,11 +159,8 @@ void OrganicSystem::JobMaterializeCollection(	EnclaveKeyDef::EnclaveKey Key1,
 	EnclaveKeyDef::EnclaveKey innerTempKey;
 	//ManifestCollection *tempMCollectionRef = &ManifestCollectionsRef.ManiCollectionMap[Key1];
 
-	//ManiCollectionIter2 = ManifestCollectionsRef.ManiCollectionMapRef.find(Key1);
-	ManifestCollection *tempMCollectionRef = &ManifestCollectionsRef.GetRefManiCollectionMap(Key1);
-	//reference_wrapper<ManifestCollection> tempMCollectionRef = ManiCollectionIter2->second;
-	//reference_wrapper<ManifestCollection> *tempMCollectionRef2 = &tempMCollectionRef;
 
+	//ManifestCollection *tempMCollectionRef = &ManifestCollectionsRef.GetRefManiCollectionMap(Key1);
 	for (int a = 0; a < manifestCounter; a++)
 	{
 		//start5 = std::chrono::high_resolution_clock::now();
@@ -210,7 +207,7 @@ void OrganicSystem::JobMaterializeCollection(	EnclaveKeyDef::EnclaveKey Key1,
 	//cout << "test of otherval: " << maniPtr.TotalEnclaveTriangles << endl;
 	
 	
-	ManifestCollection tempManiRef = std::ref(ManifestCollectionsRef.GetRefManiCollectionMap(Key1));
+	//ManifestCollection tempManiRef = std::ref(ManifestCollectionsRef.GetRefManiCollectionMap(Key1));
 	//cout << "test:::" << tempManiRef.GetManifestFromMatrix(0, 6, 0).TotalEnclaveTriangles << endl;
 	// Phase 3: Render collection set up
 

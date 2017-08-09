@@ -54,6 +54,7 @@ void ManifestCollectionMatrix::UpdateAttachedManifest(EnclaveKeyDef::EnclaveKey 
 	ManiCollectionMap[CollectionKey].UpdateManifest(target_x, target_y, target_z, CollectionKey);
 }
 
+/*
 ManifestCollection& ManifestCollectionMatrix::GetRefManiCollectionMap(EnclaveKeyDef::EnclaveKey FindKey)
 {
 	std::unordered_map<EnclaveKeyDef::EnclaveKey, reference_wrapper<ManifestCollection>, EnclaveKeyDef::KeyHasher>::iterator temp_iter;
@@ -61,3 +62,4 @@ ManifestCollection& ManifestCollectionMatrix::GetRefManiCollectionMap(EnclaveKey
 	ManifestCollection manicollPtr = temp_iter->second;
 	return std::ref(manicollPtr);
 }
+*/
