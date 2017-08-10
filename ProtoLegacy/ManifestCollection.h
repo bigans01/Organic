@@ -32,6 +32,7 @@ public:
 	std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveManifest, EnclaveKeyDef::KeyHasher>::iterator ManMatrixIter;		// an iterator for the above unordered map
 	EnclaveMatrix *EnclaveMatrixRef;																						// a reference to the Enclave (currently unused, potentially reserverd for later)
 	EnclaveCollectionMatrix *CollectionMatrixRef;																			// a reference to a valid instance of EnclaveCollectionMatrix
+	reference_wrapper<EnclaveCollectionMatrix*> *WrappedCollectionMatrixRef;
 
 	void AddManifestToMatrix(int x, int y, int z);																			// adds an EnclaveManifest with x/y/z of in the input parameters (unused)
 	void AddManifestToMatrix(int x, int y, int z, EnclaveKeyDef::EnclaveKey Key);											// adds an EnclaveManifest with x/y/z of in the input parameters; the EnclaveKey input parameter is used to 

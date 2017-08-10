@@ -43,6 +43,7 @@ void ManifestCollection::AddManifestToMatrix(int x, int y, int z, EnclaveKeyDef:
 	tempkey.x = x;
 	tempkey.y = y;
 	tempkey.z = z;
+	//EnclaveCollectionMatrix *dumbref = std::ref(WrappedCollectionMatrixRef->get());
 	OrganicTextureDictionary *tempDictionaryRef = &CollectionMatrixRef->OrganicPointer->TextureDictionary;
 	EnclaveManifest tempmanifest(x, y, z, tempDictionaryRef);
 
@@ -72,12 +73,14 @@ void ManifestCollection::UpdateManifest(int x, int y, int z, EnclaveKeyDef::Encl
 ManifestCollection::ManifestCollection(EnclaveMatrix *matrixref)
 {
 	/* Summary: unused constructor */
+	cout << "Old manifest collection add 2 ..." << endl;
 	EnclaveMatrixRef = matrixref;
 }
 
 ManifestCollection::ManifestCollection(EnclaveMatrix *matrixref, EnclaveCollectionMatrix *collectionref)
 {
 	/* Summary: unused constructor */
+	cout << "Old manifest collection add..." << endl;
 	EnclaveMatrixRef = matrixref;
 	CollectionMatrixRef = collectionref;
 }
@@ -85,11 +88,18 @@ ManifestCollection::ManifestCollection(EnclaveMatrix *matrixref, EnclaveCollecti
 ManifestCollection::ManifestCollection(EnclaveCollectionMatrix *collectionref)
 {
 	/* Summary: currently used non-default constructor; sets the value for public member variable CollectionMatrixRef */
+	cout << "New manifest collection add...." << endl;
 	CollectionMatrixRef = collectionref;
+	EnclaveCollectionMatrix *tptr = std::ref(collectionref);
+	reference_wrapper<EnclaveCollectionMatrix*> tptr2 = tptr;
+	reference_wrapper<EnclaveCollectionMatrix*> *tptr3 = &tptr2;
+	//WrappedCollectionMatrixRef = std::ref(collectionref);
+	WrappedCollectionMatrixRef = tptr3;
 }
 
 ManifestCollection::ManifestCollection()
 {
+	cout << "Default manifest collection add..." << endl;
 	/* Summary: default constructor */
 }
 

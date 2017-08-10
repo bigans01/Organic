@@ -18,7 +18,7 @@
 
 class OrganicSystem;
 
-typedef unsigned char(&ElevationMapRef)[8][8];												// forward declaration for return type below
+typedef unsigned char(&ElevationMapRef)[8][8];												// forward declaration for return type below.
 void EnclaveCollectionMatrix::AddNewCollection(int x, int y, int z)
 {
 	/* Summary: Adds a new collection into the matrix, with the x/y/z values of the new collection's EnclaveKey being equal to the input parameters x/y/z.*/
