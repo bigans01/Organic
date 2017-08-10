@@ -24,3 +24,7 @@ MDJobMaterializeCollection::MDJobMaterializeCollection(
 
 }
 
+MDJobMaterializeCollection::MDJobMaterializeCollection()
+{
+
+}

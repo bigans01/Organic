@@ -7,6 +7,7 @@
 #include "OrganicTextureMeta.h"
 #include "thread_pool.h"
 #include "MDJobMaterializeCollection.h"
+#include "MDListJobMaterializeCollection.h"
 
 OrganicSystem::OrganicSystem()
 {
@@ -244,11 +245,14 @@ void OrganicSystem::MaterializeCollection(EnclaveKeyDef::EnclaveKey Key1, Enclav
 	//MDJob1.MDRenderCollectionsRef = std::ref(RenderCollections);
 	//MDJob1.MDEnclaveCollectionPtr = std::ref(passCollectionPtr);
 	//MDJob1.MDManifestCollectionPtr = std::ref(passManifestPtr);
+	MDListJobMaterializeCollection tempJobList;
 	MDJobMaterializeCollection MDJob1(Key1, std::ref(BlueprintMatrix), std::ref(EnclaveCollections),  std::ref(ManifestCollections), std::ref(RenderCollections), std::ref(passCollectionPtr), std::ref(passManifestPtr));
+	tempJobList.ListMatrix[Key1] = MDJob1;
 
 	//EnclaveCollections.EnclaveCollectionMap[Key1];
 	//std::future<void> coll_1 = tpref->submit5(&OrganicSystem::JobMaterializeCollection, this, Key1, std::ref(BlueprintMatrix), std::ref(EnclaveCollections), std::ref(ManifestCollections), std::ref(RenderCollections), std::ref(passCollectionPtr), std::ref(passManifestPtr)); // , std::ref(blueprintptrpass)
-	std::future<void> coll_1 = tpref->submit5(&OrganicSystem::JobMaterializeCollection2, this, std::ref(MDJob1));
+	//std::future<void> coll_1 = tpref->submit5(&OrganicSystem::JobMaterializeCollection2, this, std::ref(MDJob1));
+	std::future<void> coll_1 = tpref->submit5(&OrganicSystem::JobMaterializeCollection2, this, std::ref(tempJobList));
 	//auto start4 = std::chrono::high_resolution_clock::now();
 	std::future<void> coll_2 = tpref2->submit5(&OrganicSystem::JobMaterializeCollection, this, Key2, std::ref(BlueprintMatrix), std::ref(EnclaveCollections), std::ref(ManifestCollections), std::ref(RenderCollections), std::ref(passCollectionPtr2), std::ref(passManifestPtr2)); // , std::ref(blueprintptrpass)
 	//std::future<void> coll_2 = tpref2->submit5(&OrganicSystem::JobMaterializeCollection, this, Key2, std::ref(BlueprintMatrix), std::ref(EnclaveCollections), std::ref(ManifestCollections), std::ref(RenderCollections));
@@ -366,130 +370,135 @@ void OrganicSystem::AddOrganicTextureMetaArray(string mapname)
 	tempMetaRef->BlockData.FaceIndex[0].FaceData[0].U = 2;
 }
 
-void OrganicSystem::JobMaterializeCollection2(MDJobMaterializeCollection mdjob)
+void OrganicSystem::JobMaterializeCollection2(MDListJobMaterializeCollection mdjob)
 {
-	EnclaveKeyDef::EnclaveKey Key1 = mdjob.MDKey;
-	EnclaveCollectionBlueprintMatrix BlueprintMatrixRef = mdjob.MDBlueprintMatrixRef;
-	EnclaveCollectionMatrix EnclaveCollectionsRef = mdjob.MDEnclaveCollectionsRef;
-	ManifestCollectionMatrix ManifestCollectionsRef = mdjob.MDManifestCollectionsRef;
-	RenderCollectionMatrix RenderCollectionsRef = mdjob.MDRenderCollectionsRef;
-	EnclaveCollection *CollectionRef = mdjob.MDEnclaveCollectionPtr;
-	ManifestCollection *ManifestCollectionRef = mdjob.MDManifestCollectionPtr;
-
-	auto truestart = std::chrono::high_resolution_clock::now();
-	auto start4 = std::chrono::high_resolution_clock::now();
-	EnclaveCollectionBlueprint *blueprintptr = &BlueprintMatrixRef.BlueprintMap[Key1];				// hardcoded blueprint (for testing)
-
-
-	EnclaveCollectionActivateListT2 listT2_1;
-	EnclaveCollection *collectionMapRef = &EnclaveCollectionsRef.EnclaveCollectionMap[Key1];
-	EnclaveCollectionsRef.JobInstantiateAndPopulateEnclaveAlpha(0, 7 + 1, std::ref(*CollectionRef), Key1, blueprintptr, std::ref(listT2_1)); //EnclaveCollectionMap[Key]
-	int chunkbitmask = 1;
-	int bitmaskval = 0;
-	//int dumbvalcheck = 0;
-	for (int x = 0; x < 8; x++)
+	//std::unordered_map<EnclaveKeyDef::EnclaveKey, MDJobMaterializeCollection, EnclaveKeyDef::KeyHasher>::iterator JobIterator;
+	for (auto it = mdjob.ListMatrix.begin(); it != mdjob.ListMatrix.end(); ++it)
 	{
-		chunkbitmask = 1;
-		bitmaskval = 0;
-		for (int y = 0; y < 8; y++)
+
+		EnclaveKeyDef::EnclaveKey Key1 = it->second.MDKey;
+		EnclaveCollectionBlueprintMatrix BlueprintMatrixRef = it->second.MDBlueprintMatrixRef;
+		EnclaveCollectionMatrix EnclaveCollectionsRef = it->second.MDEnclaveCollectionsRef;
+		ManifestCollectionMatrix ManifestCollectionsRef = it->second.MDManifestCollectionsRef;
+		RenderCollectionMatrix RenderCollectionsRef = it->second.MDRenderCollectionsRef;
+		EnclaveCollection *CollectionRef = it->second.MDEnclaveCollectionPtr;
+		ManifestCollection *ManifestCollectionRef = it->second.MDManifestCollectionPtr;
+
+		auto truestart = std::chrono::high_resolution_clock::now();
+		auto start4 = std::chrono::high_resolution_clock::now();
+		EnclaveCollectionBlueprint *blueprintptr = &BlueprintMatrixRef.BlueprintMap[Key1];				// hardcoded blueprint (for testing)
+
+
+		EnclaveCollectionActivateListT2 listT2_1;
+		//EnclaveCollection *collectionMapRef = &EnclaveCollectionsRef.EnclaveCollectionMap[Key1];
+		EnclaveCollectionsRef.JobInstantiateAndPopulateEnclaveAlpha(0, 7 + 1, std::ref(*CollectionRef), Key1, blueprintptr, std::ref(listT2_1)); //EnclaveCollectionMap[Key]
+		int chunkbitmask = 1;
+		int bitmaskval = 0;
+		//int dumbvalcheck = 0;
+		for (int x = 0; x < 8; x++)
 		{
-
-
-			for (int z = 0; z < 8; z++)
+			chunkbitmask = 1;
+			bitmaskval = 0;
+			for (int y = 0; y < 8; y++)
 			{
-				if ((listT2_1.flagArray[x][z] & chunkbitmask) == chunkbitmask)
+
+
+				for (int z = 0; z < 8; z++)
 				{
-					EnclaveKeyDef::EnclaveKey tempKey;
-					tempKey.x = x;
-					tempKey.y = bitmaskval;
-					tempKey.z = z;
-					CollectionRef->ActivateEnclaveForRendering(tempKey);
-					//cout << "value of key 1::: " << tempKey.x << ", " << tempKey.y << ", " << tempKey.z << "||" << int(listT2_1.flagArray[x][z]) << endl;
-					//dumbvalcheck++;
+					if ((listT2_1.flagArray[x][z] & chunkbitmask) == chunkbitmask)
+					{
+						EnclaveKeyDef::EnclaveKey tempKey;
+						tempKey.x = x;
+						tempKey.y = bitmaskval;
+						tempKey.z = z;
+						CollectionRef->ActivateEnclaveForRendering(tempKey);
+						//cout << "value of key 1::: " << tempKey.x << ", " << tempKey.y << ", " << tempKey.z << "||" << int(listT2_1.flagArray[x][z]) << endl;
+						//dumbvalcheck++;
+					}
+
 				}
+				//cout << "chunkbitmask: (" << y << ")" << chunkbitmask << endl;
+				chunkbitmask <<= 1;
+				bitmaskval++;
 
 			}
-			//cout << "chunkbitmask: (" << y << ")" << chunkbitmask << endl;
-			chunkbitmask <<= 1;
-			bitmaskval++;
-
 		}
+		auto finish4 = std::chrono::high_resolution_clock::now();															// optional, for debugging
+		std::chrono::duration<double> elapsed4 = finish4 - start4;
+		//cout << "Phase 1 time::  " << elapsed4.count() << " :" << dumbvalcheck << endl;
+
+		//cout << "number of renderable polys" <<  CollectionRef->EnclaveArray[0][6][0].GetTotalTrianglesInEnclave() << endl;
+
+		// Phase 2: ManifestCollection set up
+		//cout << "test value of renderable enclaves: " << CollectionRef->totalRenderableEnclaves << endl;
+
+
+		//auto start5 = std::chrono::high_resolution_clock::now();
+		//EnclaveCollection *collectionPtr = &EnclaveCollectionsRef.EnclaveCollectionMap[Key1];
+		int manifestCounter = CollectionRef->totalRenderableEnclaves;
+		auto start5 = std::chrono::high_resolution_clock::now();
+		//auto finish5 = std::chrono::high_resolution_clock::now();
+		//cout << "begin true test..." << manifestCounter << endl;
+		EnclaveKeyDef::EnclaveKey innerTempKey;
+		//ManifestCollection *tempMCollectionRef = &ManifestCollectionsRef.ManiCollectionMap[Key1];
+
+
+		//cout << "Attempting manifest adds (new function)..." << endl;
+		//ManifestCollection *tempMCollectionRef = &ManifestCollectionsRef.GetRefManiCollectionMap(Key1);				// temp collection ref fails when using on line 169.
+		for (int a = 0; a < manifestCounter; a++)
+		{
+			//start5 = std::chrono::high_resolution_clock::now();
+			innerTempKey = CollectionRef->RenderableEnclaves[a];
+			//cout << "test of key values: [" << innerTempKey.x << ", " << innerTempKey.y << ", " << innerTempKey.z << "]" << endl;
+			ManifestCollectionsRef.AttachManifestToCollectedEnclave2(Key1, innerTempKey.x, innerTempKey.y, innerTempKey.z, ManifestCollectionRef);
+			//ManifestCollectionsRef.AttachManifestToCollectedEnclave(Key1, innerTempKey.x, innerTempKey.y, innerTempKey.z);
+			//finish5 = std::chrono::high_resolution_clock::now();
+			ManifestCollectionsRef.heaptest[0]++;
+		}
+		//cout << "Manifest adds complete (new function)..." << endl;
+		auto finish5 = std::chrono::high_resolution_clock::now();									// optional, for debugging
+		std::chrono::duration<double> elapsed5 = finish5 - start5;
+		//cout << "Phase 2 time:  " << elapsed5.count() << " :" << manifestCounter << endl;
+		//ManifestCollectionRef->ManMatrix
+		//ManifestCollection tempManiRef = std::ref(ManifestCollectionsRef.ManiCollectionMap[Key1]);
+		std::unordered_map<EnclaveKeyDef::EnclaveKey, ManifestCollection, EnclaveKeyDef::KeyHasher>::iterator ManiCollectionIter;
+		ManiCollectionIter = ManifestCollectionsRef.ManiCollectionMap.begin();
+		//int tempVal = std::ref(ManifestCollectionsRef.heaptest);
+		EnclaveKeyDef::EnclaveKey newTempKey;
+		newTempKey.x = 0;
+		newTempKey.y = 6;
+		newTempKey.z = 0;
+		//cout << "test of tempVal:" << ManifestCollectionsRef.heaptest[0];
+		//cout << "HOO BOY!" << ManifestCollectionRef->ManMatrix[newTempKey].TotalEnclaveTriangles;				// RENAME THIS TO SOMETHING ELSE! (ManifestCollectionRef)
+																												//std::unordered_map<EnclaveKeyDef::EnclaveKey, reference_wrapper<EnclaveManifest>, EnclaveKeyDef::KeyHasher>::iterator testiter;
+																												//std::unordered_map<EnclaveKeyDef::EnclaveKey, reference_wrapper<ManifestCollection>, EnclaveKeyDef::KeyHasher>::iterator ManiCollectionIter2;
+
+																												//testiter = ManifestCollectionsRef.ManiCollectionMap[Key1].testmap2.find(newTempKey);
+																												//ManiCollectionIter2 = ManifestCollectionsRef.ManiCollectionMapRef.find(Key1);
+																												//reference_wrapper<EnclaveManifest> maniPtr = ManifestCollectionsRef.ManiCollectionMap[Key1].testmap2[newTempKey];
+																												//reference_wrapper<ManifestCollection> maniPtr = ManifestCollectionsRef.ManiCollectionMapRef[Key1];
+																												//EnclaveManifest maniPtr = testiter->second;
+
+																												//for (ManiCollectionIter; ManiCollectionIter != ManifestCollectionsRef.ManiCollectionMap.end(); ++ManiCollectionIter)
+																												//{
+																												//cout << "what" << ManiCollectionIter->second.GetManifestFromMatrix(0, 6, 0).TotalEnclaveTriangles  << endl;
+
+																												//}
+
+																												//ManifestCollection manicollPtr = ManiCollectionIter2->second;
+																												//testiter = manicollPtr.testmap2.find(newTempKey);
+																												//EnclaveManifest maniPtr = testiter->second;
+																												//cout << "test of maniPtr:" << maniPtr.TotalEnclaveTriangles << endl; // DOES NOT WORK!
+																												//cout << "test of otherval: " << maniPtr.TotalEnclaveTriangles << endl;
+
+
+																												//ManifestCollection tempManiRef = std::ref(ManifestCollectionsRef.GetRefManiCollectionMap(Key1));
+																												//cout << "test:::" << tempManiRef.GetManifestFromMatrix(0, 6, 0).TotalEnclaveTriangles << endl;
+																												// Phase 3: Render collection set up
+
+		RenderCollectionsRef.CreateRenderArrayFromManifestCollection(Key1);
 	}
-	auto finish4 = std::chrono::high_resolution_clock::now();															// optional, for debugging
-	std::chrono::duration<double> elapsed4 = finish4 - start4;
-	//cout << "Phase 1 time::  " << elapsed4.count() << " :" << dumbvalcheck << endl;
-
-	//cout << "number of renderable polys" <<  CollectionRef->EnclaveArray[0][6][0].GetTotalTrianglesInEnclave() << endl;
-
-	// Phase 2: ManifestCollection set up
-	//cout << "test value of renderable enclaves: " << CollectionRef->totalRenderableEnclaves << endl;
-
-
-	//auto start5 = std::chrono::high_resolution_clock::now();
-	EnclaveCollection *collectionPtr = &EnclaveCollectionsRef.EnclaveCollectionMap[Key1];
-	int manifestCounter = CollectionRef->totalRenderableEnclaves;
-	auto start5 = std::chrono::high_resolution_clock::now();
-	//auto finish5 = std::chrono::high_resolution_clock::now();
-	//cout << "begin true test..." << manifestCounter << endl;
-	EnclaveKeyDef::EnclaveKey innerTempKey;
-	//ManifestCollection *tempMCollectionRef = &ManifestCollectionsRef.ManiCollectionMap[Key1];
-
-
-	//cout << "Attempting manifest adds (new function)..." << endl;
-	ManifestCollection *tempMCollectionRef = &ManifestCollectionsRef.GetRefManiCollectionMap(Key1);				// temp collection ref fails when using on line 169.
-	for (int a = 0; a < manifestCounter; a++)
-	{
-		//start5 = std::chrono::high_resolution_clock::now();
-		innerTempKey = CollectionRef->RenderableEnclaves[a];
-		//cout << "test of key values: [" << innerTempKey.x << ", " << innerTempKey.y << ", " << innerTempKey.z << "]" << endl;
-		ManifestCollectionsRef.AttachManifestToCollectedEnclave2(Key1, innerTempKey.x, innerTempKey.y, innerTempKey.z, ManifestCollectionRef);
-		//ManifestCollectionsRef.AttachManifestToCollectedEnclave(Key1, innerTempKey.x, innerTempKey.y, innerTempKey.z);
-		//finish5 = std::chrono::high_resolution_clock::now();
-		ManifestCollectionsRef.heaptest[0]++;
-	}
-	//cout << "Manifest adds complete (new function)..." << endl;
-	auto finish5 = std::chrono::high_resolution_clock::now();									// optional, for debugging
-	std::chrono::duration<double> elapsed5 = finish5 - start5;
-	//cout << "Phase 2 time:  " << elapsed5.count() << " :" << manifestCounter << endl;
-	//ManifestCollectionRef->ManMatrix
-	//ManifestCollection tempManiRef = std::ref(ManifestCollectionsRef.ManiCollectionMap[Key1]);
-	std::unordered_map<EnclaveKeyDef::EnclaveKey, ManifestCollection, EnclaveKeyDef::KeyHasher>::iterator ManiCollectionIter;
-	ManiCollectionIter = ManifestCollectionsRef.ManiCollectionMap.begin();
-	//int tempVal = std::ref(ManifestCollectionsRef.heaptest);
-	EnclaveKeyDef::EnclaveKey newTempKey;
-	newTempKey.x = 0;
-	newTempKey.y = 6;
-	newTempKey.z = 0;
-	//cout << "test of tempVal:" << ManifestCollectionsRef.heaptest[0];
-	//cout << "HOO BOY!" << ManifestCollectionRef->ManMatrix[newTempKey].TotalEnclaveTriangles;				// RENAME THIS TO SOMETHING ELSE! (ManifestCollectionRef)
-																											//std::unordered_map<EnclaveKeyDef::EnclaveKey, reference_wrapper<EnclaveManifest>, EnclaveKeyDef::KeyHasher>::iterator testiter;
-																											//std::unordered_map<EnclaveKeyDef::EnclaveKey, reference_wrapper<ManifestCollection>, EnclaveKeyDef::KeyHasher>::iterator ManiCollectionIter2;
-
-																											//testiter = ManifestCollectionsRef.ManiCollectionMap[Key1].testmap2.find(newTempKey);
-																											//ManiCollectionIter2 = ManifestCollectionsRef.ManiCollectionMapRef.find(Key1);
-																											//reference_wrapper<EnclaveManifest> maniPtr = ManifestCollectionsRef.ManiCollectionMap[Key1].testmap2[newTempKey];
-																											//reference_wrapper<ManifestCollection> maniPtr = ManifestCollectionsRef.ManiCollectionMapRef[Key1];
-																											//EnclaveManifest maniPtr = testiter->second;
-
-																											//for (ManiCollectionIter; ManiCollectionIter != ManifestCollectionsRef.ManiCollectionMap.end(); ++ManiCollectionIter)
-																											//{
-																											//cout << "what" << ManiCollectionIter->second.GetManifestFromMatrix(0, 6, 0).TotalEnclaveTriangles  << endl;
-
-																											//}
-
-																											//ManifestCollection manicollPtr = ManiCollectionIter2->second;
-																											//testiter = manicollPtr.testmap2.find(newTempKey);
-																											//EnclaveManifest maniPtr = testiter->second;
-																											//cout << "test of maniPtr:" << maniPtr.TotalEnclaveTriangles << endl; // DOES NOT WORK!
-																											//cout << "test of otherval: " << maniPtr.TotalEnclaveTriangles << endl;
-
-
-																											//ManifestCollection tempManiRef = std::ref(ManifestCollectionsRef.GetRefManiCollectionMap(Key1));
-																											//cout << "test:::" << tempManiRef.GetManifestFromMatrix(0, 6, 0).TotalEnclaveTriangles << endl;
-																											// Phase 3: Render collection set up
-
-	RenderCollectionsRef.CreateRenderArrayFromManifestCollection(Key1);
 	auto trueend = std::chrono::high_resolution_clock::now();
-	std::chrono::duration<double> trueelapsed = trueend - truestart;
+	//std::chrono::duration<double> trueelapsed = trueend - truestart;
 	//cout << "Total time:  " << trueelapsed.count() << " :" << endl;
 }

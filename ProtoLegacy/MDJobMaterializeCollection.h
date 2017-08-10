@@ -31,6 +31,7 @@ public:
 									EnclaveCollection *p_MDEnclaveCollectionPtr,
 									ManifestCollection *p_MDManifestCollectionPtr
 											);
+	MDJobMaterializeCollection();
 };
 
 #endif
