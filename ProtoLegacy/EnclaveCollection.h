@@ -24,7 +24,7 @@ public:
 	EnclaveKeyDef::EnclaveKey RenderableEnclaves[512];
 	int totalRenderableEnclaves = 0;
 	void ActivateEnclaveForRendering(EnclaveKeyDef::EnclaveKey Key);
-
+	Enclave& GetEnclaveByKey(EnclaveKeyDef::EnclaveKey InKey);
 
 };
 #endif

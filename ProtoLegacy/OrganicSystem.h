@@ -25,6 +25,7 @@ OrganicSystem object contains all objects necessary to preserve information on t
 #include "OrganicTextureDictionary.h"
 #include "MDJobMaterializeCollection.h"
 #include "MDListJobMaterializeCollection.h"
+#include "EnclaveManifestFactoryT1.h"
 #include <mutex>
 //#include "thread_pool.h"
 
@@ -58,9 +59,11 @@ public:
 								  EnclaveCollection *CollectionRef,
 									ManifestCollection *ManifestCollectionRef
 									);
-	void JobMaterializeCollection2(MDListJobMaterializeCollection mdjob, mutex& mutexval);
+	void JobMaterializeCollection2(MDListJobMaterializeCollection mdjob, mutex& mutexval, int ThreadID);
+	void JobMaterializeCollection3(MDListJobMaterializeCollection mdjob, mutex& mutexval, EnclaveManifestFactoryT1 *FactoryRef, int ThreadID);
 	thread_pool* getpool();
 	thread_pool* getpool2();
+
 };
 
 #endif

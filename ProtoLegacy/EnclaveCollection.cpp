@@ -28,3 +28,8 @@ void EnclaveCollection::ActivateEnclaveForRendering(EnclaveKeyDef::EnclaveKey Ke
 		}
 	}
 }
+
+Enclave& EnclaveCollection::GetEnclaveByKey(EnclaveKeyDef::EnclaveKey InKey)
+{
+	return EnclaveArray[InKey.x][InKey.y][InKey.z];
+}

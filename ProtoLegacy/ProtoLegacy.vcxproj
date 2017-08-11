@@ -162,6 +162,9 @@
     <ClInclude Include="Enclave.h" />
     <ClInclude Include="EnclaveKeyDef.h" />
     <ClInclude Include="EnclaveManifest.h" />
+    <ClInclude Include="EnclaveManifestFactoryT1.h" />
+    <ClInclude Include="EnclaveManifestFactoryT1Index.h" />
+    <ClInclude Include="EnclaveManifestFactoryT1Storage.h" />
     <ClInclude Include="EnclaveMatrix.h" />
     <ClInclude Include="EnclaveCollectionMesh.h" />
     <ClInclude Include="EnclaveMultiJob.h" />
@@ -200,6 +203,7 @@
     <ClCompile Include="EnclaveCollectionMatrix.cpp" />
     <ClCompile Include="Enclave.cpp" />
     <ClCompile Include="EnclaveManifest.cpp" />
+    <ClCompile Include="EnclaveManifestFactoryT1.cpp" />
     <ClCompile Include="EnclaveMatrix.cpp" />
     <ClCompile Include="EnclaveCollectionMesh.cpp" />
     <ClCompile Include="EnclaveMultiJob.cpp" />

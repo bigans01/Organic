@@ -8,6 +8,7 @@
 #include "thread_pool.h"
 #include "MDJobMaterializeCollection.h"
 #include "MDListJobMaterializeCollection.h"
+#include "EnclaveManifestFactoryT1Index.h"
 #include <mutex>
 
 OrganicSystem::OrganicSystem()
@@ -245,6 +246,8 @@ void OrganicSystem::MaterializeCollection(EnclaveKeyDef::EnclaveKey Key1, Enclav
 	key4.y = 0;
 	key4.z = 1;
 
+	////////////////////////////////////////////////////////////////////////////// BEGIN HIGH MEMORY EFFICIENCY TEST
+
 
 	// -------------------- For first collection to be added to queue
 
@@ -285,10 +288,10 @@ void OrganicSystem::MaterializeCollection(EnclaveKeyDef::EnclaveKey Key1, Enclav
 	//EnclaveCollections.EnclaveCollectionMap[Key1];
 	//std::future<void> coll_1 = tpref->submit5(&OrganicSystem::JobMaterializeCollection, this, Key1, std::ref(BlueprintMatrix), std::ref(EnclaveCollections), std::ref(ManifestCollections), std::ref(RenderCollections), std::ref(passCollectionPtr), std::ref(passManifestPtr)); // , std::ref(blueprintptrpass)
 	//std::future<void> coll_1 = tpref->submit5(&OrganicSystem::JobMaterializeCollection2, this, std::ref(MDJob1));
-	std::future<void> coll_1 = tpref->submit5(&OrganicSystem::JobMaterializeCollection2, this, std::ref(tempJobList), std::ref(mutexval));
+	std::future<void> coll_1 = tpref->submit5(&OrganicSystem::JobMaterializeCollection2, this, std::ref(tempJobList), std::ref(mutexval), 1);
 	//auto start4 = std::chrono::high_resolution_clock::now();
 	//std::future<void> coll_2 = tpref2->submit5(&OrganicSystem::JobMaterializeCollection, this, Key2, std::ref(BlueprintMatrix), std::ref(EnclaveCollections), std::ref(ManifestCollections), std::ref(RenderCollections), std::ref(passCollectionPtr2), std::ref(passManifestPtr2)); // , std::ref(blueprintptrpass)
-	std::future<void> coll_2 = tpref2->submit5(&OrganicSystem::JobMaterializeCollection2, this, std::ref(tempJobList2), std::ref(mutexval));
+	std::future<void> coll_2 = tpref2->submit5(&OrganicSystem::JobMaterializeCollection2, this, std::ref(tempJobList2), std::ref(mutexval), 2);
 	//std::future<void> coll_2 = tpref2->submit5(&OrganicSystem::JobMaterializeCollection, this, Key2, std::ref(BlueprintMatrix), std::ref(EnclaveCollections), std::ref(ManifestCollections), std::ref(RenderCollections));
 	//auto finish4 = std::chrono::high_resolution_clock::now();
 	auto start4 = std::chrono::high_resolution_clock::now();
@@ -298,7 +301,47 @@ void OrganicSystem::MaterializeCollection(EnclaveKeyDef::EnclaveKey Key1, Enclav
 	coll_2.wait();
 	auto finish4 = std::chrono::high_resolution_clock::now();															// optional, for debugging
 	std::chrono::duration<double> elapsed4 = finish4 - start4;
-	cout << "Dual coollection instantiation speed:  " << elapsed4.count() << endl;
+	cout << "Dual coollection instantiation speed (High Memory Efficiency):  " << elapsed4.count() << endl;
+
+	////////////////////////////////////////////////////////////////////////////// END HIGH MEMORY EFFICIENCY TEST
+
+
+	////////////////////////////////////////////////////////////////////////////// BEGIN LOW MEMORY EFFICIENCY TEST
+	EnclaveManifestFactoryT1Index MainFactoryIndex;
+
+	MainFactoryIndex.FactoryMap["Factory 1"].StorageArray[0].VertexArrayCount = 0;
+	EnclaveManifestFactoryT1 *FactoryPtr = &MainFactoryIndex.FactoryMap["Factory 1"];
+	FactoryPtr->TextureDictionaryRef = &TextureDictionary;
+
+	MainFactoryIndex.FactoryMap["Factory 2"].StorageArray[0].VertexArrayCount = 0;
+	EnclaveManifestFactoryT1 *FactoryPtr2 = &MainFactoryIndex.FactoryMap["Factory 2"];
+	FactoryPtr2->TextureDictionaryRef = &TextureDictionary;
+	
+	auto lowstart = std::chrono::high_resolution_clock::now();
+	std::future<void> coll_3 = tpref->submit5(&OrganicSystem::JobMaterializeCollection3, this, std::ref(tempJobList), std::ref(mutexval), std::ref(FactoryPtr), 1);
+	std::future<void> coll_4 = tpref->submit5(&OrganicSystem::JobMaterializeCollection3, this, std::ref(tempJobList2), std::ref(mutexval), std::ref(FactoryPtr2), 2);
+	coll_3.wait();
+	coll_4.wait();
+	auto lowend = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> lowelapsed = lowend - lowstart;
+	cout << "Dual coollection instantiation speed (Low Memory Efficiency):  " << lowelapsed.count() << endl;
+	////////////////////////////////////////////////////////////////////////////// END LOW MEMORY EFFICIENCY TEST
+
+	EnclaveCollection *T2CollectionRef = &EnclaveCollections.EnclaveCollectionMap[key4];
+
+	auto factorystart = std::chrono::high_resolution_clock::now();
+	for (int x = 0; x < 64; x++)
+	{
+		EnclaveKeyDef::EnclaveKey tempKey = T2CollectionRef->RenderableEnclaves[x];
+		Enclave *tempEnclavePtr = &T2CollectionRef->GetEnclaveByKey(tempKey);
+		FactoryPtr->AttachManifestToEnclave(tempEnclavePtr);
+		FactoryPtr->StorageArray[x].VertexArrayCount = 2;
+
+	}
+
+	auto factoryend = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> factoryelapsed = factoryend - factorystart;
+	cout << "Factory iteration time  " << factoryelapsed.count() << endl;
 }
 
 void OrganicSystem::SetupFutureCollection(int x, int y, int z)
@@ -404,7 +447,7 @@ void OrganicSystem::AddOrganicTextureMetaArray(string mapname)
 	tempMetaRef->BlockData.FaceIndex[0].FaceData[0].U = 2;
 }
 
-void OrganicSystem::JobMaterializeCollection2(MDListJobMaterializeCollection mdjob, mutex& mutexval)
+void OrganicSystem::JobMaterializeCollection2(MDListJobMaterializeCollection mdjob, mutex& mutexval, int ThreadID)
 {
 	//std::mutex tempmutex;
 
@@ -416,11 +459,11 @@ void OrganicSystem::JobMaterializeCollection2(MDListJobMaterializeCollection mdj
 	JobIteratorEnd = mdjob.ListMatrix.end();
 	
 
-	mutexval.lock();
+	//mutexval.lock();
 	auto lockstart = std::chrono::high_resolution_clock::now();
 	auto lockend = std::chrono::high_resolution_clock::now();
 	auto truestart = std::chrono::high_resolution_clock::now();
-	mutexval.unlock();
+	//mutexval.unlock();
 	int dumboutput = 1;
 
 	for (JobIterator = mdjob.ListMatrix.begin(); JobIterator != JobIteratorEnd; ++JobIterator)
@@ -436,24 +479,25 @@ void OrganicSystem::JobMaterializeCollection2(MDListJobMaterializeCollection mdj
 		//RenderCollectionMatrix RenderCollectionsRef = tempList.MDRenderCollectionsRef;
 		//EnclaveCollection *CollectionRef = tempList.MDEnclaveCollectionPtr;
 		//ManifestCollection *ManifestCollectionRef = tempList.MDManifestCollectionPtr;
-
+		
 		EnclaveKeyDef::EnclaveKey Key1 = JobIterator->second.MDKey;
 		EnclaveCollectionBlueprintMatrix BlueprintMatrixRef = JobIterator->second.MDBlueprintMatrixRef;
+		EnclaveCollectionBlueprint *blueprintptr = &BlueprintMatrixRef.BlueprintMap[Key1];
 		EnclaveCollectionMatrix EnclaveCollectionsRef = JobIterator->second.MDEnclaveCollectionsRef;
-		ManifestCollectionMatrix ManifestCollectionsRef = JobIterator->second.MDManifestCollectionsRef;
+		//ManifestCollectionMatrix ManifestCollectionsRef = JobIterator->second.MDManifestCollectionsRef;
 		RenderCollectionMatrix RenderCollectionsRef = JobIterator->second.MDRenderCollectionsRef;
 		EnclaveCollection *CollectionRef = JobIterator->second.MDEnclaveCollectionPtr;
 		ManifestCollection *ManifestCollectionRef = JobIterator->second.MDManifestCollectionPtr;
 
 		//auto initstart = std::chrono::high_resolution_clock::now();
-		
-		auto initend = std::chrono::high_resolution_clock::now();
 		mutexval.lock();
-		EnclaveCollectionBlueprint *blueprintptr = &BlueprintMatrixRef.BlueprintMap[Key1];				// hardcoded blueprint (for testing)
+		auto initend = std::chrono::high_resolution_clock::now();
+																			// will cause heap corruption if removed (race condition to access map)?
+					// hardcoded blueprint (for testing)
 		//auto initend = std::chrono::high_resolution_clock::now();
-		//std::chrono::duration<double> initelapsed = initend - initstart;
-		//cout << "Init time:  " << initelapsed.count() << " :" << endl;
-		mutexval.unlock();
+		std::chrono::duration<double> initelapsed = initend - initstart;
+		//cout << "(THREAD_" << ThreadID <<") Init time (High Efficiency):  " << initelapsed.count() << " :" << endl;
+		mutexval.unlock();																		// will cause heap corruption if removed (race condition to access map)?
 
 		EnclaveCollectionActivateListT2 listT2_1;
 		//EnclaveCollection *collectionMapRef = &EnclaveCollectionsRef.EnclaveCollectionMap[Key1];
@@ -461,6 +505,8 @@ void OrganicSystem::JobMaterializeCollection2(MDListJobMaterializeCollection mdj
 		int chunkbitmask = 1;
 		int bitmaskval = 0;
 		//int dumbvalcheck = 0;
+
+		// Phase 1: EnclaveCollection instantiation
 		for (int x = 0; x < 8; x++)
 		{
 			chunkbitmask = 1;
@@ -479,7 +525,6 @@ void OrganicSystem::JobMaterializeCollection2(MDListJobMaterializeCollection mdj
 						tempKey.z = z;
 						CollectionRef->ActivateEnclaveForRendering(tempKey);
 						//cout << "value of key 1::: " << tempKey.x << ", " << tempKey.y << ", " << tempKey.z << "||" << int(listT2_1.flagArray[x][z]) << endl;
-						//dumbvalcheck++;
 					}
 
 				}
@@ -489,95 +534,151 @@ void OrganicSystem::JobMaterializeCollection2(MDListJobMaterializeCollection mdj
 
 			}
 		}
-		//auto finish4 = std::chrono::high_resolution_clock::now();															// optional, for debugging
-		//std::chrono::duration<double> elapsed4 = finish4 - start4;
-		//cout << "Phase 1 time::  " << elapsed4.count() << " :" << dumbvalcheck << endl;
 
-		//cout << "number of renderable polys" <<  CollectionRef->EnclaveArray[0][6][0].GetTotalTrianglesInEnclave() << endl;
-
-		// Phase 2: ManifestCollection set up
-		//cout << "test value of renderable enclaves: " << CollectionRef->totalRenderableEnclaves << endl;
 
 
 		
-		//auto start5 = std::chrono::high_resolution_clock::now();
-		//EnclaveCollection *collectionPtr = &EnclaveCollectionsRef.EnclaveCollectionMap[Key1];
+		// Phase 2: ManifestCollection set up
 		mutexval.lock();
-		//cout << "Phase 1 ended, beginning Phase 2..." << endl;
 		int manifestCounter = CollectionRef->totalRenderableEnclaves;
+		//cout << "(THREAD_" << ThreadID << ") Phase 2 Lock acquisition..." << endl;
 		auto start5 = std::chrono::high_resolution_clock::now();
-		//auto finish5 = std::chrono::high_resolution_clock::now();
-		//cout << "begin true test..." << manifestCounter << endl;
 		EnclaveKeyDef::EnclaveKey innerTempKey;
-		//ManifestCollection *tempMCollectionRef = &ManifestCollectionsRef.ManiCollectionMap[Key1];
-
-
-		//cout << "Attempting manifest adds (new function)..." << endl;
-		//ManifestCollection *tempMCollectionRef = &ManifestCollectionsRef.GetRefManiCollectionMap(Key1);				// temp collection ref fails when using on line 169.
-		//mutexval.lock();
 		for (int a = 0; a < manifestCounter; a++)
 		{
-			// need a mutex here
-			//start5 = std::chrono::high_resolution_clock::now();
 			innerTempKey = CollectionRef->RenderableEnclaves[a];
 			//cout << "test of key values: [" << innerTempKey.x << ", " << innerTempKey.y << ", " << innerTempKey.z << "]" << endl;
-			ManifestCollectionsRef.AttachManifestToCollectedEnclave2(Key1, innerTempKey.x, innerTempKey.y, innerTempKey.z, ManifestCollectionRef, dumboutput);
-			//ManifestCollectionsRef.AttachManifestToCollectedEnclave(Key1, innerTempKey.x, innerTempKey.y, innerTempKey.z);
-			//finish5 = std::chrono::high_resolution_clock::now();
-			//ManifestCollectionsRef.heaptest[0]++;
+			//ManifestCollectionsRef.AttachManifestToCollectedEnclave2(Key1, innerTempKey.x, innerTempKey.y, innerTempKey.z, ManifestCollectionRef, dumboutput);
+			ManifestCollectionRef->AddManifestToMatrix(innerTempKey.x, innerTempKey.y, innerTempKey.z, Key1);
 		}
 		auto finish5 = std::chrono::high_resolution_clock::now();									// optional, for debugging
-		std::chrono::duration<double> elapsed5 = finish5 - start5;
-		cout << "Phase 2 time:  " << elapsed5.count() << " :" << manifestCounter << endl;
-		//lockstart = std::chrono::high_resolution_clock::now();
+		std::chrono::duration<double> elapsed5 = finish5 - start5;									// ""
+		//cout << "(THREAD_" << ThreadID << ") Phase 2 time (High Efficiency):  " << elapsed5.count() << " :" << manifestCounter << endl;			// ""
 		mutexval.unlock();
 
 
 
 
-		//lockend = std::chrono::high_resolution_clock::now();
-		//cout << "Manifest adds complete (new function)..." << endl;
-	
-		//ManifestCollectionRef->ManMatrix
-		//ManifestCollection tempManiRef = std::ref(ManifestCollectionsRef.ManiCollectionMap[Key1]);
-		//std::unordered_map<EnclaveKeyDef::EnclaveKey, ManifestCollection, EnclaveKeyDef::KeyHasher>::iterator ManiCollectionIter;
-		//ManiCollectionIter = ManifestCollectionsRef.ManiCollectionMap.begin();
-		//int tempVal = std::ref(ManifestCollectionsRef.heaptest);
-		//EnclaveKeyDef::EnclaveKey newTempKey;
-		//newTempKey.x = 0;
-		//newTempKey.y = 6;
-		//newTempKey.z = 0;
-		//cout << "test of tempVal:" << ManifestCollectionsRef.heaptest[0];
 		//cout << "HOO BOY!" << ManifestCollectionRef->ManMatrix[newTempKey].TotalEnclaveTriangles;				// RENAME THIS TO SOMETHING ELSE! (ManifestCollectionRef)
-																												//std::unordered_map<EnclaveKeyDef::EnclaveKey, reference_wrapper<EnclaveManifest>, EnclaveKeyDef::KeyHasher>::iterator testiter;
-																												//std::unordered_map<EnclaveKeyDef::EnclaveKey, reference_wrapper<ManifestCollection>, EnclaveKeyDef::KeyHasher>::iterator ManiCollectionIter2;
 
-																												//testiter = ManifestCollectionsRef.ManiCollectionMap[Key1].testmap2.find(newTempKey);
-																												//ManiCollectionIter2 = ManifestCollectionsRef.ManiCollectionMapRef.find(Key1);
-																												//reference_wrapper<EnclaveManifest> maniPtr = ManifestCollectionsRef.ManiCollectionMap[Key1].testmap2[newTempKey];
-																												//reference_wrapper<ManifestCollection> maniPtr = ManifestCollectionsRef.ManiCollectionMapRef[Key1];
-																												//EnclaveManifest maniPtr = testiter->second;
-
-																												//for (ManiCollectionIter; ManiCollectionIter != ManifestCollectionsRef.ManiCollectionMap.end(); ++ManiCollectionIter)
-																												//{
-																												//cout << "what" << ManiCollectionIter->second.GetManifestFromMatrix(0, 6, 0).TotalEnclaveTriangles  << endl;
-
-																												//}
-
-																												//ManifestCollection manicollPtr = ManiCollectionIter2->second;
-																												//testiter = manicollPtr.testmap2.find(newTempKey);
-																												//EnclaveManifest maniPtr = testiter->second;
-																												//cout << "test of maniPtr:" << maniPtr.TotalEnclaveTriangles << endl; // DOES NOT WORK!
-																												//cout << "test of otherval: " << maniPtr.TotalEnclaveTriangles << endl;
-
-
-																												//ManifestCollection tempManiRef = std::ref(ManifestCollectionsRef.GetRefManiCollectionMap(Key1));
-																												//cout << "test:::" << tempManiRef.GetManifestFromMatrix(0, 6, 0).TotalEnclaveTriangles << endl;
-																												// Phase 3: Render collection set up
+		// Phase 3: Render collection set up
 		//mutexval.lock();
 		//RenderCollectionsRef.CreateRenderArrayFromManifestCollection(Key1);
 		//mutexval.unlock();
-		dumboutput++;
+		//dumboutput++;
+		
+		
+	}
+
+	mutexval.lock();
+	std::chrono::duration<double> truelocktime = lockstart - lockend;
+	auto trueend = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> trueelapsed = trueend - truestart;
+	cout << "Total time:  " << trueelapsed.count() << endl;
+	mutexval.unlock();
+}
+
+void OrganicSystem::JobMaterializeCollection3(MDListJobMaterializeCollection mdjob, mutex& mutexval, EnclaveManifestFactoryT1 *FactoryRef, int ThreadID)
+{
+	std::unordered_map<EnclaveKeyDef::EnclaveKey, MDJobMaterializeCollection, EnclaveKeyDef::KeyHasher>::iterator JobIterator;
+	std::unordered_map<EnclaveKeyDef::EnclaveKey, MDJobMaterializeCollection, EnclaveKeyDef::KeyHasher>::iterator JobIteratorEnd;
+
+
+	JobIterator = mdjob.ListMatrix.begin();
+	JobIteratorEnd = mdjob.ListMatrix.end();
+
+	//mutexval.lock();
+	auto lockstart = std::chrono::high_resolution_clock::now();
+	auto lockend = std::chrono::high_resolution_clock::now();
+	auto truestart = std::chrono::high_resolution_clock::now();
+	//mutexval.unlock();
+
+	for (JobIterator = mdjob.ListMatrix.begin(); JobIterator != JobIteratorEnd; ++JobIterator)
+		//for (auto it = mdjob.ListMatrix.begin(); it != mdjob.ListMatrix.end(); ++it)
+	{
+		auto initstart = std::chrono::high_resolution_clock::now();
+
+		//MDJobMaterializeCollection tempList = JobIterator->second;
+		//EnclaveKeyDef::EnclaveKey Key1 = tempList.MDKey;
+		//EnclaveCollectionBlueprintMatrix BlueprintMatrixRef = tempList.MDBlueprintMatrixRef;
+		//EnclaveCollectionMatrix EnclaveCollectionsRef = tempList.MDEnclaveCollectionsRef;
+		//ManifestCollectionMatrix ManifestCollectionsRef = tempList.MDManifestCollectionsRef;
+		//RenderCollectionMatrix RenderCollectionsRef = tempList.MDRenderCollectionsRef;
+		//EnclaveCollection *CollectionRef = tempList.MDEnclaveCollectionPtr;
+		//ManifestCollection *ManifestCollectionRef = tempList.MDManifestCollectionPtr;
+
+		EnclaveKeyDef::EnclaveKey Key1 = JobIterator->second.MDKey;
+		EnclaveCollectionBlueprintMatrix BlueprintMatrixRef = JobIterator->second.MDBlueprintMatrixRef;
+		EnclaveCollectionBlueprint *blueprintptr = &BlueprintMatrixRef.BlueprintMap[Key1];
+		EnclaveCollectionMatrix EnclaveCollectionsRef = JobIterator->second.MDEnclaveCollectionsRef;
+		//ManifestCollectionMatrix ManifestCollectionsRef = JobIterator->second.MDManifestCollectionsRef;
+		RenderCollectionMatrix RenderCollectionsRef = JobIterator->second.MDRenderCollectionsRef;
+		EnclaveCollection *CollectionRef = JobIterator->second.MDEnclaveCollectionPtr;
+		//ManifestCollection *ManifestCollectionRef = JobIterator->second.MDManifestCollectionPtr;
+
+		//auto initstart = std::chrono::high_resolution_clock::now();
+
+		auto initend = std::chrono::high_resolution_clock::now();
+		mutexval.lock();																		
+		std::chrono::duration<double> initelapsed = initend - initstart;
+		//cout << "Init time (Low Efficiency):  " << initelapsed.count() << " :" << endl;
+		mutexval.unlock();																		
+
+		EnclaveCollectionActivateListT2 listT2_1;
+		//EnclaveCollection *collectionMapRef = &EnclaveCollectionsRef.EnclaveCollectionMap[Key1];
+		EnclaveCollectionsRef.JobInstantiateAndPopulateEnclaveAlpha(0, 7 + 1, std::ref(*CollectionRef), Key1, blueprintptr, std::ref(listT2_1)); //EnclaveCollectionMap[Key]
+		int chunkbitmask = 1;
+		int bitmaskval = 0;
+		//int dumbvalcheck = 0;
+
+		// Phase 1: EnclaveCollection instantiation
+		for (int x = 0; x < 8; x++)
+		{
+			chunkbitmask = 1;
+			bitmaskval = 0;
+			for (int y = 0; y < 8; y++)
+			{
+
+
+				for (int z = 0; z < 8; z++)
+				{
+					if ((listT2_1.flagArray[x][z] & chunkbitmask) == chunkbitmask)
+					{
+						EnclaveKeyDef::EnclaveKey tempKey;
+						tempKey.x = x;
+						tempKey.y = bitmaskval;
+						tempKey.z = z;
+						CollectionRef->ActivateEnclaveForRendering(tempKey);
+						//cout << "value of key 1::: " << tempKey.x << ", " << tempKey.y << ", " << tempKey.z << "||" << int(listT2_1.flagArray[x][z]) << endl;
+					}
+
+				}
+				//cout << "chunkbitmask: (" << y << ")" << chunkbitmask << endl;
+				chunkbitmask <<= 1;
+				bitmaskval++;
+
+			}
+		}
+
+		// Phase 2: Factory work
+		int manifestCounter = CollectionRef->totalRenderableEnclaves;
+		auto start5 = std::chrono::high_resolution_clock::now();
+		EnclaveKeyDef::EnclaveKey innerTempKey;
+		for (int a = 0; a < manifestCounter; a++)
+		{
+			innerTempKey = CollectionRef->RenderableEnclaves[a];
+			//cout << "test of key values: [" << innerTempKey.x << ", " << innerTempKey.y << ", " << innerTempKey.z << "]" << endl;
+			//ManifestCollectionsRef.AttachManifestToCollectedEnclave2(Key1, innerTempKey.x, innerTempKey.y, innerTempKey.z, ManifestCollectionRef, dumboutput);
+			Enclave *tempEnclavePtr = &CollectionRef->GetEnclaveByKey(innerTempKey);
+			FactoryRef->AttachManifestToEnclave(tempEnclavePtr);
+
+		}
+		auto finish5 = std::chrono::high_resolution_clock::now();									// optional, for debugging
+		std::chrono::duration<double> elapsed5 = finish5 - start5;									// ""
+
+		mutexval.lock();
+		//cout << "Phase 2 time (Low efficiency):  " << elapsed5.count() << " :" << manifestCounter << endl;
+		mutexval.unlock();
 	}
 
 	mutexval.lock();
