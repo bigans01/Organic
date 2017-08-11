@@ -25,9 +25,9 @@ class EnclaveManifestFactoryT1Storage {
 public:
 	int TotalEnclaveTriangles = 0;
 	int VertexArrayCount = 0;
-	GLfloat VertexArray[6912];	// 108 GLfloats per cube, x 64 = 6912.
+	GLfloat VertexArray[13824];	// 108 GLfloats per cube, x 64 = 6912.   (alternate: 13824)
 	int TextureArrayCount = 0;
-	GLfloat TextureArray[6912]; // 108 GLfloats per cube, x 64 = 6912.
+	GLfloat TextureArray[13824]; // 108 GLfloats per cube, x 64 = 6912.
 	
 };
 
