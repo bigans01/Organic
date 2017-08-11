@@ -266,6 +266,7 @@ void OrganicSystem::MaterializeCollection(EnclaveKeyDef::EnclaveKey Key1, Enclav
 	////////////////////////////////////////////////////////////////////////////// BEGIN HIGH MEMORY EFFICIENCY TEST
 
 
+
 	// -------------------- For first list to be added to queue
 
 	MDListJobMaterializeCollection tempJobList;
@@ -349,6 +350,7 @@ void OrganicSystem::MaterializeCollection(EnclaveKeyDef::EnclaveKey Key1, Enclav
 
 
 	////////////////////////////////////////////////////////////////////////////// BEGIN LOW MEMORY EFFICIENCY TEST
+
 	EnclaveManifestFactoryT1Index MainFactoryIndex;
 
 	MainFactoryIndex.FactoryMap["Factory 1"].StorageArray[0].VertexArrayCount = 0;
@@ -358,7 +360,6 @@ void OrganicSystem::MaterializeCollection(EnclaveKeyDef::EnclaveKey Key1, Enclav
 	MainFactoryIndex.FactoryMap["Factory 2"].StorageArray[0].VertexArrayCount = 0;
 	EnclaveManifestFactoryT1 *FactoryPtr2 = &MainFactoryIndex.FactoryMap["Factory 2"];
 	FactoryPtr2->TextureDictionaryRef = &TextureDictionary;
-	
 	
 	std::future<void> coll_3 = tpref->submit5(&OrganicSystem::JobMaterializeCollection3, this, std::ref(tempJobList), std::ref(mutexval), std::ref(FactoryPtr), 1);
 	std::future<void> coll_4 = tpref->submit5(&OrganicSystem::JobMaterializeCollection3, this, std::ref(tempJobList2), std::ref(mutexval), std::ref(FactoryPtr2), 2);
@@ -513,7 +514,7 @@ void OrganicSystem::JobMaterializeCollection2(MDListJobMaterializeCollection mdj
 	for (JobIterator = mdjob.ListMatrix.begin(); JobIterator != JobIteratorEnd; ++JobIterator)
 	//for (auto it = mdjob.ListMatrix.begin(); it != mdjob.ListMatrix.end(); ++it)
 	{
-		auto initstart = std::chrono::high_resolution_clock::now();
+		auto initstart = std::chrono::high_resolution_clock::now();				
 
 		//MDJobMaterializeCollection tempList = JobIterator->second;
 		//EnclaveKeyDef::EnclaveKey Key1 = tempList.MDKey;
@@ -527,11 +528,14 @@ void OrganicSystem::JobMaterializeCollection2(MDListJobMaterializeCollection mdj
 		EnclaveKeyDef::EnclaveKey Key1 = JobIterator->second.MDKey;
 		EnclaveCollectionBlueprintMatrix BlueprintMatrixRef = JobIterator->second.MDBlueprintMatrixRef;
 		EnclaveCollectionBlueprint *blueprintptr = &BlueprintMatrixRef.BlueprintMap[Key1];
-		EnclaveCollectionMatrix EnclaveCollectionsRef = JobIterator->second.MDEnclaveCollectionsRef;
+		EnclaveCollectionMatrix EnclaveCollectionsRef = JobIterator->second.MDEnclaveCollectionsRef;				
 		//ManifestCollectionMatrix ManifestCollectionsRef = JobIterator->second.MDManifestCollectionsRef;
-		RenderCollectionMatrix RenderCollectionsRef = JobIterator->second.MDRenderCollectionsRef;
+		RenderCollectionMatrix RenderCollectionsRef = JobIterator->second.MDRenderCollectionsRef;				// WOULD NOT BE CULPRIT
 		EnclaveCollection *CollectionRef = JobIterator->second.MDEnclaveCollectionPtr;
+
+		mutexval.lock();
 		ManifestCollection *ManifestCollectionRef = JobIterator->second.MDManifestCollectionPtr;
+		mutexval.unlock();
 
 		//auto initstart = std::chrono::high_resolution_clock::now();
 		mutexval.lock();
@@ -583,7 +587,7 @@ void OrganicSystem::JobMaterializeCollection2(MDListJobMaterializeCollection mdj
 
 		
 		// Phase 2: ManifestCollection set up
-		mutexval.lock();
+		//mutexval.lock();
 		int manifestCounter = CollectionRef->totalRenderableEnclaves;
 		//cout << "(THREAD_" << ThreadID << ") Phase 2 Lock acquisition..." << endl;
 		auto start5 = std::chrono::high_resolution_clock::now();
@@ -593,12 +597,12 @@ void OrganicSystem::JobMaterializeCollection2(MDListJobMaterializeCollection mdj
 			innerTempKey = CollectionRef->RenderableEnclaves[a];
 			//cout << "test of key values: [" << innerTempKey.x << ", " << innerTempKey.y << ", " << innerTempKey.z << "]" << endl;
 			//ManifestCollectionsRef.AttachManifestToCollectedEnclave2(Key1, innerTempKey.x, innerTempKey.y, innerTempKey.z, ManifestCollectionRef, dumboutput);
-			ManifestCollectionRef->AddManifestToMatrix(innerTempKey.x, innerTempKey.y, innerTempKey.z, Key1);
+			ManifestCollectionRef->AddManifestToMatrix(innerTempKey.x, innerTempKey.y, innerTempKey.z, Key1, 3, std::ref(mutexval));
 		}
 		auto finish5 = std::chrono::high_resolution_clock::now();									// optional, for debugging
 		std::chrono::duration<double> elapsed5 = finish5 - start5;									// ""
 		//cout << "(THREAD_" << ThreadID << ") Phase 2 time (High Efficiency):  " << elapsed5.count() << " :" << manifestCounter << endl;			// ""
-		mutexval.unlock();
+		//mutexval.unlock();
 
 
 

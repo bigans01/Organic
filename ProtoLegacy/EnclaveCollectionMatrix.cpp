@@ -920,6 +920,10 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha(int beginRan
 
 					}
 
+					//for (int x = 0; x < 100000; x++)
+					//{
+
+					//}
 
 
 

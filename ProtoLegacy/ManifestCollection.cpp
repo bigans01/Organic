@@ -83,6 +83,32 @@ void ManifestCollection::AddManifestToMatrix(int x, int y, int z, EnclaveKeyDef:
 	//cout << "test value of triangles:: (" << tempkey.x << ", " << tempkey.y << ", " << tempkey.z << ") " << ManMatrix[tempkey].TotalEnclaveTriangles << endl;
 }
 
+void ManifestCollection::AddManifestToMatrix(int x, int y, int z, EnclaveKeyDef::EnclaveKey Key, int outputdebug, mutex& HeapMutex)
+{
+	/* Summary: adds a newly instanced manifest to the matrix; the manifest will correspond to the Enclave at x/y/z within the EnclaveCollection having a key value of Key */
+	HeapMutex.lock();
+
+	//cout << "test call" << endl;
+	EnclaveKeyDef::EnclaveKey tempkey;
+	tempkey.x = x;
+	tempkey.y = y;
+	tempkey.z = z;
+	//EnclaveCollectionMatrix *dumbref = std::ref(WrappedCollectionMatrixRef->get());
+	OrganicTextureDictionary *tempDictionaryRef = &CollectionMatrixRef->OrganicPointer->TextureDictionary;
+	EnclaveManifest tempmanifest(x, y, z, tempDictionaryRef);
+
+	ManMatrix[tempkey] = tempmanifest;
+	//EnclaveManifest *tptr;
+	//tptr = &ManMatrix[tempkey];
+	//ManMatrix.emplace(tempkey,EnclaveManifest (x, y, z));
+	//cout << "test AddManifestTomatrix: " << EnclaveMatrixRef->GetEnclaveFromMatrix(x, y, z).GetTotalTrianglesInEnclave() << endl;
+	ManMatrix[tempkey].AttachToEnclave(CollectionMatrixRef->GetEnclaveFromCollection(Key, x, y, z));
+	//cout << "test call: " << outputdebug << endl;
+
+	//cout << "test value of triangles:: (" << tempkey.x << ", " << tempkey.y << ", " << tempkey.z << ") " << ManMatrix[tempkey].TotalEnclaveTriangles << endl;
+	HeapMutex.unlock();
+}
+
 void ManifestCollection::UpdateManifest(int x, int y, int z, EnclaveKeyDef::EnclaveKey Key)
 {
 	/* Summary: updates a currently instanced manifest in the matrix. */

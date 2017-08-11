@@ -20,6 +20,7 @@ Dependents: a valid instance of ManifestCollectionMatrix
 #include "EnclaveManifest.h"
 #include "EnclaveCollectionMatrix.h"
 #include <functional>
+#include <mutex>
 
 
 class ManifestCollection {
@@ -37,6 +38,7 @@ public:
 	void AddManifestToMatrix(int x, int y, int z);																			// adds an EnclaveManifest with x/y/z of in the input parameters (unused)
 	void AddManifestToMatrix(int x, int y, int z, EnclaveKeyDef::EnclaveKey Key);											// adds an EnclaveManifest with x/y/z of in the input parameters; the EnclaveKey input parameter is used to 
 	void AddManifestToMatrix(int x, int y, int z, EnclaveKeyDef::EnclaveKey Key, int outputdebug);							// debug purposes only.
+	void AddManifestToMatrix(int x, int y, int z, EnclaveKeyDef::EnclaveKey Key, int outputdebug, mutex& HeapMutex);
 																															// find the corresponding Enclave at x/y/z in the enclave collection having a key value of the input "Key"
 	void UpdateManifest(int x, int y, int z, EnclaveKeyDef::EnclaveKey Key);												// updates a currently existing enclave manifest (does not add a new instance to the ManifestCollection)
 	//void GetManifestFromMatrix(int x, int y, int z);
