@@ -9,11 +9,11 @@
 {
 	ManifestCollectionMatrixPtr = manifestcollectionmatrixref;
 }*/
-
+mutex cmutex;
 void RenderCollectionMatrix::CreateRenderArrayFromManifestCollection(EnclaveKeyDef::EnclaveKey Key)
 {
 	/* Summary: creates a new 3d array for the RenderCollection having a key of Key. */
-
+	cmutex.lock();
 	// NOTE: when adding a class to map, need 2 constructors!! (see 3 lines below)
 	//int x = 0;
 	//RenderCollection tempRenderCollection(x);																// create a render collection that references the proper manifest collection  :: &ManifestCollectionMatrixPtr->ManiCollectionMap[Key]
@@ -27,6 +27,7 @@ void RenderCollectionMatrix::CreateRenderArrayFromManifestCollection(EnclaveKeyD
 	//cout << "---------------create render array from manifest call time: " << elapsed3.count() << endl;
 
 	RenderMatrix[Key].CombineManifestArrays();															// combine arrays
+	cmutex.unlock();
 	
 }
 

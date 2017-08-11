@@ -58,6 +58,31 @@ void ManifestCollection::AddManifestToMatrix(int x, int y, int z, EnclaveKeyDef:
 	//cout << "test value of triangles:: (" << tempkey.x << ", " << tempkey.y << ", " << tempkey.z << ") " << ManMatrix[tempkey].TotalEnclaveTriangles << endl;
 }
 
+void ManifestCollection::AddManifestToMatrix(int x, int y, int z, EnclaveKeyDef::EnclaveKey Key, int outputdebug)
+{
+	/* Summary: adds a newly instanced manifest to the matrix; the manifest will correspond to the Enclave at x/y/z within the EnclaveCollection having a key value of Key */
+
+
+	//cout << "test call" << endl;
+	EnclaveKeyDef::EnclaveKey tempkey;
+	tempkey.x = x;
+	tempkey.y = y;
+	tempkey.z = z;
+	//EnclaveCollectionMatrix *dumbref = std::ref(WrappedCollectionMatrixRef->get());
+	OrganicTextureDictionary *tempDictionaryRef = &CollectionMatrixRef->OrganicPointer->TextureDictionary;
+	EnclaveManifest tempmanifest(x, y, z, tempDictionaryRef);
+
+	ManMatrix[tempkey] = tempmanifest;
+	//EnclaveManifest *tptr;
+	//tptr = &ManMatrix[tempkey];
+	//ManMatrix.emplace(tempkey,EnclaveManifest (x, y, z));
+	//cout << "test AddManifestTomatrix: " << EnclaveMatrixRef->GetEnclaveFromMatrix(x, y, z).GetTotalTrianglesInEnclave() << endl;
+	ManMatrix[tempkey].AttachToEnclave(CollectionMatrixRef->GetEnclaveFromCollection(Key, x, y, z));
+	//cout << "test call: " << outputdebug << endl;
+
+	//cout << "test value of triangles:: (" << tempkey.x << ", " << tempkey.y << ", " << tempkey.z << ") " << ManMatrix[tempkey].TotalEnclaveTriangles << endl;
+}
+
 void ManifestCollection::UpdateManifest(int x, int y, int z, EnclaveKeyDef::EnclaveKey Key)
 {
 	/* Summary: updates a currently instanced manifest in the matrix. */
@@ -73,14 +98,14 @@ void ManifestCollection::UpdateManifest(int x, int y, int z, EnclaveKeyDef::Encl
 ManifestCollection::ManifestCollection(EnclaveMatrix *matrixref)
 {
 	/* Summary: unused constructor */
-	cout << "Old manifest collection add 2 ..." << endl;
+	//cout << "Old manifest collection add 2 ..." << endl;
 	EnclaveMatrixRef = matrixref;
 }
 
 ManifestCollection::ManifestCollection(EnclaveMatrix *matrixref, EnclaveCollectionMatrix *collectionref)
 {
 	/* Summary: unused constructor */
-	cout << "Old manifest collection add..." << endl;
+	//cout << "Old manifest collection add..." << endl;
 	EnclaveMatrixRef = matrixref;
 	CollectionMatrixRef = collectionref;
 }
@@ -88,7 +113,7 @@ ManifestCollection::ManifestCollection(EnclaveMatrix *matrixref, EnclaveCollecti
 ManifestCollection::ManifestCollection(EnclaveCollectionMatrix *collectionref)
 {
 	/* Summary: currently used non-default constructor; sets the value for public member variable CollectionMatrixRef */
-	cout << "New manifest collection add...." << endl;
+	//cout << "New manifest collection add...." << endl;
 	CollectionMatrixRef = collectionref;
 	EnclaveCollectionMatrix *tptr = std::ref(collectionref);
 	reference_wrapper<EnclaveCollectionMatrix*> tptr2 = tptr;
@@ -99,7 +124,7 @@ ManifestCollection::ManifestCollection(EnclaveCollectionMatrix *collectionref)
 
 ManifestCollection::ManifestCollection()
 {
-	cout << "Default manifest collection add..." << endl;
+	//cout << "Default manifest collection add..." << endl;
 	/* Summary: default constructor */
 }
 

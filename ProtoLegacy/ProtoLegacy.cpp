@@ -217,7 +217,7 @@ int main()
 
 	// *********** Enclave Collection load type 2: instantiate a set of collections
 
-	EnclaveKeyDef::EnclaveKey key1, key2;
+	EnclaveKeyDef::EnclaveKey key1, key2, key3, key4;
 	key1.x = 5;
 	key1.y = 0;
 	key1.z = 1;
@@ -226,12 +226,24 @@ int main()
 	key2.y = 0;
 	key2.z = 1;
 
+	key3.x = 7;
+	key3.y = 0;
+	key3.z = 1;
+
+	key4.x = 8;
+	key4.y = 0;
+	key4.z = 1;
+
 	// add/instantiate the new collections here
 	Organic.AddBlueprint(EnclaveCollectionTestKey.x, EnclaveCollectionTestKey.y, EnclaveCollectionTestKey.z, testBlueprint);
 	Organic.AddBlueprint(key1.x, key1.y, key1.z, testBlueprint);
 	Organic.AddBlueprint(key2.x, key2.y, key2.z, testBlueprint);
+	Organic.AddBlueprint(key3.x, key3.y, key3.z, testBlueprint);
+	Organic.AddBlueprint(key4.x, key4.y, key4.z, testBlueprint);
 	Organic.SetupFutureCollection(key1.x, key1.y, key1.z);
 	Organic.SetupFutureCollection(key2.x, key2.y, key2.z);
+	Organic.SetupFutureCollection(key3.x, key3.y, key3.z);
+	Organic.SetupFutureCollection(key4.x, key4.y, key4.z);
 
 	Organic.MaterializeCollection(key1, key2);
 

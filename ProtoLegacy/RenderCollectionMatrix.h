@@ -21,6 +21,7 @@ will iterate over all elements found within this object, calling one draw call f
 #include <unordered_map>
 #include "RenderCollection.h"
 #include "ManifestCollectionMatrix.h"
+#include <mutex>
 
 class RenderCollectionMatrix
 {
@@ -34,6 +35,7 @@ class RenderCollectionMatrix
 		void SetEnclaveCollectionMatrixPtr(EnclaveCollectionMatrix *enclavecollectionmatrixref);
 		RenderCollectionMatrix(ManifestCollectionMatrix *manifestcollectionmatrixref);									// sets the ManifestCollectionMatrixPtr value; default constructor.
 		RenderCollectionMatrix();																						// constructor designed for use in OrganicSystem objects
+		//mutex cmutex;
 };
 
 #endif
