@@ -337,6 +337,22 @@ void OrganicSystem::MaterializeCollection(EnclaveKeyDef::EnclaveKey Key1, Enclav
 	std::future<void> coll_2 = tpref2->submit5(&OrganicSystem::JobMaterializeCollection2, this, std::ref(tempJobList2), std::ref(mutexval), 2);
 	//std::future<void> coll_2 = tpref2->submit5(&OrganicSystem::JobMaterializeCollection, this, Key2, std::ref(BlueprintMatrix), std::ref(EnclaveCollections), std::ref(ManifestCollections), std::ref(RenderCollections));
 	//auto finish4 = std::chrono::high_resolution_clock::now();
+
+	// begin heap request test
+
+	/*
+	for (int x = 0; x < 10000; x++)
+	{
+		mutexval.lock();
+		GLfloat *coolptr = new GLfloat[10000];
+		delete[]  coolptr;
+		mutexval.unlock();
+	}
+	*/
+
+	// end heap request test
+
+
 	auto start4 = std::chrono::high_resolution_clock::now();
 	coll_1.wait();
 	//auto finish4 = std::chrono::high_resolution_clock::now();
@@ -362,8 +378,10 @@ void OrganicSystem::MaterializeCollection(EnclaveKeyDef::EnclaveKey Key1, Enclav
 	FactoryPtr2->TextureDictionaryRef = &TextureDictionary;
 	
 	std::future<void> coll_3 = tpref->submit5(&OrganicSystem::JobMaterializeCollection3, this, std::ref(tempJobList), std::ref(mutexval), std::ref(FactoryPtr), 1);
-	std::future<void> coll_4 = tpref->submit5(&OrganicSystem::JobMaterializeCollection3, this, std::ref(tempJobList2), std::ref(mutexval), std::ref(FactoryPtr2), 2);
+	std::future<void> coll_4 = tpref2->submit5(&OrganicSystem::JobMaterializeCollection3, this, std::ref(tempJobList2), std::ref(mutexval), std::ref(FactoryPtr2), 2);
 	auto lowstart = std::chrono::high_resolution_clock::now();
+	//std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
 	coll_3.wait();
 	coll_4.wait();
 	auto lowend = std::chrono::high_resolution_clock::now();
@@ -371,6 +389,18 @@ void OrganicSystem::MaterializeCollection(EnclaveKeyDef::EnclaveKey Key1, Enclav
 	std::chrono::duration<double> lowelapsed = lowend - lowstart;
 	cout << "Dual coollection instantiation speed (Low Memory Efficiency):  " << lowelapsed.count() << endl;
 	////////////////////////////////////////////////////////////////////////////// END LOW MEMORY EFFICIENCY TEST
+
+
+	//// DUMMY JOB TEST
+
+	auto dummystart = std::chrono::high_resolution_clock::now();
+	std::future<void> dummyjob_1 = tpref->submit5(&OrganicSystem::DummyJob, this, 5, std::ref(FactoryPtr2), std::ref(mutexval));
+	dummyjob_1.wait();
+	auto dummyend = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> dummytotal = dummyend - dummystart;
+	cout << "Dummy job complete time:  " << dummytotal.count() << endl;
+
+	/////////////////////////
 
 	EnclaveCollection *T2CollectionRef = &EnclaveCollections.EnclaveCollectionMap[key4];
 
@@ -514,6 +544,11 @@ void OrganicSystem::JobMaterializeCollection2(MDListJobMaterializeCollection mdj
 	for (JobIterator = mdjob.ListMatrix.begin(); JobIterator != JobIteratorEnd; ++JobIterator)
 	//for (auto it = mdjob.ListMatrix.begin(); it != mdjob.ListMatrix.end(); ++it)
 	{
+		//for (int x = 0; x < 1000000; x++)
+		//{
+
+		//}
+	
 		auto initstart = std::chrono::high_resolution_clock::now();				
 
 		//MDJobMaterializeCollection tempList = JobIterator->second;
@@ -628,22 +663,29 @@ void OrganicSystem::JobMaterializeCollection2(MDListJobMaterializeCollection mdj
 
 void OrganicSystem::JobMaterializeCollection3(MDListJobMaterializeCollection mdjob, mutex& mutexval, EnclaveManifestFactoryT1 *FactoryRef, int ThreadID)
 {
+	//auto unordered_start = std::chrono::high_resolution_clock::now();
 	std::unordered_map<EnclaveKeyDef::EnclaveKey, MDJobMaterializeCollection, EnclaveKeyDef::KeyHasher>::iterator JobIterator;
 	std::unordered_map<EnclaveKeyDef::EnclaveKey, MDJobMaterializeCollection, EnclaveKeyDef::KeyHasher>::iterator JobIteratorEnd;
+	//auto unordered_end = std::chrono::high_resolution_clock::now();
 
 	auto truestart = std::chrono::high_resolution_clock::now();
 	JobIterator = mdjob.ListMatrix.begin();
 	JobIteratorEnd = mdjob.ListMatrix.end();
 
 	//mutexval.lock();
-	auto lockstart = std::chrono::high_resolution_clock::now();
-	auto lockend = std::chrono::high_resolution_clock::now();
+	//auto lockstart = std::chrono::high_resolution_clock::now();
+	//auto lockend = std::chrono::high_resolution_clock::now();
 	//auto truestart = std::chrono::high_resolution_clock::now();
 	//mutexval.unlock();
 
 	for (JobIterator = mdjob.ListMatrix.begin(); JobIterator != JobIteratorEnd; ++JobIterator)
 		//for (auto it = mdjob.ListMatrix.begin(); it != mdjob.ListMatrix.end(); ++it)
 	{
+		//for (int x = 0; x < 1000000; x++)
+		//{
+
+		//}
+
 		auto initstart = std::chrono::high_resolution_clock::now();
 
 		//MDJobMaterializeCollection tempList = JobIterator->second;
@@ -708,6 +750,8 @@ void OrganicSystem::JobMaterializeCollection3(MDListJobMaterializeCollection mdj
 			}
 		}
 
+
+		
 		// Phase 2: Factory work
 		int manifestCounter = CollectionRef->totalRenderableEnclaves;
 		//auto start5 = std::chrono::high_resolution_clock::now();
@@ -722,6 +766,8 @@ void OrganicSystem::JobMaterializeCollection3(MDListJobMaterializeCollection mdj
 			FactoryRef->AttachManifestToEnclave(tempEnclavePtr);
 
 		}
+		
+
 		//auto finish5 = std::chrono::high_resolution_clock::now();									// optional, for debugging
 		//std::chrono::duration<double> elapsed5 = finish5 - start5;									// ""
 
@@ -731,9 +777,26 @@ void OrganicSystem::JobMaterializeCollection3(MDListJobMaterializeCollection mdj
 	}
 
 	mutexval.lock();
-	std::chrono::duration<double> truelocktime = lockstart - lockend;
+	//std::chrono::duration<double> truelocktime = lockstart - lockend;
 	auto trueend = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> trueelapsed = trueend - truestart;
-	cout << "Total time:  " << trueelapsed.count() << endl;
+	//std::chrono::duration<double> unordered_elapsed = unordered_end - unordered_start;
+
+	cout << "Total time: " << trueelapsed.count() << endl;
 	mutexval.unlock();
+}
+
+void OrganicSystem::DummyJob(int value, EnclaveManifestFactoryT1 *FactoryRef, mutex& mutexval)
+{
+	auto dummystart = std::chrono::high_resolution_clock::now();
+	//std::future<void> dummyjob_1 = tpref->submit5(&OrganicSystem::DummyJob, this, 5);
+	//dummyjob_1.wait();
+	
+	for (int x = 0; x < 1000000; x++)
+	{
+
+	}
+	auto dummyend = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> dummytotal = dummyend - dummystart;
+	//cout << "Dummy job real finish time:  " << dummytotal.count() << endl;
 }

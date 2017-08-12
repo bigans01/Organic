@@ -61,6 +61,7 @@ public:
 									);
 	void JobMaterializeCollection2(MDListJobMaterializeCollection mdjob, mutex& mutexval, int ThreadID);
 	void JobMaterializeCollection3(MDListJobMaterializeCollection mdjob, mutex& mutexval, EnclaveManifestFactoryT1 *FactoryRef, int ThreadID);
+	void DummyJob(int value, EnclaveManifestFactoryT1 *FactoryRef, mutex& mutexval);
 	thread_pool* getpool();
 	thread_pool* getpool2();
 

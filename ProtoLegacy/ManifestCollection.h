@@ -38,7 +38,7 @@ public:
 	void AddManifestToMatrix(int x, int y, int z);																			// adds an EnclaveManifest with x/y/z of in the input parameters (unused)
 	void AddManifestToMatrix(int x, int y, int z, EnclaveKeyDef::EnclaveKey Key);											// adds an EnclaveManifest with x/y/z of in the input parameters; the EnclaveKey input parameter is used to 
 	void AddManifestToMatrix(int x, int y, int z, EnclaveKeyDef::EnclaveKey Key, int outputdebug);							// debug purposes only.
-	void AddManifestToMatrix(int x, int y, int z, EnclaveKeyDef::EnclaveKey Key, int outputdebug, mutex& HeapMutex);
+	void AddManifestToMatrix(int x, int y, int z, EnclaveKeyDef::EnclaveKey Key, int outputdebug, mutex& HeapMutex);		// calls a thread-safe version of AddManifestMatrix (thread-safe being only one thread will use heap at a time)
 																															// find the corresponding Enclave at x/y/z in the enclave collection having a key value of the input "Key"
 	void UpdateManifest(int x, int y, int z, EnclaveKeyDef::EnclaveKey Key);												// updates a currently existing enclave manifest (does not add a new instance to the ManifestCollection)
 	//void GetManifestFromMatrix(int x, int y, int z);
