@@ -516,7 +516,6 @@ void OrganicSystem::JobMaterializeCollection2(MDListJobMaterializeCollection mdj
 	int dumboutput = 1;
 
 	for (JobIterator = mdjob.ListMatrix.begin(); JobIterator != JobIteratorEnd; ++JobIterator)
-	//for (auto it = mdjob.ListMatrix.begin(); it != mdjob.ListMatrix.end(); ++it)
 	{
 		//for (int x = 0; x < 1000000; x++)
 		//{
@@ -524,15 +523,6 @@ void OrganicSystem::JobMaterializeCollection2(MDListJobMaterializeCollection mdj
 		//}
 	
 		auto initstart = std::chrono::high_resolution_clock::now();				
-
-		//MDJobMaterializeCollection tempList = JobIterator->second;
-		//EnclaveKeyDef::EnclaveKey Key1 = tempList.MDKey;
-		//EnclaveCollectionBlueprintMatrix BlueprintMatrixRef = tempList.MDBlueprintMatrixRef;
-		//EnclaveCollectionMatrix EnclaveCollectionsRef = tempList.MDEnclaveCollectionsRef;
-		//ManifestCollectionMatrix ManifestCollectionsRef = tempList.MDManifestCollectionsRef;
-		//RenderCollectionMatrix RenderCollectionsRef = tempList.MDRenderCollectionsRef;
-		//EnclaveCollection *CollectionRef = tempList.MDEnclaveCollectionPtr;
-		//ManifestCollection *ManifestCollectionRef = tempList.MDManifestCollectionPtr;
 		
 		EnclaveKeyDef::EnclaveKey Key1 = JobIterator->second.MDKey;
 		EnclaveCollectionBlueprintMatrix BlueprintMatrixRef = JobIterator->second.MDBlueprintMatrixRef;
@@ -616,7 +606,7 @@ void OrganicSystem::JobMaterializeCollection2(MDListJobMaterializeCollection mdj
 
 
 
-		//cout << "HOO BOY!" << ManifestCollectionRef->ManMatrix[newTempKey].TotalEnclaveTriangles;				// RENAME THIS TO SOMETHING ELSE! (ManifestCollectionRef)
+		//cout << "HOO BOY!" << ManifestCollectionRef->ManMatrix[innerTempKey].TotalEnclaveTriangles << endl;				// RENAME THIS TO SOMETHING ELSE! (ManifestCollectionRef)
 
 		// Phase 3: Render collection set up
 		mutexval.lock();
@@ -701,6 +691,7 @@ void OrganicSystem::JobMaterializeCollection3(MDListJobMaterializeCollection mdj
 						CollectionRef->ActivateEnclaveForRendering(tempKey);
 						//cout << "value of key 1::: " << tempKey.x << ", " << tempKey.y << ", " << tempKey.z << "||" << int(listT2_1.flagArray[x][z]) << endl;
 						totalactivated++;
+						//cout << "Total triangles in this enclave:" << CollectionRef->EnclaveArray[0][6][0].GetTotalTrianglesInEnclave() << endl;
 					}
 
 				}
@@ -718,6 +709,7 @@ void OrganicSystem::JobMaterializeCollection3(MDListJobMaterializeCollection mdj
 		//auto start5 = std::chrono::high_resolution_clock::now();
 		EnclaveKeyDef::EnclaveKey innerTempKey;
 		FactoryRef->CurrentStorage = 0;					// reset storage location.
+		FactoryRef->StorageArrayCount = 0;
 		for (int a = 0; a < manifestCounter; a++)
 		{
 			innerTempKey = CollectionRef->RenderableEnclaves[a];
@@ -734,6 +726,7 @@ void OrganicSystem::JobMaterializeCollection3(MDListJobMaterializeCollection mdj
 
 		//mutexval.lock();
 		//cout << "Phase 2 time (Low efficiency):  " << elapsed5.count() << " :" << manifestCounter << endl;
+		RenderCollectionsRef.CreateRenderArrayFromFactory(Key1, FactoryRef, std::ref(mutexval));
 		//mutexval.unlock();
 	}
 

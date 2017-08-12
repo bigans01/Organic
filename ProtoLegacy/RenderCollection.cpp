@@ -221,6 +221,91 @@ void RenderCollection::CombineManifestArrays()
 																
 }
 
+void RenderCollection::CombineManifestArraysFromT1Factory(EnclaveManifestFactoryT1 *factoryRef, mutex& mutexval)
+{
+	int totalfloats= 0;												// the total number of floats that will need be stored.
+	int totalenclavesfound = 0;
+	int TotalEnclavesInFactory = factoryRef->StorageArrayCount;		// get the number of enclaves to iterate through
+	//cout << "total enclaves in factory will be: " << TotalEnclavesInFactory << endl;
+
+	// STEP 1: get the size of the array
+	for (int x = 0; x < TotalEnclavesInFactory; x++)
+	{
+		EnclaveManifestFactoryT1Storage *StoragePtr = &factoryRef->StorageArray[x];			// get the pointer to the storage unit
+		totalfloats += StoragePtr->VertexArrayCount;										// increment totalfloats by VertexArrayCount from the pointed-to enclave
+	}
+	//cout << "total triangles to render will be: " << totaltrianglestorender << endl;
+
+
+	// STEP 2: create the dynamic array, acquire heap lock while doing so
+
+	
+	mutexval.lock();
+	IsGLFloatPtrLoaded = 1;									// indicate that the pointer was loaded with data
+	GLFloatPtr = new GLfloat[totalfloats];	// 9 floats per triangle
+	mutexval.unlock();
+	//cout << "Render 2 entry:" << endl;
+
+	// STEP 3: populate dynamic array(s)
+	struct enclaveDataFinder
+	{
+		EnclaveKeyDef::EnclaveKey DFKey;
+		int indexStart;
+		int totalTriangles;
+	};
+	enclaveDataFinder enclaveDataStart[64];
+	int currentBegin = 0;
+	for (int x = 0; x < TotalEnclavesInFactory; x++)
+	{
+		
+		EnclaveManifestFactoryT1Storage *StoragePtr = &factoryRef->StorageArray[x];
+		int currentEnclaveTriangles = (StoragePtr->VertexArrayCount) / 9;
+		
+		int pointedBegin = 0;
+		GLfloat dumbval = StoragePtr->VertexArray[pointedBegin];
+		//GLfloat dumbval2 = StoragePtr->VertexArray[pointedBegin+1];
+		//GLfloat dumbval3 = StoragePtr->VertexArray[pointedBegin+2];
+		//cout << "test  " << dumbval << ", " << dumbval2 << ", " << dumbval3 << endl;
+		GLFloatPtr[currentBegin] = dumbval;
+		//cout << "Render 2 entry:" << endl;
+
+		enclaveDataStart[x].DFKey = StoragePtr->StorageKey;
+		enclaveDataStart[x].indexStart = currentBegin;
+		enclaveDataStart[x].totalTriangles = currentEnclaveTriangles;
+
+		for (int y = 0; y < (currentEnclaveTriangles) * 3; y++)			// (currentEnclaveTriangles) * 3
+		{
+			GLFloatPtr[currentBegin] = StoragePtr->VertexArray[pointedBegin];
+			GLFloatPtr[currentBegin + 1] = StoragePtr->VertexArray[pointedBegin + 1];
+			GLFloatPtr[currentBegin + 2] = StoragePtr->VertexArray[pointedBegin + 2];
+			currentBegin += 3;
+			pointedBegin += 3;
+		}
+
+
+		EnclaveKeyDef::EnclaveKey scanKey;
+		scanKey.x = 0;
+		scanKey.y = 6;
+		scanKey.z = 0;
+		if (enclaveDataStart[x].DFKey == scanKey)
+		{
+			//cout << "key found! loading array data..." << endl;
+			int tempBegin = enclaveDataStart[x].indexStart;
+			for (int z = 0; z < (enclaveDataStart[x].totalTriangles) * 3; z++)
+			{
+				//cout << "vertex: " << GLFloatPtr[tempBegin] << ", " << GLFloatPtr[tempBegin + 1] << ", " << GLFloatPtr[tempBegin + 2] << endl;
+				tempBegin += 3;
+			}
+
+		}
+		
+	}
+
+
+	
+}
+
+
 void RenderCollection::UpdateManifestArray(EnclaveKeyDef::EnclaveKey Key)	// update the key in RenderableManifestMeta.EnclaveManifestMeta
 {
 	/* Summary: creates a new dynamic array, but only updates a single enclave which has a value of Key */

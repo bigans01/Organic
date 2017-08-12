@@ -10,8 +10,11 @@ void EnclaveManifestFactoryT1::AttachManifestToEnclave(Enclave *in_ptr)
 	OrganicTextureMetaArray *textureMetaArrayRef;
 	textureMetaArrayRef = &TextureDictionaryRef->Dictionary["base"];
 
-	StorageArray[CurrentStorage].VertexArrayCount =	(in_ptr->GetTotalTrianglesInEnclave()) * 9;	// set the total amount of vertex data to store
-	StorageArray[CurrentStorage].TextureArrayCount = (in_ptr->GetTotalTrianglesInEnclave()) * 6; // set the total amount of texture data to store
+	//StorageArray[CurrentStorage].VertexArrayCount =	(in_ptr->GetTotalTrianglesInEnclave()) * 9;	// set the total amount of vertex data to store
+	//StorageArray[CurrentStorage].TextureArrayCount = (in_ptr->GetTotalTrianglesInEnclave()) * 6; // set the total amount of texture data to store
+	StorageArray[CurrentStorage].StorageKey = in_ptr->UniqueKey;
+	StorageArray[CurrentStorage].VertexArrayCount = 0;	// set the total amount of vertex data to store
+	StorageArray[CurrentStorage].TextureArrayCount = 0; // set the total amount of texture data to store
 	StorageArray[CurrentStorage].TotalEnclaveTriangles = in_ptr->GetTotalTrianglesInEnclave();	// total triangles in the attached enclave (saved for later use)
 	int RenderablePolyCount = in_ptr->TotalRenderable;
 
@@ -72,7 +75,7 @@ void EnclaveManifestFactoryT1::AttachManifestToEnclave(Enclave *in_ptr)
 					//cout << "test contents of actual array: " << EnclaveGLPtr[30] << endl;
 					iteratorval++;
 				}
-
+				//cout << "VertexArrayCount: " << StorageArray[CurrentStorage].VertexArrayCount << endl;
 			}
 			polyfacebitmask >>= 1;													// move bit mask to the right one bit, after one iteration.
 																					//cout << "out test value " << polyfacebitmask <<  endl;
@@ -81,6 +84,7 @@ void EnclaveManifestFactoryT1::AttachManifestToEnclave(Enclave *in_ptr)
 	}
 	CurrentStorage++;
 	StorageArrayCount++;
+	//cout << "VertexArrayCount: " << StorageArray[CurrentStorage].VertexArrayCount << endl;
 }
 
 void EnclaveManifestFactoryT1::SetEnclaveCollectionPtr(EnclaveCollection *InPtr)

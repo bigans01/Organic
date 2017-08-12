@@ -23,34 +23,37 @@ Dependents: -a valid instance of a ManifestCollection (preferably with the same 
 #define RENDERCOLLECTION_H
 
 #include "ManifestCollection.h"
+#include "EnclaveManifestFactoryT1.h"
+#include <mutex>
 
 class RenderCollection {
 public:
-	void SetManifestCollectionPtr(ManifestCollection *manifestcollectionref);			// sets the pointer to the corresponding ManifestCollection that this RenderCollection will be associated with. 
+	void SetManifestCollectionPtr(ManifestCollection *manifestcollectionref);							// sets the pointer to the corresponding ManifestCollection that this RenderCollection will be associated with. 
 	void SetEnclaveCollectionPtr(EnclaveCollection *enclavecollectionref);
-	ManifestCollection *ManifestCollectionPtr;											// the pointer to the related ManifestCollection.
-	EnclaveCollection *EnclaveCollectionPtr;											// pointer to the associated EnclaveCollection.
-	void CombineManifestArrays();														// iterates through all elements found in the ManifestCollection, and generates a dynamic array that is pointed to by GLFloatPtr.
-	void UpdateManifestArray(EnclaveKeyDef::EnclaveKey Key);							// rebuilds the dynamic array pointed to by GLFloatPtr by updating a single enclave manifest; designed for single enclave operations.
-	GLfloat *GLFloatPtr;																// the pointer to this RenderCollection's dynamically created 3d array.
-	int IsGLFloatPtrLoaded = 0;															// indicates whether or not there is a valid dynamic array pointed to by GLFloatPtr.
-	int LastCollectionTriangleCount = 0;												// potentially unused?
-	int RenderCollectionArraySize = 0;													// indicates the size of the dynamic array in bytes (required for OpenGL glBufferData)
-	struct EnclaveManifestMeta {														// stores meta data about a single EnclaveManifest
+	ManifestCollection *ManifestCollectionPtr;															// the pointer to the related ManifestCollection.
+	EnclaveCollection *EnclaveCollectionPtr;															// pointer to the associated EnclaveCollection.
+	void CombineManifestArrays();																		// iterates through all elements found in the ManifestCollection, and generates a dynamic array that is pointed to by GLFloatPtr.
+	void CombineManifestArraysFromT1Factory(EnclaveManifestFactoryT1 *factoryRef, mutex& mutexval);		// iterates through all of the current elements found in a T1 factory.
+	void UpdateManifestArray(EnclaveKeyDef::EnclaveKey Key);											// rebuilds the dynamic array pointed to by GLFloatPtr by updating a single enclave manifest; designed for single enclave operations.
+	GLfloat *GLFloatPtr;																				// the pointer to this RenderCollection's dynamically created 3d array.
+	int IsGLFloatPtrLoaded = 0;																			// indicates whether or not there is a valid dynamic array pointed to by GLFloatPtr.
+	int LastCollectionTriangleCount = 0;																// potentially unused?
+	int RenderCollectionArraySize = 0;																	// indicates the size of the dynamic array in bytes (required for OpenGL glBufferData)
+	struct EnclaveManifestMeta {																		// stores meta data about a single EnclaveManifest
 		EnclaveKeyDef::EnclaveKey EnclaveManifestKey;
 		int currentTriangleCount = 0;
 		int changeFlag = 0;
 	};
 
-	struct CollectionMeta {																// stores up to 512 instances of EnclaveManifestMeta.
+	struct CollectionMeta {																				// stores up to 512 instances of EnclaveManifestMeta.
 		int CollectionTriangleCount = 0;
 		int EnclaveManifestCount = 0;
 		EnclaveManifestMeta MetaArray[512];
 	};
 
-	CollectionMeta RenderableManifestMeta;												// create a single instance of CollectionMeta
-	RenderCollection();																	// default constructor?
-	RenderCollection(int dummy);														// potentially unused?
-	~RenderCollection();																// required for manual memory management; deletes dynamic array pointed to by GLFloatPtr (if it exists) 
+	CollectionMeta RenderableManifestMeta;																// create a single instance of CollectionMeta
+	RenderCollection();																					// default constructor?
+	RenderCollection(int dummy);																		// potentially unused?
+	~RenderCollection();																				// required for manual memory management; deletes dynamic array pointed to by GLFloatPtr (if it exists) 
 };
 #endif

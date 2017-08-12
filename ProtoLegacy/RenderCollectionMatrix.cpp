@@ -13,7 +13,7 @@ mutex cmutex;
 void RenderCollectionMatrix::CreateRenderArrayFromManifestCollection(EnclaveKeyDef::EnclaveKey Key)
 {
 	/* Summary: creates a new 3d array for the RenderCollection having a key of Key. */
-	cmutex.lock();
+	//cmutex.lock();
 	// NOTE: when adding a class to map, need 2 constructors!! (see 3 lines below)
 	//int x = 0;
 	//RenderCollection tempRenderCollection(x);																// create a render collection that references the proper manifest collection  :: &ManifestCollectionMatrixPtr->ManiCollectionMap[Key]
@@ -27,8 +27,15 @@ void RenderCollectionMatrix::CreateRenderArrayFromManifestCollection(EnclaveKeyD
 	//cout << "---------------create render array from manifest call time: " << elapsed3.count() << endl;
 
 	RenderMatrix[Key].CombineManifestArrays();															// combine arrays
-	cmutex.unlock();
+	//cmutex.unlock();
 	
+}
+
+void RenderCollectionMatrix::CreateRenderArrayFromFactory(EnclaveKeyDef::EnclaveKey Key, EnclaveManifestFactoryT1 *factoryRef, mutex& mutexRef)
+{
+	RenderMatrix[Key].SetManifestCollectionPtr(&ManifestCollectionMatrixPtr->ManiCollectionMap[Key]);	// set the pointer in the temp value
+	RenderMatrix[Key].SetEnclaveCollectionPtr(&EnclaveCollectionMatrixPtr->EnclaveCollectionMap[Key]);
+	RenderMatrix[Key].CombineManifestArraysFromT1Factory(factoryRef, std::ref(mutexRef));
 }
 
 void RenderCollectionMatrix::SetManifestCollectionMatrixPtr(ManifestCollectionMatrix *manifestcollectionmatrixref)
@@ -41,7 +48,7 @@ void RenderCollectionMatrix::SetManifestCollectionMatrixPtr(ManifestCollectionMa
 void RenderCollectionMatrix::SetEnclaveCollectionMatrixPtr(EnclaveCollectionMatrix *enclavecollectionmatrixref)
 {
 	EnclaveCollectionMatrixPtr = enclavecollectionmatrixref;
-	cout << "ptr gets called..." << endl;
+	//cout << "ptr gets called..." << endl;
 }
 
 RenderCollectionMatrix::RenderCollectionMatrix(ManifestCollectionMatrix *manifestcollectionmatrixref)

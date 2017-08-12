@@ -23,6 +23,7 @@ Dependents: a valid instance of ManifestCollectionMatrix
 
 class EnclaveManifestFactoryT1Storage {
 public:
+	EnclaveKeyDef::EnclaveKey StorageKey;
 	int TotalEnclaveTriangles = 0;
 	int VertexArrayCount = 0;
 	GLfloat VertexArray[13824];	// 108 GLfloats per cube, x 64 = 6912.   (alternate: 13824)		(other alternate: 3456) // 6912 / 8 = 864
