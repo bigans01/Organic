@@ -263,8 +263,8 @@ void OrganicSystem::MaterializeCollection(EnclaveKeyDef::EnclaveKey Key1, Enclav
 	key8.y = 0;
 	key8.z = 1;
 
-	////////////////////////////////////////////////////////////////////////////// BEGIN HIGH MEMORY EFFICIENCY TEST
-
+	
+	/////////////////////////////////////////////////////////////////// DATA SET UP
 
 
 	// -------------------- For first list to be added to queue
@@ -290,12 +290,12 @@ void OrganicSystem::MaterializeCollection(EnclaveKeyDef::EnclaveKey Key1, Enclav
 	passCollectionPtr = &EnclaveCollections.EnclaveCollectionMap[key5];
 	passManifestPtr = &ManifestCollections.ManiCollectionMap[key5];
 	MDJobMaterializeCollection MDJob5(key5, std::ref(BlueprintMatrix), std::ref(EnclaveCollections), std::ref(ManifestCollections), std::ref(RenderCollections), std::ref(passCollectionPtr), std::ref(passManifestPtr));
-	tempJobList.ListMatrix[key5] = MDJob2;
+	tempJobList.ListMatrix[key5] = MDJob5;
 
 	passCollectionPtr = &EnclaveCollections.EnclaveCollectionMap[key6];
 	passManifestPtr = &ManifestCollections.ManiCollectionMap[key6];
 	MDJobMaterializeCollection MDJob6(key6, std::ref(BlueprintMatrix), std::ref(EnclaveCollections), std::ref(ManifestCollections), std::ref(RenderCollections), std::ref(passCollectionPtr), std::ref(passManifestPtr));
-	tempJobList.ListMatrix[key6] = MDJob2;
+	tempJobList.ListMatrix[key6] = MDJob6;
 
 	/////////////////////////////////////////////////////////////////
 
@@ -306,61 +306,36 @@ void OrganicSystem::MaterializeCollection(EnclaveKeyDef::EnclaveKey Key1, Enclav
 	ManifestCollection *passManifestPtr2 = &ManifestCollections.ManiCollectionMap[key3];
 
 	MDJobMaterializeCollection MDJob3(key3, std::ref(BlueprintMatrix), std::ref(EnclaveCollections), std::ref(ManifestCollections), std::ref(RenderCollections), std::ref(passCollectionPtr2), std::ref(passManifestPtr2));
-	tempJobList2.ListMatrix[key3] = MDJob1;
+	tempJobList2.ListMatrix[key3] = MDJob3;
 
 	// -------------------- For fourth collection to be added to queue
 	passCollectionPtr2 = &EnclaveCollections.EnclaveCollectionMap[key4];
 	passManifestPtr2 = &ManifestCollections.ManiCollectionMap[key4];
 	MDJobMaterializeCollection MDJob4(key4, std::ref(BlueprintMatrix), std::ref(EnclaveCollections), std::ref(ManifestCollections), std::ref(RenderCollections), std::ref(passCollectionPtr2), std::ref(passManifestPtr2));
-	tempJobList2.ListMatrix[key4] = MDJob2;
+	tempJobList2.ListMatrix[key4] = MDJob4;
 
 	passCollectionPtr2 = &EnclaveCollections.EnclaveCollectionMap[key7];
 	passManifestPtr2 = &ManifestCollections.ManiCollectionMap[key7];
 	MDJobMaterializeCollection MDJob7(key7, std::ref(BlueprintMatrix), std::ref(EnclaveCollections), std::ref(ManifestCollections), std::ref(RenderCollections), std::ref(passCollectionPtr2), std::ref(passManifestPtr2));
-	tempJobList2.ListMatrix[key7] = MDJob2;
+	tempJobList2.ListMatrix[key7] = MDJob7;
 
 	passCollectionPtr2 = &EnclaveCollections.EnclaveCollectionMap[key8];
 	passManifestPtr2 = &ManifestCollections.ManiCollectionMap[key8];
 	MDJobMaterializeCollection MDJob8(key8, std::ref(BlueprintMatrix), std::ref(EnclaveCollections), std::ref(ManifestCollections), std::ref(RenderCollections), std::ref(passCollectionPtr2), std::ref(passManifestPtr2));
-	tempJobList2.ListMatrix[key8] = MDJob2;
+	tempJobList2.ListMatrix[key8] = MDJob8;
 
 	std::mutex mutexval;
 
+	////////////////////////////////////////////////////////////////////////////// BEGIN HIGH MEMORY EFFICIENCY TEST
 
-
-	//EnclaveCollections.EnclaveCollectionMap[Key1];
-	//std::future<void> coll_1 = tpref->submit5(&OrganicSystem::JobMaterializeCollection, this, Key1, std::ref(BlueprintMatrix), std::ref(EnclaveCollections), std::ref(ManifestCollections), std::ref(RenderCollections), std::ref(passCollectionPtr), std::ref(passManifestPtr)); // , std::ref(blueprintptrpass)
-	//std::future<void> coll_1 = tpref->submit5(&OrganicSystem::JobMaterializeCollection2, this, std::ref(MDJob1));
 	std::future<void> coll_1 = tpref->submit5(&OrganicSystem::JobMaterializeCollection2, this, std::ref(tempJobList), std::ref(mutexval), 1);
-	//auto start4 = std::chrono::high_resolution_clock::now();
-	//std::future<void> coll_2 = tpref2->submit5(&OrganicSystem::JobMaterializeCollection, this, Key2, std::ref(BlueprintMatrix), std::ref(EnclaveCollections), std::ref(ManifestCollections), std::ref(RenderCollections), std::ref(passCollectionPtr2), std::ref(passManifestPtr2)); // , std::ref(blueprintptrpass)
 	std::future<void> coll_2 = tpref2->submit5(&OrganicSystem::JobMaterializeCollection2, this, std::ref(tempJobList2), std::ref(mutexval), 2);
-	//std::future<void> coll_2 = tpref2->submit5(&OrganicSystem::JobMaterializeCollection, this, Key2, std::ref(BlueprintMatrix), std::ref(EnclaveCollections), std::ref(ManifestCollections), std::ref(RenderCollections));
-	//auto finish4 = std::chrono::high_resolution_clock::now();
-
-	// begin heap request test
-
-	/*
-	for (int x = 0; x < 10000; x++)
-	{
-		mutexval.lock();
-		GLfloat *coolptr = new GLfloat[10000];
-		delete[]  coolptr;
-		mutexval.unlock();
-	}
-	*/
-
-	// end heap request test
-
-
-	auto start4 = std::chrono::high_resolution_clock::now();
-	coll_1.wait();
-	//auto finish4 = std::chrono::high_resolution_clock::now();
-	//auto start4 = std::chrono::high_resolution_clock::now();
-	coll_2.wait();
-	auto finish4 = std::chrono::high_resolution_clock::now();															// optional, for debugging
-	std::chrono::duration<double> elapsed4 = finish4 - start4;
-	cout << "Dual coollection instantiation speed (High Memory Efficiency):  " << elapsed4.count() << endl;
+	auto start4 = std::chrono::high_resolution_clock::now();															// optional, for debugging
+	coll_1.wait();																										
+	coll_2.wait();																										
+	auto finish4 = std::chrono::high_resolution_clock::now();															
+	std::chrono::duration<double> elapsed4 = finish4 - start4;															// ""
+	cout << "Dual coollection instantiation speed (High Memory Efficiency):  " << elapsed4.count() << endl;				// ""
 
 	////////////////////////////////////////////////////////////////////////////// END HIGH MEMORY EFFICIENCY TEST
 
@@ -380,7 +355,6 @@ void OrganicSystem::MaterializeCollection(EnclaveKeyDef::EnclaveKey Key1, Enclav
 	std::future<void> coll_3 = tpref->submit5(&OrganicSystem::JobMaterializeCollection3, this, std::ref(tempJobList), std::ref(mutexval), std::ref(FactoryPtr), 1);
 	std::future<void> coll_4 = tpref2->submit5(&OrganicSystem::JobMaterializeCollection3, this, std::ref(tempJobList2), std::ref(mutexval), std::ref(FactoryPtr2), 2);
 	auto lowstart = std::chrono::high_resolution_clock::now();
-	//std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
 	coll_3.wait();
 	coll_4.wait();
@@ -421,7 +395,7 @@ void OrganicSystem::MaterializeCollection(EnclaveKeyDef::EnclaveKey Key1, Enclav
 
 void OrganicSystem::SetupFutureCollection(int x, int y, int z)
 {
-	cout << "future collection call: " << endl;
+	//cout << "future collection call: " << endl;
 	//MaterializeCollection(x, y, z);
 	EnclaveKeyDef::EnclaveKey tempKey;
 	tempKey.x = x;
@@ -645,9 +619,9 @@ void OrganicSystem::JobMaterializeCollection2(MDListJobMaterializeCollection mdj
 		//cout << "HOO BOY!" << ManifestCollectionRef->ManMatrix[newTempKey].TotalEnclaveTriangles;				// RENAME THIS TO SOMETHING ELSE! (ManifestCollectionRef)
 
 		// Phase 3: Render collection set up
-		//mutexval.lock();
-		//RenderCollectionsRef.CreateRenderArrayFromManifestCollection(Key1);
-		//mutexval.unlock();
+		mutexval.lock();
+		RenderCollectionsRef.CreateRenderArrayFromManifestCollection(Key1);
+		mutexval.unlock();
 		//dumboutput++;
 		
 		
@@ -663,10 +637,8 @@ void OrganicSystem::JobMaterializeCollection2(MDListJobMaterializeCollection mdj
 
 void OrganicSystem::JobMaterializeCollection3(MDListJobMaterializeCollection mdjob, mutex& mutexval, EnclaveManifestFactoryT1 *FactoryRef, int ThreadID)
 {
-	//auto unordered_start = std::chrono::high_resolution_clock::now();
 	std::unordered_map<EnclaveKeyDef::EnclaveKey, MDJobMaterializeCollection, EnclaveKeyDef::KeyHasher>::iterator JobIterator;
 	std::unordered_map<EnclaveKeyDef::EnclaveKey, MDJobMaterializeCollection, EnclaveKeyDef::KeyHasher>::iterator JobIteratorEnd;
-	//auto unordered_end = std::chrono::high_resolution_clock::now();
 
 	auto truestart = std::chrono::high_resolution_clock::now();
 	JobIterator = mdjob.ListMatrix.begin();
@@ -679,7 +651,6 @@ void OrganicSystem::JobMaterializeCollection3(MDListJobMaterializeCollection mdj
 	//mutexval.unlock();
 
 	for (JobIterator = mdjob.ListMatrix.begin(); JobIterator != JobIteratorEnd; ++JobIterator)
-		//for (auto it = mdjob.ListMatrix.begin(); it != mdjob.ListMatrix.end(); ++it)
 	{
 		//for (int x = 0; x < 1000000; x++)
 		//{
@@ -687,24 +658,12 @@ void OrganicSystem::JobMaterializeCollection3(MDListJobMaterializeCollection mdj
 		//}
 
 		auto initstart = std::chrono::high_resolution_clock::now();
-
-		//MDJobMaterializeCollection tempList = JobIterator->second;
-		//EnclaveKeyDef::EnclaveKey Key1 = tempList.MDKey;
-		//EnclaveCollectionBlueprintMatrix BlueprintMatrixRef = tempList.MDBlueprintMatrixRef;
-		//EnclaveCollectionMatrix EnclaveCollectionsRef = tempList.MDEnclaveCollectionsRef;
-		//ManifestCollectionMatrix ManifestCollectionsRef = tempList.MDManifestCollectionsRef;
-		//RenderCollectionMatrix RenderCollectionsRef = tempList.MDRenderCollectionsRef;
-		//EnclaveCollection *CollectionRef = tempList.MDEnclaveCollectionPtr;
-		//ManifestCollection *ManifestCollectionRef = tempList.MDManifestCollectionPtr;
-
 		EnclaveKeyDef::EnclaveKey Key1 = JobIterator->second.MDKey;
 		EnclaveCollectionBlueprintMatrix BlueprintMatrixRef = JobIterator->second.MDBlueprintMatrixRef;
 		EnclaveCollectionBlueprint *blueprintptr = &BlueprintMatrixRef.BlueprintMap[Key1];
 		EnclaveCollectionMatrix EnclaveCollectionsRef = JobIterator->second.MDEnclaveCollectionsRef;
-		//ManifestCollectionMatrix ManifestCollectionsRef = JobIterator->second.MDManifestCollectionsRef;
 		RenderCollectionMatrix RenderCollectionsRef = JobIterator->second.MDRenderCollectionsRef;
 		EnclaveCollection *CollectionRef = JobIterator->second.MDEnclaveCollectionPtr;
-		//ManifestCollection *ManifestCollectionRef = JobIterator->second.MDManifestCollectionPtr;
 
 		//auto initstart = std::chrono::high_resolution_clock::now();
 
@@ -721,6 +680,7 @@ void OrganicSystem::JobMaterializeCollection3(MDListJobMaterializeCollection mdj
 		int bitmaskval = 0;
 		//int dumbvalcheck = 0;
 
+		int totalactivated = 0;
 		// Phase 1: EnclaveCollection instantiation
 		for (int x = 0; x < 8; x++)
 		{
@@ -740,6 +700,7 @@ void OrganicSystem::JobMaterializeCollection3(MDListJobMaterializeCollection mdj
 						tempKey.z = z;
 						CollectionRef->ActivateEnclaveForRendering(tempKey);
 						//cout << "value of key 1::: " << tempKey.x << ", " << tempKey.y << ", " << tempKey.z << "||" << int(listT2_1.flagArray[x][z]) << endl;
+						totalactivated++;
 					}
 
 				}
@@ -749,7 +710,7 @@ void OrganicSystem::JobMaterializeCollection3(MDListJobMaterializeCollection mdj
 
 			}
 		}
-
+		//cout << "Total Activated for Key: (" << Key1.x << ", " << Key1.y << ", " << Key1.z << "): " << totalactivated << endl;
 
 		
 		// Phase 2: Factory work
