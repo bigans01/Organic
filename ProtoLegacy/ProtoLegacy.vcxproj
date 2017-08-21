@@ -72,12 +72,12 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>F:\OpenGL_GLFW\glfw-3.2.1.bin.WIN64\include;$(IncludePath)</IncludePath>
+    <IncludePath>F:\OpenGL_GLFW\glfw-3.2.1.bin.WIN64\include;F:\glm;$(IncludePath)</IncludePath>
     <LibraryPath>F:\OpenGL_GLFW\glfw-3.2.1.bin.WIN64\lib-vc2015;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>F:\OpenGL_GLFW\glfw-3.2.1.bin.WIN64\include;$(IncludePath)</IncludePath>
+    <IncludePath>F:\OpenGL_GLFW\glfw-3.2.1.bin.WIN64\include;F:\glm;$(IncludePath)</IncludePath>
     <LibraryPath>F:\OpenGL_GLFW\glfw-3.2.1.bin.WIN64\lib-vc2015;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -181,6 +181,7 @@
     <ClInclude Include="function_wrapper.h" />
     <ClInclude Include="OrganicBlockMeta.h" />
     <ClInclude Include="OrganicFaceMeta.h" />
+    <ClInclude Include="OrganicGLManager.h" />
     <ClInclude Include="OrganicSystem.h" />
     <ClInclude Include="OrganicTextureCoords.h" />
     <ClInclude Include="OrganicTextureDictionary.h" />
@@ -212,6 +213,7 @@
     <ClCompile Include="ManifestCollectionMatrix.cpp" />
     <ClCompile Include="ManifestCollection.cpp" />
     <ClCompile Include="MDJobMaterializeCollection.cpp" />
+    <ClCompile Include="OrganicGLManager.cpp" />
     <ClCompile Include="OrganicSystem.cpp" />
     <ClCompile Include="OrganicTextureDictionary.cpp" />
     <ClCompile Include="OrganicTextureMeta.cpp" />
@@ -230,8 +232,8 @@
     <ClCompile Include="VertexReadingOrder.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="SimpleFragmentShader.fragmentshader" />
-    <None Include="SimpleTransform.vertexshader" />
+    <None Include="..\x64\Debug\SimpleFragmentShader.fragmentshader" />
+    <None Include="..\x64\Debug\SimpleTransform.vertexshader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

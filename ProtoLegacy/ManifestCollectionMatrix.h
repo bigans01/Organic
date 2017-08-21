@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------------------------------
 
---ManifestCollectionMatrix.h (Last update 7/10/2017)
+--ManifestCollectionMatrix.h (Last update 8/16/2017)
 
 Description: Header file for ManifestCollectionMatrix.cpp
 
@@ -33,8 +33,10 @@ public:
 	std::unordered_map<EnclaveKeyDef::EnclaveKey, ManifestCollection, EnclaveKeyDef::KeyHasher> ManiCollectionMap;				// un unordered map which stores the ManifestCollections
 	std::unordered_map<EnclaveKeyDef::EnclaveKey, reference_wrapper<ManifestCollection>, EnclaveKeyDef::KeyHasher> ManiCollectionMapRef;
 	EnclaveCollectionMatrix *CollectionMatrixRef;																				// a reference to a valid EnclaveCollectionMatrix
+
 	ManifestCollectionMatrix(EnclaveCollectionMatrix *collectionmatrixref);														// constructor which takes in a valid reference to an EnclaveCollectionMatrix
 	ManifestCollectionMatrix();																									// constructor used when creating this object in an OrganicSystem.
+
 	void SetCollectionMatrixRef(EnclaveCollectionMatrix *collectionmatrixref);
 	void AddNewCollection(EnclaveKeyDef::EnclaveKey Key);																		// adds a new ManifestCollection into ManiCollectionMap, the key in the map will be value of Key
 	void AttachManifestToCollectedEnclave(EnclaveKeyDef::EnclaveKey CollectionKey, int target_x, int target_y, int target_z);	// attaches a manifest to a collected enclave that is contained within the Enclave collection that has a value of CollectionKey
@@ -43,8 +45,9 @@ public:
 	void GetCollectedEnclaveManifestAt(EnclaveKeyDef::EnclaveKey CollectionKey, int target_x, int target_y, int target_z);		// reserved for future use (unused)
 	void UpdateAttachedManifest(EnclaveKeyDef::EnclaveKey CollectionKey, int target_x, int target_y, int target_z);				// updates a specific manifest at x/y/z, which is contained within the manifest collection CollectionKey
 	ManifestCollection& GetRefManiCollectionMap(EnclaveKeyDef::EnclaveKey FindKey);
-	int dumbval = 0;
-	reference_wrapper<int> heaptest[1]{ dumbval };
+	
+	//int dumbval = 0;
+	//reference_wrapper<int> heaptest[1]{ dumbval };
 	//mutex cmutex;
 };
 

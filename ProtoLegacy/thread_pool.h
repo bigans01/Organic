@@ -9,11 +9,8 @@
 #include <vector>
 #include <future>
 #include <queue>
-//#include "thread_safe_queue.h"
-//#include "function_wrapper.h"
 #include "join_threads.h"
 
-class EnclaveCollectionActivateList;
 
 template<typename T>
 class thread_safe_queue

@@ -192,7 +192,7 @@ void EnclaveCollectionMatrix::MultiAddNewCollectionWithBlueprint(int numThreads,
 	if (numThreads == 1)
 	{
 		//cout << "1 thread called to run..." << endl;
-		thread_pool *tpref = OrganicPointer->getpool();
+		thread_pool *tpref = OrganicPointer->getCell1();
 		/*
 		thread_pool *tpref = OrganicPointer->getpool();
 		std::packaged_task<void()> Job1(std::bind
@@ -361,8 +361,8 @@ void EnclaveCollectionMatrix::MultiAddNewCollectionWithBlueprint(int numThreads,
 		);
 		*/
 		//auto jobstart = std::chrono::high_resolution_clock::now();
-		thread_pool *tpref = OrganicPointer->getpool();
-		thread_pool *tpref2 = OrganicPointer->getpool2();
+		thread_pool *tpref = OrganicPointer->getCell1();
+		thread_pool *tpref2 = OrganicPointer->getCell2();
 		//auto jobfinish = std::chrono::high_resolution_clock::now();
 		// *********************************************************************************WORKING THREAD CODE*********************************************************************************
 		//std::packaged_task<int(int)> Job7(std::bind
@@ -389,14 +389,14 @@ void EnclaveCollectionMatrix::MultiAddNewCollectionWithBlueprint(int numThreads,
 		//tpref->submit(std::move(Job3));
 		//tpref->submit(std::move(Job4));
 		
-		//EnclaveCollectionActivateList list1;
+		//list1;
 		//EnclaveCollectionActivateList list2;
 		*/
 		EnclaveCollectionActivateListT2 listT2_1;
 		EnclaveCollectionActivateListT2 listT2_2;
 		/*
 		//auto jobfinish = std::chrono::high_resolution_clock::now();
-		//EnclaveCollectionActivateListT2 listT2_3;
+		//T2 listT2_3;
 		//EnclaveCollectionActivateListT2 listT2_4;
 
 		//EnclaveCollectionActivateListT2 listT2_5;
@@ -1085,7 +1085,7 @@ int EnclaveCollectionMatrix::KeyToSingle(EnclaveKeyDef::EnclaveKey InKey)
 void EnclaveCollectionMatrix::SetOrganicSystem(OrganicSystem *organicRef)
 {
 	OrganicPointer = organicRef;
-	cout << "test of ORGANICREF: " << organicRef->flermp << endl;
+	//cout << "test of ORGANICREF: " << organicRef->flermp << endl;
 	
 
 }

@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------------------------------
 
---OrganicSystem.h		(Last update 7/17/2017)
+--OrganicSystem.h		(Last update 8/16/2017)
 
 Description: Header file for EnclaveCollectionBlueprint.cpp
 
@@ -24,9 +24,10 @@ public:
 	unsigned char SolidChunks[8][8];							// set up the 64 byte array for non-air chunks
 	unsigned char PaintableChunks[8][8];						// stores a list of chunks to be painted
 	EnclavePainterListMatrix PaintListMatrix;					// stores the actual paint jobs that will be run
-	void SetSurfaceChunkData(ElevationMapRef surfaceData);	// will load the data for the surface chunk array
-	void SetSolidChunkData(ElevationMapRef solidData);		// will load the data for the solid chunk array
-	void SetPaintableChunkData(ElevationMapRef paintableData);
+
+	void SetSurfaceChunkData(ElevationMapRef surfaceData);		// will load the data for the surface chunk array
+	void SetSolidChunkData(ElevationMapRef solidData);			// will load the data for the solid chunk array
+	void SetPaintableChunkData(ElevationMapRef paintableData);	
 	void AddNewPaintList(EnclaveKeyDef::EnclaveKey InKey, EnclavePainterList InPaintList);
 	void AddNewPaintList2(EnclaveKeyDef::EnclaveKey InKey, EnclavePainterList InPaintList);
 	int BPKeyToSingle(EnclaveKeyDef::EnclaveKey tempKey);

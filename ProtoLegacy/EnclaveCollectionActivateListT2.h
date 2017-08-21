@@ -8,23 +8,15 @@
 
 class EnclaveCollectionActivateListT2 {
 public:
-	/*
-	struct S {
-	double operator()(char, int&);
-	float operator()(int) { return 1.0; }
-	};
-	*/
-	//EnclaveCollectionActivateList operator()();
-	char flagArray[8][8] = { 0, 0, 0, 0, 0, 0, 0, 0 
-		,0, 0, 0, 0, 0, 0, 0, 0
-		,0, 0, 0, 0, 0, 0, 0, 0
-		,0, 0, 0, 0, 0, 0, 0, 0
-		,0, 0, 0, 0, 0, 0, 0, 0
-		,0, 0, 0, 0, 0, 0, 0, 0
-		,0, 0, 0, 0, 0, 0, 0, 0
-		,0, 0, 0, 0, 0, 0, 0, 0
-	
-	};
+	char flagArray[8][8] = { 0, 0, 0, 0, 0, 0, 0, 0		// potential unnecessary intialization (review later)
+							,0, 0, 0, 0, 0, 0, 0, 0
+							,0, 0, 0, 0, 0, 0, 0, 0
+							,0, 0, 0, 0, 0, 0, 0, 0
+							,0, 0, 0, 0, 0, 0, 0, 0
+							,0, 0, 0, 0, 0, 0, 0, 0
+							,0, 0, 0, 0, 0, 0, 0, 0
+							,0, 0, 0, 0, 0, 0, 0, 0		
+							};
 };
 
 #endif

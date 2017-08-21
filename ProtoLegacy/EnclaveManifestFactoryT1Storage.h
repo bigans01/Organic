@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------------------------------
 
---EnclaveManifestFactoryT1Storage.h	(Last Update 8/11/2017)
+--EnclaveManifestFactoryT1Storage.h	(Last Update 8/16/2017)
 
 Description: Header file for EnclaveManifestFactoryT1Storage.h
 
@@ -23,12 +23,12 @@ Dependents: a valid instance of ManifestCollectionMatrix
 
 class EnclaveManifestFactoryT1Storage {
 public:
-	EnclaveKeyDef::EnclaveKey StorageKey;
-	int TotalEnclaveTriangles = 0;
-	int VertexArrayCount = 0;
-	GLfloat VertexArray[13824];	// 108 GLfloats per cube, x 64 = 6912.   (alternate: 13824)		(other alternate: 3456) // 6912 / 8 = 864
-	int TextureArrayCount = 0;
-	GLfloat TextureArray[13824]; // 108 GLfloats per cube, x 64 = 6912.
+	EnclaveKeyDef::EnclaveKey StorageKey;		// an EnclaveKey used to represent the proper EnclaveKey value of a stored Enclave
+	int TotalEnclaveTriangles = 0;				// total triangles to be rendered, stored within this enclave; equivalent of the same variable in EnclaveManifest
+	int VertexArrayCount = 0;					// the count of actual vertexes used in the VertexArray below 
+	GLfloat VertexArray[13824];					// 108 GLfloats per cube, x 64 = 6912.   (alternate: 13824)		(other alternate: 3456) // 6912 / 8 = 864
+	int TextureArrayCount = 0;					// the count of actual texture data used in the TextureArray below
+	GLfloat TextureArray[13824];				// 108 GLfloats per cube, x 64 = 6912.
 	
 };
 

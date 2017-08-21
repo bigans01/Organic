@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------------------------------
 
---EnclaveCollectionMatrix.h		(Last update 7/22/2017)
+--EnclaveCollectionMatrix.h		(Last update 8/16/2017)
 
 Description: Header file for EnclaveCollectionMatrix.cpp.
 
@@ -35,19 +35,20 @@ class EnclaveCollectionMatrix {
 public:
 	OrganicSystem *OrganicPointer;
 	std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveCollection, EnclaveKeyDef::KeyHasher> EnclaveCollectionMap;				// unordered map which stores the collections
+
 	void AddNewCollection(int x, int y, int z);																						// adds a new collection, with the members of its key value being equivalent to x/y/z
 	void AddNewCollection(EnclaveKeyDef::EnclaveKey Key);																			// adds a new collection, with the given key value.
 	void AddNewCollectionSkeleton(EnclaveKeyDef::EnclaveKey Key);
 	void AddNewCollectionWithBlueprint(EnclaveKeyDef::EnclaveKey Key, EnclaveCollectionBlueprint *blueprint);						// single-threaded call for adding a collection with a blueprint.
 	void MultiAddNewCollectionWithBlueprint(int numThreads, EnclaveKeyDef::EnclaveKey Key, EnclaveCollectionBlueprint *blueprint);	// function that will prepare several worker threads for enclave instantiation.
 
-	void JobInstantiateAndPopulateEnclave(	int beginRange,																			// this function is designed to be used with multi-threaded calls. See definition for more details.
+	void JobInstantiateAndPopulateEnclave(	int beginRange,																			// (potentially unused) this function is designed to be used with multi-threaded calls. See definition for more details.
 											int endRange,																			
 											EnclaveCollection &collectionRef, 
 											EnclaveKeyDef::EnclaveKey Key, 
 											EnclaveCollectionBlueprint *blueprint);
 
-	EnclaveCollectionActivateList JobInstantiateAndPopulateEnclaveBeta(	int beginRange,												// this function is designed for multithreading; it will return a list of enclaves that need to be rendered as a result
+	EnclaveCollectionActivateList JobInstantiateAndPopulateEnclaveBeta(	int beginRange,												// (potentially unused) this function is designed for multithreading; it will return a list of enclaves that need to be rendered as a result
 																		int endRange,												// of this job being run.			
 																		EnclaveCollection &collectionRef,
 																		EnclaveKeyDef::EnclaveKey Key,
@@ -64,11 +65,10 @@ public:
 	Enclave& GetEnclaveFromXYZ(int x, int y, int z);																				// returns the enlave located at the absolute value of x/y/z
 	void TracePathToBlock(int x, int y, int z);																						// testing purposes -- will output the coordinates taken to find a particualr block (i.e., prints x of the collection, then x of the chunk, then x of the block)
 	typedef unsigned char(&ElevationMapRef)[8][8];																					// typedef for returning an array of 8x8 chars
-	ElevationMapRef& GetElevationMapFromCollection(EnclaveKeyDef::EnclaveKey InKey);
+	ElevationMapRef& GetElevationMapFromCollection(EnclaveKeyDef::EnclaveKey InKey);												// returns a pointer to an ElevationMap corresponding to a particular EnclaveCollection
 	PathTraceContainer GetCoordTrace(int value);																					// returns a PathTraceContainer that contains the x, y, or z value of the collection, chunk, and individual block that would be returned when finding the coordinate. (would be called 3 times																																// to get a true x/y/z coordinate.
-	int KeyToSingle(EnclaveKeyDef::EnclaveKey InKey);
-
-	void SetOrganicSystem(OrganicSystem *organicRef);
+	int KeyToSingle(EnclaveKeyDef::EnclaveKey InKey);																				// returns an integer representing the value of an EnclaveKey transformed to a single value (i.e., 7,7,7 = 512 -- the 8th enclave on x,y, and z)
+	void SetOrganicSystem(OrganicSystem *organicRef);																				// sets the OrganicSystem that this instance of EnclaveCollectionMatrix points to
 
 
 

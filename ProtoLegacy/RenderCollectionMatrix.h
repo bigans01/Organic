@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------------------------------
 
---RenderCollectionMatrix.h		(Last update 7/14/2017)
+--RenderCollectionMatrix.h		(Last update 8/16/2017)
 
 Description: Header file for RenderCollectionMatrix.cpp.
 
@@ -30,15 +30,18 @@ class RenderCollectionMatrix
 		std::unordered_map<EnclaveKeyDef::EnclaveKey, RenderCollection, EnclaveKeyDef::KeyHasher> RenderMatrix;			// the unordered map of RenderCollections.
 		ManifestCollectionMatrix *ManifestCollectionMatrixPtr;															// pointer to the ManifestCollectionMatrix, where the ManifestCollections will be found.
 		EnclaveCollectionMatrix *EnclaveCollectionMatrixPtr;
-		void CreateRenderArrayFromManifestCollection(EnclaveKeyDef::EnclaveKey Key);									// creates a new 3d vertex data array, for the RenderCollection having a value of Key, 
-																														// by iterating through all elements of the ManifestCollection that has a value of Key.
-		void CreateRenderArrayFromFactory(EnclaveKeyDef::EnclaveKey Key, EnclaveManifestFactoryT1 *factoryRef, mutex& mutexRef);
 
-		void SetManifestCollectionMatrixPtr(ManifestCollectionMatrix *manifestcollectionmatrixref);
-		void SetEnclaveCollectionMatrixPtr(EnclaveCollectionMatrix *enclavecollectionmatrixref);
 		RenderCollectionMatrix(ManifestCollectionMatrix *manifestcollectionmatrixref);									// sets the ManifestCollectionMatrixPtr value; default constructor.
 		RenderCollectionMatrix();																						// constructor designed for use in OrganicSystem objects
-		//mutex cmutex;
+																														
+
+		void CreateRenderArrayFromManifestCollection(EnclaveKeyDef::EnclaveKey Key);												/* creates a new 3d vertex data array, for the RenderCollection having a value of Key, 																													
+																																	 by iterating through all elements of the ManifestCollection that has a value of Key.*/
+		void CreateRenderArrayFromFactory(EnclaveKeyDef::EnclaveKey Key, EnclaveManifestFactoryT1 *factoryRef, mutex& mutexRef);	/* creates a new 3d vertex data array, for the Factory having a value of Key, 	
+																																	 by iterating through all elements of the ManifestCollection that has a value of Key.*/
+		void SetManifestCollectionMatrixPtr(ManifestCollectionMatrix *manifestcollectionmatrixref);						// sets the ManifestCollectionMatrix pointer
+		void SetEnclaveCollectionMatrixPtr(EnclaveCollectionMatrix *enclavecollectionmatrixref);						// sets the EnclaveCollectionMatrix pointer
+		
 };
 
 #endif

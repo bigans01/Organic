@@ -211,8 +211,8 @@ int main()
 
 	
 	OrganicSystem Organic;
-	Organic.SetOrganicPool(mainthreadpoolref);				// set the Organic instance's first worker thread
-	Organic.SetOrganicPool2(mainthreadpoolref2);			// set the Organic instance's second worker thread
+	Organic.SetOrganicCell1(mainthreadpoolref);				// set the Organic instance's first worker thread
+	Organic.SetOrganicCell2(mainthreadpoolref2);			// set the Organic instance's second worker thread
 	Organic.AddOrganicTextureMetaArray("base");					// set up the texture map; first ever map will be named "base"
 
 	// *********** Enclave Collection load type 2: instantiate a set of collections
@@ -262,14 +262,14 @@ int main()
 	Organic.AddBlueprint(key8.x, key8.y, key8.z, testBlueprint);
 
 
-	Organic.SetupFutureCollection(key1.x, key1.y, key1.z);
-	Organic.SetupFutureCollection(key2.x, key2.y, key2.z);
-	Organic.SetupFutureCollection(key3.x, key3.y, key3.z);
-	Organic.SetupFutureCollection(key4.x, key4.y, key4.z);
-	Organic.SetupFutureCollection(key5.x, key5.y, key5.z);
-	Organic.SetupFutureCollection(key6.x, key6.y, key6.z);
-	Organic.SetupFutureCollection(key7.x, key7.y, key7.z);
-	Organic.SetupFutureCollection(key8.x, key8.y, key8.z);
+	Organic.SetupFutureCollectionMM(key1.x, key1.y, key1.z);
+	Organic.SetupFutureCollectionMM(key2.x, key2.y, key2.z);
+	Organic.SetupFutureCollectionMM(key4.x, key4.y, key4.z);
+	Organic.SetupFutureCollectionMM(key5.x, key5.y, key5.z);
+	Organic.SetupFutureCollectionMM(key6.x, key6.y, key6.z);
+	Organic.SetupFutureCollectionMM(key7.x, key7.y, key7.z);
+	Organic.SetupFutureCollectionMM(key8.x, key8.y, key8.z);
+	Organic.SetupFutureCollectionMM(key3.x, key3.y, key3.z);
 
 	Organic.MaterializeCollection(key1, key2);
 
@@ -292,7 +292,7 @@ int main()
 	}
 
 	auto orgstart = std::chrono::high_resolution_clock::now();
-	Organic.AddAndMaterializeCollection(0, 0, 0);
+	Organic.AddAndMaterializeSingleCollectionMM(0, 0, 0);
 	auto orgend = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> orgelapsed = orgend - orgstart;
 	std::cout << "Elapsed time (Organic collection instantiation): " << orgelapsed.count() << endl;
@@ -563,78 +563,10 @@ int main()
 	// ------------------------------------BEGIN OPEN GL SET UP
 
 	// Initialise GLFW
-	if (!glfwInit())
-	{
-		fprintf(stderr, "||||||||||||||||Failed to initialize GLFW\n");
-		getchar();
-		return -1;
-	}
 
-	glfwWindowHint(GLFW_SAMPLES, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // To make MacOS happy; should not be needed
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	//Organic.SetGraphicsAPI();
 
-	// Open a window and create its OpenGL context
-	window = glfwCreateWindow(1024, 768, "Tutorial 04 - Colored Cube", NULL, NULL);
-	if (window == NULL) {
-		fprintf(stderr, "Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible. Try the 2.1 version of the tutorials.\n");
-		getchar();
-		glfwTerminate();
-		return -1;
-	}
-
-	glfwMakeContextCurrent(window);
-
-	// Initialize GLEW
-	glewExperimental = true; // Needed for core profile
-	if (glewInit() != GLEW_OK) {
-		fprintf(stderr, "----------------Failed to initialize GLEW\n");
-		getchar();
-		glfwTerminate();
-		return -1;
-	}
-
-	
-
-	// Ensure we can capture the escape key being pressed below
-	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
-
-	// Dark blue background
-	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
-
-	GLuint VertexArrayID;
-	glGenVertexArrays(1, &VertexArrayID);
-	glBindVertexArray(VertexArrayID);
-
-	// Create and compile our GLSL program from the shaders
-	GLuint programID = LoadShaders("SimpleVertexShader.vertexshader", "SimpleFragmentShader.fragmentshader");
-
-	GLfloat g_vertex_buffer_data[] = {
-		-1.0f, -1.0f, 0.0f,
-		1.0f, -1.0f, 0.0f,
-		0.0f,  1.0f, 0.0f,
-	};
-
-	GLfloat *g_vertex_buffer_data2 = new GLfloat[9];
-	g_vertex_buffer_data2[0] = -1.0f;
-	g_vertex_buffer_data2[1] = -1.0f;
-	g_vertex_buffer_data2[2] = 0.0f;
-	g_vertex_buffer_data2[3] = 1.0f;
-	g_vertex_buffer_data2[4] = -1.0f;
-	g_vertex_buffer_data2[5] = 0.0f;
-	g_vertex_buffer_data2[6] = 0.0f;
-	g_vertex_buffer_data2[7] = 1.0f;
-	g_vertex_buffer_data2[8] = 0.0f;
-
-	cout << "test of buffer data: " << sizeof(g_vertex_buffer_data) << endl;
-
-	GLuint vertexbuffer;
-	glGenBuffers(1, &vertexbuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
-	glBufferData(GL_ARRAY_BUFFER, 36, g_vertex_buffer_data2, GL_STATIC_DRAW);		// note, for 2nd argument: must be exact length of the array being used; cannot do sizeof(pointer to array).
+	Organic.SetGraphicsAPI();
 
 
 
@@ -643,41 +575,10 @@ int main()
 
 	// ------------------------------------MAIN WORLD LOOP			NOTE: use cout << fixed for exact timestamp values!
 	do {
-		// OPEN GL TEST
-		// Clear the screen
-		glClear(GL_COLOR_BUFFER_BIT);
 
-		// Use our shader
-		glUseProgram(programID);
+		Organic.RenderGLTerrain();	// perform render frame work
 
-		// 1rst attribute buffer : vertices
-		glEnableVertexAttribArray(0);
-		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-		glVertexAttribPointer(
-			0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-			3,                  // size
-			GL_FLOAT,           // type
-			GL_FALSE,           // normalized?
-			0,                  // stride
-			(void*)0            // array buffer offset
-		);
-
-		// Draw the triangle !
-		glDrawArrays(GL_TRIANGLES, 0, 3); // 3 indices starting at 0 -> 1 triangle
-
-
-		//std::cout << "RUN MULTI JOB 1 ELAPSED ITERATOR TIME: " << elapsed4.count() << std::endl;
-
-		glDisableVertexAttribArray(0);
-
-		glfwSwapBuffers(window);
-		glfwPollEvents();
-		// END OPEN GL TEST
-
-
-
-
-		//AddEnclaveToMatrix(0, 0, 1);
+		/*
 		auto start3 = std::chrono::high_resolution_clock::now();
 		float testfloats[18432] = { 0.0f };							// 288 = 32 triangles ( 1 chunk whole face)
 																	// 4608 = 512 triangles (16 chunk whole faces)
@@ -724,20 +625,25 @@ int main()
 		
 		cout << "continue testing?" << endl;
 		cin >> choice; // must be a number!
-	} while (choice != 0);
+		*/
+	} 
+	while (glfwGetKey(Organic.OGLM.GLwindow, GLFW_KEY_ESCAPE) != GLFW_PRESS &&	// loop until escape key is pressed in OpenGL window
+		glfwWindowShouldClose(Organic.OGLM.GLwindow) == 0);
 	// -------------------------------------END MAIN WORLD LOOP
+
+	Organic.GLCleanup();			// cleanup OpenGL window, buffers, arrays, etc
 
 	cout << "Press any number key to end.";
 	int somevalue;
 	cin >> somevalue;
 
 	// Cleanup VBO
-	glDeleteBuffers(1, &vertexbuffer);
-	glDeleteVertexArrays(1, &VertexArrayID);
-	glDeleteProgram(programID);
+	//glDeleteBuffers(1, &vertexbuffer);
+	//glDeleteVertexArrays(1, &VertexArrayID);
+	//glDeleteProgram(programID);
 
 	// Close OpenGL window and terminate GLFW
-	glfwTerminate();
+	//glfwTerminate();
 
 	
     return 0;

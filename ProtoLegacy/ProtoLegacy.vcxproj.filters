@@ -168,6 +168,9 @@
     <ClInclude Include="EnclaveManifestFactoryT1Index.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="OrganicGLManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -245,12 +248,15 @@
     <ClCompile Include="EnclaveManifestFactoryT1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="OrganicGLManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="SimpleFragmentShader.fragmentshader">
+    <None Include="..\x64\Debug\SimpleFragmentShader.fragmentshader">
       <Filter>shaders</Filter>
     </None>
-    <None Include="SimpleTransform.vertexshader">
+    <None Include="..\x64\Debug\SimpleTransform.vertexshader">
       <Filter>shaders</Filter>
     </None>
   </ItemGroup>

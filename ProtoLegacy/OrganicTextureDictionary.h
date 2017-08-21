@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------------------------------
 
---OrganicTextureDictionary.h (Last Update: 8/6/2017)
+--OrganicTextureDictionary.h (Last Update: 8/16/2017)
 
 Description: contains one or more entries of OrganicTextureMetaArrays. Values must be created on stack due to their length.
 
@@ -17,8 +17,8 @@ Description: contains one or more entries of OrganicTextureMetaArrays. Values mu
 class OrganicTextureDictionary
 {
 public:
-	std::unordered_map<std::string, OrganicTextureMetaArray> Dictionary;
-	OrganicTextureDictionary();
+	std::unordered_map<std::string, OrganicTextureMetaArray> Dictionary;				// the member variable within the class that actually contains the OrganicTextureMetaArrays
+	OrganicTextureDictionary();															// default constructor
 };
 
 #endif

@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------------------------------
 
---EnclaveManifestFactoryT1.h	(Last Update 8/11/2017)
+--EnclaveManifestFactoryT1.h	(Last Update 8/16/2017)
 
 Description: Header file for EnclaveManifestFactoryT1.cpp
 
@@ -28,25 +28,25 @@ Dependents: a valid instance of ManifestCollectionMatrix
 class EnclaveManifestFactoryT1
 {
 public:
-	EnclaveCollection *EnclaveCollectionPtr;
-	Enclave::EnclavePolyArray *EnclavePolyArrayPtr;
-	OrganicTextureDictionary *TextureDictionaryRef;
+	EnclaveCollection *EnclaveCollectionPtr;												// pointer to a valid EnclaveCollection
+	Enclave::EnclavePolyArray *EnclavePolyArrayPtr;											// pointer to an EnclavePolyArray within previous EnclaveCollection
+	OrganicTextureDictionary *TextureDictionaryRef;											// pointer to a valid OrganicTextureDictionary
 
-	EnclaveManifestFactoryT1Storage StorageArray[512];
-	int CurrentStorage = 0;		
-	int StorageArrayCount = 0;
-	int polyfacebitmask = 32;
+	EnclaveManifestFactoryT1Storage StorageArray[512];										// an array of 512 storage units 
+	int CurrentStorage = 0;																	// a member variable that stores the current number of stored Enclaves
+	int StorageArrayCount = 0;																// ""
+	int polyfacebitmask = 32;																// polyfacebitmask that is used as storage units are instantiated
 	
 	struct EnclaveManifestTuple {															// 3 floats per vertex, up to 16 possible points per "block", 64 blocks
 		GLfloat x = 0.0f;																	// instantiate
 		GLfloat y = 0.0f;
 		GLfloat z = 0.0f;
 	};
-	EnclaveManifestFactoryT1::EnclaveManifestTuple EnclaveManifestOffset, TempTuple;
+	EnclaveManifestFactoryT1::EnclaveManifestTuple EnclaveManifestOffset, TempTuple;		// two EnclaveManifestTuples that are used during the iteration through the Factory's storage units
 
-	void AttachManifestToEnclave(Enclave *in_ptr);
-	void SetEnclaveCollectionPtr(EnclaveCollection *InPtr);
-	EnclaveManifestTuple SingleToMulti(int input);				// EnclaveManifestTuple
+	void AttachManifestToEnclave(Enclave *in_ptr);											// attaches a manifest (contained within this Factory) to a valid Enclave
+	void SetEnclaveCollectionPtr(EnclaveCollection *InPtr);									// sets the pointer to a valid EnclaveCollection
+	EnclaveManifestTuple SingleToMulti(int input);											// EnclaveManifestTuple
 };
 
 #endif

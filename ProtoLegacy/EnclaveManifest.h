@@ -46,9 +46,6 @@ public:
 	int polyfacebitmask = 32;																// bitmask for determining which faces of a polygon will be rendered
 
 	EnclaveKeyDef::EnclaveKey UniqueKey;													// the unique EnclaveKey of this manifest
-	EnclaveManifest(int x, int y, int z);													// constructor which sets the value of the EnclaveManifest's UniqueKey
-	EnclaveManifest(int x, int y, int z, OrganicTextureDictionary *texturedictionaryptr);
-	EnclaveManifest();																		// potentially unused
 
 	struct EnclaveManifestTuple {															// 3 floats per vertex, up to 16 possible points per "block", 64 blocks
 		GLfloat x = 0.0f;																	// instantiate
@@ -57,6 +54,12 @@ public:
 	};
 
 	EnclaveManifest::EnclaveManifestTuple EnclaveManifestOffset, TempTuple;	// EnclaveManifestOffset: a tuple of x/y/z values that determines the block's offset from the beginning of the Enclave's 0,0 point.
+
+
+	EnclaveManifest(int x, int y, int z);													// constructor which sets the value of the EnclaveManifest's UniqueKey
+	EnclaveManifest(int x, int y, int z, OrganicTextureDictionary *texturedictionaryptr);
+	EnclaveManifest();																		// potentially unused
+
 																			// TempTuple: temporarily stores the x/y/z tuple that contains the final values for a block's representation in 3d space
 	void AttachToEnclave(Enclave &in_ptr);									// "Attaches" the enclave manifest to an appropriate instance of Enclave; this action generates the 3d data that will be stored in the EnclaveManifest.
 	int ReturnEnclaveTriangles();											// returns the total number of triangles rendered in this manifest. This will be used by a RenderCollection.
