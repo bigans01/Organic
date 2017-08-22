@@ -298,7 +298,7 @@ int main()
 	std::cout << "Elapsed time (Organic collection instantiation): " << orgelapsed.count() << endl;
 
 	auto orgstart2 = std::chrono::high_resolution_clock::now();
-	Organic.ChangeSingleBlockMaterialAtXYZ(25, 25, 0, 1);
+	//Organic.ChangeSingleBlockMaterialAtXYZ(25, 25, 0, 1);
 	auto orgend2 = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> orgelapsed2 = orgend2 - orgstart2;
 	std::cout << "Elapsed time (Changing material of single block): " << orgelapsed2.count() << endl;
