@@ -179,7 +179,9 @@ void OrganicGLManager::InitializeOpenGL()
 
 
 	auto GLstart = std::chrono::high_resolution_clock::now();	// optional performance testing values
-	glBufferSubData(GL_ARRAY_BUFFER, 0, 504000, tempGLarray);	/* NOTE: the 3rd argument -- the size of the data to copy (in bytes) -- must be 
+	//glBufferSubData(GL_ARRAY_BUFFER, 0, 504000, tempGLarray);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, 36, OrganicGLarrayPTR);	
+																/* NOTE: the 3rd argument -- the size of the data to copy (in bytes) -- must be
 																		 the EXACT size of data being copied in the pointed-to array of the fourth argument;
 																		 Refusing to do this will result in "undefined behavior" and will be hard to trace the source of the 
 																		 crash. (8/20/2017)
@@ -209,8 +211,13 @@ void OrganicGLManager::InitializeOpenGL()
 
 void OrganicGLManager::RenderReadyArrays()
 {
+	auto GLstart = std::chrono::high_resolution_clock::now();	
 	glClear(GL_COLOR_BUFFER_BIT);										// clear the screen?
 	glUseProgram(OrganicGLprogramID);									// select the already compiled program
+
+	// gather inputs from keyboard
+	computeMatricesFromInputs();
+
 
 	// Send our transformation to the currently bound shader, 
 	// in the "MVP" uniform -- 
@@ -223,7 +230,7 @@ void OrganicGLManager::RenderReadyArrays()
 																		*/
 																				
 	glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexBufferID);				// OrganicGLVertexBufferArray[0], OrganicGLVertexBufferID
-	auto GLstart = std::chrono::high_resolution_clock::now();			// optional, performance testing only
+	//auto GLstart = std::chrono::high_resolution_clock::now();			// optional, performance testing only
 	glVertexAttribPointer(
 		0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
 		3,                  // size
@@ -234,17 +241,22 @@ void OrganicGLManager::RenderReadyArrays()
 							   For instance, if the data begins at byte 10000, you would put (void*)10000 in the array you are reading.
 							*/
 	);
-	auto GLend = std::chrono::high_resolution_clock::now();				// optional performance testing values
+	//auto GLend = std::chrono::high_resolution_clock::now();				// optional performance testing values
 															
 	//auto GLstart = std::chrono::high_resolution_clock::now();	
 	// Draw the triangle !
 	for (int zz = 0; zz < 125; zz++)			// reading 125 times from the currently bound buffer is insanely faster when compared to binding to a separate buffer every loop iteration.
 	{
-		glDrawArrays(GL_TRIANGLES, 0, 3); // 3 indices starting at 0 -> 1 triangle
+		glDrawArrays(GL_TRIANGLES, 0, 6144); // 3 indices starting at 0 -> 1 triangle; will be 3 * number of triangles;
+													// test: 2048
+													// test: 36
+													// test: 72
+													// test: 144
+													// Appropriate argument for third parameter should be: 2048 * 3 = 6144
 	}
-	//auto GLend = std::chrono::high_resolution_clock::now();	// optional performance testing values
-	//std::chrono::duration<double> GLelapsed = GLend - GLstart;
-	//cout << "Buffer set up complete. Time: " << GLelapsed.count() << endl;
+	auto GLend = std::chrono::high_resolution_clock::now();	// optional performance testing values
+	std::chrono::duration<double> GLelapsed = GLend - GLstart;
+	//std::cout << "Frame render Time: " << GLelapsed.count() << std::endl;
 	//std::cout << "RUN MULTI JOB 1 ELAPSED ITERATOR TIME: " << elapsed4.count() << std::endl;
 
 	glDisableVertexAttribArray(0);										// disable the array that was just used.
@@ -264,4 +276,82 @@ void OrganicGLManager::ShutdownOpenGL()
 	// Close OpenGL window and terminate GLFW
 	glfwTerminate();
 	delete[] OrganicGLarrayPTR;
+}
+
+void OrganicGLManager::computeMatricesFromInputs()
+{
+	// glfwGetTime is called only once, the first time this function is called
+	static double lastTime = glfwGetTime();
+
+	// Compute time difference between current and last frame
+	double currentTime = glfwGetTime();
+	float deltaTime = float(currentTime - lastTime);
+
+	// Get mouse position
+	double xpos, ypos;
+	glfwGetCursorPos(GLwindow, &xpos, &ypos);
+
+	// Reset mouse position for next frame
+	glfwSetCursorPos(GLwindow, 1024 / 2, 768 / 2);
+
+	// Compute new orientation
+	horizontalAngle += mouseSpeed * float(1024 / 2 - xpos);
+	verticalAngle += mouseSpeed * float(768 / 2 - ypos);
+
+	// Direction : Spherical coordinates to Cartesian coordinates conversion
+	glm::vec3 direction(
+		cos(verticalAngle) * sin(horizontalAngle),
+		sin(verticalAngle),
+		cos(verticalAngle) * cos(horizontalAngle)
+	);
+
+	// Right vector
+	glm::vec3 right = glm::vec3(
+		sin(horizontalAngle - 3.14f / 2.0f),
+		0,
+		cos(horizontalAngle - 3.14f / 2.0f)
+	);
+
+	// Up vector
+	glm::vec3 up = glm::cross(right, direction);
+
+	// Move forward
+	if (glfwGetKey(GLwindow, GLFW_KEY_UP) == GLFW_PRESS) {
+		position += direction * deltaTime * speed;
+	}
+	// Move backward
+	if (glfwGetKey(GLwindow, GLFW_KEY_DOWN) == GLFW_PRESS) {
+		position -= direction * deltaTime * speed;
+	}
+	// Strafe right
+	if (glfwGetKey(GLwindow, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+		position += right * deltaTime * speed;
+	}
+	// Strafe left
+	if (glfwGetKey(GLwindow, GLFW_KEY_LEFT) == GLFW_PRESS) {
+		position -= right * deltaTime * speed;
+	}
+
+	float FoV = initialFoV;// - 5 * glfwGetMouseWheel(); // Now GLFW 3 requires setting up a callback for this. It's a bit too complicated for this beginner's tutorial, so it's disabled instead.
+
+	// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
+	Projection = glm::perspective(FoV, 4.0f / 3.0f, 0.1f, 100.0f);
+	// Camera matrix
+	View = glm::lookAt(
+		position,           // Camera is here
+		position + direction, // and looks here : at the same position, plus "direction"
+		up                  // Head is up (set to 0,-1,0 to look upside-down)
+	);
+	// For the next frame, the "last time" will be "now"
+
+	Model = glm::mat4(1.0);
+	MVP = Projection * View * Model;
+
+
+	lastTime = currentTime;
+}
+
+void OrganicGLManager::sendDataToBuffer(GLfloat* floatPtr, int size)
+{
+	glBufferSubData(GL_ARRAY_BUFFER, 0, size, floatPtr);
 }

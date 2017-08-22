@@ -135,7 +135,7 @@ void RenderCollection::CombineManifestArrays()
 
 	GLFloatPtr = new GLfloat[totaltrianglestorender*9];	// 9 floats per triangle
 	RenderCollectionArraySize = totaltrianglestorender * 4 * 9;
-	//cout << "value of RenderCollectionArraySize: " << RenderCollectionArraySize << endl;
+	cout << "value of RenderCollectionArraySize: " << RenderCollectionArraySize << endl;
 
 	int index = 0;
 	//int index = (totaltrianglestorender*9)-1;
@@ -561,4 +561,9 @@ RenderCollection::~RenderCollection()
 		delete[] GLFloatPtr;
 		IsGLFloatPtrLoaded = 0;
 	}
+}
+
+GLfloat* RenderCollection::GetGLData()
+{
+	return GLFloatPtr;
 }

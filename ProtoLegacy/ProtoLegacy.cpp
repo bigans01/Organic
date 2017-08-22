@@ -568,8 +568,8 @@ int main()
 
 	Organic.SetGraphicsAPI();
 
-
-
+	GLfloat* tempTestPtr = Organic.GetVertexDataFromRenderCollection(0,0,0);
+	Organic.SendDataFromCollectionToGLBuffer(tempTestPtr, 73728);
 	// ------------------------------------END OPEN GL SET UP
 
 

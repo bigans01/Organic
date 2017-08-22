@@ -727,3 +727,22 @@ void OrganicSystem::GLCleanup()
 {
 	OGLM.ShutdownOpenGL();
 }
+
+GLfloat* OrganicSystem::GetVertexDataFromRenderCollection(int x, int y, int z)
+{
+	EnclaveKeyDef::EnclaveKey tempKey;
+	tempKey.x = x;
+	tempKey.y = y;
+	tempKey.z = z;
+	//GLfloat *returnPtr = &RenderCollections.RenderMatrix[tempKey].GetGLData;
+	//return &RenderCollections.RenderMatrix[tempKey].GetGLData;
+	//return returnPtr;
+	GLfloat *tempPtr = RenderCollections.RenderMatrix[tempKey].GetGLData();
+	return tempPtr;
+	
+}
+
+void OrganicSystem::SendDataFromCollectionToGLBuffer(GLfloat* inFloatPtr, int inSize)
+{
+	OGLM.sendDataToBuffer(inFloatPtr, inSize);
+}

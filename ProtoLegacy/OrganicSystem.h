@@ -65,6 +65,9 @@ public:
 	void SetOrganicCell2(thread_pool *thread_pool_ref);											// sets the pointer for Cell2 to be a valid worker thread
 	void AddOrganicTextureMetaArray(string mapname);											// adds a new texture meta array, which is a list that is used to map block IDs to texture UV coordinates.
 	void SetGraphicsAPI();
+	// GLfloat GetVertexDataFromRenderCollection(int x, int y, int z);
+	GLfloat* GetVertexDataFromRenderCollection(int x, int y, int z);
+	void SendDataFromCollectionToGLBuffer(GLfloat* inFloatPtr, int inSize);
 	void JobMaterializeSingleCollectionFromMM(	EnclaveKeyDef::EnclaveKey Key1,																									// materializes a single collection from the ground up, utilizing a manifest matrix
 												EnclaveCollectionBlueprintMatrix BlueprintMatrixRef, 
 												EnclaveCollectionMatrix EnclaveCollectionsRef, 
