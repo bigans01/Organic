@@ -123,7 +123,7 @@ void OrganicGLManager::InitializeOpenGL()
 	glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexBufferID);					// binds the previously created buffer to be a GL_ARRAY_BUFFER
 
 	//glBufferData(GL_ARRAY_BUFFER, 1024, OrganicGLarrayPTR, GL_DYNAMIC_DRAW);		// Old method; no longer utilized.
-	glBufferStorage(GL_ARRAY_BUFFER, 1024 * 1024, NULL, GL_DYNAMIC_STORAGE_BIT);	/* REQUIRED: pre-allocates memory for the buffer, to any desired amount; this is so 
+	glBufferStorage(GL_ARRAY_BUFFER, CollectionBufferSize * 500, NULL, GL_DYNAMIC_STORAGE_BIT);	/* REQUIRED: pre-allocates memory for the buffer, to any desired amount; this is so
 																					   that the buffer doesn't need to be resized in the future.
 																					
 																						Parameters:
@@ -245,15 +245,45 @@ void OrganicGLManager::RenderReadyArrays()
 															
 	//auto GLstart = std::chrono::high_resolution_clock::now();	
 	// Draw the triangle !
-	for (int zz = 0; zz < 125; zz++)			// reading 125 times from the currently bound buffer is insanely faster when compared to binding to a separate buffer every loop iteration.
+
+
+	/*
+	for (int zz = 0; zz < 500; zz++)			// reading 125 times from the currently bound buffer is insanely faster when compared to binding to a separate buffer every loop iteration.
 	{
-		glDrawArrays(GL_TRIANGLES, 0, 6144); // 3 indices starting at 0 -> 1 triangle; will be 3 * number of triangles;
+		glDrawArrays(GL_TRIANGLES, 0, 6156); // 3 indices starting at 0 -> 1 triangle; will be 3 * number of triangles; 3 * 4 = 12 (6156)
 													// test: 2048
 													// test: 36
 													// test: 72
 													// test: 144
 													// Appropriate argument for third parameter should be: 2048 * 3 = 6144
 	}
+	*/
+	//cout << "test: " << RMContainer.TotalRenderable;				
+	//for (int y = 0; y < 166; y++)
+	//{
+		for (int x = 0; x < RMContainer.TotalRenderable; x++)
+		{
+			// summary:
+			// first argument: GL_TRIANGLES
+			// second argument: vertex offset, so if byte begins at 73728, offset is 6144.
+			// last argument of glDrawArrays = number of vertices; 6144 for an entire collection face
+
+			//glDrawArrays(GL_TRIANGLES, 0, ((RMContainer.RenderMetaArray[x].ArraySize) / 12)*2);
+			
+			//x*(CollectionBufferSize/12)
+
+			glDrawArrays(GL_TRIANGLES, x*(CollectionBufferSize / 12), ((RMContainer.RenderMetaArray[x].ArraySize) / 12));
+
+			//glDrawArrays(GL_TRIANGLES, 0, ((RMContainer.RenderMetaArray[0].ArraySize) / 12));
+			//glDrawArrays(GL_TRIANGLES, 6144, ((RMContainer.RenderMetaArray[1].ArraySize) / 12));
+
+			//glDrawArrays(GL_TRIANGLES, x*2048, (RMContainer.RenderMetaArray[x].ArraySize) / 12);
+			//glDrawArrays(GL_TRIANGLES, 1*CollectionBufferSize, (RMContainer.RenderMetaArray[1].ArraySize) / 12);
+			//glDrawArrays(GL_TRIANGLES, 0*CollectionBufferSize, ((RMContainer.RenderMetaArray[0].ArraySize)) / 12);
+			//glDrawArrays(GL_TRIANGLES, 0, ((RMContainer.RenderMetaArray[0].ArraySize)*2) / 12);
+		}
+	//}
+
 	auto GLend = std::chrono::high_resolution_clock::now();	// optional performance testing values
 	std::chrono::duration<double> GLelapsed = GLend - GLstart;
 	//std::cout << "Frame render Time: " << GLelapsed.count() << std::endl;
@@ -354,4 +384,23 @@ void OrganicGLManager::computeMatricesFromInputs()
 void OrganicGLManager::sendDataToBuffer(GLfloat* floatPtr, int size)
 {
 	glBufferSubData(GL_ARRAY_BUFFER, 0, size, floatPtr);
+}
+
+void OrganicGLManager::sendRenderCollectionDataToBuffer(RenderCollection *renderCollPtr)
+{
+	cout << "Test; array size: " << renderCollPtr->RenderCollectionArraySize <<endl;
+	glBufferSubData(GL_ARRAY_BUFFER, RMContainer.CurrentIndex*CollectionBufferSize, renderCollPtr->RenderCollectionArraySize, renderCollPtr->GLFloatPtr);
+	RMContainer.RenderMetaArray[RMContainer.CurrentIndex].MetaIndex = RMContainer.CurrentIndex;
+	RMContainer.RenderMetaArray[RMContainer.CurrentIndex].ArraySize = renderCollPtr->RenderCollectionArraySize;
+	RMContainer.CurrentIndex++;
+	RMContainer.TotalRenderable++;
+	
+	/*
+	int y = 0;
+	int rendercount = (renderCollPtr->RenderCollectionArraySize / 36);
+	for (int x = 0; x < rendercount; x++)
+	{
+		cout << "Examining arrays: " << renderCollPtr->GLFloatPtr[y++] << " " << renderCollPtr->GLFloatPtr[y++] << " " << renderCollPtr->GLFloatPtr[y++] << endl;
+	}
+	*/
 }

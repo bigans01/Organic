@@ -242,11 +242,11 @@ int main()
 	key6.y = 0;
 	key6.z = 1;
 
-	key7.x = 11;
+	key7.x = 2;
 	key7.y = 0;
 	key7.z = 1;
 
-	key8.x = 12;
+	key8.x = 1;
 	key8.y = 0;
 	key8.z = 1;
 
@@ -271,7 +271,7 @@ int main()
 	Organic.SetupFutureCollectionMM(key8.x, key8.y, key8.z);
 	Organic.SetupFutureCollectionMM(key3.x, key3.y, key3.z);
 
-	Organic.MaterializeCollection(key1, key2);
+	//Organic.MaterializeCollection(key1, key2);
 
 	cout << "-------------------------PASS" << endl;
 	// *********** Enclave Collection load type 1: add and instantiate a single collection
@@ -293,6 +293,8 @@ int main()
 
 	auto orgstart = std::chrono::high_resolution_clock::now();
 	Organic.AddAndMaterializeSingleCollectionMM(0, 0, 0);
+	Organic.AddAndMaterializeSingleCollectionMM(1, 0, 1);
+	Organic.AddAndMaterializeSingleCollectionMM(2, 0, 1);
 	auto orgend = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> orgelapsed = orgend - orgstart;
 	std::cout << "Elapsed time (Organic collection instantiation): " << orgelapsed.count() << endl;
@@ -476,30 +478,6 @@ int main()
 
 	cout << "re test of enclave: " << tempEnclave->GetTotalTrianglesInEnclave() << endl;
 	
-	EnclaveKeyDef::EnclaveKey testkey;
-	testkey.x = 3;
-	testkey.y = 0;
-	testkey.z = 0;
-
-	EnclaveKeyDef::EnclaveKey testkey2;
-	testkey2.x = 0;
-	testkey2.y = 0;
-	testkey2.z = 0;
-	// set up manifest collection
-	//ManifestCollections.AddNewCollection(testkey);							// Step 1: create a collection that has same Key as an existing EnclaveCollection
-	//ManifestCollections.AttachManifestToCollectedEnclave(testkey, 1, 0, 0);	// Step 2: add a single(or multiple) manifest(s) to the ManifestCollection (same key as EnclaveCollection). This only needs to be called once per Enclave. (for parallelism/multi-threading safety)
-	//ManifestCollections.AttachManifestToCollectedEnclave(testkey, 2, 0, 0);	// attaches a manifest to a manifest collection that has a key of "testkey," and x/y/z coord of following 3 arguments
-	//ManifestCollections.AttachManifestToCollectedEnclave(testkey, 3, 0, 0);
-	//ManifestCollections.AttachManifestToCollectedEnclave(testkey, 4, 0, 0);
-	//ManifestCollections.AttachManifestToCollectedEnclave(testkey, 5, 0, 0);
-	//ManifestCollections.AttachManifestToCollectedEnclave(testkey, 6, 0, 0);
-	//ManifestCollections.AttachManifestToCollectedEnclave(testkey, 7, 0, 0);
-	//
-	//ManifestCollections.AddNewCollection(testkey2);
-	//cout << "debug line" << endl;
-	//ManifestCollections.AttachManifestToCollectedEnclave(testkey2, 0, 0, 0);
-	//ManifestCollections.AttachManifestToCollectedEnclave(testkey2, 1, 0, 0);
-	//ManifestCollections.AttachManifestToCollectedEnclave(testkey2, 2, 0, 0);
 
 	
 
@@ -568,8 +546,18 @@ int main()
 
 	Organic.SetGraphicsAPI();
 
-	GLfloat* tempTestPtr = Organic.GetVertexDataFromRenderCollection(0,0,0);
-	Organic.SendDataFromCollectionToGLBuffer(tempTestPtr, 73728);
+	//GLfloat* tempTestPtr = Organic.GetVertexDataFromRenderCollection(0,0,0);
+	//Organic.SendDataFromCollectionToGLBuffer(tempTestPtr, 73872); // 73872 | 73728
+
+	RenderCollection* renderCollectionPtr = Organic.GetRenderCollectionPtr(0, 0, 0);
+	Organic.SendDataFromRenderPtrToGLBuffer(renderCollectionPtr);
+
+	RenderCollection* renderCollectionPtr2 = Organic.GetRenderCollectionPtr(1, 0, 1);
+	Organic.SendDataFromRenderPtrToGLBuffer(renderCollectionPtr2);
+
+	RenderCollection* renderCollectionPtr3 = Organic.GetRenderCollectionPtr(2, 0, 1);
+	Organic.SendDataFromRenderPtrToGLBuffer(renderCollectionPtr3);
+
 	// ------------------------------------END OPEN GL SET UP
 
 

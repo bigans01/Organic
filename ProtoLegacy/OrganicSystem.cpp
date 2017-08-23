@@ -47,6 +47,7 @@ void OrganicSystem::AddAndMaterializeSingleCollectionMM(int x, int y, int z)
 	tempKey.x = x;										// set temp key to input of x
 	tempKey.y = y;										// set temp key to input of y
 	tempKey.z = z;
+	//cout << "Crash point testing " << endl;
 	EnclaveCollectionBlueprint *blueprintptr = &BlueprintMatrix.BlueprintMap[tempKey];
 	// multithreaded testing begins here
 	//EnclaveCollections.AddNewCollectionWithBlueprint(tempKey, blueprintptr);
@@ -55,6 +56,7 @@ void OrganicSystem::AddAndMaterializeSingleCollectionMM(int x, int y, int z)
 	EnclaveCollections.SetOrganicSystem(this);
 	auto start1 = std::chrono::high_resolution_clock::now();
 	EnclaveCollections.MultiAddNewCollectionWithBlueprint(2, tempKey, blueprintptr);
+	//cout << "Crash point testing 2" << endl;
 	//EnclaveCollections.MultiAddNewCollectionWithBlueprint(1, tempKey, blueprintptr);
 	auto finish1 = std::chrono::high_resolution_clock::now();
 	EnclaveCollection *collectionPtr = &EnclaveCollections.EnclaveCollectionMap[tempKey];
@@ -62,7 +64,7 @@ void OrganicSystem::AddAndMaterializeSingleCollectionMM(int x, int y, int z)
 	std::chrono::duration<double> elapsed1 = finish1 - start1;
 	//cout << "Organic system phase 1: (Add collection, instantiate enclaves, determine solids, determine surface, perform painting, unveil polys): " << elapsed1.count() << endl;
 
-
+	
 
 	// STEP 2: iterate through surface enclaves and attach them |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 	auto start3 = std::chrono::high_resolution_clock::now();
@@ -392,7 +394,7 @@ void OrganicSystem::ChangeSingleBlockMaterialAtXYZ(int x, int y, int z, int newm
 	tempEnclave->ChangePolyMaterial(BlockX, BlockY, BlockZ, 1);
 	tempEnclave->UnveilSinglePoly(2, 2, 0, 0, 1, 0, 40, 0);
 
-	ManifestCollections.UpdateAttachedManifest(CollectionKey, EnclaveKey.x, EnclaveKey.y, EnclaveKey.z);
+	ManifestCollections.UpdateAttachedManifest(CollectionKey, EnclaveKey.x, EnclaveKey.y, EnclaveKey.z);	// causes bizarre issue 
 	//tempEnclave->ChangePolyMaterial(0, 3, 0, 1);												// very fast operation; doing all material blocks to be changed in the current chunk is orders more efficient...
 	//tempEnclave->ChangePolyMaterial(1, 3, 0, 1);
 	//tempEnclave->ChangePolyMaterial(2, 3, 0, 1);
@@ -745,4 +747,19 @@ GLfloat* OrganicSystem::GetVertexDataFromRenderCollection(int x, int y, int z)
 void OrganicSystem::SendDataFromCollectionToGLBuffer(GLfloat* inFloatPtr, int inSize)
 {
 	OGLM.sendDataToBuffer(inFloatPtr, inSize);
+}
+
+RenderCollection* OrganicSystem::GetRenderCollectionPtr(int x, int y, int z)
+{
+	EnclaveKeyDef::EnclaveKey tempKey;
+	tempKey.x = x;
+	tempKey.y = y;
+	tempKey.z = z;
+	RenderCollection *renderCollPtr = &RenderCollections.RenderMatrix[tempKey];
+	return renderCollPtr;
+}
+
+void OrganicSystem::SendDataFromRenderPtrToGLBuffer(RenderCollection* renderCollectionPtr)
+{
+	OGLM.sendRenderCollectionDataToBuffer(renderCollectionPtr);
 }

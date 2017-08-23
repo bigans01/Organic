@@ -182,6 +182,7 @@
     <ClInclude Include="OrganicBlockMeta.h" />
     <ClInclude Include="OrganicFaceMeta.h" />
     <ClInclude Include="OrganicGLManager.h" />
+    <ClInclude Include="OrganicGLRenderCollectionMeta.h" />
     <ClInclude Include="OrganicSystem.h" />
     <ClInclude Include="OrganicTextureCoords.h" />
     <ClInclude Include="OrganicTextureDictionary.h" />

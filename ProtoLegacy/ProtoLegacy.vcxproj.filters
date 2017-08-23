@@ -171,6 +171,9 @@
     <ClInclude Include="OrganicGLManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="OrganicGLRenderCollectionMeta.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
