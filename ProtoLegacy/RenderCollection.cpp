@@ -177,9 +177,9 @@ void RenderCollection::CombineManifestArrays()
 			//GLFloatPtr[currentBegin - 1] = tempGLptr[pointedBegin + 1];									// for first coord, x
 			//GLFloatPtr[currentBegin - 2 ] = tempGLptr[pointedBegin];
 
-			GLFloatPtr[currentBegin ] = tempGLptr[pointedBegin + 2];									// for first coord, x
+			GLFloatPtr[currentBegin + 2] = tempGLptr[pointedBegin + 2];									// for first coord, x
 			GLFloatPtr[currentBegin + 1] = tempGLptr[pointedBegin + 1];									// for first coord, x
-			GLFloatPtr[currentBegin + 2] = tempGLptr[pointedBegin];
+			GLFloatPtr[currentBegin] = tempGLptr[pointedBegin];
 
 			// NOTE: current begin should be 0...check this!
 			// currentBegin = end index of currently checked enclave manifest....
@@ -234,7 +234,7 @@ void RenderCollection::CombineManifestArraysFromT1Factory(EnclaveManifestFactory
 		EnclaveManifestFactoryT1Storage *StoragePtr = &factoryRef->StorageArray[x];			// get the pointer to the storage unit
 		totalfloats += StoragePtr->VertexArrayCount;										// increment totalfloats by VertexArrayCount from the pointed-to enclave
 	}
-	//cout << "total triangles to render will be: " << totaltrianglestorender << endl;
+	cout << "total triangles to render will be: " << totalfloats << endl;
 
 
 	// STEP 2: create the dynamic array, acquire heap lock while doing so
@@ -243,7 +243,8 @@ void RenderCollection::CombineManifestArraysFromT1Factory(EnclaveManifestFactory
 	mutexval.lock();
 	IsGLFloatPtrLoaded = 1;									// indicate that the pointer was loaded with data
 	GLFloatPtr = new GLfloat[totalfloats];	// 9 floats per triangle
-	mutexval.unlock();
+	cout << "totalfloats: " << totalfloats << endl;
+ 	mutexval.unlock();
 	//cout << "Render 2 entry:" << endl;
 
 	// STEP 3: populate dynamic array(s)
@@ -300,7 +301,7 @@ void RenderCollection::CombineManifestArraysFromT1Factory(EnclaveManifestFactory
 		}
 		
 	}
-
+	RenderCollectionArraySize = totalfloats * 4;
 
 	
 }
@@ -453,9 +454,9 @@ void RenderCollection::UpdateManifestArray(EnclaveKeyDef::EnclaveKey Key)	// upd
 			//GLFloatPtr[currentBegin + 1] = tempGLptr[pointedBegin + 1];									// for first coord, x
 			//GLFloatPtr[currentBegin + 2] = tempGLptr[pointedBegin];
 
-			tempGLptr2[currentBegin] = array2ptr[pointedBegin + 2];									// for first coord, x
+			tempGLptr2[currentBegin + 2] = array2ptr[pointedBegin + 2];									// for first coord, x
 			tempGLptr2[currentBegin + 1] = array2ptr[pointedBegin + 1];									// for first coord, x
-			tempGLptr2[currentBegin + 2] = array2ptr[pointedBegin];
+			tempGLptr2[currentBegin] = array2ptr[pointedBegin];
 								// for first coord, x
 			//cout << "Triangle coord matching: (-2): " << GLFloatPtr[currentBegin - 2] << " (-1): " << GLFloatPtr[currentBegin - 1] << " (0):" << GLFloatPtr[currentBegin] << endl;
 			//currentBegin -= 3;

@@ -176,7 +176,7 @@ void OrganicSystem::MaterializeCollection(EnclaveKeyDef::EnclaveKey Key1, Enclav
 	// temporary
 
 	EnclaveKeyDef::EnclaveKey key3, key4, key5, key6, key7, key8;
-	key3.x = 7;
+	key3.x = 3;
 	key3.y = 0;
 	key3.z = 1;
 
@@ -307,7 +307,7 @@ void OrganicSystem::MaterializeCollection(EnclaveKeyDef::EnclaveKey Key1, Enclav
 	EnclaveCollection *CollectionPtr = &EnclaveCollections.EnclaveCollectionMap[key3];
 	RenderCollectionMatrix *RenderCollectionsPtr = &RenderCollections;
 	std::future<void> remat_1 = tpref->submit5(&OrganicSystem::JobRematerializeSingleExistingCollectionFromFactory, this, key3, std::ref(CollectionPtr), std::ref(FactoryPtr), std::ref(RenderCollectionsPtr), std::ref(mutexval));
-
+	remat_1.wait();
 	auto rematend = std::chrono::high_resolution_clock::now();
 
 	std::chrono::duration<double> rematelapsed = rematend - rematstart;
@@ -413,6 +413,20 @@ void OrganicSystem::ChangeSingleBlockMaterialAtXYZ(int x, int y, int z, int newm
 	//tempEnclave->ChangePolyMaterial(1, 3, 1, 1);
 	//tempEnclave->ChangePolyMaterial(2, 3, 2, 1);
 
+	
+	
+	std::mutex mutexval;
+	thread_pool *tpref = getCell1();
+
+	EnclaveManifestFactoryT1Index MainFactoryIndex;
+	MainFactoryIndex.FactoryMap["Factory 1"].StorageArray[0].VertexArrayCount = 0;
+	EnclaveManifestFactoryT1 *FactoryPtr = &MainFactoryIndex.FactoryMap["Factory 1"];
+	FactoryPtr->TextureDictionaryRef = &TextureDictionary;
+	EnclaveCollection *CollectionPtr = &EnclaveCollections.EnclaveCollectionMap[CollectionKey];
+	RenderCollectionMatrix *RenderCollectionsPtr = &RenderCollections;
+	std::future<void> remat_1 = tpref->submit5(&OrganicSystem::JobRematerializeSingleExistingCollectionFromFactory, this, CollectionKey, std::ref(CollectionPtr), std::ref(FactoryPtr), std::ref(RenderCollectionsPtr), std::ref(mutexval));
+	remat_1.wait();
+	
 }
 
 void OrganicSystem::AddBlueprint(int x, int y, int z, EnclaveCollectionBlueprint blueprint)
@@ -651,17 +665,19 @@ void OrganicSystem::JobMaterializeMultiCollectionFromFactory(MDListJobMaterializ
 		EnclaveKeyDef::EnclaveKey innerTempKey;
 		FactoryRef->CurrentStorage = 0;					// reset storage location.
 		FactoryRef->StorageArrayCount = 0;
+		int tempdumbcount = 0;
 		for (int a = 0; a < manifestCounter; a++)
 		{
 			innerTempKey = CollectionRef->RenderableEnclaves[a];
 			Enclave *tempEnclavePtr = &CollectionRef->GetEnclaveByKey(innerTempKey);
 			FactoryRef->AttachManifestToEnclave(tempEnclavePtr);
-
+			tempdumbcount++;
 		}
 		
 		// Phase 3: Render actual collection
 		RenderCollectionsRef.CreateRenderArrayFromFactory(Key1, FactoryRef, std::ref(mutexval));		// call function to add data into array; pass mutex to use
-
+		RenderCollection* collPtr = &RenderCollectionsRef.RenderMatrix[Key1];
+		cout << "Total renderables for Key (" << Key1.x << ", " << Key1.y << ", " << Key1.z << ") :" << tempdumbcount << ": " << collPtr->RenderCollectionArraySize << endl;
 	}
 
 	mutexval.lock();
@@ -762,4 +778,27 @@ RenderCollection* OrganicSystem::GetRenderCollectionPtr(int x, int y, int z)
 void OrganicSystem::SendDataFromRenderPtrToGLBuffer(RenderCollection* renderCollectionPtr)
 {
 	OGLM.sendRenderCollectionDataToBuffer(renderCollectionPtr);
+}
+
+void OrganicSystem::AnalyzeRenderArray(int x, int y, int z, int xyz)
+{
+	EnclaveKeyDef::EnclaveKey tempKey;
+	tempKey.x = x;
+	tempKey.y = y;
+	tempKey.z = z;
+	RenderCollection *renderCollPtr = &RenderCollections.RenderMatrix[tempKey];
+	int totalloops = renderCollPtr->RenderCollectionArraySize / 4;
+	int currentindex = 0;
+	int startindex = 0;
+	//cout << " dummy value test:" << renderCollPtr->GLFloatPtr[startindex] << ", " << renderCollPtr->GLFloatPtr[startindex++] << ", " << renderCollPtr->GLFloatPtr[startindex++] << endl;
+	for (int x = 0; x < 100; x++)
+	{
+		//if ((renderCollPtr->GLFloatPtr[startindex+1 ]) < 28)
+		//{
+			cout << " dummy value test:" << renderCollPtr->GLFloatPtr[startindex ] << ", " << renderCollPtr->GLFloatPtr[startindex+1] << ", " << renderCollPtr->GLFloatPtr[startindex+2] << endl;
+	//	}
+		startindex += 3;
+			
+		currentindex += 3;
+	}
 }

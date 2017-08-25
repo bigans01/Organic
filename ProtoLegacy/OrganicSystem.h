@@ -70,6 +70,7 @@ public:
 	RenderCollection* GetRenderCollectionPtr(int x, int y, int z);
 	void SendDataFromCollectionToGLBuffer(GLfloat* inFloatPtr, int inSize);
 	void SendDataFromRenderPtrToGLBuffer(RenderCollection* renderCollectionPtr);
+	void AnalyzeRenderArray(int x, int y, int z, int xyz);
 	void JobMaterializeSingleCollectionFromMM(	EnclaveKeyDef::EnclaveKey Key1,																									// materializes a single collection from the ground up, utilizing a manifest matrix
 												EnclaveCollectionBlueprintMatrix BlueprintMatrixRef, 
 												EnclaveCollectionMatrix EnclaveCollectionsRef, 

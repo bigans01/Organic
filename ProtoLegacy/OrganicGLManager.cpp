@@ -149,64 +149,14 @@ void OrganicGLManager::InitializeOpenGL()
 
 
 	// Set up temporary data and point to it
-	OrganicGLarrayPTR = new GLfloat[9];
-	OrganicGLarrayPTR[0] = -1.0f;
-	OrganicGLarrayPTR[1] = -1.0f;
-	OrganicGLarrayPTR[2] = 0.0f;
-	OrganicGLarrayPTR[3] = 1.0f;
-	OrganicGLarrayPTR[4] = -1.0f;
-	OrganicGLarrayPTR[5] = 0.0f;
-	OrganicGLarrayPTR[6] = 0.0f;
-	OrganicGLarrayPTR[7] = 1.0f;
-	OrganicGLarrayPTR[8] = 0.0f;
 
-	// testing only.
-	GLfloat *tempGLarray = new GLfloat[126000];
-	int startval = 0;
-	for (int x = 0; x < 14000; x++)
-	{
-		tempGLarray[startval++] = -1.0f;
-		tempGLarray[startval++] = -1.0f;
-		tempGLarray[startval++] = 0.0f;
-		tempGLarray[startval++] = 1.0f;
-		tempGLarray[startval++] = -1.0f;
-		tempGLarray[startval++] = 0.0f;
-		tempGLarray[startval++] = 0.0f;
-		tempGLarray[startval++] = 1.0f;
-		tempGLarray[startval++] = 0.0f;
-
-	}
 
 
 	auto GLstart = std::chrono::high_resolution_clock::now();	// optional performance testing values
-	//glBufferSubData(GL_ARRAY_BUFFER, 0, 504000, tempGLarray);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, 36, OrganicGLarrayPTR);	
-																/* NOTE: the 3rd argument -- the size of the data to copy (in bytes) -- must be
-																		 the EXACT size of data being copied in the pointed-to array of the fourth argument;
-																		 Refusing to do this will result in "undefined behavior" and will be hard to trace the source of the 
-																		 crash. (8/20/2017)
-																
-																*/
-
-	delete[] tempGLarray;										// delete the tempGLarray once the data has been copied.
-
 	auto GLend = std::chrono::high_resolution_clock::now();	// optional performance testing values
 	std::chrono::duration<double> GLelapsed = GLend - GLstart;
 	//cout << "Total time:  " << trueelapsed.count() << endl;
-	std::cout << "glBufferSubData complete. Time: " << GLelapsed.count() << std::endl;
-
-	//glGenBuffers(2, &OrganicGLVertexBufferID2);								// generate 1 buffer, bind it to OrganicGLVertexBufferID
-	//glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexBufferID2);					// binds the previously created buffer to be a GL_ARRAY_BUFFER
-	//glBufferData(GL_ARRAY_BUFFER, 128000, OrganicGLarrayPTR, GL_DYNAMIC_DRAW);
-
-	//glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexBufferID);
-
-	//glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexBufferArray[1]);
-
-
-	//glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexBufferArray[1]);					// binds the previously created buffer to be a GL_ARRAY_BUFFER
-	//glBufferStorage(GL_ARRAY_BUFFER, 1024 * 1024, NULL, GL_DYNAMIC_STORAGE_BIT);	// REQUIRED: pre-allocates memory for the buffer.
-	//glBufferSubData(GL_ARRAY_BUFFER, 0, 36, OrganicGLarrayPTR);
+	//std::cout << "glBufferSubData complete. Time: " << GLelapsed.count() << std::endl;
 }
 
 void OrganicGLManager::RenderReadyArrays()
@@ -244,43 +194,18 @@ void OrganicGLManager::RenderReadyArrays()
 	//auto GLend = std::chrono::high_resolution_clock::now();				// optional performance testing values
 															
 	//auto GLstart = std::chrono::high_resolution_clock::now();	
-	// Draw the triangle !
-
-
-	/*
-	for (int zz = 0; zz < 500; zz++)			// reading 125 times from the currently bound buffer is insanely faster when compared to binding to a separate buffer every loop iteration.
-	{
-		glDrawArrays(GL_TRIANGLES, 0, 6156); // 3 indices starting at 0 -> 1 triangle; will be 3 * number of triangles; 3 * 4 = 12 (6156)
-													// test: 2048
-													// test: 36
-													// test: 72
-													// test: 144
-													// Appropriate argument for third parameter should be: 2048 * 3 = 6144
-	}
-	*/
-	//cout << "test: " << RMContainer.TotalRenderable;				
+	
 	//for (int y = 0; y < 166; y++)
 	//{
 		for (int x = 0; x < RMContainer.TotalRenderable; x++)
 		{
 			// summary:
 			// first argument: GL_TRIANGLES
-			// second argument: vertex offset, so if byte begins at 73728, offset is 6144.
+			// second argument: vertex offset, so if byte begins at 73728, offset is 6144. (One vertex = 12 bytes)
 			// last argument of glDrawArrays = number of vertices; 6144 for an entire collection face
-
-			//glDrawArrays(GL_TRIANGLES, 0, ((RMContainer.RenderMetaArray[x].ArraySize) / 12)*2);
-			
-			//x*(CollectionBufferSize/12)
 
 			glDrawArrays(GL_TRIANGLES, x*(CollectionBufferSize / 12), ((RMContainer.RenderMetaArray[x].ArraySize) / 12));
 
-			//glDrawArrays(GL_TRIANGLES, 0, ((RMContainer.RenderMetaArray[0].ArraySize) / 12));
-			//glDrawArrays(GL_TRIANGLES, 6144, ((RMContainer.RenderMetaArray[1].ArraySize) / 12));
-
-			//glDrawArrays(GL_TRIANGLES, x*2048, (RMContainer.RenderMetaArray[x].ArraySize) / 12);
-			//glDrawArrays(GL_TRIANGLES, 1*CollectionBufferSize, (RMContainer.RenderMetaArray[1].ArraySize) / 12);
-			//glDrawArrays(GL_TRIANGLES, 0*CollectionBufferSize, ((RMContainer.RenderMetaArray[0].ArraySize)) / 12);
-			//glDrawArrays(GL_TRIANGLES, 0, ((RMContainer.RenderMetaArray[0].ArraySize)*2) / 12);
 		}
 	//}
 
@@ -305,7 +230,6 @@ void OrganicGLManager::ShutdownOpenGL()
 
 	// Close OpenGL window and terminate GLFW
 	glfwTerminate();
-	delete[] OrganicGLarrayPTR;
 }
 
 void OrganicGLManager::computeMatricesFromInputs()
@@ -394,13 +318,4 @@ void OrganicGLManager::sendRenderCollectionDataToBuffer(RenderCollection *render
 	RMContainer.RenderMetaArray[RMContainer.CurrentIndex].ArraySize = renderCollPtr->RenderCollectionArraySize;
 	RMContainer.CurrentIndex++;
 	RMContainer.TotalRenderable++;
-	
-	/*
-	int y = 0;
-	int rendercount = (renderCollPtr->RenderCollectionArraySize / 36);
-	for (int x = 0; x < rendercount; x++)
-	{
-		cout << "Examining arrays: " << renderCollPtr->GLFloatPtr[y++] << " " << renderCollPtr->GLFloatPtr[y++] << " " << renderCollPtr->GLFloatPtr[y++] << endl;
-	}
-	*/
 }

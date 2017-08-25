@@ -217,7 +217,7 @@ int main()
 
 	// *********** Enclave Collection load type 2: instantiate a set of collections
 
-	EnclaveKeyDef::EnclaveKey key1, key2, key3, key4, key5, key6, key7, key8;
+	EnclaveKeyDef::EnclaveKey key1, key2, key3, key4, key5, key6, key7, key8, key9;
 	key1.x = 5;
 	key1.y = 0;
 	key1.z = 1;
@@ -250,6 +250,10 @@ int main()
 	key8.y = 0;
 	key8.z = 1;
 
+	key9.x = 3;
+	key9.y = 0;
+	key9.z = 1;
+
 	// add/instantiate the new collections here
 	Organic.AddBlueprint(EnclaveCollectionTestKey.x, EnclaveCollectionTestKey.y, EnclaveCollectionTestKey.z, testBlueprint);
 	Organic.AddBlueprint(key1.x, key1.y, key1.z, testBlueprint);
@@ -260,7 +264,7 @@ int main()
 	Organic.AddBlueprint(key6.x, key6.y, key6.z, testBlueprint);
 	Organic.AddBlueprint(key7.x, key7.y, key7.z, testBlueprint);
 	Organic.AddBlueprint(key8.x, key8.y, key8.z, testBlueprint);
-
+	Organic.AddBlueprint(key9.x, key9.y, key9.z, testBlueprint);
 
 	Organic.SetupFutureCollectionMM(key1.x, key1.y, key1.z);
 	Organic.SetupFutureCollectionMM(key2.x, key2.y, key2.z);
@@ -270,8 +274,11 @@ int main()
 	Organic.SetupFutureCollectionMM(key7.x, key7.y, key7.z);
 	Organic.SetupFutureCollectionMM(key8.x, key8.y, key8.z);
 	Organic.SetupFutureCollectionMM(key3.x, key3.y, key3.z);
+	Organic.SetupFutureCollectionMM(key9.x, key9.y, key9.z);
 
-	//Organic.MaterializeCollection(key1, key2);
+	Organic.MaterializeCollection(key1, key2);
+
+
 
 	cout << "-------------------------PASS" << endl;
 	// *********** Enclave Collection load type 1: add and instantiate a single collection
@@ -300,30 +307,11 @@ int main()
 	std::cout << "Elapsed time (Organic collection instantiation): " << orgelapsed.count() << endl;
 
 	auto orgstart2 = std::chrono::high_resolution_clock::now();
-	//Organic.ChangeSingleBlockMaterialAtXYZ(25, 25, 0, 1);
+	Organic.ChangeSingleBlockMaterialAtXYZ(25, 25, 0, 1);
 	auto orgend2 = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> orgelapsed2 = orgend2 - orgstart2;
 	std::cout << "Elapsed time (Changing material of single block): " << orgelapsed2.count() << endl;
 
-
-
-
-
-
-
-
-
-
-
-
-	/* Collection creation testing*/
-	EnclaveCollections.AddNewCollection(3, 0, 0);		//	???? when commented (Google std::unordered_map::operator[] for reason)
-	EnclaveCollections.AddNewCollection(2, 0, 0);
-	EnclaveCollections.AddNewCollection(1, 0, 0);
-	EnclaveCollections.AddNewCollection(0, 0, 0);	// adds a new collection with a key of 0,0,0 <<----------used for testing
-	EnclaveCollections.AddNewCollection(-1, 0, 0);	// adds a new collection with a key of 0,0,0
-	EnclaveCollections.AddNewCollection(-2, 0, 0);	// adds a new collection with a key of 0,0,0
-	EnclaveCollections.AddNewCollection(-3, 0, 0);	// adds a new collection with a key of 0,0,0
 	
 
 	/* Manifest Attachment testing */
@@ -332,143 +320,8 @@ int main()
 
 	auto start = std::chrono::high_resolution_clock::now();
 
-	Enclave *tempEnclave = &EnclaveCollections.GetEnclaveFromXYZ(69, 0, 0);				// MUST be a pointer, to not get a copy!!
-	tempEnclave->UnveilSinglePoly(3, 0, 0, 0, 1, 0, 32, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(2, 0, 0, 0, 1, 0, 32, 0);						// 8 total triangles after this call
-	//tempEnclave->UnveilSinglePoly(1, 0, 0, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(0, 0, 0, 0, 1, 0, 40, 0);
-	//tempEnclave->UnveilSinglePoly(3, 1, 0, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(2, 1, 0, 0, 1, 0, 40, 0);						// 8 total triangles after this call
-	//tempEnclave->UnveilSinglePoly(1, 1, 0, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(0, 1, 0, 0, 1, 0, 40, 0);
-	//tempEnclave->UnveilSinglePoly(3, 0, 1, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(2, 0, 1, 0, 1, 0, 40, 0);						// 8 total triangles after this call
-	//tempEnclave->UnveilSinglePoly(1, 0, 1, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(0, 0, 1, 0, 1, 0, 40, 0);
-	//tempEnclave->UnveilSinglePoly(3, 1, 1, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(2, 1, 1, 0, 1, 0, 40, 0);						// 8 total triangles after this call
-	//tempEnclave->UnveilSinglePoly(1, 1, 1, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(0, 1, 1, 0, 1, 0, 40, 0);
 
-	tempEnclave = &EnclaveCollections.GetEnclaveFromXYZ(73, 0, 0);
-	tempEnclave->UnveilSinglePoly(3, 0, 0, 0, 1, 0, 32, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(2, 0, 0, 0, 1, 0, 32, 0);
-	//tempEnclave->UnveilSinglePoly(1, 0, 0, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(0, 0, 0, 0, 1, 0, 40, 0);
-	//tempEnclave->UnveilSinglePoly(3, 1, 0, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(2, 1, 0, 0, 1, 0, 40, 0);						// 8 total triangles after this call
-	//tempEnclave->UnveilSinglePoly(1, 1, 0, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(0, 1, 0, 0, 1, 0, 40, 0);
-	//tempEnclave->UnveilSinglePoly(3, 0, 1, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(2, 0, 1, 0, 1, 0, 40, 0);						// 8 total triangles after this call
-	//tempEnclave->UnveilSinglePoly(1, 0, 1, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(0, 0, 1, 0, 1, 0, 40, 0);
-	//tempEnclave->UnveilSinglePoly(3, 1, 1, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(2, 1, 1, 0, 1, 0, 40, 0);						// 8 total triangles after this call
-	//tempEnclave->UnveilSinglePoly(1, 1, 1, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(0, 1, 1, 0, 1, 0, 40, 0);
-
-	tempEnclave = &EnclaveCollections.GetEnclaveFromXYZ(77, 0, 0);
-	tempEnclave->UnveilSinglePoly(3, 0, 0, 0, 1, 0, 32, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(2, 0, 0, 0, 1, 0, 32, 0);
-	//tempEnclave->UnveilSinglePoly(1, 0, 0, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(0, 0, 0, 0, 1, 0, 40, 0);
-	//tempEnclave->UnveilSinglePoly(3, 1, 0, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(2, 1, 0, 0, 1, 0, 40, 0);						// 8 total triangles after this call
-	//tempEnclave->UnveilSinglePoly(1, 1, 0, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(0, 1, 0, 0, 1, 0, 40, 0);
-	//tempEnclave->UnveilSinglePoly(3, 0, 1, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(2, 0, 1, 0, 1, 0, 40, 0);						// 8 total triangles after this call
-	//tempEnclave->UnveilSinglePoly(1, 0, 1, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(0, 0, 1, 0, 1, 0, 40, 0);
-	//tempEnclave->UnveilSinglePoly(3, 1, 1, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(2, 1, 1, 0, 1, 0, 40, 0);						// 8 total triangles after this call
-	//tempEnclave->UnveilSinglePoly(1, 1, 1, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(0, 1, 1, 0, 1, 0, 40, 0);
-	//
-	tempEnclave = &EnclaveCollections.GetEnclaveFromXYZ(81, 0, 0);
-	tempEnclave->UnveilSinglePoly(3, 0, 0, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(2, 0, 0, 0, 1, 0, 40, 0);
-	//tempEnclave->UnveilSinglePoly(1, 0, 0, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(0, 0, 0, 0, 1, 0, 40, 0);
-	//tempEnclave->UnveilSinglePoly(3, 1, 0, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(2, 1, 0, 0, 1, 0, 40, 0);						// 8 total triangles after this call
-	//tempEnclave->UnveilSinglePoly(1, 1, 0, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(0, 1, 0, 0, 1, 0, 40, 0);
-	//tempEnclave->UnveilSinglePoly(3, 0, 1, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(2, 0, 1, 0, 1, 0, 40, 0);						// 8 total triangles after this call
-	//tempEnclave->UnveilSinglePoly(1, 0, 1, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(0, 0, 1, 0, 1, 0, 40, 0);
-	//tempEnclave->UnveilSinglePoly(3, 1, 1, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(2, 1, 1, 0, 1, 0, 40, 0);						// 8 total triangles after this call
-	//tempEnclave->UnveilSinglePoly(1, 1, 1, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(0, 1, 1, 0, 1, 0, 40, 0);
-	//
-	tempEnclave = &EnclaveCollections.GetEnclaveFromXYZ(85, 0, 0);
-	tempEnclave->UnveilSinglePoly(3, 0, 0, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(2, 0, 0, 0, 1, 0, 40, 0);
-	//tempEnclave->UnveilSinglePoly(1, 0, 0, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(0, 0, 0, 0, 1, 0, 40, 0);
-	//tempEnclave->UnveilSinglePoly(3, 1, 0, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(2, 1, 0, 0, 1, 0, 40, 0);						// 8 total triangles after this call
-	//tempEnclave->UnveilSinglePoly(1, 1, 0, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(0, 1, 0, 0, 1, 0, 40, 0);
-	//tempEnclave->UnveilSinglePoly(3, 0, 1, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(2, 0, 1, 0, 1, 0, 40, 0);						// 8 total triangles after this call
-	//tempEnclave->UnveilSinglePoly(1, 0, 1, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(0, 0, 1, 0, 1, 0, 40, 0);
-	//tempEnclave->UnveilSinglePoly(3, 1, 1, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(2, 1, 1, 0, 1, 0, 40, 0);						// 8 total triangles after this call
-	//tempEnclave->UnveilSinglePoly(1, 1, 1, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(0, 1, 1, 0, 1, 0, 40, 0);
-	//
-	tempEnclave = &EnclaveCollections.GetEnclaveFromXYZ(89, 0, 0);
-	tempEnclave->UnveilSinglePoly(3, 0, 0, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(2, 0, 0, 0, 1, 0, 40, 0);
-	//tempEnclave->UnveilSinglePoly(1, 0, 0, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(0, 0, 0, 0, 1, 0, 40, 0);
-	//tempEnclave->UnveilSinglePoly(3, 1, 0, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(2, 1, 0, 0, 1, 0, 40, 0);						// 8 total triangles after this call
-	//tempEnclave->UnveilSinglePoly(1, 1, 0, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(0, 1, 0, 0, 1, 0, 40, 0);
-	//tempEnclave->UnveilSinglePoly(3, 0, 1, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(2, 0, 1, 0, 1, 0, 40, 0);						// 8 total triangles after this call
-	//tempEnclave->UnveilSinglePoly(1, 0, 1, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(0, 0, 1, 0, 1, 0, 40, 0);
-	//tempEnclave->UnveilSinglePoly(3, 1, 1, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(2, 1, 1, 0, 1, 0, 40, 0);						// 8 total triangles after this call
-	//tempEnclave->UnveilSinglePoly(1, 1, 1, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(0, 1, 1, 0, 1, 0, 40, 0);
-	//
-	tempEnclave = &EnclaveCollections.GetEnclaveFromXYZ(93, 0, 0);
-	tempEnclave->UnveilSinglePoly(3, 0, 0, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(2, 0, 0, 0, 1, 0, 40, 0);
-	//tempEnclave->UnveilSinglePoly(1, 0, 0, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(0, 0, 0, 0, 1, 0, 40, 0);
-	//tempEnclave->UnveilSinglePoly(3, 1, 0, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(2, 1, 0, 0, 1, 0, 40, 0);						// 8 total triangles after this call
-	//tempEnclave->UnveilSinglePoly(1, 1, 0, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(0, 1, 0, 0, 1, 0, 40, 0);
-	//tempEnclave->UnveilSinglePoly(3, 0, 1, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(2, 0, 1, 0, 1, 0, 40, 0);						// 8 total triangles after this call
-	//tempEnclave->UnveilSinglePoly(1, 0, 1, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(0, 0, 1, 0, 1, 0, 40, 0);
-	//tempEnclave->UnveilSinglePoly(3, 1, 1, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(2, 1, 1, 0, 1, 0, 40, 0);						// 8 total triangles after this call
-	//tempEnclave->UnveilSinglePoly(1, 1, 1, 0, 1, 0, 40, 0);													// reveal the polygon to the world	
-	//tempEnclave->UnveilSinglePoly(0, 1, 1, 0, 1, 0, 40, 0);
-
-
-	tempEnclave = &EnclaveCollections.GetEnclaveFromXYZ(0, 0, 0);
-	tempEnclave->UnveilSinglePoly(3, 0, 0, 0, 1, 0, 40, 0);
-
-	tempEnclave = &EnclaveCollections.GetEnclaveFromXYZ(4, 0, 0);
-	tempEnclave->UnveilSinglePoly(3, 0, 0, 0, 1, 0, 40, 0);
-
-	tempEnclave = &EnclaveCollections.GetEnclaveFromXYZ(8, 0, 0);
-	tempEnclave->UnveilSinglePoly(3, 0, 0, 0, 1, 0, 40, 0);
-
-
+	//Organic.AnalyzeRenderArray(2, 0, 1, 0);
 
 
 
@@ -476,7 +329,7 @@ int main()
 	std::chrono::duration<double> elapsed = finish - start;
 	std::cout << "Elapsed time (Massive Unveil Poly call: , " << count << "): " << elapsed.count() << endl;
 
-	cout << "re test of enclave: " << tempEnclave->GetTotalTrianglesInEnclave() << endl;
+	//cout << "re test of enclave: " << tempEnclave->GetTotalTrianglesInEnclave() << endl;
 	
 
 	
@@ -494,9 +347,9 @@ int main()
 	//ManifestCollections.GetCollectedEnclaveManifestAt(testkey2, 1, 0, 0);									//change here... OLD: testkey
 	// NEW TEST: (7/2/2017) -- check if RenderCollection::UpdateManifestArray is called
 	//Enclave *tempEnclave = &EnclaveCollections.GetEnclaveFromXYZ(69, 0, 0);				// MUST be a pointer, to not get a copy!!
-	tempEnclave = &EnclaveCollections.GetEnclaveFromXYZ(0, 0, 0);											//change here... OLD: tempEnclave = &EnclaveCollections.GetEnclaveFromXYZ(77, 0, 0);		
+	//tempEnclave = &EnclaveCollections.GetEnclaveFromXYZ(0, 0, 0);											//change here... OLD: tempEnclave = &EnclaveCollections.GetEnclaveFromXYZ(77, 0, 0);		
 	cout << "Before new unveil call... " << endl;
-	tempEnclave->UnveilSinglePoly(3, 2, 0, 0, 1, 0, 40, 0);
+	//tempEnclave->UnveilSinglePoly(3, 2, 0, 0, 1, 0, 40, 0);
 
 	auto start2 = std::chrono::high_resolution_clock::now();
 	//ManifestCollections.UpdateAttachedManifest(testkey2, 0, 0, 0);				// problem is after this call	// change here... OLD: testkey
@@ -558,6 +411,12 @@ int main()
 	RenderCollection* renderCollectionPtr3 = Organic.GetRenderCollectionPtr(2, 0, 1);
 	Organic.SendDataFromRenderPtrToGLBuffer(renderCollectionPtr3);
 
+//	RenderCollection* renderCollectionPtr4 = Organic.GetRenderCollectionPtr(3, 0, 1);
+	//cout << "testing of ptr4: " << renderCollectionPtr4->RenderCollectionArraySize << endl;
+	RenderCollection* renderCollectionPtr4 = Organic.GetRenderCollectionPtr(3, 0, 1);
+	Organic.SendDataFromRenderPtrToGLBuffer(renderCollectionPtr4);
+	cout << "testing of ptr4: " << renderCollectionPtr4->RenderCollectionArraySize << endl;
+
 	// ------------------------------------END OPEN GL SET UP
 
 
@@ -566,54 +425,6 @@ int main()
 
 		Organic.RenderGLTerrain();	// perform render frame work
 
-		/*
-		auto start3 = std::chrono::high_resolution_clock::now();
-		float testfloats[18432] = { 0.0f };							// 288 = 32 triangles ( 1 chunk whole face)
-																	// 4608 = 512 triangles (16 chunk whole faces)
-																	// 18432 = 2048 triangles (64 chunk whole faces) = 3.8 X e -06
-		auto finish3 = std::chrono::high_resolution_clock::now();
-		std::chrono::duration<double> elapsed3 = finish3 - start3;
-		cout << "Float initialization time = " << elapsed3.count() << endl;
-
-		cout << "enter x,y,z: " << endl;
-		cin >> in_x;
-		cin >> in_y;
-		cin >> in_z;
-		cout << "enter value for in_otherflags:  " << endl;
-		cin >> in_otherflags;
-
-		switch (in_otherflags)
-		{
-			case 0:
-				
-				//EnclavePtr->VeilSinglePoly(in_x, in_y, in_z, 0, in_otherflags, 0, 40, 0); // hide the polygon  from rendering
-				cout << "case 0 hit" << endl;
-				break;
-			case 1:
-				auto start4 = std::chrono::high_resolution_clock::now();
-				//EnclavePtr->UnveilSinglePoly(in_x, in_y, in_z, 0, in_otherflags, 0, 40, 0); // reveal the polygon to the world	
-				auto finish4 = std::chrono::high_resolution_clock::now();
-				std::chrono::duration<double> elapsed4 = finish4 - start4;
-				cout << "case 1 hit; duration = " << elapsed4.count() << endl;
-				break;
-		}
-
-		cout << "after single poly sort: " << endl;
-
-
-
-
-
-
-
-		auto start6 = std::chrono::high_resolution_clock::now();
-		auto finish6 = std::chrono::high_resolution_clock::now();
-		std::chrono::duration<double> elapsed6 = finish6 - start6;
-		cout << "Attachment process time  = " << elapsed6.count() << endl;
-		
-		cout << "continue testing?" << endl;
-		cin >> choice; // must be a number!
-		*/
 	} 
 	while (glfwGetKey(Organic.OGLM.GLwindow, GLFW_KEY_ESCAPE) != GLFW_PRESS &&	// loop until escape key is pressed in OpenGL window
 		glfwWindowShouldClose(Organic.OGLM.GLwindow) == 0);
@@ -625,13 +436,6 @@ int main()
 	int somevalue;
 	cin >> somevalue;
 
-	// Cleanup VBO
-	//glDeleteBuffers(1, &vertexbuffer);
-	//glDeleteVertexArrays(1, &VertexArrayID);
-	//glDeleteProgram(programID);
-
-	// Close OpenGL window and terminate GLFW
-	//glfwTerminate();
 
 	
     return 0;
