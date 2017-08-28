@@ -59,7 +59,13 @@ public:
 												EnclaveKeyDef::EnclaveKey Key,
 												EnclaveCollectionBlueprint *blueprint,
 												EnclaveCollectionActivateListT2 &activateListRef);
-																						
+
+	void JobInstantiateAndPopulateEnclaveAlpha2(int beginRange,																		// this function is designed for multithreading; it will return a list of enclaves that need to be rendered as a result
+		int endRange,																		// of this job being run. It is the defacto job to call when dealing with populating/instantiating Enclaves	
+		EnclaveCollection &collectionRef,													// as part of a multithreaded operation.
+		EnclaveKeyDef::EnclaveKey Key,
+		EnclaveCollectionBlueprint blueprint,
+		EnclaveCollectionActivateListT2 &activateListRef);
 
 	Enclave& GetEnclaveFromCollection(EnclaveKeyDef::EnclaveKey Key, int x, int y, int z);											// returns a reference to the enclave located at the x/y/z coordinate within the collection that has a key of value Key
 	Enclave& GetEnclaveFromXYZ(int x, int y, int z);																				// returns the enlave located at the absolute value of x/y/z

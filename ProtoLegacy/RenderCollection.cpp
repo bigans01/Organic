@@ -23,10 +23,6 @@ void RenderCollection::CombineManifestArrays()
 {
 	/* Summary: creates a dynamic array by reading all EnclaveManifests found in a particular ManifestCollection. */
 
-	//auto start3 = std::chrono::high_resolution_clock::now();
-	//auto finish3 = std::chrono::high_resolution_clock::now();
-	//std::chrono::duration<double> elapsed3 = finish3 - start3;
-	//std::cout << "Elapsed time (MeshMatrix- adding pointer to array, " << count << "): " << elapsed3.count() << endl;
 
 
 
@@ -39,48 +35,13 @@ void RenderCollection::CombineManifestArrays()
 	// 1))) First iterator pass: find number of manifests to attach to, create a temp array for this
 	std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveManifest, EnclaveKeyDef::KeyHasher>::iterator ManMatrixIter;
 	ManMatrixIter = ManifestCollectionPtr->ManMatrix.begin();
-//	EnclaveCollectionPtr->RenderableEnclaves;
-	//EnclaveKeyDef::EnclaveKey *tempKeyArray[512] = EnclaveCollectionPtr->RenderableEnclaves;
-
 	int totaltrianglestorender = 0;
-
 	int totalenclavesfound = 0;
-	//EnclaveKeyDef::EnclaveKey *tempManifestKeys = new EnclaveKeyDef::EnclaveKey[2];
-
-	
 	RenderableManifestMeta.EnclaveManifestCount = 0;
-	//cout << "Information for RenderCollection at: " << this
-	//int testcount = 0;
-	 
+ 
 	auto teststart1 = std::chrono::high_resolution_clock::now();
 
 
-	/*
-	int testcount = EnclaveCollectionPtr->totalRenderableEnclaves;
-	EnclaveKeyDef::EnclaveKey dumbkey;
-	int dumbval;
-	for (int x = 0; x < testcount; x++)
-	{
-		EnclaveKeyDef::EnclaveKey tempKey = EnclaveCollectionPtr->RenderableEnclaves[x];
-		EnclaveManifest *tempManifestPtr = &ManifestCollectionPtr->ManMatrix[tempKey];
-
-		totaltrianglestorender += tempManifestPtr->TotalEnclaveTriangles;
-
-		tempManifestPtr->RenderCollectionRef = this;
-		tempManifestPtr->IsRenderCollectionRefSet = 1;
-
-		RenderableManifestMeta.MetaArray[RenderableManifestMeta.EnclaveManifestCount].EnclaveManifestKey = tempManifestPtr->UniqueKey;
-		RenderableManifestMeta.MetaArray[RenderableManifestMeta.EnclaveManifestCount].currentTriangleCount = tempManifestPtr->TotalEnclaveTriangles;
-		RenderableManifestMeta.CollectionTriangleCount += RenderableManifestMeta.MetaArray[RenderableManifestMeta.EnclaveManifestCount].currentTriangleCount;
-		RenderableManifestMeta.EnclaveManifestCount++;
-		//dumbkey = tempManifestPtr->UniqueKey;
-		//dumbval = tempManifestPtr->TotalEnclaveTriangles;
-
-	}
-	auto testend1 = std::chrono::high_resolution_clock::now();
-	std::chrono::duration<double> elapsedtest3 = testend1 - teststart1;
-	std::cout << "Alternate Render Collection test, step 1 " << elapsedtest3.count() << "): "  << testcount << endl;
-	*/
 
 	auto start3 = std::chrono::high_resolution_clock::now();
 	for (ManMatrixIter; ManMatrixIter != ManifestCollectionPtr->ManMatrix.end(); ++ManMatrixIter)
@@ -130,45 +91,22 @@ void RenderCollection::CombineManifestArrays()
 	//GLfloat *glfloatptr;
 
 
-
-	// cout << "comparing values CollectionTriangleCount, totaltrianglestorender :" << RenderableManifestMeta.CollectionTriangleCount << " " << totaltrianglestorender << endl;
-
 	GLFloatPtr = new GLfloat[totaltrianglestorender*9];	// 9 floats per triangle
 	RenderCollectionArraySize = totaltrianglestorender * 4 * 9;
-	cout << "value of RenderCollectionArraySize: " << RenderCollectionArraySize << endl;
-
+	//cout << "value of RenderCollectionArraySize: " << RenderCollectionArraySize << endl;
 	int index = 0;
-	//int index = (totaltrianglestorender*9)-1;
+
 
 	// 3))) Populate array
 	ManMatrixIter = ManifestCollectionPtr->ManMatrix.begin();
-	//beginindex = 0;
 	int currentBegin = 0;
 	auto start5 = std::chrono::high_resolution_clock::now();
 	for (ManMatrixIter; ManMatrixIter != ManifestCollectionPtr->ManMatrix.end(); ++ManMatrixIter)
 	{
 
 
-		/*int floatstoadd = (ManMatrixIter->second.TotalEnclaveTriangles) * 9;			// only add a number of triangles to glfloatptr that is equal to the number in the pointed enclave manifest
 		GLfloat *tempGLptr;																// temp pointer to the array
 		tempGLptr = ManMatrixIter->second.EnclaveGLPtr;									// set tempGLptr equivalent to the EnclaveGLPtr in the currently found manifest
-		
-		 for (int x = floatstoadd; x > 0; x--)											// loop through each float value...reading from a C array will require a backwards loop. ?? research.
-		//for (int x = 0; x < floatstoadd; x++)											// loop through each float value...reading from a C array will require a backwards loop. ?? research.
-		{
-			//GLFloatPtr[index] = tempGLptr[x];
-			GLFloatPtr[index] = tempGLptr[x-1];
-			//index--;
-			index++;
-		}*/
-
-		GLfloat *tempGLptr;																// temp pointer to the array
-		tempGLptr = ManMatrixIter->second.EnclaveGLPtr;									// set tempGLptr equivalent to the EnclaveGLPtr in the currently found manifest
-
-		//beginindex += ((ManMatrixIter->second.TotalEnclaveTriangles) * 9) - 1;
-		//cout << "Value of begin index: " << beginindex << endl;
-		//int currentBegin = beginindex;
-		//int currentBegin = 0;
 		int pointedBegin = 0;
 		for (int bb = 0; bb < (ManMatrixIter->second.TotalEnclaveTriangles) * 3; bb++)
 		{
@@ -234,7 +172,7 @@ void RenderCollection::CombineManifestArraysFromT1Factory(EnclaveManifestFactory
 		EnclaveManifestFactoryT1Storage *StoragePtr = &factoryRef->StorageArray[x];			// get the pointer to the storage unit
 		totalfloats += StoragePtr->VertexArrayCount;										// increment totalfloats by VertexArrayCount from the pointed-to enclave
 	}
-	cout << "total triangles to render will be: " << totalfloats << endl;
+	//cout << "total triangles to render will be: " << totalfloats << endl;
 
 
 	// STEP 2: create the dynamic array, acquire heap lock while doing so
@@ -243,7 +181,7 @@ void RenderCollection::CombineManifestArraysFromT1Factory(EnclaveManifestFactory
 	mutexval.lock();
 	IsGLFloatPtrLoaded = 1;									// indicate that the pointer was loaded with data
 	GLFloatPtr = new GLfloat[totalfloats];	// 9 floats per triangle
-	cout << "totalfloats: " << totalfloats << endl;
+	//cout << "totalfloats: " << totalfloats << endl;
  	mutexval.unlock();
 	//cout << "Render 2 entry:" << endl;
 

@@ -273,6 +273,7 @@ void Enclave::UnveilSinglePoly(int x, int y, int z, int in_readorder, int in_oth
 		//cout << "test count value: " << testcount;
 	}
 
+	// perform post unveil operations; notify neighboring enclaves and blocks of required changes
 
 }
 
@@ -403,6 +404,27 @@ Enclave::Enclave(int x,	int y, int z)		// declares the enclave's position in the
 	
 
 }
-;
+
+EnclaveKeyDef::EnclaveKey Enclave::SingleToEnclaveKey(int input)
+{
+	/* Summary: takes a single value between 0 to 63, and returns the x/y/z of the block within the chunk */
+
+	// int multi_to_single = (x * 16) + (y * 4) + z;				// convert from 3d array coords to single array
+	EnclaveKeyDef::EnclaveKey tempkey;
+
+	int x = input / 16;
+	int remainder_x = input % 16;
+
+	int y = remainder_x / 4;
+	int remainder_y = remainder_x % 4;
+
+	int z = remainder_y;
+
+	//cout << x << " " << y << " " << z << " " << endl;
+	tempkey.x = x;
+	tempkey.y = y;
+	tempkey.z = z;
+	return tempkey;
+}
 
 

@@ -78,6 +78,7 @@ public:
 	void ViewOtherFlags();								// testing purpose only
 	int	GetTotalTrianglesInBlock(char in_char);		// Gets that current number of trinagles at a block.
 	int GetTotalTrianglesInEnclave();					// Returns the total number of triangles that exist in the enclave. 
+	EnclaveKeyDef::EnclaveKey SingleToEnclaveKey(int input);
 	
 };
 

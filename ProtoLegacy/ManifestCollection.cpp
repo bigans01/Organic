@@ -118,9 +118,7 @@ void ManifestCollection::UpdateManifest(int x, int y, int z, EnclaveKeyDef::Encl
 	tempkey.x = x;
 	tempkey.y = y;
 	tempkey.z = z;
-	cout << "man matrix begin" << endl;
 	ManMatrix[tempkey].AttachToEnclave(CollectionMatrixRef->GetEnclaveFromCollection(Key, x, y, z));
-	cout << "man matrix pass" << endl;
 }
 
 ManifestCollection::ManifestCollection(EnclaveMatrix *matrixref)

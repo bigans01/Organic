@@ -25,8 +25,10 @@ OrganicSystem object contains all objects necessary to preserve information on t
 #include "OrganicTextureDictionary.h"
 #include "MDJobMaterializeCollection.h"
 #include "MDListJobMaterializeCollection.h"
+#include "MDListJobMaterializeCollection2.h"
 #include "EnclaveManifestFactoryT1.h"
 #include "OrganicGLManager.h"
+#include "EnclaveManifestFactoryT1Index.h"
 #include <GL/glew.h>
 //#define GLFW_DLL		// only used when linking to a DLL version of GLFW.
 #include <GLFW/glfw3.h>
@@ -48,10 +50,11 @@ public:
 	RenderCollectionMatrix RenderCollections;									// matrix of RenderCollections
 	OrganicTextureDictionary TextureDictionary;									// an instance for an OrganicTextureDictionary
 	OrganicGLManager OGLM;														// an instance of the OrganicGLManager; will be used to manage OpenGL buffer data and other similiar operations
+	EnclaveManifestFactoryT1Index OrganicFactoryIndex;							// FactoryIndex for this OrganicSystem
 	thread_pool *Cell1;															// pointer for Cell 1
 	thread_pool *Cell2;															// pointer for Cell 2
 
-	OrganicSystem();																			// default constructor
+	OrganicSystem(int numberOfFactories);																			// default constructor
 
 
 	void InterlockBaseCollections();															// connects the 3 base collections together -- EnclaveCollections, ManifestCollections, RenderCollections.
@@ -65,12 +68,12 @@ public:
 	void SetOrganicCell2(thread_pool *thread_pool_ref);											// sets the pointer for Cell2 to be a valid worker thread
 	void AddOrganicTextureMetaArray(string mapname);											// adds a new texture meta array, which is a list that is used to map block IDs to texture UV coordinates.
 	void SetGraphicsAPI();
-	// GLfloat GetVertexDataFromRenderCollection(int x, int y, int z);
 	GLfloat* GetVertexDataFromRenderCollection(int x, int y, int z);
 	RenderCollection* GetRenderCollectionPtr(int x, int y, int z);
 	void SendDataFromCollectionToGLBuffer(GLfloat* inFloatPtr, int inSize);
 	void SendDataFromRenderPtrToGLBuffer(RenderCollection* renderCollectionPtr);
 	void AnalyzeRenderArray(int x, int y, int z, int xyz);
+	void AllocateFactories(int noOfFactories);
 	void JobMaterializeSingleCollectionFromMM(	EnclaveKeyDef::EnclaveKey Key1,																									// materializes a single collection from the ground up, utilizing a manifest matrix
 												EnclaveCollectionBlueprintMatrix BlueprintMatrixRef, 
 												EnclaveCollectionMatrix EnclaveCollectionsRef, 
@@ -81,6 +84,7 @@ public:
 												);
 	void JobMaterializeMultiCollectionFromMM(MDListJobMaterializeCollection mdjob, mutex& mutexval, int ThreadID);																// materializes multiple collections from the ground up, utilizing a manifest matrix.
 	void JobMaterializeMultiCollectionFromFactory(MDListJobMaterializeCollection mdjob, mutex& mutexval, EnclaveManifestFactoryT1 *FactoryRef, int ThreadID);					// materializes multiple collections from the ground up, utilizing a factory.
+	void JobMaterializeMultiCollectionFromFactory2(MDListJobMaterializeCollection2 mdjob, mutex& mutexval, EnclaveManifestFactoryT1 *FactoryRef, int ThreadID);					// (TESTING ONLY) materializes multiple collections from the ground up, utilizing a factory.
 	void JobRematerializeSingleExistingCollectionFromFactory(	EnclaveKeyDef::EnclaveKey Key1,																					// rematerializes a single collection on a currently loaded EnclaveCollection, from a Factory
 																EnclaveCollection *CollectionRef, 
 																EnclaveManifestFactoryT1 *FactoryRef, 

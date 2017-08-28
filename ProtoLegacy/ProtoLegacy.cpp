@@ -38,27 +38,8 @@ GLFWwindow* window;
 #include <chrono>
 #include <future>
 
-std::unordered_map<EnclaveKeyDef::EnclaveKey, Enclave, EnclaveKeyDef::KeyHasher> m;								// enclave matrix
-
-//std::unordered_map<EnclaveKeyDef::EnclaveKey, Enclave, EnclaveKeyDef::KeyHasher>::iterator m_iter;				// iterator
-std::unordered_map<EnclaveKeyDef::EnclaveKey, std::unordered_map<EnclaveKeyDef::EnclaveKey, Enclave, EnclaveKeyDef::KeyHasher>::iterator, EnclaveKeyDef::KeyHasher> m_itermap1, m_itermap2;
-std::unordered_map<EnclaveKeyDef::EnclaveKey, std::unordered_map<EnclaveKeyDef::EnclaveKey, Enclave, EnclaveKeyDef::KeyHasher>::iterator, EnclaveKeyDef::KeyHasher>::iterator m_itermapiter, m_itermapiter2;
-std::unordered_map<EnclaveKeyDef::EnclaveKey, std::unordered_map<EnclaveKeyDef::EnclaveKey, Enclave, EnclaveKeyDef::KeyHasher>::iterator, EnclaveKeyDef::KeyHasher> *m_itermapptr;
-
-/* Future/promise experimentation*/
-std::promise<std::unordered_map<EnclaveKeyDef::EnclaveKey, std::unordered_map<EnclaveKeyDef::EnclaveKey, Enclave, EnclaveKeyDef::KeyHasher>::iterator, EnclaveKeyDef::KeyHasher>> promise1;
-std::future<std::unordered_map<EnclaveKeyDef::EnclaveKey, std::unordered_map<EnclaveKeyDef::EnclaveKey, Enclave, EnclaveKeyDef::KeyHasher>::iterator, EnclaveKeyDef::KeyHasher>> future1 = promise1.get_future();
-
-//std::unordered_map<EnclaveKeyDef::EnclaveKey, std::unordered_map<EnclaveKeyDef::EnclaveKey, Enclave, EnclaveKeyDef::KeyHasher>::iterator, EnclaveKeyDef::KeyHasher> *m_itermap1ptr, *m_itermap2ptr;
-
-
-
 int main()
 {
-	/* Matrix creation area*/
-	EnclaveCollectionMatrix EnclaveCollections;									// matrix of enclave collections (512 chunks, dynamically allocated array)
-	ManifestCollectionMatrix ManifestCollections(&EnclaveCollections);		// matrix of manifest collections (up to 512 chunks, unordered map)
-	RenderCollectionMatrix RenderCollections(&ManifestCollections);
 
 	EnclaveKeyDef::EnclaveKey EnclaveCollectionTestKey;
 	EnclaveCollectionTestKey.x = 0;
@@ -100,8 +81,8 @@ int main()
 	//auto bluestart = std::chrono::high_resolution_clock::now();
 	unsigned char tempPaintables[8][8] = { 0 };
 	tempPaintables[0][0] = 64;								// flag a chunk to be paintable, -- in this case it is 0, 6, 0
-	tempPaintables[1][0] = 64;								// following lines are performance testing only
-	tempPaintables[2][0] = 64;
+	tempPaintables[1][0] = 64;								// chunk at 1, 6, 0 will be paintable...
+	tempPaintables[2][0] = 64;								// chunk at 2, 6, 0 will be paintable...
 	tempPaintables[3][0] = 64;
 	tempPaintables[4][0] = 64;
 	tempPaintables[5][0] = 64;
@@ -109,17 +90,27 @@ int main()
 	tempPaintables[7][0] = 64;
 
 	// set up a temporary paint job, add it to a list, and add the list to the blueprint's matrix here
-	EnclavePainter testPaint, testPaint2, testPaint3, testPaint4, testPaint5, testPaint6, testPaint7;								
-	testPaint.PaintData[0] = 64;				// sets a target "dirt" block within the chunk (?? check this later)
+	EnclavePainter testPaint, testPaint2, testPaint3, testPaint4, testPaint5, testPaint6, testPaint7;							
+	
+	// NOTE: PaintData is a range between 0 and 7; this indicates 64 different blocks.
+	testPaint.PaintData[0] = 255;				// sets a target "dirt" block within the chunk (?? check this later)
+	testPaint.PaintData[1] = 255;
+	testPaint.PaintData[2] = 255;
+	testPaint.PaintData[3] = 255;
+	testPaint.PaintData[4] = 255;
+	testPaint.PaintData[5] = 255;
+	testPaint.PaintData[6] = 255;
+	testPaint.PaintData[7] = 255;
+
 	testPaint2.PaintData[0] = 32;				// sets another target block "grass" (for a different material) within the chunk (?? check this later)
 	testPaint3.PaintData[1] = 32;
 	testPaint4.PaintData[1] = 16;
 
 	EnclavePainterList testPaintList;			// create a paint list
-	testPaintList.PaintList[2] = testPaint;		// add the paint job for "dirt" to the list
-	testPaintList.PaintList[3] = testPaint2;	// add the paint job for "grass" to the list
-	testPaintList.PaintList[4] = testPaint3;
-	testPaintList.PaintList[5] = testPaint3;
+	testPaintList.PaintList[2] = testPaint;		// add the paint job for "dirt" to the list; the 2 indicates the block type that will be painted.
+	//testPaintList.PaintList[3] = testPaint2;	// add the paint job for "grass" to the list
+	//testPaintList.PaintList[4] = testPaint3;
+	//testPaintList.PaintList[5] = testPaint3;
 
 
 
@@ -128,7 +119,7 @@ int main()
 	ElevationMapRef SurfaceChunks = tempSurface;
 	ElevationMapRef SolidChunks = tempSolid;
 	ElevationMapRef PaintableChunks = tempPaintables;
-
+	auto bpstart = std::chrono::high_resolution_clock::now();
 	testBlueprint.SetSurfaceChunkData(SurfaceChunks);
 	testBlueprint.SetSolidChunkData(SolidChunks);
 	testBlueprint.SetPaintableChunkData(PaintableChunks);
@@ -168,6 +159,34 @@ int main()
 	tempPainterKey.y = 6;
 	tempPainterKey.z = 0;
 	testBlueprint.AddNewPaintList(tempPainterKey, testPaintList);
+	auto bpend = std::chrono::high_resolution_clock::now();
+
+	//auto bpstart = std::chrono::high_resolution_clock::now();
+	for (int x = 0; x < 8; x++)
+	{
+		for (int y = 0; y < 8; y++)
+		{
+			for (int z = 0; z < 8; z++)
+			{
+				tempPainterKey.x = x;
+				tempPainterKey.y = y;
+				tempPainterKey.z = z;
+				testBlueprint.AddNewPaintList(tempPainterKey, testPaintList);
+			}
+		}
+	}
+	
+
+
+
+	//Organic.AddBlueprint(bpkeytest.x, bpkeytest.y, bpkeytest.z, testBlueprint2);
+	//auto bpend = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> bpelapsed = bpend - bpstart;
+	std::cout << "Elapsed time (Blueprint loop): " << bpelapsed.count() << endl;
+
+
+
+
 
 	
 	tempPainterKey.x = 7;
@@ -198,6 +217,8 @@ int main()
 	// STAGE 2: initialization of enclaves 
 
 	// *********** thread pool set up
+
+
 	thread_pool mainthreadpool;
 	thread_pool* mainthreadpoolref = &mainthreadpool;
 
@@ -210,7 +231,8 @@ int main()
 
 
 	
-	OrganicSystem Organic;
+	//OrganicSystem Organic;
+	OrganicSystem Organic(2);
 	Organic.SetOrganicCell1(mainthreadpoolref);				// set the Organic instance's first worker thread
 	Organic.SetOrganicCell2(mainthreadpoolref2);			// set the Organic instance's second worker thread
 	Organic.AddOrganicTextureMetaArray("base");					// set up the texture map; first ever map will be named "base"
@@ -289,6 +311,7 @@ int main()
 	std::chrono::duration<double> blueelapsed = blueend - bluestart;
 	std::cout << "Elapsed time (Blueprint addition): " << blueelapsed.count() << endl;
 	//cout << Organic.BlueprintMatrix.BlueprintMap[EnclaveCollectionTestKey].SolidChunks[0][0];
+	/*
 	cout << "testing of solidChunk data in blueprints found in the OrganicSystem: " << endl;
 	for (int x = 0; x < 8; x++)
 	{
@@ -297,11 +320,11 @@ int main()
 			cout << (int)Organic.BlueprintMatrix.BlueprintMap[EnclaveCollectionTestKey].SolidChunks[x][z] << endl;
 		}
 	}
-
+	*/
 	auto orgstart = std::chrono::high_resolution_clock::now();
 	Organic.AddAndMaterializeSingleCollectionMM(0, 0, 0);
-	Organic.AddAndMaterializeSingleCollectionMM(1, 0, 1);
-	Organic.AddAndMaterializeSingleCollectionMM(2, 0, 1);
+	//Organic.AddAndMaterializeSingleCollectionMM(1, 0, 1);
+	//Organic.AddAndMaterializeSingleCollectionMM(2, 0, 1);
 	auto orgend = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> orgelapsed = orgend - orgstart;
 	std::cout << "Elapsed time (Organic collection instantiation): " << orgelapsed.count() << endl;
@@ -359,31 +382,6 @@ int main()
 
 
 	//ManifestCollections.GetColletedEnclaveManifestAt(testkey, 1, 0, 0);
-	//RenderCollections.CreateRenderArrayFromManifestCollection(testkey);
-
-	//auto finish7 = std::chrono::high_resolution_clock::now();
-
-
-			// elapsed time is  hhere
-																																	//std::cout << "Size of MEMatrix: " << sizeof(MEMatrix) << endl;
-
-
-
-				// elapsed time is  hhere
-
-
-
-	
-
-
-	
-	auto start3 = std::chrono::high_resolution_clock::now();
-	auto finish3 = std::chrono::high_resolution_clock::now();
-	std::chrono::duration<double> elapsed3 = finish3 - start3;
-	std::cout << "Elapsed time (MeshMatrix- adding pointer to array, " << elapsed3.count() << "): " << endl;						// elapsed time is  hhere
-
-
-
 	cout << "preparing to clean all enclaves..." << endl;
 	cin >> val;
 
@@ -401,7 +399,7 @@ int main()
 
 	//GLfloat* tempTestPtr = Organic.GetVertexDataFromRenderCollection(0,0,0);
 	//Organic.SendDataFromCollectionToGLBuffer(tempTestPtr, 73872); // 73872 | 73728
-
+	auto start3 = std::chrono::high_resolution_clock::now();
 	RenderCollection* renderCollectionPtr = Organic.GetRenderCollectionPtr(0, 0, 0);
 	Organic.SendDataFromRenderPtrToGLBuffer(renderCollectionPtr);
 
@@ -415,7 +413,11 @@ int main()
 	//cout << "testing of ptr4: " << renderCollectionPtr4->RenderCollectionArraySize << endl;
 	RenderCollection* renderCollectionPtr4 = Organic.GetRenderCollectionPtr(3, 0, 1);
 	Organic.SendDataFromRenderPtrToGLBuffer(renderCollectionPtr4);
-	cout << "testing of ptr4: " << renderCollectionPtr4->RenderCollectionArraySize << endl;
+
+	auto finish3 = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> elapsed3 = finish3 - start3;
+	//std::cout << "Elapsed time, sending data to OpenGL buffer: " << elapsed3.count() <<  endl;						// elapsed time is  hhere
+
 
 	// ------------------------------------END OPEN GL SET UP
 
