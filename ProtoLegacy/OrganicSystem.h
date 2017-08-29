@@ -25,7 +25,6 @@ OrganicSystem object contains all objects necessary to preserve information on t
 #include "OrganicTextureDictionary.h"
 #include "MDJobMaterializeCollection.h"
 #include "MDListJobMaterializeCollection.h"
-#include "MDListJobMaterializeCollection2.h"
 #include "EnclaveManifestFactoryT1.h"
 #include "OrganicGLManager.h"
 #include "EnclaveManifestFactoryT1Index.h"
@@ -84,7 +83,6 @@ public:
 												);
 	void JobMaterializeMultiCollectionFromMM(MDListJobMaterializeCollection mdjob, mutex& mutexval, int ThreadID);																// materializes multiple collections from the ground up, utilizing a manifest matrix.
 	void JobMaterializeMultiCollectionFromFactory(MDListJobMaterializeCollection mdjob, mutex& mutexval, EnclaveManifestFactoryT1 *FactoryRef, int ThreadID);					// materializes multiple collections from the ground up, utilizing a factory.
-	void JobMaterializeMultiCollectionFromFactory2(MDListJobMaterializeCollection2 mdjob, mutex& mutexval, EnclaveManifestFactoryT1 *FactoryRef, int ThreadID);					// (TESTING ONLY) materializes multiple collections from the ground up, utilizing a factory.
 	void JobRematerializeSingleExistingCollectionFromFactory(	EnclaveKeyDef::EnclaveKey Key1,																					// rematerializes a single collection on a currently loaded EnclaveCollection, from a Factory
 																EnclaveCollection *CollectionRef, 
 																EnclaveManifestFactoryT1 *FactoryRef, 

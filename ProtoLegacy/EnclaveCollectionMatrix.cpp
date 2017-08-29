@@ -864,6 +864,7 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha(int beginRan
 	ElevationMapRef solidChunk = blueprint->GetSolidChunkData();						// ?? better optimized? unknown. compare to declaring outside of loop (7/18/2017)
 	ElevationMapRef surfaceChunk = blueprint->GetSurfaceChunkData();
 	ElevationMapRef paintableChunk = blueprint->GetPaintableChunkData();
+	int totalchunks = 0;
 	for (int x = beginRange; x < endRange; x++)
 	{
 		chunkbitmask = 1;
@@ -879,7 +880,7 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha(int beginRan
 					Enclave stackEnclave(Key, x, y, z);
 					collectionRef.EnclaveArray[x][y][z] = stackEnclave;
 					collectionRef.EnclaveArray[x][y][z].InitializeRenderArray(1);
-
+					
 					// step 4 begins here
 					if ((paintableChunk[x][z] & chunkbitmask) == chunkbitmask)
 					{
@@ -933,10 +934,11 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha(int beginRan
 						std::chrono::duration<double> elapsed = testend - teststart;
 						//std::cout << "Elapsed time, painting: " << elapsed.count() << endl;	// ""
 						
-
-
+						
+						totalchunks++;
 					}
 
+					
 					// step 3 begins here 
 					if ((surfaceChunk[x][z] & chunkbitmask) == chunkbitmask)
 					{
@@ -984,6 +986,7 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha(int beginRan
 		}
 	}
 
+	//cout << "total chunks: " << totalchunks << endl;
 	auto finish = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> elapsed = finish - start;
 	//std::cout << "Elapsed time (multi-threaded enclave instantiation: " << elapsed.count() << endl;	// ""

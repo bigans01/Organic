@@ -176,9 +176,7 @@
     <ClInclude Include="ManifestCollectionMatrix.h" />
     <ClInclude Include="ManifestCollection.h" />
     <ClInclude Include="MDJobMaterializeCollection.h" />
-    <ClInclude Include="MDJobMaterializeCollection2.h" />
     <ClInclude Include="MDListJobMaterializeCollection.h" />
-    <ClInclude Include="MDListJobMaterializeCollection2.h" />
     <ClInclude Include="Movegoal.h" />
     <ClInclude Include="function_wrapper.h" />
     <ClInclude Include="OrganicBlockMeta.h" />
@@ -216,7 +214,6 @@
     <ClCompile Include="ManifestCollectionMatrix.cpp" />
     <ClCompile Include="ManifestCollection.cpp" />
     <ClCompile Include="MDJobMaterializeCollection.cpp" />
-    <ClCompile Include="MDJobMaterializecollection2.cpp" />
     <ClCompile Include="OrganicGLManager.cpp" />
     <ClCompile Include="OrganicSystem.cpp" />
     <ClCompile Include="OrganicTextureDictionary.cpp" />

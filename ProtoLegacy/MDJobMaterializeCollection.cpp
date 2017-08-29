@@ -5,10 +5,10 @@
 
 MDJobMaterializeCollection::MDJobMaterializeCollection(
 	EnclaveKeyDef::EnclaveKey p_MDKey,
-	EnclaveCollectionBlueprintMatrix p_MDBlueprintMatrixRef,
-	EnclaveCollectionMatrix p_MDEnclaveCollectionsRef,
-	ManifestCollectionMatrix p_MDManifestCollectionsRef,
-	RenderCollectionMatrix p_MDRenderCollectionsRef,
+	EnclaveCollectionBlueprintMatrix* p_MDBlueprintMatrixRef,
+	EnclaveCollectionMatrix* p_MDEnclaveCollectionsRef,
+	ManifestCollectionMatrix* p_MDManifestCollectionsRef,
+	RenderCollectionMatrix* p_MDRenderCollectionsRef,
 	EnclaveCollection *p_MDEnclaveCollectionPtr,
 	ManifestCollection *p_MDManifestCollectionPtr
 )

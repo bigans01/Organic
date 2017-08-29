@@ -74,7 +74,7 @@ int main()
 	{
 		for (int z = 0; z < 8; z++)
 		{
-			tempSolid[x][z] = 127;
+			tempSolid[x][z] = 255;			// set up all 255 enclave as being solids
 		}
 	}
 
@@ -88,6 +88,16 @@ int main()
 	tempPaintables[5][0] = 64;
 	tempPaintables[6][0] = 64;
 	tempPaintables[7][0] = 64;
+
+	// set all 512 enclaves up for painting
+	for (int x = 0; x < 8; x++)
+	{
+		for (int z = 0; z < 8; z++)
+		{
+			tempPaintables[x][z] = 255;
+			//cout << "value: (" << x << ", " << z << "):" << int(tempPaintables[x][z]) << endl;
+ 		}
+	}
 
 	// set up a temporary paint job, add it to a list, and add the list to the blueprint's matrix here
 	EnclavePainter testPaint, testPaint2, testPaint3, testPaint4, testPaint5, testPaint6, testPaint7;							
@@ -119,12 +129,13 @@ int main()
 	ElevationMapRef SurfaceChunks = tempSurface;
 	ElevationMapRef SolidChunks = tempSolid;
 	ElevationMapRef PaintableChunks = tempPaintables;
-	auto bpstart = std::chrono::high_resolution_clock::now();
+	
 	testBlueprint.SetSurfaceChunkData(SurfaceChunks);
 	testBlueprint.SetSolidChunkData(SolidChunks);
 	testBlueprint.SetPaintableChunkData(PaintableChunks);
 
 	EnclaveKeyDef::EnclaveKey tempPainterKey;
+	/*
 	tempPainterKey.x = 0;
 	tempPainterKey.y = 6;
 	tempPainterKey.z = 0;
@@ -159,9 +170,10 @@ int main()
 	tempPainterKey.y = 6;
 	tempPainterKey.z = 0;
 	testBlueprint.AddNewPaintList(tempPainterKey, testPaintList);
-	auto bpend = std::chrono::high_resolution_clock::now();
-
+	*/
+	auto bpstart = std::chrono::high_resolution_clock::now();
 	//auto bpstart = std::chrono::high_resolution_clock::now();
+	int bptestcount = 0;
 	for (int x = 0; x < 8; x++)
 	{
 		for (int y = 0; y < 8; y++)
@@ -172,10 +184,12 @@ int main()
 				tempPainterKey.y = y;
 				tempPainterKey.z = z;
 				testBlueprint.AddNewPaintList(tempPainterKey, testPaintList);
+				bptestcount++;
 			}
 		}
 	}
-	
+	auto bpend = std::chrono::high_resolution_clock::now();
+	//cout << "bptestcount: " << bptestcount << endl;
 
 
 
@@ -323,8 +337,8 @@ int main()
 	*/
 	auto orgstart = std::chrono::high_resolution_clock::now();
 	Organic.AddAndMaterializeSingleCollectionMM(0, 0, 0);
-	//Organic.AddAndMaterializeSingleCollectionMM(1, 0, 1);
-	//Organic.AddAndMaterializeSingleCollectionMM(2, 0, 1);
+	Organic.AddAndMaterializeSingleCollectionMM(1, 0, 1);
+	Organic.AddAndMaterializeSingleCollectionMM(2, 0, 1);
 	auto orgend = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> orgelapsed = orgend - orgstart;
 	std::cout << "Elapsed time (Organic collection instantiation): " << orgelapsed.count() << endl;

@@ -174,12 +174,6 @@
     <ClInclude Include="OrganicGLRenderCollectionMeta.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MDJobMaterializeCollection2.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MDListJobMaterializeCollection2.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -258,9 +252,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="OrganicGLManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MDJobMaterializecollection2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
