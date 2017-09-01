@@ -28,5 +28,11 @@ public:
 	void ActivateEnclaveForRendering(EnclaveKeyDef::EnclaveKey Key);
 	Enclave& GetEnclaveByKey(EnclaveKeyDef::EnclaveKey InKey);
 	void SetWestBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2 &activateListRef);
+	void SetNorthBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2 &activateListRef);
+	void SetEastBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2 &activateListRef);
+	void SetSouthBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2 &activateListRef);
+	void SetTopBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2 &activateListRef);
+	void SetBottomBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2 &activateListRef);
+
 };
 #endif

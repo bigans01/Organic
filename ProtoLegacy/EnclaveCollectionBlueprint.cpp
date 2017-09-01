@@ -82,6 +82,7 @@ ElevationMapRef& EnclaveCollectionBlueprint::GetCustomPaintableChunkData()
 
 ElevationMapRef& EnclaveCollectionBlueprint::GetStandardPaintableChunkData()
 {
+	std::cout << "before return call" << int(StandardPaintableChunks[0][1]) << std::endl;
 	return StandardPaintableChunks;
 }
 
@@ -113,7 +114,7 @@ void EnclaveCollectionBlueprint::CarveSlope()
 	}
 
 	// east chunk carvings...from x =4 to x=7
-	for (int x = 5; x < 8; x++)
+	for (int x = 4; x < 8; x++)
 	{
 		for (int z = 0; z < 8; z++)
 		{
@@ -187,6 +188,7 @@ void EnclaveCollectionBlueprint::CarveSlope()
 	for (int z = 1; z < 7; z++)
 	{
 		StandardPaintableChunks[0][z] = 63;
+		std::cout << "current value: " << int(StandardPaintableChunks[0][z]) << std::endl;
 	}
 
 	// North flags, not border chunks

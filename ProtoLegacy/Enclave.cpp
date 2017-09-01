@@ -213,23 +213,29 @@ void Enclave::UnveilSinglePoly(int x, int y, int z, int in_readorder, int in_oth
 																// do the following, if the new form of the cube is set to renderable
 	if (in_otherflags >= 1)
 	{
+		//std::cout << "debug:" << StorageArray[x][y][z].otherflags << endl;
 		zeroindexcheck = 0;
 		for (i = 1; i < 64; ++i)
 		{
-
+			//cout << "test:" << Sorted.PolyArrayIndex[i] << endl;
+			//cout << "test: multi_to_single: " << multi_to_single << endl;
 			if (Sorted.PolyArrayIndex[i] == multi_to_single) // find the index of the element to change, by finding the
 															 // match index that was converted from 3d to 1d to its appropriate index in Sorted.PolyArrayindex
 			{
 
 
-				//std::cout << "debug:" << StorageArray[x][y][z].otherflags << endl;
+				//std::cout << "debug (sorted entry):" << StorageArray[x][y][z].otherflags << endl;
 
 				// do sorting for this one polygon, if the previous polygon wasn't already renderable
 				if (OldFlags == 0)
 				{
 					//cout << "TEST2:::" << OldFlags << endl;
+
+
 					for (j = i; j >= 1; --j)
 					{
+						//cout << "value of j: " << j << endl;
+						//cout << " test" << Sorted.RenderArray[j]->otherflags << endl;
 						if ((Sorted.RenderArray[j]->otherflags >= 1) && (Sorted.RenderArray[j - 1]->otherflags == 0)) // swap values first
 						{
 							//cout << "TEST" << i << ": " << OldFlags << endl;

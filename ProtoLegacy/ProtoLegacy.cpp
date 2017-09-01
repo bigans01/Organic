@@ -306,17 +306,22 @@ int main()
 	key9.z = 1;
 
 	// add/instantiate the new collections here
-	Organic.AddBlueprint(EnclaveCollectionTestKey.x, EnclaveCollectionTestKey.y, EnclaveCollectionTestKey.z, testBlueprint);
-	//Organic.AddBlueprint(EnclaveCollectionTestKey.x, EnclaveCollectionTestKey.y, EnclaveCollectionTestKey.z, testBlueprint3);		// new blueprint testing
+	//Organic.AddBlueprint(EnclaveCollectionTestKey.x, EnclaveCollectionTestKey.y, EnclaveCollectionTestKey.z, testBlueprint);
+	Organic.AddBlueprint(EnclaveCollectionTestKey.x, EnclaveCollectionTestKey.y, EnclaveCollectionTestKey.z, testBlueprint3);		// new blueprint testing
 	Organic.AddBlueprint(key1.x, key1.y, key1.z, testBlueprint);
 	Organic.AddBlueprint(key2.x, key2.y, key2.z, testBlueprint);
 	Organic.AddBlueprint(key3.x, key3.y, key3.z, testBlueprint);
 	Organic.AddBlueprint(key4.x, key4.y, key4.z, testBlueprint);
 	Organic.AddBlueprint(key5.x, key5.y, key5.z, testBlueprint);
 	Organic.AddBlueprint(key6.x, key6.y, key6.z, testBlueprint);
-	Organic.AddBlueprint(key7.x, key7.y, key7.z, testBlueprint);
-	Organic.AddBlueprint(key8.x, key8.y, key8.z, testBlueprint);
-	Organic.AddBlueprint(key9.x, key9.y, key9.z, testBlueprint);
+
+	// th ese two are currently being tested
+	Organic.AddBlueprint(key8.x, key8.y, key8.z, testBlueprint3);			// (1, 0, 1)
+	Organic.AddBlueprint(key7.x, key7.y, key7.z, testBlueprint3);			// (2, 0, 1)
+	
+
+
+	//Organic.AddBlueprint(key9.x, key9.y, key9.z, testBlueprint);
 
 	Organic.SetupFutureCollectionMM(key1.x, key1.y, key1.z);
 	Organic.SetupFutureCollectionMM(key2.x, key2.y, key2.z);
@@ -326,7 +331,7 @@ int main()
 	Organic.SetupFutureCollectionMM(key7.x, key7.y, key7.z);
 	Organic.SetupFutureCollectionMM(key8.x, key8.y, key8.z);
 	Organic.SetupFutureCollectionMM(key3.x, key3.y, key3.z);
-	Organic.SetupFutureCollectionMM(key9.x, key9.y, key9.z);
+	//Organic.SetupFutureCollectionMM(key9.x, key9.y, key9.z);
 
 	//Organic.MaterializeCollection(key1, key2);
 
@@ -336,7 +341,7 @@ int main()
 	// *********** Enclave Collection load type 1: add and instantiate a single collection
 		// add the test blueprint to the OrganicSystem
 	auto bluestart = std::chrono::high_resolution_clock::now();
-	Organic.AddBlueprint(bpkeytest.x, bpkeytest.y, bpkeytest.z, testBlueprint2);
+	//Organic.AddBlueprint(bpkeytest.x, bpkeytest.y, bpkeytest.z, testBlueprint2);
 	auto blueend = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> blueelapsed = blueend - bluestart;
 	std::cout << "Elapsed time (Blueprint addition): " << blueelapsed.count() << endl;
@@ -353,14 +358,14 @@ int main()
 	*/
 	auto orgstart = std::chrono::high_resolution_clock::now();
 	Organic.AddAndMaterializeSingleCollectionMM(0, 0, 0);
-	//Organic.AddAndMaterializeSingleCollectionMM(1, 0, 1);
-	//Organic.AddAndMaterializeSingleCollectionMM(2, 0, 1);
+	Organic.AddAndMaterializeSingleCollectionMM(1, 0, 1);
+	Organic.AddAndMaterializeSingleCollectionMM(2, 0, 1);
 	auto orgend = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> orgelapsed = orgend - orgstart;
 	std::cout << "Elapsed time (Organic collection instantiation): " << orgelapsed.count() << endl;
 
 	auto orgstart2 = std::chrono::high_resolution_clock::now();
-	Organic.ChangeSingleBlockMaterialAtXYZ(25, 25, 0, 1);
+	//Organic.ChangeSingleBlockMaterialAtXYZ(25, 25, 0, 1);
 	auto orgend2 = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> orgelapsed2 = orgend2 - orgstart2;
 	std::cout << "Elapsed time (Changing material of single block): " << orgelapsed2.count() << endl;

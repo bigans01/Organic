@@ -17,12 +17,12 @@ Summary: Contains meta data for determining which borders of an EnclaveCollectio
 class EnclaveCollectionBorderFlags
 {
 public:
-	int West = 0;
-	int North = 0;
-	int East = 0;
-	int South = 0;
-	int Top = 0;
-	int Bottom = 0;
+	int West = 1;
+	int North = 1;
+	int East = 1;
+	int South = 1;
+	int Top = 1;
+	int Bottom = 1;
 };
 
 #endif

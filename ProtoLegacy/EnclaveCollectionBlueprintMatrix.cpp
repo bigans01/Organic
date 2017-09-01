@@ -11,18 +11,27 @@ void EnclaveCollectionBlueprintMatrix::DetermineBlueprintBordersToRender(Enclave
 	tempKey.x = blueprintKey.x;		
 	tempKey.y = blueprintKey.y;
 	tempKey.z = blueprintKey.z;
-
+	std::cout << "neighboring east border being rendered...ignoring west border..." << std::endl;
 
 	// Check West (negative x)
 	tempKey.x -= 1;										// subtract 1 to get the blueprint at -1 x 
+	std::cout << "Looking for blueprint with key: " << tempKey.x << ", " << tempKey.y << ", " << tempKey.z << std::endl;
 	blueprintMapIterator = BlueprintMap.find(tempKey);  // find the blueprint, check if it exists
 	if (blueprintMapIterator != BlueprintMap.end())		// if this is true, a neighboring blueprint was found
 	{
+		//std::cout << "neighboring collection discovered." << std::endl;
 		if ((blueprintMapIterator->second.RenderEastBorder == 1) && (originBlueprint->RenderWestBorder==1)) // compare the east border of the blueprint at -1 x to the west border of the origin blueprint. If both are 1, don't render this side
 		{
+			//std::cout << "neighboring east border being rendered...ignoring west border... (2)" << std::endl;
 			borderFlagsPtr->West = 0;			// both matched as 1, set the origin blueprint's west side to be non-renderable
 		}
 	}
+
+	if (blueprintMapIterator == BlueprintMap.end())
+	{
+		std::cout << "No blueprint found." << std::endl;
+	}		
+
 	tempKey.x += 1;										// add +1 x to the key.
 
 
