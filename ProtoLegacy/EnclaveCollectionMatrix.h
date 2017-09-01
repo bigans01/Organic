@@ -26,8 +26,10 @@ Dependents: none.
 #include "EnclaveCollection.h"
 #include "PathTraceContainer.h"
 #include "EnclaveCollectionBlueprint.h"
+#include "EnclaveCollectionBlueprintMatrix.h"
 #include "EnclaveCollectionActivateList.h"
 #include "EnclaveCollectionActivateListT2.h"
+#include "EnclaveCollectionBorderFlags.h"
 #include <unordered_map>
 
 class OrganicSystem;
@@ -40,7 +42,7 @@ public:
 	void AddNewCollection(EnclaveKeyDef::EnclaveKey Key);																			// adds a new collection, with the given key value.
 	void AddNewCollectionSkeleton(EnclaveKeyDef::EnclaveKey Key);
 	void AddNewCollectionWithBlueprint(EnclaveKeyDef::EnclaveKey Key, EnclaveCollectionBlueprint *blueprint);						// single-threaded call for adding a collection with a blueprint.
-	void MultiAddNewCollectionWithBlueprint(int numThreads, EnclaveKeyDef::EnclaveKey Key, EnclaveCollectionBlueprint *blueprint);	// function that will prepare several worker threads for enclave instantiation.
+	void MultiAddNewCollectionWithBlueprint(int numThreads, EnclaveKeyDef::EnclaveKey Key, EnclaveCollectionBlueprintMatrix* blueprintmatrixptr, EnclaveCollectionBlueprint* blueprint);	// function that will prepare several worker threads for enclave instantiation.
 
 	void JobInstantiateAndPopulateEnclave(	int beginRange,																			// (potentially unused) this function is designed to be used with multi-threaded calls. See definition for more details.
 											int endRange,																			
@@ -57,15 +59,18 @@ public:
 												int endRange,																		// of this job being run. It is the defacto job to call when dealing with populating/instantiating Enclaves	
 												EnclaveCollection &collectionRef,													// as part of a multithreaded operation.
 												EnclaveKeyDef::EnclaveKey Key,
-												EnclaveCollectionBlueprint *blueprint,
+												EnclaveCollectionBlueprint* blueprint,
 												EnclaveCollectionActivateListT2 &activateListRef);
 
 	void JobInstantiateAndPopulateEnclaveAlpha2(int beginRange,																		// this function is designed for multithreading; it will return a list of enclaves that need to be rendered as a result
 		int endRange,																		// of this job being run. It is the defacto job to call when dealing with populating/instantiating Enclaves	
 		EnclaveCollection &collectionRef,													// as part of a multithreaded operation.
 		EnclaveKeyDef::EnclaveKey Key,
-		EnclaveCollectionBlueprint blueprint,
+		EnclaveCollectionBlueprint* blueprint,
+		EnclaveCollectionBlueprintMatrix* blueprintmatrix,
 		EnclaveCollectionActivateListT2 &activateListRef);
+
+
 
 	Enclave& GetEnclaveFromCollection(EnclaveKeyDef::EnclaveKey Key, int x, int y, int z);											// returns a reference to the enclave located at the x/y/z coordinate within the collection that has a key of value Key
 	Enclave& GetEnclaveFromXYZ(int x, int y, int z);																				// returns the enlave located at the absolute value of x/y/z

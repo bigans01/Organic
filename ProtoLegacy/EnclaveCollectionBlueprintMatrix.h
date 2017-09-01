@@ -17,12 +17,14 @@ will be used by the OrganicSystem to determine what to do with a collection of e
 
 #include "EnclaveKeyDef.h"
 #include "EnclaveCollectionBlueprint.h"
+#include "EnclaveCollectionBorderFlags.h"
 #include <unordered_map>
 
 class EnclaveCollectionBlueprintMatrix
 {
 	public:
 		std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveCollectionBlueprint, EnclaveKeyDef::KeyHasher> BlueprintMap;
+		void DetermineBlueprintBordersToRender(EnclaveKeyDef::EnclaveKey blueprintKey, EnclaveCollectionBlueprint* originBlueprint, EnclaveCollectionBorderFlags* borderFlagsPtr);
 };
 
 #endif

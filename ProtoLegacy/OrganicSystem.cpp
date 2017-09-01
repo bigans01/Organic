@@ -51,13 +51,14 @@ void OrganicSystem::AddAndMaterializeSingleCollectionMM(int x, int y, int z)
 	tempKey.z = z;
 	//cout << "Crash point testing " << endl;
 	EnclaveCollectionBlueprint *blueprintptr = &BlueprintMatrix.BlueprintMap[tempKey];
+	EnclaveCollectionBlueprintMatrix *blueprintmatrixptr = &BlueprintMatrix;
 	// multithreaded testing begins here
 	//EnclaveCollections.AddNewCollectionWithBlueprint(tempKey, blueprintptr);
 	//EnclaveCollections.MultiAddNewCollectionWithBlueprint(4, tempKey, blueprintptr);
 	//
 	EnclaveCollections.SetOrganicSystem(this);
 	auto start1 = std::chrono::high_resolution_clock::now();
-	EnclaveCollections.MultiAddNewCollectionWithBlueprint(1, tempKey, blueprintptr);
+	EnclaveCollections.MultiAddNewCollectionWithBlueprint(1, tempKey, blueprintmatrixptr, blueprintptr);
 	//cout << "Crash point testing 2" << endl;
 	//EnclaveCollections.MultiAddNewCollectionWithBlueprint(1, tempKey, blueprintptr);
 	auto finish1 = std::chrono::high_resolution_clock::now();

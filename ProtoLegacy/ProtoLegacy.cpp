@@ -132,7 +132,7 @@ int main()
 	
 	testBlueprint.SetSurfaceChunkData(SurfaceChunks);
 	testBlueprint.SetSolidChunkData(SolidChunks);
-	testBlueprint.SetPaintableChunkData(PaintableChunks);
+	testBlueprint.SetCustomPaintableChunkData(PaintableChunks);
 
 	EnclaveKeyDef::EnclaveKey tempPainterKey;
 	/*
@@ -240,6 +240,21 @@ int main()
 	thread_pool* mainthreadpoolref2 = &mainthreadpool2;
 
 	
+	EnclaveCollectionBlueprint testBlueprint3;
+	EnclaveKeyDef::EnclaveKey tbpkey;
+	tbpkey.x = 0;
+	tbpkey.y = 0;
+	tbpkey.z = 0;
+
+
+	// New blueprint style testing
+	auto carvestart = std::chrono::high_resolution_clock::now();
+
+	testBlueprint3.CarveSlope();
+
+	auto carveend = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> carveelapsed = carveend - carvestart;
+	//std::cout << "Elapsed time (Carve time): " << carveelapsed.count() << endl;
 
 
 
@@ -292,6 +307,7 @@ int main()
 
 	// add/instantiate the new collections here
 	Organic.AddBlueprint(EnclaveCollectionTestKey.x, EnclaveCollectionTestKey.y, EnclaveCollectionTestKey.z, testBlueprint);
+	//Organic.AddBlueprint(EnclaveCollectionTestKey.x, EnclaveCollectionTestKey.y, EnclaveCollectionTestKey.z, testBlueprint3);		// new blueprint testing
 	Organic.AddBlueprint(key1.x, key1.y, key1.z, testBlueprint);
 	Organic.AddBlueprint(key2.x, key2.y, key2.z, testBlueprint);
 	Organic.AddBlueprint(key3.x, key3.y, key3.z, testBlueprint);
@@ -312,7 +328,7 @@ int main()
 	Organic.SetupFutureCollectionMM(key3.x, key3.y, key3.z);
 	Organic.SetupFutureCollectionMM(key9.x, key9.y, key9.z);
 
-	Organic.MaterializeCollection(key1, key2);
+	//Organic.MaterializeCollection(key1, key2);
 
 
 
@@ -337,8 +353,8 @@ int main()
 	*/
 	auto orgstart = std::chrono::high_resolution_clock::now();
 	Organic.AddAndMaterializeSingleCollectionMM(0, 0, 0);
-	Organic.AddAndMaterializeSingleCollectionMM(1, 0, 1);
-	Organic.AddAndMaterializeSingleCollectionMM(2, 0, 1);
+	//Organic.AddAndMaterializeSingleCollectionMM(1, 0, 1);
+	//Organic.AddAndMaterializeSingleCollectionMM(2, 0, 1);
 	auto orgend = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> orgelapsed = orgend - orgstart;
 	std::cout << "Elapsed time (Organic collection instantiation): " << orgelapsed.count() << endl;
@@ -430,7 +446,7 @@ int main()
 
 	auto finish3 = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> elapsed3 = finish3 - start3;
-	//std::cout << "Elapsed time, sending data to OpenGL buffer: " << elapsed3.count() <<  endl;						// elapsed time is  hhere
+	std::cout << "Elapsed time, sending data to OpenGL buffer: " << elapsed3.count() <<  endl;						// elapsed time is  hhere
 
 
 	// ------------------------------------END OPEN GL SET UP

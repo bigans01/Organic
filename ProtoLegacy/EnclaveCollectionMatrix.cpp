@@ -88,7 +88,7 @@ void EnclaveCollectionMatrix::AddNewCollectionWithBlueprint(EnclaveKeyDef::Encla
 	//ElevationMapRef solidChunk = blueprint.GetSolidChunkData[x][z];
 	ElevationMapRef solidChunk = blueprint->GetSolidChunkData();						// ?? better optimized? unknown. compare to declaring outside of loop (7/18/2017)
 	ElevationMapRef surfaceChunk = blueprint->GetSurfaceChunkData();
-	ElevationMapRef paintableChunk = blueprint->GetPaintableChunkData();
+	ElevationMapRef paintableChunk = blueprint->GetCustomPaintableChunkData();
 	//int testout = 0;
 	for (int x = 0; x < 8; x++)
 	{
@@ -101,7 +101,7 @@ void EnclaveCollectionMatrix::AddNewCollectionWithBlueprint(EnclaveKeyDef::Encla
 
 				//ElevationMapRef solidChunk = blueprint->GetSolidChunkData();						// ?? better optimized? unknown. compare to declaring outside of loop (7/18/2017)
 				//ElevationMapRef surfaceChunk = blueprint->GetSurfaceChunkData();
-				//ElevationMapRef paintableChunk = blueprint->GetPaintableChunkData();
+				//ElevationMapRef paintableChunk = blueprint->GetCustomPaintableChunkData();
 
 				// step 2 begins here
 				if ((solidChunk[x][z] & chunkbitmask) == chunkbitmask)								
@@ -177,7 +177,7 @@ void EnclaveCollectionMatrix::AddNewCollectionWithBlueprint(EnclaveKeyDef::Encla
 }
 
 
-void EnclaveCollectionMatrix::MultiAddNewCollectionWithBlueprint(int numThreads, EnclaveKeyDef::EnclaveKey Key, EnclaveCollectionBlueprint *blueprint)
+void EnclaveCollectionMatrix::MultiAddNewCollectionWithBlueprint(int numThreads, EnclaveKeyDef::EnclaveKey Key, EnclaveCollectionBlueprintMatrix* blueprintmatrixptr, EnclaveCollectionBlueprint* blueprint)
 {
 	
 
@@ -217,6 +217,7 @@ void EnclaveCollectionMatrix::MultiAddNewCollectionWithBlueprint(int numThreads,
 
 		EnclaveCollectionActivateListT2 listT2_1;
 		std::future<void> testfuture4 = tpref->submit5(&EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha,	this,0,	7 + 1,std::ref(EnclaveCollectionMap[Key]),Key,std::ref(blueprint), std::ref(listT2_1));
+		//std::future<void> testfuture4 = tpref->submit5(&EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2,this,0,	7 + 1,std::ref(EnclaveCollectionMap[Key]),Key,std::ref(blueprint), std::ref(blueprintmatrixptr), std::ref(listT2_1));
 		testfuture4.get();
 
 		//for (int x = 0; x < tempReturnList.count; x++)			// populate from first list.
@@ -641,7 +642,7 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclave(int beginRange, i
 	//ElevationMapRef solidChunk = blueprint.GetSolidChunkData[x][z];
 	ElevationMapRef solidChunk = blueprint->GetSolidChunkData();						// ?? better optimized? unknown. compare to declaring outside of loop (7/18/2017)
 	ElevationMapRef surfaceChunk = blueprint->GetSurfaceChunkData();
-	ElevationMapRef paintableChunk = blueprint->GetPaintableChunkData();
+	ElevationMapRef paintableChunk = blueprint->GetCustomPaintableChunkData();
 	for (int x = beginRange; x < endRange; x++)
 	{
 		chunkbitmask = 1;
@@ -746,7 +747,7 @@ EnclaveCollectionActivateList EnclaveCollectionMatrix::JobInstantiateAndPopulate
 	//ElevationMapRef solidChunk = blueprint.GetSolidChunkData[x][z];
 	ElevationMapRef solidChunk = blueprint->GetSolidChunkData();						// ?? better optimized? unknown. compare to declaring outside of loop (7/18/2017)
 	ElevationMapRef surfaceChunk = blueprint->GetSurfaceChunkData();
-	ElevationMapRef paintableChunk = blueprint->GetPaintableChunkData();
+	ElevationMapRef paintableChunk = blueprint->GetCustomPaintableChunkData();
 	for (int x = beginRange; x < endRange; x++)
 	{
 		chunkbitmask = 1;
@@ -863,7 +864,7 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha(int beginRan
 	//ElevationMapRef solidChunk = blueprint.GetSolidChunkData[x][z];
 	ElevationMapRef solidChunk = blueprint->GetSolidChunkData();						// ?? better optimized? unknown. compare to declaring outside of loop (7/18/2017)
 	ElevationMapRef surfaceChunk = blueprint->GetSurfaceChunkData();
-	ElevationMapRef paintableChunk = blueprint->GetPaintableChunkData();
+	ElevationMapRef paintableChunk = blueprint->GetCustomPaintableChunkData();
 	int totalchunks = 0;
 	for (int x = beginRange; x < endRange; x++)
 	{
@@ -992,159 +993,96 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha(int beginRan
 	//std::cout << "Elapsed time (multi-threaded enclave instantiation: " << elapsed.count() << endl;	// ""
 }
 
-void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRange,																		// this function is designed for multithreading; it will return a list of enclaves that need to be rendered as a result
+void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRange,	// this function is designed for multithreading; it will return a list of enclaves that need to be rendered as a result
 	int endRange,																		// of this job being run. It is the defacto job to call when dealing with populating/instantiating Enclaves	
 	EnclaveCollection &collectionRef,													// as part of a multithreaded operation.
 	EnclaveKeyDef::EnclaveKey Key,
-	EnclaveCollectionBlueprint blueprint,
+	EnclaveCollectionBlueprint* blueprint,
+	EnclaveCollectionBlueprintMatrix* blueprintmatrix,
 	EnclaveCollectionActivateListT2 &activateListRef)
 {
-	/* Summary: this function performs enclave instantiations within a certain range; this "range" should be designed so that it
-	can be used with a packaged_task. It takes in the parameter, "activateListRef" as a pointer to an instance of
-	EnclaveCollectionActivateListT2 -- where it will be the only thread writing to this instance; this instance will contain a list
-	of Enclaves to be renedered for a particular EnclaveCollection.
-	*/
 
-	/* Order of operations:
-	1. Instantiate 512
-	2. determine solids
-	3. determine surfaces
-	4. painting
-	5. unveil polys
-	6. smoothing
-	7. attach to enclaves
-	*/
 
-	auto start = std::chrono::high_resolution_clock::now();			// option
+	auto start = std::chrono::high_resolution_clock::now();			
 	int chunkbitmask = 1;																				// set initial value of bitmask to be 128 (which is the top chunk)
+	int stdchunkbitmask = 1;
 	int chunkindex = 7;
 	typedef unsigned char(&ElevationMapRef)[8][8];
 	//ElevationMapRef solidChunk = blueprint.GetSolidChunkData[x][z];
-	ElevationMapRef solidChunk = blueprint.GetSolidChunkData();						// ?? better optimized? unknown. compare to declaring outside of loop (7/18/2017)
-	ElevationMapRef surfaceChunk = blueprint.GetSurfaceChunkData();
-	ElevationMapRef paintableChunk = blueprint.GetPaintableChunkData();
+	ElevationMapRef solidChunk = blueprint->GetSolidChunkData();							// ?? better optimized? unknown. compare to declaring outside of loop (7/18/2017)
+	ElevationMapRef customPaintableChunk = blueprint->GetCustomPaintableChunkData();		// custom chunk data
+	ElevationMapRef standardPaintableChunk = blueprint->GetStandardPaintableChunkData();	// standard chunk data
+
+	// Step One: determine what borders of this blueprint must be rendered, by comparing to borders in neighboring blueprints
+	EnclaveCollectionBorderFlags borderFlags;											// contains west, north, east, south, top, bottom flags. 
+	EnclaveCollectionBorderFlags* borderFlagsRef = &borderFlags;						// get pointer to borderFlags
+	blueprintmatrix->DetermineBlueprintBordersToRender(Key, blueprint, borderFlagsRef);	// check this blueprint's neighbors
+
+	// Step Two: prepare all solid chunks
 	for (int x = beginRange; x < endRange; x++)
 	{
 		chunkbitmask = 1;
 		for (int y = 0; y < 8; y++)
 		{
-
 			for (int z = 0; z < 8; z++)
 			{
 				if ((solidChunk[x][z] & chunkbitmask) == chunkbitmask)
 				{
-
 					//cout << x << " " << z << " " << chunkbitmask  << " HIT 1" << endl;
 					Enclave stackEnclave(Key, x, y, z);
 					collectionRef.EnclaveArray[x][y][z] = stackEnclave;
-					collectionRef.EnclaveArray[x][y][z].InitializeRenderArray(1);
-
-					// step 4 begins here
-					if ((paintableChunk[x][z] & chunkbitmask) == chunkbitmask)
-					{
-						//cout << "Paintable chunk found! (" << x << ", " << y << ", " << z << ")" << endl;
-						EnclavePainterList *painterListRef;
-						Enclave *tempEnclave = &collectionRef.EnclaveArray[x][y][z];								// this line is used to get the current Enclave's unique key
-						painterListRef = &blueprint.PaintListMatrix.PainterListMatrix[tempEnclave->UniqueKey];		// gets the list of the paint jobs to run for this specific chunk
-						std::unordered_map<int, EnclavePainter>::iterator paintListIter;
-						paintListIter = painterListRef->PaintList.begin();
-						int currentblockindex = 0;				// determines the "single" value of the current block we are looking at (so that we can convert it to x/y/z in the chunk below)
-						int currentbyte = 0;					// determine the current byte to be working on
-						int paintedcount = 0;
-						int chunkbitmask2 = 1;					// bitmask that is shifted to the left
-
-						auto teststart = std::chrono::high_resolution_clock::now();
-
-
-						for (paintListIter; paintListIter != painterListRef->PaintList.end(); paintListIter++)
-						{
-							paintedcount = 0;
-							currentblockindex = 0;				// reset the currentblockindex
-							EnclavePainter painterCopy = paintListIter->second;
-							//cout << "block type to be painted: " << paintListIter->first << endl; // testing
-							for (int a = 0; a < 4; a++)			// loop 4 times; do 2 bytes per loop
-							{
-								for (int b = 0; b < 2; b++)		// for each iteration of inner loop, check 
-								{
-									chunkbitmask2 = 1;					// reset the chunk bit mask
-									for (int c = 0; c < 8; c++)
-									{
-										//cout << "value of current byte: (" << currentbyte << ") " <<  int(paintListIter->second.PaintData[currentbyte]) << endl;
-										if ((int(paintListIter->second.PaintData[currentbyte]) & chunkbitmask2) == chunkbitmask2)
-										{
-											EnclaveKeyDef::EnclaveKey singleToXYZresult = tempEnclave->SingleToEnclaveKey(currentblockindex);
-											tempEnclave->ChangePolyMaterial(singleToXYZresult.x, singleToXYZresult.y, singleToXYZresult.z, paintListIter->first);
-											//cout << "material changed... (bitmask: " << chunkbitmask2 <<", " << b << ")" << endl;
-											paintedcount++;
-										}
-										chunkbitmask2 <<= 1;
-										//cout << chunkbitmask2 << endl;
-										currentblockindex++;
-									}
-									currentbyte++;
-								}
-
-							}
-							//cout << "total painted: " << paintedcount << endl;
-						}
-						//cout << endl;
-						auto testend = std::chrono::high_resolution_clock::now();
-						std::chrono::duration<double> elapsed = testend - teststart;
-						//std::cout << "Elapsed time, painting: " << elapsed.count() << endl;	// ""
-
-
-
-					}
-
-					// step 3 begins here 
-					if ((surfaceChunk[x][z] & chunkbitmask) == chunkbitmask)
-					{
-						EnclaveKeyDef::EnclaveKey tempKey;
-						tempKey.x = x;
-						tempKey.y = y;
-						tempKey.z = z;
-
-						activateListRef.flagArray[x][z] = chunkbitmask;
-
-						//cout << "cool..." << endl;
-
-						// step 5 will go here ? 
-						for (int xx2 = 0; xx2 < 4; xx2++)
-						{
-							for (int zz2 = 0; zz2 < 4; zz2++)
-							{
-								collectionRef.EnclaveArray[tempKey.x][tempKey.y][tempKey.z].UnveilSinglePoly(xx2, 3, zz2, 0, 1, 0, 2, 0);	// STEP 3b: get the top faces, set the top face bit (2) to 1. 
-							}
-						}
-
-					}
-
-
-
-					//for (int x = 0; x < 100000; x++)
-					//{
-
-					//}
-
-
-
-
-				}
-				else
-				{
-					//cout << "HIT 2" << endl;
-					Enclave stackEnclave(Key, x, y, z);												// add an enclave, with a collection key of Key
-					collectionRef.EnclaveArray[x][y][z] = stackEnclave;					// copy the newly instantiated enclave onto the heap.
-																						//EnclaveCollection *collectionPtr = &collectionRef;
-					collectionRef.EnclaveArray[x][y][z].InitializeRenderArray();		// initialize contents of the newly heaped enclave.
+					collectionRef.EnclaveArray[x][y][z].InitializeRenderArray(1);				// setup this solid enclave
 				}
 			}
 			chunkbitmask <<= 1;
 		}
 	}
 
+
+	// Step Three: unveil all polys in border chunks
+	// Unveil West border
+	
+	if (borderFlags.West == 1)
+	{
+		collectionRef.SetWestBorder(standardPaintableChunk, activateListRef);		// set up west border. using the standardPaintableChunk; 
+	}
+
+
+	// Step Four: find paintable chunks and determine the faces for the paintable blocks (which is later passed to UnveilPoly)
+	for (int x = beginRange; x < endRange; x++)
+	{
+		chunkbitmask = 1;
+		for (int y = 0; y < 8; y++)
+		{
+			for (int z = 0; z < 8; z++)
+			{
+				
+
+				// Render customized chunks here
+				if ((customPaintableChunk[x][z] & chunkbitmask) == chunkbitmask)
+				{
+					Enclave stackEnclave(Key, x, y, z);
+					collectionRef.EnclaveArray[x][y][z] = stackEnclave;
+					collectionRef.EnclaveArray[x][y][z].InitializeRenderArray(1);
+
+					// do unveil metadata loop here
+					EnclaveKeyDef::EnclaveKey currentKey;
+					currentKey.x = x;
+					currentKey.y = y;
+					currentKey.z = z;
+					EnclaveUnveilMeta currentMeta = blueprint->SetupCarvePlan(currentKey);		// use the carve plan to determine the exact x/y/z chunk coords of each block to render
+				}
+
+				
+
+				
+			}
+			chunkbitmask <<= 1;
+		}
+	}
+
 	auto finish = std::chrono::high_resolution_clock::now();
-	std::chrono::duration<double> elapsed = finish - start;
+	//std::chrono::duration<double> elapsed = finish - start;
 	//std::cout << "Elapsed time (multi-threaded enclave instantiation: " << elapsed.count() << endl;	// ""
 }
 

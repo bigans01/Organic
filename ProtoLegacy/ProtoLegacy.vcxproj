@@ -153,11 +153,13 @@
     <ClInclude Include="BasicEntity.h" />
     <ClInclude Include="common\shader.hpp" />
     <ClInclude Include="dummwrapper.h" />
+    <ClInclude Include="ECBXAxisCarvePlan.h" />
     <ClInclude Include="EnclaveCollection.h" />
     <ClInclude Include="EnclaveCollectionActivateList.h" />
     <ClInclude Include="EnclaveCollectionActivateListT2.h" />
     <ClInclude Include="EnclaveCollectionBlueprint.h" />
     <ClInclude Include="EnclaveCollectionBlueprintMatrix.h" />
+    <ClInclude Include="EnclaveCollectionBorderFlags.h" />
     <ClInclude Include="EnclaveCollectionMatrix.h" />
     <ClInclude Include="Enclave.h" />
     <ClInclude Include="EnclaveKeyDef.h" />
@@ -171,6 +173,7 @@
     <ClInclude Include="EnclavePainter.h" />
     <ClInclude Include="EnclavePainterList.h" />
     <ClInclude Include="EnclavePainterListMatrix.h" />
+    <ClInclude Include="EnclaveUnveilMeta.h" />
     <ClInclude Include="GoalMoveToLocation.h" />
     <ClInclude Include="join_threads.h" />
     <ClInclude Include="ManifestCollectionMatrix.h" />
@@ -202,6 +205,7 @@
   <ItemGroup>
     <ClCompile Include="EnclaveCollection.cpp" />
     <ClCompile Include="EnclaveCollectionBlueprint.cpp" />
+    <ClCompile Include="EnclaveCollectionBlueprintMatrix.cpp" />
     <ClCompile Include="EnclaveCollectionMatrix.cpp" />
     <ClCompile Include="Enclave.cpp" />
     <ClCompile Include="EnclaveManifest.cpp" />
