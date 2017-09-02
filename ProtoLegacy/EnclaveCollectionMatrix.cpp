@@ -217,8 +217,8 @@ void EnclaveCollectionMatrix::MultiAddNewCollectionWithBlueprint(int numThreads,
 
 		EnclaveCollectionActivateListT2 listT2_1;
 		//std::future<void> testfuture4 = tpref->submit5(&EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha,	this,0,	7 + 1,std::ref(EnclaveCollectionMap[Key]),Key,std::ref(blueprint), std::ref(listT2_1));
-		std::future<void> testfuture4 = tpref->submit5(&EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2,this,0,	7 + 1,std::ref(EnclaveCollectionMap[Key]),Key,std::ref(blueprint), std::ref(blueprintmatrixptr), std::ref(listT2_1));
-		testfuture4.get();
+		//std::future<void> testfuture4 = tpref->submit5(&EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2,this,0,	7 + 1,std::ref(EnclaveCollectionMap[Key]),Key,std::ref(blueprint), std::ref(blueprintmatrixptr), std::ref(listT2_1));
+		//testfuture4.get();
 
 		//for (int x = 0; x < tempReturnList.count; x++)			// populate from first list.
 		//{
@@ -999,9 +999,10 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 	EnclaveKeyDef::EnclaveKey Key,
 	EnclaveCollectionBlueprint* blueprint,
 	EnclaveCollectionBlueprintMatrix* blueprintmatrix,
-	EnclaveCollectionActivateListT2 &activateListRef)
+	EnclaveCollectionActivateListT2* activateListRef,
+	mutex& HeapMutex)
 {
-
+	//HeapMutex.lock();
 
 	auto start = std::chrono::high_resolution_clock::now();			
 	int chunkbitmask = 1;																				// set initial value of bitmask to be 128 (which is the top chunk)
@@ -1019,8 +1020,9 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 	// Step Two: determine what borders of this blueprint must be rendered, by comparing to borders in neighboring blueprints
 	EnclaveCollectionBorderFlags borderFlags;											// contains west, north, east, south, top, bottom flags. 
 	EnclaveCollectionBorderFlags* borderFlagsRef = &borderFlags;						// get pointer to borderFlags
+	//HeapMutex.lock();
 	blueprintmatrix->DetermineBlueprintBordersToRender(Key, blueprint, borderFlagsRef);	// check this blueprint's neighbors
-
+	//HeapMutex.unlock();
 
 
 
@@ -1045,28 +1047,35 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 		}
 	}
 
-
+	
 	// Step Four: unveil all polys in border chunks	
+	//HeapMutex.lock();
+	
 	if (borderFlags.West == 1)
 	{
-		collectionRef.SetWestBorder(standardPaintableChunk, activateListRef);		// set up west border -- using the standardPaintableChunk; 
+		collectionRef.SetWestBorder(standardPaintableChunk, activateListRef, std::ref(HeapMutex));		// set up west border -- using the standardPaintableChunk; 
 	}
+	
+	
 	if (borderFlags.North == 1)
 	{
-		collectionRef.SetNorthBorder(standardPaintableChunk, activateListRef);		// set up north border 
+		collectionRef.SetNorthBorder(standardPaintableChunk, activateListRef, std::ref(HeapMutex));		// set up north border 
 	}
+	/*
 	if (borderFlags.East == 1)
 	{
-		collectionRef.SetEastBorder(standardPaintableChunk, activateListRef);
+		collectionRef.SetEastBorder(standardPaintableChunk, activateListRef, std::ref(HeapMutex));
 	}
 	if (borderFlags.South == 1)
 	{
-		collectionRef.SetSouthBorder(standardPaintableChunk, activateListRef);
+		collectionRef.SetSouthBorder(standardPaintableChunk, activateListRef, std::ref(HeapMutex));
 	}
+	*/
+	
+	//HeapMutex.unlock();
 
 
-
-
+	/*
 	// Step Five: find paintable chunks and determine the faces for the paintable blocks (which is later passed to UnveilPoly)
 	for (int x = beginRange; x < endRange; x++)
 	{
@@ -1099,10 +1108,13 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 			chunkbitmask <<= 1;
 		}
 	}
+	*/
 
 	auto finish = std::chrono::high_resolution_clock::now();
 	//std::chrono::duration<double> elapsed = finish - start;
 	//std::cout << "Elapsed time (multi-threaded enclave instantiation: " << elapsed.count() << endl;	// ""
+
+	//HeapMutex.unlock();
 }
 
 

@@ -15,6 +15,7 @@ Dependents: none.
 #include "Enclave.h"
 #include "EnclaveCollectionActivateListT2.h"
 #include "EnclaveCollectionBlueprint.h"
+#include <mutex>
 
 // activate guards
 #ifndef ENCLAVECOLLECTION_H
@@ -28,12 +29,12 @@ public:
 	int totalRenderableEnclaves = 0;
 	void ActivateEnclaveForRendering(EnclaveKeyDef::EnclaveKey Key);
 	Enclave& GetEnclaveByKey(EnclaveKeyDef::EnclaveKey InKey);
-	void SetWestBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2 &activateListRef);
-	void SetNorthBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2 &activateListRef);
-	void SetEastBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2 &activateListRef);
-	void SetSouthBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2 &activateListRef);
-	void SetTopBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2 &activateListRef);
-	void SetBottomBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2 &activateListRef);
+	void SetWestBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2* activateListRef, mutex& HeapMutex);
+	void SetNorthBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2* activateListRef, mutex& HeapMutex);
+	void SetEastBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2 &activateListRef, mutex& HeapMutex);
+	void SetSouthBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2 &activateListRef, mutex& HeapMutex);
+	void SetTopBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2 &activateListRef, mutex& HeapMutex);
+	void SetBottomBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2 &activateListRef, mutex& HeapMutex);
 	void RunCollectionPainters(EnclaveCollectionBlueprint* blueprintRef);
 
 };

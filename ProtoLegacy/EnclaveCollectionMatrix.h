@@ -32,6 +32,7 @@ Dependents: none.
 #include "EnclaveCollectionBorderFlags.h"
 #include "ECBCollectionPainter.h"
 #include <unordered_map>
+#include <mutex>
 
 class OrganicSystem;
 class EnclaveCollectionMatrix {
@@ -69,7 +70,8 @@ public:
 		EnclaveKeyDef::EnclaveKey Key,
 		EnclaveCollectionBlueprint* blueprint,
 		EnclaveCollectionBlueprintMatrix* blueprintmatrix,
-		EnclaveCollectionActivateListT2 &activateListRef);
+		EnclaveCollectionActivateListT2* activateListRef,
+		mutex& HeapMutex);
 
 
 

@@ -289,6 +289,7 @@ int main()
 
 	// *********** Enclave Collection load type 2: instantiate a set of collections
 
+	/*
 	EnclaveKeyDef::EnclaveKey key1, key2, key3, key4, key5, key6, key7, key8, key9;
 	key1.x = 5;
 	key1.y = 0;
@@ -355,6 +356,51 @@ int main()
 	//Organic.SetupFutureCollectionMM(key9.x, key9.y, key9.z);
 
 	//Organic.MaterializeCollection(key1, key2);
+	*/
+
+	EnclaveKeyDef::EnclaveKey NEWkey1, NEWkey2, NEWkey3, NEWkey4, NEWkey5, NEWkey6, NEWkey7, NEWkey8;
+	NEWkey1.x = 0;
+	NEWkey1.y = 0;
+	NEWkey1.z = 0;
+
+	NEWkey2.x = 1;
+	NEWkey2.y = 0;
+	NEWkey2.z = 0;
+
+	NEWkey3.x = 2;
+	NEWkey3.y = 0;
+	NEWkey3.z = 0;
+
+	NEWkey4.x = 3;
+	NEWkey4.y = 0;
+	NEWkey4.z = 0;
+
+	NEWkey5.x = 0;
+	NEWkey5.y = 0;
+	NEWkey5.z = 1;
+
+	NEWkey6.x = 1;
+	NEWkey6.y = 0;
+	NEWkey6.z = 1;
+
+	NEWkey7.x = 2;
+	NEWkey7.y = 0;
+	NEWkey7.z = 1;
+
+	NEWkey8.x = 3;
+	NEWkey8.y = 0;
+	NEWkey8.z = 1;
+
+	Organic.AddBlueprint(NEWkey1.x, NEWkey1.y, NEWkey1.z, testBlueprint3);
+	Organic.AddBlueprint(NEWkey2.x, NEWkey2.y, NEWkey2.z, testBlueprint3);
+	Organic.AddBlueprint(NEWkey3.x, NEWkey3.y, NEWkey3.z, testBlueprint3);
+	Organic.AddBlueprint(NEWkey4.x, NEWkey4.y, NEWkey4.z, testBlueprint3);
+	Organic.AddBlueprint(NEWkey5.x, NEWkey5.y, NEWkey5.z, testBlueprint3);
+	Organic.AddBlueprint(NEWkey6.x, NEWkey6.y, NEWkey6.z, testBlueprint3);
+	Organic.AddBlueprint(NEWkey7.x, NEWkey7.y, NEWkey7.z, testBlueprint3);
+	Organic.AddBlueprint(NEWkey8.x, NEWkey8.y, NEWkey8.z, testBlueprint3);
+	
+
 	Organic.MaterializeAllCollectionsInRenderList();
 
 
@@ -378,9 +424,9 @@ int main()
 	}
 	*/
 	auto orgstart = std::chrono::high_resolution_clock::now();
-	Organic.AddAndMaterializeSingleCollectionMM(0, 0, 0);
-	Organic.AddAndMaterializeSingleCollectionMM(1, 0, 1);
-	Organic.AddAndMaterializeSingleCollectionMM(2, 0, 1);
+	//Organic.AddAndMaterializeSingleCollectionMM(0, 0, 0);
+	//Organic.AddAndMaterializeSingleCollectionMM(1, 0, 1);
+	//Organic.AddAndMaterializeSingleCollectionMM(2, 0, 1);
 	auto orgend = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> orgelapsed = orgend - orgstart;
 	std::cout << "Elapsed time (Organic collection instantiation): " << orgelapsed.count() << endl;
@@ -452,10 +498,11 @@ int main()
 	//Organic.SetGraphicsAPI();
 
 	Organic.SetGraphicsAPI();
-
+	auto start3 = std::chrono::high_resolution_clock::now();
+	/*
 	//GLfloat* tempTestPtr = Organic.GetVertexDataFromRenderCollection(0,0,0);
 	//Organic.SendDataFromCollectionToGLBuffer(tempTestPtr, 73872); // 73872 | 73728
-	auto start3 = std::chrono::high_resolution_clock::now();
+	
 	RenderCollection* renderCollectionPtr = Organic.GetRenderCollectionPtr(0, 0, 0);
 	Organic.SendDataFromRenderPtrToGLBuffer(renderCollectionPtr);
 
@@ -469,6 +516,39 @@ int main()
 	//cout << "testing of ptr4: " << renderCollectionPtr4->RenderCollectionArraySize << endl;
 	RenderCollection* renderCollectionPtr4 = Organic.GetRenderCollectionPtr(3, 0, 1);
 	Organic.SendDataFromRenderPtrToGLBuffer(renderCollectionPtr4);
+	*/
+	
+	
+	
+	
+	RenderCollection* newRenderCollPtr;
+
+	newRenderCollPtr = Organic.GetRenderCollectionPtr(0, 0, 0);
+	Organic.SendDataFromRenderPtrToGLBuffer(newRenderCollPtr);
+
+	newRenderCollPtr = Organic.GetRenderCollectionPtr(1, 0, 0);
+	Organic.SendDataFromRenderPtrToGLBuffer(newRenderCollPtr);
+
+	newRenderCollPtr = Organic.GetRenderCollectionPtr(2, 0, 0);
+	Organic.SendDataFromRenderPtrToGLBuffer(newRenderCollPtr);
+
+	newRenderCollPtr = Organic.GetRenderCollectionPtr(3, 0, 0);
+	Organic.SendDataFromRenderPtrToGLBuffer(newRenderCollPtr);
+
+	newRenderCollPtr = Organic.GetRenderCollectionPtr(0, 0, 1);
+	Organic.SendDataFromRenderPtrToGLBuffer(newRenderCollPtr);
+
+	newRenderCollPtr = Organic.GetRenderCollectionPtr(1, 0, 1);
+	Organic.SendDataFromRenderPtrToGLBuffer(newRenderCollPtr);
+
+	newRenderCollPtr = Organic.GetRenderCollectionPtr(2, 0, 1);
+	Organic.SendDataFromRenderPtrToGLBuffer(newRenderCollPtr);
+
+	newRenderCollPtr = Organic.GetRenderCollectionPtr(3, 0, 1);
+	Organic.SendDataFromRenderPtrToGLBuffer(newRenderCollPtr);
+
+
+
 
 	auto finish3 = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> elapsed3 = finish3 - start3;

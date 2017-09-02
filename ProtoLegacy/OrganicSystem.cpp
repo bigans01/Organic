@@ -431,10 +431,13 @@ void OrganicSystem::MaterializeAllCollectionsInRenderList()
 	FactoryPtr2->TextureDictionaryRef = &TextureDictionary;
 
 	MDListJobMaterializeCollection* list1 = &MatCollList.MaterializeCollectionList.front();
+
+
+
 	MDListJobMaterializeCollection* list2 = &MatCollList.MaterializeCollectionList.back();
 
-	std::future<void> coll_3 = tpref->submit5(&OrganicSystem::JobMaterializeMultiCollectionFromFactory2, this, list1, std::ref(mutexval), std::ref(FactoryPtr), 1);
-	std::future<void> coll_4 = tpref2->submit5(&OrganicSystem::JobMaterializeMultiCollectionFromFactory2, this, list2, std::ref(mutexval), std::ref(FactoryPtr2), 2);
+	std::future<void> coll_3 = tpref->submit5(&OrganicSystem::JobMaterializeMultiCollectionFromFactory2, this, std::ref(list1), std::ref(mutexval), std::ref(FactoryPtr), 1);
+	std::future<void> coll_4 = tpref2->submit5(&OrganicSystem::JobMaterializeMultiCollectionFromFactory2, this, std::ref(list2), std::ref(mutexval), std::ref(FactoryPtr2), 2);
 
 	coll_3.wait();
 	coll_4.wait();
@@ -789,6 +792,7 @@ void OrganicSystem::JobMaterializeMultiCollectionFromFactory(MDListJobMaterializ
 void OrganicSystem::JobMaterializeMultiCollectionFromFactory2(MDListJobMaterializeCollection* mdjob, mutex& mutexval, EnclaveManifestFactoryT1 *FactoryRef, int ThreadID)
 {
 	/* Summary: this method materializes one or more EnclaveCollections, by using a Factory */
+	//mutexval.lock();
 	auto truestart = std::chrono::high_resolution_clock::now();		// optional, for performance testing only																										
 	std::unordered_map<EnclaveKeyDef::EnclaveKey, MDJobMaterializeCollection, EnclaveKeyDef::KeyHasher>::iterator JobIterator;			// set up an iterator to point to the beginning of the job list
 	std::unordered_map<EnclaveKeyDef::EnclaveKey, MDJobMaterializeCollection, EnclaveKeyDef::KeyHasher>::iterator JobIteratorEnd;		// set up an iterator to point to the end of the job list
@@ -815,9 +819,13 @@ void OrganicSystem::JobMaterializeMultiCollectionFromFactory2(MDListJobMateriali
 		auto initend = std::chrono::high_resolution_clock::now();												// for performance testing only
 		std::chrono::duration<double> initelapsed = initend - initstart;										// ""
 
-		EnclaveCollectionActivateListT2 listT2_1;																									// creation an activation list for instantiating the enclaves
-		EnclaveCollectionsRef->JobInstantiateAndPopulateEnclaveAlpha(0, 7 + 1, std::ref(*CollectionRef), Key1, blueprintptr, std::ref(listT2_1));	// run the instantiation job on this thread (all 512 enclaves) //EnclaveCollectionMap[Key]
-																																					//EnclaveCollectionsRef->JobInstantiateAndPopulateEnclaveAlpha2(0, 7 + 1, std::ref(*CollectionRef), Key1, blueprintptr, std::ref(BlueprintMatrixRef), std::ref(listT2_1));	// run the instantiation job on this thread (all 512 enclaves) //EnclaveCollectionMap[Key]
+		EnclaveCollectionActivateListT2 listT2_1;		
+		EnclaveCollectionActivateListT2* listT2_1_ptr = &listT2_1;
+		cout << "Key of this Collection: " << Key1.x << ", " << Key1.y << ", " << Key1.z << endl;
+
+		//mutexval.lock();
+		EnclaveCollectionsRef->JobInstantiateAndPopulateEnclaveAlpha2(0, 7 + 1, std::ref(*CollectionRef), Key1, std::ref(blueprintptr), std::ref(BlueprintMatrixRef), std::ref(listT2_1_ptr), std::ref(mutexval));	// run the instantiation job on this thread (all 512 enclaves) //EnclaveCollectionMap[Key]
+		//mutexval.unlock();																																			
 																																					//trueend = std::chrono::high_resolution_clock::now();
 		int chunkbitmask = 1;	// set the chunk bit mask used below
 		int bitmaskval = 0;		// ""
@@ -866,7 +874,9 @@ void OrganicSystem::JobMaterializeMultiCollectionFromFactory2(MDListJobMateriali
 		}
 
 		// Phase 3: Render actual collection
+		//mutexval.lock();
 		RenderCollectionsRef->CreateRenderArrayFromFactory(Key1, FactoryRef, std::ref(mutexval));		// call function to add data into array; pass mutex to use
+		//mutexval.unlock();
 		RenderCollection* collPtr = &RenderCollectionsRef->RenderMatrix[Key1];
 		//cout << "Total renderables for Key (" << Key1.x << ", " << Key1.y << ", " << Key1.z << ") :" << tempdumbcount << ": " << collPtr->RenderCollectionArraySize << endl;
 		//trueend = std::chrono::high_resolution_clock::now();

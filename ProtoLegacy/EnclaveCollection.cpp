@@ -35,7 +35,7 @@ Enclave& EnclaveCollection::GetEnclaveByKey(EnclaveKeyDef::EnclaveKey InKey)
 	return EnclaveArray[InKey.x][InKey.y][InKey.z];
 }
 
-void EnclaveCollection::SetWestBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2 &activateListRef)
+void EnclaveCollection::SetWestBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2* activateListRef, mutex& HeapMutex)
 {
 	for (int z = 1; z < 7; z++) // traverse along the z axis, exclude border chunks
 	{
@@ -66,7 +66,11 @@ void EnclaveCollection::SetWestBorder(ElevationMapRef elevationMapCopy, EnclaveC
 				EnclaveArray[0][bitloop][z].UnveilSinglePoly(0, 2, 3, 0, 1, 0, 32, 0);
 				EnclaveArray[0][bitloop][z].UnveilSinglePoly(0, 3, 3, 0, 1, 0, 32, 0);
 
-				activateListRef.flagArray[0][z] = activateListRef.flagArray[0][z] | stdchunkbitmask;		// perform bitwise logical append
+				HeapMutex.lock();
+				//cout << "Before edit: (West) " << int(activateListRef->flagArray[0][3]) << endl;
+				activateListRef->flagArray[0][3] = activateListRef->flagArray[0][3] | stdchunkbitmask;		// perform bitwise logical append
+				//cout << "Post edit: " << int(activateListRef->flagArray[0][3]) << endl;
+				HeapMutex.unlock();
 			}
 			
 			stdchunkbitmask <<= 1;
@@ -74,14 +78,17 @@ void EnclaveCollection::SetWestBorder(ElevationMapRef elevationMapCopy, EnclaveC
 	}
 }
 
-void EnclaveCollection::SetNorthBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2 &activateListRef)
+void EnclaveCollection::SetNorthBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2* activateListRef, mutex& HeapMutex)
 {
+	//HeapMutex.lock();
 	for (int x = 1; x < 7; x++)
 	{
 		int stdchunkbitmask = 1;
 		//cout << "current byte value: " << int(elevationMapCopy[x][0]) << endl;
 		for (int bitloop = 0; bitloop < 8; bitloop++)		// bitloop value serves as current y coordinate
 		{
+			
+
 			if ((elevationMapCopy[x][0] & stdchunkbitmask) == stdchunkbitmask)
 			{
 				// cout << "valid enclave key: " << x << ", " << bitloop << ", " << 0 << endl;
@@ -106,15 +113,21 @@ void EnclaveCollection::SetNorthBorder(ElevationMapRef elevationMapCopy, Enclave
 				EnclaveArray[x][bitloop][0].UnveilSinglePoly(3, 2, 0, 0, 1, 0, 16, 0);
 				EnclaveArray[x][bitloop][0].UnveilSinglePoly(3, 3, 0, 0, 1, 0, 16, 0);
 
-				activateListRef.flagArray[x][0] = activateListRef.flagArray[x][0] | stdchunkbitmask;		// perform bitwise logical append
+				HeapMutex.lock();
+				//cout << "Before edit: (North)" << int(activateListRef->flagArray[x][0]) << endl;
+				activateListRef->flagArray[x][0] = activateListRef->flagArray[x][0] | stdchunkbitmask;		// perform bitwise logical append
+				//activateListRef->flagArray[x][0] = 5;		// perform bitwise logical append
+				HeapMutex.unlock();
 			}
+			
 
 			stdchunkbitmask <<= 1;
 		}
 	}
+	//HeapMutex.unlock();
 }
 
-void EnclaveCollection::SetEastBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2 &activateListRef)
+void EnclaveCollection::SetEastBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2 &activateListRef, mutex& HeapMutex)
 {
 	for (int z = 0; z < 8; z++) // traverse along the z axis, exclude border chunks
 	{
@@ -154,7 +167,7 @@ void EnclaveCollection::SetEastBorder(ElevationMapRef elevationMapCopy, EnclaveC
 
 }
 
-void EnclaveCollection::SetSouthBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2 &activateListRef)
+void EnclaveCollection::SetSouthBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2 &activateListRef, mutex& HeapMutex)
 {
 	for (int x = 1; x < 7; x++)
 	{
@@ -194,12 +207,12 @@ void EnclaveCollection::SetSouthBorder(ElevationMapRef elevationMapCopy, Enclave
 	}
 }
 
-void EnclaveCollection::SetTopBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2 &activateListRef)
+void EnclaveCollection::SetTopBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2 &activateListRef, mutex& HeapMutex)
 {
 
 }
 
-void EnclaveCollection::SetBottomBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2 &activateListRef)
+void EnclaveCollection::SetBottomBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2 &activateListRef, mutex& HeapMutex)
 {
 
 }
