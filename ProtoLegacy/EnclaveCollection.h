@@ -14,6 +14,7 @@ Dependents: none.
 #pragma once
 #include "Enclave.h"
 #include "EnclaveCollectionActivateListT2.h"
+#include "EnclaveCollectionBlueprint.h"
 
 // activate guards
 #ifndef ENCLAVECOLLECTION_H
@@ -33,6 +34,7 @@ public:
 	void SetSouthBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2 &activateListRef);
 	void SetTopBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2 &activateListRef);
 	void SetBottomBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2 &activateListRef);
+	void RunCollectionPainters(EnclaveCollectionBlueprint* blueprintRef);
 
 };
 #endif

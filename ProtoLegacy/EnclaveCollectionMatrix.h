@@ -30,6 +30,7 @@ Dependents: none.
 #include "EnclaveCollectionActivateList.h"
 #include "EnclaveCollectionActivateListT2.h"
 #include "EnclaveCollectionBorderFlags.h"
+#include "ECBCollectionPainter.h"
 #include <unordered_map>
 
 class OrganicSystem;

@@ -100,8 +100,24 @@ int EnclaveCollectionBlueprint::BPKeyToSingle(EnclaveKeyDef::EnclaveKey tempKey)
 
 void EnclaveCollectionBlueprint::CarveSlope()
 {
-	// carve from west to east, sloping upward
+	/* Summary: carve a single collection from west to east, sloping upward (this description is subject ot change as this function is improved */
+
+	// set up variables
 	ECBXAxisCarvePlan tempPlan;
+
+	// add an entry to CollectionPainterMap
+	ECBCollectionPainter tempCollectionPainter;
+	tempCollectionPainter.blockID = 2; // dirt?
+	for (int x = 0; x < 8; x++)
+	{
+		for (int z = 0; z < 8; z++)
+		{
+			tempCollectionPainter.chunksToPaint[x][z] = 63;
+		}
+	}
+	std::string indexToUse = std::to_string(CurrentCollectionPainterMapIndex);
+	CollectionPainterMap[indexToUse] = tempCollectionPainter;
+
 
 	// west chunk carvings... from x =0 to x=3
 	for (int x = 0; x < 4; x++)
@@ -185,26 +201,26 @@ void EnclaveCollectionBlueprint::CarveSlope()
 
 	// set up standard chunk flags
 	// West flags, not border chunks
-	for (int z = 1; z < 7; z++)
+	for (int z = 0; z < 8; z++)
 	{
 		StandardPaintableChunks[0][z] = 63;
 		std::cout << "current value: " << int(StandardPaintableChunks[0][z]) << std::endl;
 	}
 
 	// North flags, not border chunks
-	for (int x = 1; x < 7; x++)
+	for (int x = 0; x < 8; x++)
 	{
 		StandardPaintableChunks[x][0] = 63;
 	}
 
 	// East flags, not border chunks
-	for (int z = 1; z < 7; z++)
+	for (int z = 0; z < 8; z++)
 	{
 		StandardPaintableChunks[7][z] = 127;
 	}
 
 	// South flags, not border chunks
-	for (int x = 1; x < 7; x++)
+	for (int x = 0; x < 8; x++)
 	{
 		StandardPaintableChunks[x][7] = 63;
 	}

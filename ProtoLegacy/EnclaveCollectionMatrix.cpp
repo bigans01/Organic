@@ -1013,9 +1013,10 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 	ElevationMapRef standardPaintableChunk = blueprint->GetStandardPaintableChunkData();	// standard chunk data
 	//cout << "standardPaintableChunk data check: " << int(standardPaintableChunk[0][1]) << endl;
 
+	// Step One: perform collection-wide painting (required)
+	collectionRef.RunCollectionPainters(blueprint);
 
-
-	// Step One: determine what borders of this blueprint must be rendered, by comparing to borders in neighboring blueprints
+	// Step Two: determine what borders of this blueprint must be rendered, by comparing to borders in neighboring blueprints
 	EnclaveCollectionBorderFlags borderFlags;											// contains west, north, east, south, top, bottom flags. 
 	EnclaveCollectionBorderFlags* borderFlagsRef = &borderFlags;						// get pointer to borderFlags
 	blueprintmatrix->DetermineBlueprintBordersToRender(Key, blueprint, borderFlagsRef);	// check this blueprint's neighbors
@@ -1023,7 +1024,7 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 
 
 
-	// Step Two: prepare all solid chunks
+	// Step Three: prepare all solid chunks
 	for (int x = beginRange; x < endRange; x++)
 	{
 		chunkbitmask = 1;
@@ -1045,7 +1046,7 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 	}
 
 
-	// Step Three: unveil all polys in border chunks	
+	// Step Four: unveil all polys in border chunks	
 	if (borderFlags.West == 1)
 	{
 		collectionRef.SetWestBorder(standardPaintableChunk, activateListRef);		// set up west border -- using the standardPaintableChunk; 
@@ -1058,11 +1059,15 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 	{
 		collectionRef.SetEastBorder(standardPaintableChunk, activateListRef);
 	}
+	if (borderFlags.South == 1)
+	{
+		collectionRef.SetSouthBorder(standardPaintableChunk, activateListRef);
+	}
 
 
 
 
-	// Step Four: find paintable chunks and determine the faces for the paintable blocks (which is later passed to UnveilPoly)
+	// Step Five: find paintable chunks and determine the faces for the paintable blocks (which is later passed to UnveilPoly)
 	for (int x = beginRange; x < endRange; x++)
 	{
 		chunkbitmask = 1;

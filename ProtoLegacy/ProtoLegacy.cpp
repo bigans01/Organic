@@ -251,6 +251,7 @@ int main()
 	auto carvestart = std::chrono::high_resolution_clock::now();
 
 	testBlueprint3.CarveSlope();
+	//cout << "blueprint size: " << sizeof(testBlueprint3) << endl;
 
 	auto carveend = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> carveelapsed = carveend - carvestart;
@@ -265,6 +266,26 @@ int main()
 	Organic.SetOrganicCell1(mainthreadpoolref);				// set the Organic instance's first worker thread
 	Organic.SetOrganicCell2(mainthreadpoolref2);			// set the Organic instance's second worker thread
 	Organic.AddOrganicTextureMetaArray("base");					// set up the texture map; first ever map will be named "base"
+
+	// add first 4 keys to render
+	for (int x = 0; x < 4; x++)
+	{
+		EnclaveKeyDef::EnclaveKey tempKeyToAdd;
+		tempKeyToAdd.x = x;
+		tempKeyToAdd.y = 0;
+		tempKeyToAdd.z = 0;
+		Organic.AddKeyToRenderList(tempKeyToAdd);
+	}
+
+	// add second 4 keys to render
+	for (int x = 0; x < 4; x++)
+	{
+		EnclaveKeyDef::EnclaveKey tempKeyToAdd;
+		tempKeyToAdd.x = x;
+		tempKeyToAdd.y = 0;
+		tempKeyToAdd.z = 1;
+		Organic.AddKeyToRenderList(tempKeyToAdd);
+	}
 
 	// *********** Enclave Collection load type 2: instantiate a set of collections
 
@@ -334,7 +355,7 @@ int main()
 	//Organic.SetupFutureCollectionMM(key9.x, key9.y, key9.z);
 
 	//Organic.MaterializeCollection(key1, key2);
-
+	Organic.MaterializeAllCollectionsInRenderList();
 
 
 	cout << "-------------------------PASS" << endl;

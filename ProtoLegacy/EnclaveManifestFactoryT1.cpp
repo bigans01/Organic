@@ -18,10 +18,10 @@ void EnclaveManifestFactoryT1::AttachManifestToEnclave(Enclave *in_ptr)
 	StorageArray[CurrentStorage].TotalEnclaveTriangles = in_ptr->GetTotalTrianglesInEnclave();	// total triangles in the attached enclave (saved for later use)
 	int RenderablePolyCount = in_ptr->TotalRenderable;
 
-	char testval[36] = {	0, 1, 2, 1, 2, 3,								// negative x			(WEST)		(32)	// this array could be constant?	
-							1, 5, 3, 5, 3, 7,								// negative z			(NORTH)		(16)
+	char testval[36] = {	0, 1, 2, 1, 2, 3,								// negative x			(WEST)		(32)	// this array could be constant?		
+							4, 0, 6, 0, 6, 2,								// negative z			(NORTH)		(16)	// OLD:  1, 5, 3, 5, 3, 7,
 							5, 4, 7, 4, 7, 6,								// positive x			(EAST)		(8)
-							0, 4, 6, 0, 6, 2,								// positive z			(SOUTH)		(4)
+							1, 5, 3, 5, 3, 7,								// positive z			(SOUTH)		(4)		// OLD: 0, 4, 6, 0, 6, 2,
 							1, 5, 0, 5, 0, 4,								// positive y			(TOP)		(2)
 							3, 7, 2, 7, 2, 6								// negative y			(BOTTOM)	(1)
 	};

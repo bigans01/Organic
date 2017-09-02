@@ -153,6 +153,7 @@
     <ClInclude Include="BasicEntity.h" />
     <ClInclude Include="common\shader.hpp" />
     <ClInclude Include="dummwrapper.h" />
+    <ClInclude Include="ECBCollectionPainter.h" />
     <ClInclude Include="ECBXAxisCarvePlan.h" />
     <ClInclude Include="EnclaveCollection.h" />
     <ClInclude Include="EnclaveCollectionActivateList.h" />
@@ -162,6 +163,7 @@
     <ClInclude Include="EnclaveCollectionBorderFlags.h" />
     <ClInclude Include="EnclaveCollectionMatrix.h" />
     <ClInclude Include="Enclave.h" />
+    <ClInclude Include="EnclaveKeyContainer.h" />
     <ClInclude Include="EnclaveKeyDef.h" />
     <ClInclude Include="EnclaveManifest.h" />
     <ClInclude Include="EnclaveManifestFactoryT1.h" />
@@ -178,6 +180,7 @@
     <ClInclude Include="join_threads.h" />
     <ClInclude Include="ManifestCollectionMatrix.h" />
     <ClInclude Include="ManifestCollection.h" />
+    <ClInclude Include="MaterializeCollectionListContainer.h" />
     <ClInclude Include="MDJobMaterializeCollection.h" />
     <ClInclude Include="MDListJobMaterializeCollection.h" />
     <ClInclude Include="Movegoal.h" />

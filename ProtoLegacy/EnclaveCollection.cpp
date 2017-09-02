@@ -46,7 +46,7 @@ void EnclaveCollection::SetWestBorder(ElevationMapRef elevationMapCopy, EnclaveC
 			if ((elevationMapCopy[0][z] & stdchunkbitmask) == stdchunkbitmask)
 			{
 				// set 16 blocks to have their West face flagged (32)
-				//EnclaveArray[0][bitloop][z].UnveilSinglePoly(0, 0, 0, 0, 1, 0, 32, 0);	// z = 0, all 4 up
+				EnclaveArray[0][bitloop][z].UnveilSinglePoly(0, 0, 0, 0, 1, 0, 32, 0);	// z = 0, all 4 up
 				EnclaveArray[0][bitloop][z].UnveilSinglePoly(0, 1, 0, 0, 1, 0, 32, 0);
 				EnclaveArray[0][bitloop][z].UnveilSinglePoly(0, 2, 0, 0, 1, 0, 32, 0);
 				EnclaveArray[0][bitloop][z].UnveilSinglePoly(0, 3, 0, 0, 1, 0, 32, 0);
@@ -86,7 +86,7 @@ void EnclaveCollection::SetNorthBorder(ElevationMapRef elevationMapCopy, Enclave
 			{
 				// cout << "valid enclave key: " << x << ", " << bitloop << ", " << 0 << endl;
 				// set 16 blocks to have their North face flagged (16)
-				//EnclaveArray[0][bitloop][z].UnveilSinglePoly(0, 0, 0, 0, 1, 0, 16, 0);	// x = 0, all 4 up
+				EnclaveArray[x][bitloop][0].UnveilSinglePoly(0, 0, 0, 0, 1, 0, 16, 0);	// x = 0, all 4 up
 				EnclaveArray[x][bitloop][0].UnveilSinglePoly(0, 1, 0, 0, 1, 0, 16, 0);
 				EnclaveArray[x][bitloop][0].UnveilSinglePoly(0, 2, 0, 0, 1, 0, 16, 0);
 				EnclaveArray[x][bitloop][0].UnveilSinglePoly(0, 3, 0, 0, 1, 0, 16, 0);
@@ -116,7 +116,7 @@ void EnclaveCollection::SetNorthBorder(ElevationMapRef elevationMapCopy, Enclave
 
 void EnclaveCollection::SetEastBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2 &activateListRef)
 {
-	for (int z = 1; z < 7; z++) // traverse along the z axis, exclude border chunks
+	for (int z = 0; z < 8; z++) // traverse along the z axis, exclude border chunks
 	{
 		int stdchunkbitmask = 1;
 		//cout << "current byte value: " << int(elevationMapCopy[0][z]) << endl;
@@ -125,7 +125,7 @@ void EnclaveCollection::SetEastBorder(ElevationMapRef elevationMapCopy, EnclaveC
 			if ((elevationMapCopy[7][z] & stdchunkbitmask) == stdchunkbitmask)
 			{
 				// set 16 blocks to have their East face flagged (8)
-				//EnclaveArray[0][bitloop][z].UnveilSinglePoly(0, 0, 0, 0, 1, 0, 8, 0);	// z = 0, all 4 up
+				EnclaveArray[7][bitloop][z].UnveilSinglePoly(3, 0, 0, 0, 1, 0, 8, 0);	// z = 0, all 4 up
 				EnclaveArray[7][bitloop][z].UnveilSinglePoly(3, 1, 0, 0, 1, 0, 8, 0);
 				EnclaveArray[7][bitloop][z].UnveilSinglePoly(3, 2, 0, 0, 1, 0, 8, 0);
 				EnclaveArray[7][bitloop][z].UnveilSinglePoly(3, 3, 0, 0, 1, 0, 8, 0);
@@ -156,7 +156,42 @@ void EnclaveCollection::SetEastBorder(ElevationMapRef elevationMapCopy, EnclaveC
 
 void EnclaveCollection::SetSouthBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2 &activateListRef)
 {
+	for (int x = 1; x < 7; x++)
+	{
+		int stdchunkbitmask = 1;
+		//cout << "current byte value: " << int(elevationMapCopy[x][0]) << endl;
+		for (int bitloop = 0; bitloop < 8; bitloop++)		// bitloop value serves as current y coordinate
+		{
+			if ((elevationMapCopy[x][7] & stdchunkbitmask) == stdchunkbitmask)
+			{
+				// cout << "valid enclave key: " << x << ", " << bitloop << ", " << 0 << endl;
+				// set 16 blocks to have their North face flagged (16)
+				EnclaveArray[x][bitloop][7].UnveilSinglePoly(0, 0, 3, 0, 1, 0, 4, 0);	// x = 0, all 4 up
+				EnclaveArray[x][bitloop][7].UnveilSinglePoly(0, 1, 3, 0, 1, 0, 4, 0);
+				EnclaveArray[x][bitloop][7].UnveilSinglePoly(0, 2, 3, 0, 1, 0, 4, 0);
+				EnclaveArray[x][bitloop][7].UnveilSinglePoly(0, 3, 3, 0, 1, 0, 4, 0);
 
+				EnclaveArray[x][bitloop][7].UnveilSinglePoly(1, 0, 3, 0, 1, 0, 4, 0);	// x = 1, all 4 up
+				EnclaveArray[x][bitloop][7].UnveilSinglePoly(1, 1, 3, 0, 1, 0, 4, 0);
+				EnclaveArray[x][bitloop][7].UnveilSinglePoly(1, 2, 3, 0, 1, 0, 4, 0);
+				EnclaveArray[x][bitloop][7].UnveilSinglePoly(1, 3, 3, 0, 1, 0, 4, 0);
+
+				EnclaveArray[x][bitloop][7].UnveilSinglePoly(2, 0, 3, 0, 1, 0, 4, 0);	// x = 2, all 4 up
+				EnclaveArray[x][bitloop][7].UnveilSinglePoly(2, 1, 3, 0, 1, 0, 4, 0);
+				EnclaveArray[x][bitloop][7].UnveilSinglePoly(2, 2, 3, 0, 1, 0, 4, 0);
+				EnclaveArray[x][bitloop][7].UnveilSinglePoly(2, 3, 3, 0, 1, 0, 4, 0);
+
+				EnclaveArray[x][bitloop][7].UnveilSinglePoly(3, 0, 3, 0, 1, 0, 4, 0);	// x = 3, all 4 up
+				EnclaveArray[x][bitloop][7].UnveilSinglePoly(3, 1, 3, 0, 1, 0, 4, 0);
+				EnclaveArray[x][bitloop][7].UnveilSinglePoly(3, 2, 3, 0, 1, 0, 4, 0);
+				EnclaveArray[x][bitloop][7].UnveilSinglePoly(3, 3, 3, 0, 1, 0, 4, 0);
+
+				activateListRef.flagArray[x][7] = activateListRef.flagArray[x][7] | stdchunkbitmask;		// perform bitwise logical append
+			}
+
+			stdchunkbitmask <<= 1;
+		}
+	}
 }
 
 void EnclaveCollection::SetTopBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2 &activateListRef)
@@ -167,4 +202,55 @@ void EnclaveCollection::SetTopBorder(ElevationMapRef elevationMapCopy, EnclaveCo
 void EnclaveCollection::SetBottomBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2 &activateListRef)
 {
 
+}
+
+void EnclaveCollection::RunCollectionPainters(EnclaveCollectionBlueprint* blueprintRef)
+{
+	std::unordered_map<std::string, ECBCollectionPainter>::iterator PainterIter = blueprintRef->CollectionPainterMap.begin();
+	int dumbcount = 0;
+	for (PainterIter; PainterIter != blueprintRef->CollectionPainterMap.end(); ++PainterIter)
+	{
+		cout << "paint job found!" << endl;
+		int chunkbitmask = 1;
+		int blockToPaint = PainterIter->second.blockID;
+		ElevationMapRef mapRef = PainterIter->second.chunksToPaint;
+
+		for (int x = 0; x < 8; x++)
+		{
+			chunkbitmask = 1;
+			for (int y = 0; y < 8; y++)
+			{
+				for (int z = 0; z < 8; z++)
+				{
+					if ((mapRef[x][z] & chunkbitmask) == chunkbitmask)
+					{
+						//cout << x << " " << z << " " << chunkbitmask  << " HIT 1" << endl;
+						//Enclave stackEnclave(Key, x, y, z);
+						//collectionRef.EnclaveArray[x][y][z] = stackEnclave;
+						//collectionRef.EnclaveArray[x][y][z].InitializeRenderArray(1);				// setup this solid enclave
+																									//cout << "Enclave set up complete: " << x << ", " << y << ", " << z << endl;
+						Enclave* enclavePtr = &EnclaveArray[x][y][z];
+						for (int xx = 0; xx < 4; xx++)
+						{
+							for (int yy = 0; yy < 4; yy++)
+							{
+								for (int zz = 0; zz < 4; zz++)
+								{
+									enclavePtr->StorageArray[xx][yy][zz].blockid = blockToPaint;
+								}
+							}
+						}
+						dumbcount++;
+					}
+				}
+				chunkbitmask <<= 1;
+			}
+		}
+	}
+
+	cout << "total chunks painted: " << dumbcount << endl;
+	//char factoryprefix[] = "Factory ";
+	//string factorystring(factoryprefix);
+	//string factorynumber = to_string(x);
+	//string factory = factorystring + factorynumber;
 }

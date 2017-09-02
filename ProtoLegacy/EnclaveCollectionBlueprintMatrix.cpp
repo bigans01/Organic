@@ -15,7 +15,7 @@ void EnclaveCollectionBlueprintMatrix::DetermineBlueprintBordersToRender(Enclave
 
 	// Check West (negative x)
 	tempKey.x -= 1;										// subtract 1 to get the blueprint at -1 x 
-	std::cout << "Looking for blueprint with key: " << tempKey.x << ", " << tempKey.y << ", " << tempKey.z << std::endl;
+	//std::cout << "Looking for blueprint with key: " << tempKey.x << ", " << tempKey.y << ", " << tempKey.z << std::endl;
 	blueprintMapIterator = BlueprintMap.find(tempKey);  // find the blueprint, check if it exists
 	if (blueprintMapIterator != BlueprintMap.end())		// if this is true, a neighboring blueprint was found
 	{
@@ -29,7 +29,7 @@ void EnclaveCollectionBlueprintMatrix::DetermineBlueprintBordersToRender(Enclave
 
 	if (blueprintMapIterator == BlueprintMap.end())
 	{
-		std::cout << "No blueprint found." << std::endl;
+		//std::cout << "No blueprint found." << std::endl;
 	}		
 
 	tempKey.x += 1;										// add +1 x to the key.

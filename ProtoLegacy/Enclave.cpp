@@ -215,7 +215,7 @@ void Enclave::UnveilSinglePoly(int x, int y, int z, int in_readorder, int in_oth
 	{
 		//std::cout << "debug:" << StorageArray[x][y][z].otherflags << endl;
 		zeroindexcheck = 0;
-		for (i = 1; i < 64; ++i)
+		for (i = 0; i < 64; ++i)
 		{
 			//cout << "test:" << Sorted.PolyArrayIndex[i] << endl;
 			//cout << "test: multi_to_single: " << multi_to_single << endl;
@@ -231,39 +231,50 @@ void Enclave::UnveilSinglePoly(int x, int y, int z, int in_readorder, int in_oth
 				{
 					//cout << "TEST2:::" << OldFlags << endl;
 
-
-					for (j = i; j >= 1; --j)
+					if (i != 0)
 					{
-						//cout << "value of j: " << j << endl;
-						//cout << " test" << Sorted.RenderArray[j]->otherflags << endl;
-						if ((Sorted.RenderArray[j]->otherflags >= 1) && (Sorted.RenderArray[j - 1]->otherflags == 0)) // swap values first
+						for (j = i; j >= 1; --j)
 						{
-							//cout << "TEST" << i << ": " << OldFlags << endl;
-							// sort the values first
-							tempInt = Sorted.PolyArrayIndex[j];
-							Sorted.PolyArrayIndex[j] = Sorted.PolyArrayIndex[j - 1];
-							Sorted.PolyArrayIndex[j - 1] = tempInt;
+							//cout << "value of j: " << j << endl;
+							//cout << " test" << Sorted.RenderArray[j]->otherflags << endl;
+							if ((Sorted.RenderArray[j]->otherflags >= 1) && (Sorted.RenderArray[j - 1]->otherflags == 0)) // swap values first
+							{
+								//cout << "TEST" << i << ": " << OldFlags << endl;
+								// sort the values first
+								tempInt = Sorted.PolyArrayIndex[j];
+								Sorted.PolyArrayIndex[j] = Sorted.PolyArrayIndex[j - 1];
+								Sorted.PolyArrayIndex[j - 1] = tempInt;
 
-							// sort the pointers second
-							tempPtr = Sorted.RenderArray[j]; // Questionable...??
-							Sorted.RenderArray[j] = Sorted.RenderArray[j - 1];
-							Sorted.RenderArray[j - 1] = tempPtr;
-							//cout << "single sort count:" << ++sortcount << endl;
+								// sort the pointers second
+								tempPtr = Sorted.RenderArray[j]; // Questionable...??
+								Sorted.RenderArray[j] = Sorted.RenderArray[j - 1];
+								Sorted.RenderArray[j - 1] = tempPtr;
+								//cout << "single sort count:" << ++sortcount << endl;
+							}
+							else
+							{
+								break;
+							}
+							//cout << "for loop count" << ++sortcount << endl;
 						}
-						else
-						{
-							break;
-						}
-						//cout << "for loop count" << ++sortcount << endl;
+						++TotalRenderable;
+						// loop for each bit of in_t1 here
+						total_triangles += GetTotalTrianglesInBlock(in_t1);
+						zeroindexcheck = 1;
+						//cout << "Chunk (" << this->UniqueKey.x << ", " << this->UniqueKey.y << ", " << this->UniqueKey.z << ") Total triangles in chunk so far: " << total_triangles << endl;
+
+
+						break;
 					}
-					++TotalRenderable;
-					// loop for each bit of in_t1 here
-					total_triangles += GetTotalTrianglesInBlock(in_t1);
-					zeroindexcheck = 1;
-					//cout << "Chunk (" << this->UniqueKey.x << ", " << this->UniqueKey.y << ", " << this->UniqueKey.z << ") Total triangles in chunk so far: " << total_triangles << endl;
+					else
+					{
 
-
-					break;
+						++TotalRenderable;
+						// loop for each bit of in_t1 here
+						total_triangles += GetTotalTrianglesInBlock(in_t1);
+						zeroindexcheck = 1;
+						//cout << "Chunk (" << this->UniqueKey.x << ", " << this->UniqueKey.y << ", " << this->UniqueKey.z << ") Total triangles in chunk so far: " << total_triangles << endl;
+					}
 				}
 
 			}
