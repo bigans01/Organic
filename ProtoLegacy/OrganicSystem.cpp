@@ -437,10 +437,10 @@ void OrganicSystem::MaterializeAllCollectionsInRenderList()
 	MDListJobMaterializeCollection* list2 = &MatCollList.MaterializeCollectionList.back();
 
 	std::future<void> coll_3 = tpref->submit5(&OrganicSystem::JobMaterializeMultiCollectionFromFactory2, this, std::ref(list1), std::ref(mutexval), std::ref(FactoryPtr), 1);
-	std::future<void> coll_4 = tpref2->submit5(&OrganicSystem::JobMaterializeMultiCollectionFromFactory2, this, std::ref(list2), std::ref(mutexval), std::ref(FactoryPtr2), 2);
+	//std::future<void> coll_4 = tpref2->submit5(&OrganicSystem::JobMaterializeMultiCollectionFromFactory2, this, std::ref(list2), std::ref(mutexval), std::ref(FactoryPtr2), 2);
 
 	coll_3.wait();
-	coll_4.wait();
+	//coll_4.wait();
 }
 
 void OrganicSystem::SetupFutureCollectionMM(int x, int y, int z)
@@ -821,9 +821,10 @@ void OrganicSystem::JobMaterializeMultiCollectionFromFactory2(MDListJobMateriali
 
 		EnclaveCollectionActivateListT2 listT2_1;		
 		EnclaveCollectionActivateListT2* listT2_1_ptr = &listT2_1;
+		mutexval.lock();
 		cout << "Key of this Collection: " << Key1.x << ", " << Key1.y << ", " << Key1.z << endl;
-
-		//mutexval.lock();
+		mutexval.unlock();
+		
 		EnclaveCollectionsRef->JobInstantiateAndPopulateEnclaveAlpha2(0, 7 + 1, std::ref(*CollectionRef), Key1, std::ref(blueprintptr), std::ref(BlueprintMatrixRef), std::ref(listT2_1_ptr), std::ref(mutexval));	// run the instantiation job on this thread (all 512 enclaves) //EnclaveCollectionMap[Key]
 		//mutexval.unlock();																																			
 																																					//trueend = std::chrono::high_resolution_clock::now();

@@ -1075,7 +1075,7 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 	//HeapMutex.unlock();
 
 
-	/*
+	
 	// Step Five: find paintable chunks and determine the faces for the paintable blocks (which is later passed to UnveilPoly)
 	for (int x = beginRange; x < endRange; x++)
 	{
@@ -1108,7 +1108,7 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 			chunkbitmask <<= 1;
 		}
 	}
-	*/
+	
 
 	auto finish = std::chrono::high_resolution_clock::now();
 	//std::chrono::duration<double> elapsed = finish - start;

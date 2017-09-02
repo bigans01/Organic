@@ -66,11 +66,11 @@ void EnclaveCollection::SetWestBorder(ElevationMapRef elevationMapCopy, EnclaveC
 				EnclaveArray[0][bitloop][z].UnveilSinglePoly(0, 2, 3, 0, 1, 0, 32, 0);
 				EnclaveArray[0][bitloop][z].UnveilSinglePoly(0, 3, 3, 0, 1, 0, 32, 0);
 
-				HeapMutex.lock();
+				//HeapMutex.lock();
 				//cout << "Before edit: (West) " << int(activateListRef->flagArray[0][3]) << endl;
 				activateListRef->flagArray[0][3] = activateListRef->flagArray[0][3] | stdchunkbitmask;		// perform bitwise logical append
 				//cout << "Post edit: " << int(activateListRef->flagArray[0][3]) << endl;
-				HeapMutex.unlock();
+				//HeapMutex.unlock();
 			}
 			
 			stdchunkbitmask <<= 1;
@@ -113,11 +113,11 @@ void EnclaveCollection::SetNorthBorder(ElevationMapRef elevationMapCopy, Enclave
 				EnclaveArray[x][bitloop][0].UnveilSinglePoly(3, 2, 0, 0, 1, 0, 16, 0);
 				EnclaveArray[x][bitloop][0].UnveilSinglePoly(3, 3, 0, 0, 1, 0, 16, 0);
 
-				HeapMutex.lock();
+				//HeapMutex.lock();
 				//cout << "Before edit: (North)" << int(activateListRef->flagArray[x][0]) << endl;
 				activateListRef->flagArray[x][0] = activateListRef->flagArray[x][0] | stdchunkbitmask;		// perform bitwise logical append
 				//activateListRef->flagArray[x][0] = 5;		// perform bitwise logical append
-				HeapMutex.unlock();
+				//HeapMutex.unlock();
 			}
 			
 
