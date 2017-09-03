@@ -162,28 +162,30 @@ void RenderCollection::CombineManifestArrays()
 void RenderCollection::CombineManifestArraysFromT1Factory(EnclaveManifestFactoryT1 *factoryRef, mutex& mutexval)
 {
 	//mutexval.lock();
-	int totalfloats= 0;												// the total number of floats that will need be stored.
+	int totalfloats = 0;												// the total number of floats that will need be stored.
 	int totalenclavesfound = 0;
 	int TotalEnclavesInFactory = factoryRef->StorageArrayCount;		// get the number of enclaves to iterate through
-	//cout << "total enclaves in factory will be: " << TotalEnclavesInFactory << endl;
+																	//cout << "total enclaves in factory will be: " << TotalEnclavesInFactory << endl;
 
-	// STEP 1: get the size of the array
+																	// STEP 1: get the size of the array
+	cout << "total enclaves in factory: " << TotalEnclavesInFactory << endl;
+
 	for (int x = 0; x < TotalEnclavesInFactory; x++)
 	{
 		EnclaveManifestFactoryT1Storage *StoragePtr = &factoryRef->StorageArray[x];			// get the pointer to the storage unit
 		totalfloats += StoragePtr->VertexArrayCount;										// increment totalfloats by VertexArrayCount from the pointed-to enclave
 	}
-	//cout << "total triangles to render will be: " << totalfloats << endl;
+	cout << "total triangles to render will be: " << totalfloats << endl;
 
 
 	// STEP 2: create the dynamic array, acquire heap lock while doing so
 
-	
+
 	mutexval.lock();
 	IsGLFloatPtrLoaded = 1;									// indicate that the pointer was loaded with data
 	GLFloatPtr = new GLfloat[totalfloats];	// 9 floats per triangle
-	//cout << "totalfloats: " << totalfloats << endl;
- 	mutexval.unlock();
+											//cout << "totalfloats: " << totalfloats << endl;
+	mutexval.unlock();
 	//cout << "Render 2 entry:" << endl;
 
 	// STEP 3: populate dynamic array(s)
@@ -193,14 +195,14 @@ void RenderCollection::CombineManifestArraysFromT1Factory(EnclaveManifestFactory
 		int indexStart;
 		int totalTriangles;
 	};
-	enclaveDataFinder enclaveDataStart[64];
+	enclaveDataFinder enclaveDataStart[512];					// THIS WAS THE CAUSE OF THE ERROR ON (9/2/2017)
 	int currentBegin = 0;
 	for (int x = 0; x < TotalEnclavesInFactory; x++)
 	{
-		
+
 		EnclaveManifestFactoryT1Storage *StoragePtr = &factoryRef->StorageArray[x];
 		int currentEnclaveTriangles = (StoragePtr->VertexArrayCount) / 9;
-		
+
 		int pointedBegin = 0;
 		GLfloat dumbval = StoragePtr->VertexArray[pointedBegin];
 		//GLfloat dumbval2 = StoragePtr->VertexArray[pointedBegin+1];
@@ -208,7 +210,7 @@ void RenderCollection::CombineManifestArraysFromT1Factory(EnclaveManifestFactory
 		//cout << "test  " << dumbval << ", " << dumbval2 << ", " << dumbval3 << endl;
 		GLFloatPtr[currentBegin] = dumbval;
 		//cout << "Render 2 entry:" << endl;
-
+		cout << "Key output: " << StoragePtr->StorageKey.x << ", " << StoragePtr->StorageKey.y << "," << StoragePtr->StorageKey.z << " | " << dumbval << endl ;
 		enclaveDataStart[x].DFKey = StoragePtr->StorageKey;
 		enclaveDataStart[x].indexStart = currentBegin;
 		enclaveDataStart[x].totalTriangles = currentEnclaveTriangles;
@@ -238,7 +240,7 @@ void RenderCollection::CombineManifestArraysFromT1Factory(EnclaveManifestFactory
 			}
 
 		}
-		
+
 	}
 	RenderCollectionArraySize = totalfloats * 4;
 	//mutexval.unlock();

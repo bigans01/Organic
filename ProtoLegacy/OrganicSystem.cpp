@@ -437,6 +437,7 @@ void OrganicSystem::MaterializeAllCollectionsInRenderList()
 	MDListJobMaterializeCollection* list2 = &MatCollList.MaterializeCollectionList.back();
 
 	std::future<void> coll_3 = tpref->submit5(&OrganicSystem::JobMaterializeMultiCollectionFromFactory2, this, std::ref(list1), std::ref(mutexval), std::ref(FactoryPtr), 1);
+	//JobMaterializeMultiCollectionFromFactory2(std::ref(list1), std::ref(mutexval), std::ref(FactoryPtr), 1);
 	std::future<void> coll_4 = tpref2->submit5(&OrganicSystem::JobMaterializeMultiCollectionFromFactory2, this, std::ref(list2), std::ref(mutexval), std::ref(FactoryPtr2), 2);
 
 	coll_3.wait();
@@ -810,12 +811,21 @@ void OrganicSystem::JobMaterializeMultiCollectionFromFactory2(MDListJobMateriali
 	//crapList.flagArray[0][7] = 128;													
 	//trueend = std::chrono::high_resolution_clock::now();
 	std::vector<EnclaveCollectionActivateListT2> activateList;
+	std::vector<EnclaveCollectionActivateListT2> activateList2;
+
 	for (JobIterator = mdjob->ListMatrix.begin(); JobIterator != JobIteratorEnd; ++JobIterator)
 	{
 		EnclaveCollectionActivateListT2 newList;
 		activateList.push_back(newList);
 	}
 	std::vector<EnclaveCollectionActivateListT2>::iterator activateListIter = activateList.begin();
+
+	for (JobIterator = mdjob->ListMatrix.begin(); JobIterator != JobIteratorEnd; ++JobIterator)
+	{
+		EnclaveCollectionActivateListT2 newList;
+		activateList2.push_back(newList);
+	}
+	std::vector<EnclaveCollectionActivateListT2>::iterator activateListIter2 = activateList2.begin();
 																											//truestart = std::chrono::high_resolution_clock::now();		// optional, for performance testing only
 	for (JobIterator = mdjob->ListMatrix.begin(); JobIterator != JobIteratorEnd; ++JobIterator)
 	{
@@ -831,14 +841,18 @@ void OrganicSystem::JobMaterializeMultiCollectionFromFactory2(MDListJobMateriali
 
 		EnclaveCollectionActivateListT2 listT2_1;		
 		EnclaveCollectionActivateListT2& newListPtr = *activateListIter;
+		EnclaveCollectionActivateListT2& newListPtr2 = *activateListIter2;
 		++activateListIter;
+		++activateListIter2;
 
 		//EnclaveCollectionActivateListT2* listT2_1_ptr = &listT2_1;
 		mutexval.lock();
 		cout << "Key of this Collection: " << Key1.x << ", " << Key1.y << ", " << Key1.z << endl;
 		mutexval.unlock();
 		
-		EnclaveCollectionsRef->JobInstantiateAndPopulateEnclaveAlpha2(0, 7 + 1, std::ref(*CollectionRef), Key1, std::ref(blueprintptr), std::ref(BlueprintMatrixRef), std::ref(newListPtr), std::ref(listT2_1), std::ref(mutexval));	// run the instantiation job on this thread (all 512 enclaves) //EnclaveCollectionMap[Key]
+		TestList dumbval;
+
+		EnclaveCollectionsRef->JobInstantiateAndPopulateEnclaveAlpha2(0, 7 + 1, std::ref(*CollectionRef), Key1, std::ref(blueprintptr), std::ref(BlueprintMatrixRef), std::ref(newListPtr), std::ref(dumbval), std::ref(mutexval));	// run the instantiation job on this thread (all 512 enclaves) //EnclaveCollectionMap[Key]
 		//mutexval.unlock();																																			
 		int dumbarray[9][9] = { 0 };
 		dumbarray[8][8] = 128;
@@ -861,21 +875,31 @@ void OrganicSystem::JobMaterializeMultiCollectionFromFactory2(MDListJobMateriali
 				{
 					if ((newListPtr.flagArray[x][z] & chunkbitmask) == chunkbitmask)
 					//if ((listT2_1.flagArray[x][z] & chunkbitmask) == chunkbitmask)
+					// error key: 0, 7, 6
 					{
 						EnclaveKeyDef::EnclaveKey tempKey;						// create a tempKey for this iteration
 						tempKey.x = x;
 						tempKey.y = bitmaskval;									// set the y to be equivalent to the current value of bitmask val (i.e, 1, 2, 4, 8 , 16, 32, 64, 128)
 						tempKey.z = z;
+						cout << "debug test: " << tempKey.x << ", " << tempKey.y << ", " << tempKey.z << endl;
 						renderablecount++;
 						CollectionRef->ActivateEnclaveForRendering(tempKey);	// activate the enclave for rendering
 					}
 					
 				}
 				chunkbitmask <<= 1;
-				bitmaskval++;
+				bitmaskval++; 
 			}
 		}
+
+		EnclaveKeyDef::EnclaveKey erroredKey;
+		erroredKey.x = 0;
+		erroredKey.y = 7;
+		erroredKey.z = 6;
+		//CollectionRef->ActivateEnclaveForRendering(erroredKey);	// activate the enclave for rendering
+		//cout << "debug test: " << erroredKey.x << ", " << erroredKey.y << ", " << erroredKey.z << endl;
 		
+		//renderablecount = 0;
 		for (int x = 0; x < 8; x++)
 		{
 			chunkbitmask = 1;
@@ -884,7 +908,7 @@ void OrganicSystem::JobMaterializeMultiCollectionFromFactory2(MDListJobMateriali
 			{
 				for (int z = 0; z < 8; z++)
 				{
-					if ((listT2_1.flagArray[x][z] & chunkbitmask) == chunkbitmask)
+					if ((newListPtr2.flagArray[x][z] & chunkbitmask) == chunkbitmask)
 						//if ((listT2_1.flagArray[x][z] & chunkbitmask) == chunkbitmask)
 					{
 						EnclaveKeyDef::EnclaveKey tempKey;						// create a tempKey for this iteration
@@ -892,7 +916,7 @@ void OrganicSystem::JobMaterializeMultiCollectionFromFactory2(MDListJobMateriali
 						tempKey.y = bitmaskval;									// set the y to be equivalent to the current value of bitmask val (i.e, 1, 2, 4, 8 , 16, 32, 64, 128)
 						tempKey.z = z;
 						renderablecount++;
-						CollectionRef->ActivateEnclaveForRendering(tempKey);	// activate the enclave for rendering
+						//CollectionRef->ActivateEnclaveForRendering(tempKey);	// activate the enclave for rendering
 					}
 
 				}
@@ -901,7 +925,7 @@ void OrganicSystem::JobMaterializeMultiCollectionFromFactory2(MDListJobMateriali
 			}
 		}
 
-		//cout << "renderable count: " << renderablecount << endl;
+		cout << "North renderable count: " << renderablecount << endl;
 
 		
 		// Phase 2: Factory work
@@ -913,11 +937,13 @@ void OrganicSystem::JobMaterializeMultiCollectionFromFactory2(MDListJobMateriali
 		for (int a = 0; a < manifestCounter; a++)
 		{
 			innerTempKey = CollectionRef->RenderableEnclaves[a];
+			cout << "Renderable key: " << innerTempKey.x << ", " << innerTempKey.y << ", " << innerTempKey.z << endl;
 			Enclave *tempEnclavePtr = &CollectionRef->GetEnclaveByKey(innerTempKey);
 			FactoryRef->AttachManifestToEnclave(tempEnclavePtr);
 		}
 
 		// Phase 3: Render actual collection
+		cout << "Phase 3 beginning..." << endl;
 		//mutexval.lock();
 		RenderCollectionsRef->CreateRenderArrayFromFactory(Key1, FactoryRef, std::ref(mutexval));		// call function to add data into array; pass mutex to use
 		//mutexval.unlock();

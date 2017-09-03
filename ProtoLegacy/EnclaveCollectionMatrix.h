@@ -27,10 +27,10 @@ Dependents: none.
 #include "PathTraceContainer.h"
 #include "EnclaveCollectionBlueprint.h"
 #include "EnclaveCollectionBlueprintMatrix.h"
-#include "EnclaveCollectionActivateList.h"
 #include "EnclaveCollectionActivateListT2.h"
 #include "EnclaveCollectionBorderFlags.h"
 #include "ECBCollectionPainter.h"
+#include "TestList.h"
 #include <unordered_map>
 #include <mutex>
 
@@ -52,7 +52,7 @@ public:
 											EnclaveKeyDef::EnclaveKey Key, 
 											EnclaveCollectionBlueprint *blueprint);
 
-	EnclaveCollectionActivateList JobInstantiateAndPopulateEnclaveBeta(	int beginRange,												// (potentially unused) this function is designed for multithreading; it will return a list of enclaves that need to be rendered as a result
+	void JobInstantiateAndPopulateEnclaveBeta(	int beginRange,												// (potentially unused) this function is designed for multithreading; it will return a list of enclaves that need to be rendered as a result
 																		int endRange,												// of this job being run.			
 																		EnclaveCollection &collectionRef,
 																		EnclaveKeyDef::EnclaveKey Key,
@@ -71,7 +71,7 @@ public:
 		EnclaveCollectionBlueprint* blueprint,
 		EnclaveCollectionBlueprintMatrix* blueprintmatrix,
 		EnclaveCollectionActivateListT2& activateListRef,
-		EnclaveCollectionActivateListT2& activateListRef2,
+		TestList& testval,
 		mutex& HeapMutex);
 
 

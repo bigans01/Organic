@@ -633,7 +633,7 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclave(int beginRange, i
 	7. attach to enclaves
 	*/
 
-	EnclaveCollectionActivateList tempList;
+	//EnclaveCollectionActivateList tempList;
 	auto start = std::chrono::high_resolution_clock::now();			// option
 	int chunkbitmask = 1;																				// set initial value of bitmask to be 128 (which is the top chunk)
 	int chunkindex = 7;
@@ -720,7 +720,7 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclave(int beginRange, i
 	//return tempList;
 }
 
-EnclaveCollectionActivateList EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveBeta(int beginRange, int endRange, EnclaveCollection &collectionRef, EnclaveKeyDef::EnclaveKey Key, EnclaveCollectionBlueprint *blueprint)
+void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveBeta(int beginRange, int endRange, EnclaveCollection &collectionRef, EnclaveKeyDef::EnclaveKey Key, EnclaveCollectionBlueprint *blueprint)
 {
 	/************ THIS FUNCTION IS CURRENTLY UNUSED ************/
 
@@ -738,7 +738,7 @@ EnclaveCollectionActivateList EnclaveCollectionMatrix::JobInstantiateAndPopulate
 	7. attach to enclaves
 	*/
 
-	EnclaveCollectionActivateList tempList;
+	//EnclaveCollectionActivateList tempList;
 	auto start = std::chrono::high_resolution_clock::now();			// option
 	int chunkbitmask = 1;																				// set initial value of bitmask to be 128 (which is the top chunk)
 	int chunkindex = 7;
@@ -774,7 +774,7 @@ EnclaveCollectionActivateList EnclaveCollectionMatrix::JobInstantiateAndPopulate
 						//cout << "whoa boy its" <<  sizeof(EnclaveKeyDef::EnclaveKey) << endl;
 						//collectionRef.ActivateEnclaveForRendering(tempKey); // needs modification (7/26/2017)
 
-						tempList.activatables[tempList.count++] = tempKey;
+						//tempList.activatables[tempList.count++] = tempKey;
 
 
 
@@ -835,7 +835,7 @@ EnclaveCollectionActivateList EnclaveCollectionMatrix::JobInstantiateAndPopulate
 	auto finish = std::chrono::high_resolution_clock::now();															
 	std::chrono::duration<double> elapsed = finish - start;																
 	std::cout << "Elapsed time (multi-threaded enclave instantiation: " << elapsed.count() << endl;	// ""
-	return tempList;
+	//return tempList;
 }
 
 void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha(int beginRange,	int endRange, EnclaveCollection &collectionRef, EnclaveKeyDef::EnclaveKey Key, EnclaveCollectionBlueprint *blueprint, EnclaveCollectionActivateListT2 &activateListRef)
@@ -999,7 +999,7 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 	EnclaveCollectionBlueprint* blueprint,
 	EnclaveCollectionBlueprintMatrix* blueprintmatrix,
 	EnclaveCollectionActivateListT2& activateListRef,
-	EnclaveCollectionActivateListT2& activateListRef2,
+	TestList& testval,
 	mutex& HeapMutex)
 {
 	//HeapMutex.lock();
@@ -1064,12 +1064,12 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 
 
 					// Render customized chunks here
-					if ((returnList.flagArray[x][z] & chunkbitmask) == chunkbitmask)
+					//if ((returnList.flagArray[x][z] & chunkbitmask) == chunkbitmask)
 					{
 						//Enclave stackEnclave(Key, x, y, z);
 						//collectionRef.EnclaveArray[x][y][z] = stackEnclave;
 						//collectionRef.EnclaveArray[x][y][z].InitializeRenderArray(1);
-						activateListRef.flagArray[x][z] = activateListRef.flagArray[x][z] | chunkbitmask;
+						//activateListRef.flagArray[x][z] = activateListRef.flagArray[x][z] | chunkbitmask;
 						//activateListRef.flagArray[x][z] = 200;
 						// do unveil metadata loop here
 						//EnclaveKeyDef::EnclaveKey currentKey;
@@ -1082,13 +1082,15 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 				chunkbitmask <<= 1;
 			}
 		}
+		//activateListRef.flagArray[0][6] = 200;
+		//testval.testarray3[3][3] = 350;
 	}
 	
 	
 	if (borderFlags.North == 1)
 	{
 		//collectionRef.SetNorthBorder(standardPaintableChunk, activateListRef, std::ref(HeapMutex));		// set up north border 
-		EnclaveCollectionActivateListT2 returnList = collectionRef.SetNorthBorder(standardPaintableChunk, std::ref(activateListRef2), std::ref(HeapMutex));		// set up west border -- using the standardPaintableChunk; 
+		EnclaveCollectionActivateListT2 returnList = collectionRef.SetNorthBorder(standardPaintableChunk, std::ref(activateListRef), std::ref(HeapMutex));		// set up west border -- using the standardPaintableChunk; 
 
 		
 		for (int x = beginRange; x < endRange; x++)
@@ -1103,10 +1105,16 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 					// Render customized chunks here
 					if ((returnList.flagArray[x][z] & chunkbitmask) == chunkbitmask)
 					{
+						//cout << "entering chunk render..." << endl;
 						//Enclave stackEnclave(Key, x, y, z);
 						//collectionRef.EnclaveArray[x][y][z] = stackEnclave;
 						//collectionRef.EnclaveArray[x][y][z].InitializeRenderArray(1);
-						activateListRef2.flagArray[x][z] = activateListRef.flagArray[x][z] | chunkbitmask;
+						//HeapMutex.lock();
+						//activateListRef2.flagArray[x][z] = activateListRef.flagArray[x][z] | chunkbitmask;
+						//activateListRef2.flagArray[x][z] = activateListRef.flagArray[x][z] | chunkbitmask;
+						activateListRef.flagArray[x][z] = returnList.flagArray[x][z];
+						//activateListRef2.flagArray[x][z] = 63;
+						//HeapMutex.unlock();
 						//activateListRef.flagArray[x][z] = 200;
 						// do unveil metadata loop here
 						//EnclaveKeyDef::EnclaveKey currentKey;
@@ -1119,7 +1127,7 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 				chunkbitmask <<= 1;
 			}
 		}
-		
+		//activateListRef2.flagArray[0][5] = 63;
 	}
 	/*
 	if (borderFlags.East == 1)

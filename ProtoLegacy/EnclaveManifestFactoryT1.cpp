@@ -29,7 +29,7 @@ void EnclaveManifestFactoryT1::AttachManifestToEnclave(Enclave *in_ptr)
 	GLfloat GL_x = 0.5f;		// instantiate within stack frame
 	GLfloat GL_y = 0.5f;
 	GLfloat GL_z = 0.5f;
-	int iteratorval, totaltuples = 0, texturetuples = 0;
+	int iteratorval, totaltuples = 0, texturetuples = 0, somedumbval = 0;
 
 	for (int i = 0; i < RenderablePolyCount; ++i)
 	{
@@ -74,6 +74,7 @@ void EnclaveManifestFactoryT1::AttachManifestToEnclave(Enclave *in_ptr)
 					//cout << "{ " << TempTuple.x << ", " << TempTuple.y << ", " << TempTuple.z << " }" << endl;
 					//cout << "test contents of actual array: " << EnclaveGLPtr[30] << endl;
 					iteratorval++;
+					somedumbval++;
 				}
 				//cout << "VertexArrayCount: " << StorageArray[CurrentStorage].VertexArrayCount << endl;
 			}
@@ -85,6 +86,7 @@ void EnclaveManifestFactoryT1::AttachManifestToEnclave(Enclave *in_ptr)
 	CurrentStorage++;
 	StorageArrayCount++;
 	//cout << "VertexArrayCount: " << StorageArray[CurrentStorage].VertexArrayCount << endl;
+	//cout << "VertexArrayCount: " << somedumbval << endl;
 }
 
 void EnclaveManifestFactoryT1::SetEnclaveCollectionPtr(EnclaveCollection *InPtr)

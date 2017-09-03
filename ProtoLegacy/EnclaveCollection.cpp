@@ -10,6 +10,7 @@ void EnclaveCollection::ActivateEnclaveForRendering(EnclaveKeyDef::EnclaveKey Ke
 		RenderableEnclaves[totalRenderableEnclaves] = Key;
 		totalRenderableEnclaves++;
 		//totalRenderableEnclaves = 1;
+		cout << "ENTRY TEST (enclaves == 0) " << endl;
 	}
 	else if (totalRenderableEnclaves > 0)
 	{
@@ -81,8 +82,9 @@ EnclaveCollectionActivateListT2 EnclaveCollection::SetWestBorder(ElevationMapRef
 				//buglist.flagArray[0][z] = 128;
 				//activateListRef.flagArray[0][z] = activateListRef.flagArray[0][z] = 128;		// perform bitwise logical append
 				//buglist.flagArray[0][z] = 128;
-				buglist.flagArray[0][z] = buglist.flagArray[0][z] | stdchunkbitmask;
-
+				cout << "----------flag set entry" << endl;
+				//buglist.flagArray[0][z] = buglist.flagArray[0][z] | stdchunkbitmask;
+				activateListRef.flagArray[0][z] = activateListRef.flagArray[0][z] | stdchunkbitmask;
 				//activateListRef->flagArray[0][z] = activateListRef->flagArray[0][z] + actualbitmaskvalue;		// perform bitwise logical append
 				//activateListRef.flagArray[0][z] = actualbitmaskvalue;
 				//cout << "Post edit: " << int(activateListRef->flagArray[0][3]) << endl;
@@ -102,6 +104,7 @@ EnclaveCollectionActivateListT2 EnclaveCollection::SetNorthBorder(ElevationMapRe
 	cout << "----NORTH BORDER ENTRY----" << endl;
 	EnclaveCollectionActivateListT2 buglist;
 	//HeapMutex.lock();
+	int northcount = 0;
 	for (int x = 0; x < 8; x++)
 	{
 		int stdchunkbitmask = 1;
@@ -151,6 +154,7 @@ EnclaveCollectionActivateListT2 EnclaveCollection::SetNorthBorder(ElevationMapRe
 				//buglist.flagArray[x][0] = buglist.flagArray[x][0] = 128;
 				//buglist.flagArray[0][z] = buglist.flagArray[0][z] | stdchunkbitmask;
 				//HeapMutex.unlock();
+				northcount++;
 			}
 			//cout << "chunkbitmask: " << stdchunkbitmask << endl;
 
@@ -158,7 +162,11 @@ EnclaveCollectionActivateListT2 EnclaveCollection::SetNorthBorder(ElevationMapRe
 			actualbitmaskvalue *= 2;
 		}
 	}
-	cout << "final value of the 0: " << int(activateListRef.flagArray[0][0]) << endl;
+	for (int x = 0; x < 8; x++)
+	{
+		cout << "value of x: " << int(buglist.flagArray[x][0]) << endl;
+	}
+	cout << "final value of the north count: " << northcount << endl;
 	//HeapMutex.unlock();
 	return buglist;
 }

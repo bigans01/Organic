@@ -24,11 +24,12 @@ Dependents: -a valid instance of a ManifestCollection (preferably with the same 
 
 #include "ManifestCollection.h"
 #include "EnclaveManifestFactoryT1.h"
+#include "EnclaveDataFinder.h"
 #include <mutex>
 
 class RenderCollection {
 public:
-	
+	EnclaveDataFinder enclaveDataStart[64];
 	ManifestCollection *ManifestCollectionPtr;															// the pointer to the related ManifestCollection.
 	EnclaveCollection *EnclaveCollectionPtr;															// pointer to the associated EnclaveCollection.
 	GLfloat *GLFloatPtr;																				// the pointer to this RenderCollection's dynamically created 3d array.

@@ -8,7 +8,8 @@
 
 class EnclaveCollectionActivateListT2 {
 public:
-	unsigned char flagArray[8][8] = { 0, 0, 0, 0, 0, 0, 0, 0		// potential unnecessary intialization (review later)
+
+	int flagArray[8][8] = { 0, 0, 0, 0, 0, 0, 0, 0		// potential unnecessary intialization (review later)
 							,0, 0, 0, 0, 0, 0, 0, 0
 							,0, 0, 0, 0, 0, 0, 0, 0
 							,0, 0, 0, 0, 0, 0, 0, 0
@@ -17,6 +18,8 @@ public:
 							,0, 0, 0, 0, 0, 0, 0, 0
 							,0, 0, 0, 0, 0, 0, 0, 0		
 							};
+
+	//int flagArray[8][8];
 };
 
 #endif
