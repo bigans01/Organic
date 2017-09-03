@@ -268,6 +268,7 @@ int main()
 	Organic.AddOrganicTextureMetaArray("base");					// set up the texture map; first ever map will be named "base"
 
 	// add first 4 keys to render
+	
 	for (int x = 0; x < 4; x++)
 	{
 		EnclaveKeyDef::EnclaveKey tempKeyToAdd;
@@ -276,6 +277,7 @@ int main()
 		tempKeyToAdd.z = 0;
 		Organic.AddKeyToRenderList(tempKeyToAdd);
 	}
+	
 
 	// add second 4 keys to render
 	for (int x = 0; x < 4; x++)
@@ -400,7 +402,7 @@ int main()
 	Organic.AddBlueprint(NEWkey7.x, NEWkey7.y, NEWkey7.z, testBlueprint3);
 	Organic.AddBlueprint(NEWkey8.x, NEWkey8.y, NEWkey8.z, testBlueprint3);
 	
-
+	Organic.ArrayTest();
 	Organic.MaterializeAllCollectionsInRenderList();
 
 

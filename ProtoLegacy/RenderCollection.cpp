@@ -161,7 +161,7 @@ void RenderCollection::CombineManifestArrays()
 
 void RenderCollection::CombineManifestArraysFromT1Factory(EnclaveManifestFactoryT1 *factoryRef, mutex& mutexval)
 {
-	mutexval.lock();
+	//mutexval.lock();
 	int totalfloats= 0;												// the total number of floats that will need be stored.
 	int totalenclavesfound = 0;
 	int TotalEnclavesInFactory = factoryRef->StorageArrayCount;		// get the number of enclaves to iterate through
@@ -179,11 +179,11 @@ void RenderCollection::CombineManifestArraysFromT1Factory(EnclaveManifestFactory
 	// STEP 2: create the dynamic array, acquire heap lock while doing so
 
 	
-	//mutexval.lock();
+	mutexval.lock();
 	IsGLFloatPtrLoaded = 1;									// indicate that the pointer was loaded with data
 	GLFloatPtr = new GLfloat[totalfloats];	// 9 floats per triangle
 	//cout << "totalfloats: " << totalfloats << endl;
- 	//mutexval.unlock();
+ 	mutexval.unlock();
 	//cout << "Render 2 entry:" << endl;
 
 	// STEP 3: populate dynamic array(s)
@@ -241,7 +241,7 @@ void RenderCollection::CombineManifestArraysFromT1Factory(EnclaveManifestFactory
 		
 	}
 	RenderCollectionArraySize = totalfloats * 4;
-	mutexval.unlock();
+	//mutexval.unlock();
 	
 }
 
@@ -498,8 +498,10 @@ RenderCollection::~RenderCollection()
 	/* Summary: removes dynamically allocated array, if it exists */
 	if (IsGLFloatPtrLoaded == 1)
 	{
+		cout << "DELETING RENDER COLLECTION" << endl;
 		delete[] GLFloatPtr;
 		IsGLFloatPtrLoaded = 0;
+		cout << "DELETE COMPLETE" << endl;
 	}
 }
 

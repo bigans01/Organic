@@ -100,6 +100,7 @@ public:
 	void DummyJob(int value, EnclaveManifestFactoryT1 *FactoryRef, mutex& mutexval);																							// dummy thread pool job, for testing only.
 	void RenderGLTerrain();																																					
 	void GLCleanup();
+	void ArrayTest();
 	thread_pool* getCell1();																																					// gets a pointer to worker thread (Cell) #1
 	thread_pool* getCell2();																																					// gets a pointer to worker thread (Cell) #2
 

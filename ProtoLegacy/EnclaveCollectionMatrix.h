@@ -70,7 +70,7 @@ public:
 		EnclaveKeyDef::EnclaveKey Key,
 		EnclaveCollectionBlueprint* blueprint,
 		EnclaveCollectionBlueprintMatrix* blueprintmatrix,
-		EnclaveCollectionActivateListT2* activateListRef,
+		EnclaveCollectionActivateListT2& activateListRef,
 		mutex& HeapMutex);
 
 

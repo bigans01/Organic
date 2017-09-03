@@ -5,7 +5,6 @@
 #include "PathTraceContainer.h"
 #include "EnclaveCollection.h"
 #include "EnclavePainterList.h"
-#include "EnclaveCollectionActivateList.h"
 #include "EnclaveCollectionActivateListT2.h"
 #include "OrganicSystem.h"
 #include "thread_pool.h"
@@ -999,7 +998,7 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 	EnclaveKeyDef::EnclaveKey Key,
 	EnclaveCollectionBlueprint* blueprint,
 	EnclaveCollectionBlueprintMatrix* blueprintmatrix,
-	EnclaveCollectionActivateListT2* activateListRef,
+	EnclaveCollectionActivateListT2& activateListRef,
 	mutex& HeapMutex)
 {
 	//HeapMutex.lock();
@@ -1053,13 +1052,72 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 	
 	if (borderFlags.West == 1)
 	{
-		collectionRef.SetWestBorder(standardPaintableChunk, activateListRef, std::ref(HeapMutex));		// set up west border -- using the standardPaintableChunk; 
+		EnclaveCollectionActivateListT2 returnList = collectionRef.SetWestBorder(standardPaintableChunk, std::ref(activateListRef), std::ref(HeapMutex));		// set up west border -- using the standardPaintableChunk; 
+		for (int x = beginRange; x < endRange; x++)
+		{
+			chunkbitmask = 1;
+			for (int y = 0; y < 8; y++)
+			{
+				for (int z = 0; z < 8; z++)
+				{
+
+
+					// Render customized chunks here
+					if ((returnList.flagArray[x][z] & chunkbitmask) == chunkbitmask)
+					{
+						//Enclave stackEnclave(Key, x, y, z);
+						//collectionRef.EnclaveArray[x][y][z] = stackEnclave;
+						//collectionRef.EnclaveArray[x][y][z].InitializeRenderArray(1);
+						activateListRef.flagArray[x][z] = activateListRef.flagArray[x][z] | chunkbitmask;
+						// do unveil metadata loop here
+						//EnclaveKeyDef::EnclaveKey currentKey;
+						//currentKey.x = x;
+						//currentKey.y = y;
+						//currentKey.z = z;
+						//EnclaveUnveilMeta currentMeta = blueprint->SetupCarvePlan(currentKey);		// use the carve plan to determine the exact x/y/z chunk coords of each block to render
+					}
+				}
+				chunkbitmask <<= 1;
+			}
+		}
 	}
 	
 	
 	if (borderFlags.North == 1)
 	{
-		collectionRef.SetNorthBorder(standardPaintableChunk, activateListRef, std::ref(HeapMutex));		// set up north border 
+		//collectionRef.SetNorthBorder(standardPaintableChunk, activateListRef, std::ref(HeapMutex));		// set up north border 
+		EnclaveCollectionActivateListT2 returnList = collectionRef.SetNorthBorder(standardPaintableChunk, std::ref(activateListRef), std::ref(HeapMutex));		// set up west border -- using the standardPaintableChunk; 
+
+		
+		for (int x = beginRange; x < endRange; x++)
+		{
+			chunkbitmask = 1;
+			for (int y = 0; y < 8; y++)
+			{
+				for (int z = 0; z < 8; z++)
+				{
+
+
+					// Render customized chunks here
+					if ((returnList.flagArray[x][z] & chunkbitmask) == chunkbitmask)
+					{
+						//Enclave stackEnclave(Key, x, y, z);
+						//collectionRef.EnclaveArray[x][y][z] = stackEnclave;
+						//collectionRef.EnclaveArray[x][y][z].InitializeRenderArray(1);
+						activateListRef.flagArray[x][z] = activateListRef.flagArray[x][z] | chunkbitmask;
+						//activateListRef.flagArray[x][z] = 128;
+						// do unveil metadata loop here
+						//EnclaveKeyDef::EnclaveKey currentKey;
+						//currentKey.x = x;
+						//currentKey.y = y;
+						//currentKey.z = z;
+						//EnclaveUnveilMeta currentMeta = blueprint->SetupCarvePlan(currentKey);		// use the carve plan to determine the exact x/y/z chunk coords of each block to render
+					}
+				}
+				chunkbitmask <<= 1;
+			}
+		}
+		
 	}
 	/*
 	if (borderFlags.East == 1)

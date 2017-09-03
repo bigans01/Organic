@@ -29,8 +29,8 @@ public:
 	int totalRenderableEnclaves = 0;
 	void ActivateEnclaveForRendering(EnclaveKeyDef::EnclaveKey Key);
 	Enclave& GetEnclaveByKey(EnclaveKeyDef::EnclaveKey InKey);
-	void SetWestBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2* activateListRef, mutex& HeapMutex);
-	void SetNorthBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2* activateListRef, mutex& HeapMutex);
+	EnclaveCollectionActivateListT2 SetWestBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2& activateListRef, mutex& HeapMutex);
+	EnclaveCollectionActivateListT2 SetNorthBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2& activateListRef, mutex& HeapMutex);
 	void SetEastBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2 &activateListRef, mutex& HeapMutex);
 	void SetSouthBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2 &activateListRef, mutex& HeapMutex);
 	void SetTopBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2 &activateListRef, mutex& HeapMutex);

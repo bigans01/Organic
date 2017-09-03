@@ -9,6 +9,7 @@ void EnclaveCollection::ActivateEnclaveForRendering(EnclaveKeyDef::EnclaveKey Ke
 	{
 		RenderableEnclaves[totalRenderableEnclaves] = Key;
 		totalRenderableEnclaves++;
+		//totalRenderableEnclaves = 1;
 	}
 	else if (totalRenderableEnclaves > 0)
 	{
@@ -35,16 +36,21 @@ Enclave& EnclaveCollection::GetEnclaveByKey(EnclaveKeyDef::EnclaveKey InKey)
 	return EnclaveArray[InKey.x][InKey.y][InKey.z];
 }
 
-void EnclaveCollection::SetWestBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2* activateListRef, mutex& HeapMutex)
+EnclaveCollectionActivateListT2 EnclaveCollection::SetWestBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2& activateListRef, mutex& HeapMutex)
 {
-	for (int z = 1; z < 7; z++) // traverse along the z axis, exclude border chunks
+	EnclaveCollectionActivateListT2 buglist;
+	cout << "----WEST BORDER ENTRY----" << endl;
+	for (int z = 0; z < 8; z++) // traverse along the z axis, exclude border chunks
 	{
+		//cout << "value of z: " << z << endl;
 		int stdchunkbitmask = 1;
+		unsigned char actualbitmaskvalue = 128;
 		//cout << "current byte value: " << int(elevationMapCopy[0][z]) << endl;
 		for (int bitloop = 0; bitloop < 8; bitloop++)		// bitloop value serves as current y coordinate
 		{
 			if ((elevationMapCopy[0][z] & stdchunkbitmask) == stdchunkbitmask)
 			{
+				//cout << "chunkbitmask: " << stdchunkbitmask << endl;
 				// set 16 blocks to have their West face flagged (32)
 				EnclaveArray[0][bitloop][z].UnveilSinglePoly(0, 0, 0, 0, 1, 0, 32, 0);	// z = 0, all 4 up
 				EnclaveArray[0][bitloop][z].UnveilSinglePoly(0, 1, 0, 0, 1, 0, 32, 0);
@@ -68,22 +74,38 @@ void EnclaveCollection::SetWestBorder(ElevationMapRef elevationMapCopy, EnclaveC
 
 				//HeapMutex.lock();
 				//cout << "Before edit: (West) " << int(activateListRef->flagArray[0][3]) << endl;
-				activateListRef->flagArray[0][3] = activateListRef->flagArray[0][3] | stdchunkbitmask;		// perform bitwise logical append
+				if (z == 6)
+				{
+					//cout << "dumb test:" << int(activateListRef.flagArray[0][6]) << "; bitmask: " << stdchunkbitmask << endl;
+				}
+				//buglist.flagArray[0][z] = 128;
+				//activateListRef.flagArray[0][z] = activateListRef.flagArray[0][z] = 128;		// perform bitwise logical append
+				//buglist.flagArray[0][z] = 128;
+				buglist.flagArray[0][z] = buglist.flagArray[0][z] | stdchunkbitmask;
+
+				//activateListRef->flagArray[0][z] = activateListRef->flagArray[0][z] + actualbitmaskvalue;		// perform bitwise logical append
+				//activateListRef.flagArray[0][z] = actualbitmaskvalue;
 				//cout << "Post edit: " << int(activateListRef->flagArray[0][3]) << endl;
+				//activateListRef.flagArray[0][0] | stdchunkbitmask;
 				//HeapMutex.unlock();
 			}
-			
+			//cout << "chunkbitmask: " << stdchunkbitmask << endl;
 			stdchunkbitmask <<= 1;
+			//actualbitmaskvalue *= 2;
 		}
 	}
+	return buglist;
 }
 
-void EnclaveCollection::SetNorthBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2* activateListRef, mutex& HeapMutex)
+EnclaveCollectionActivateListT2 EnclaveCollection::SetNorthBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2& activateListRef, mutex& HeapMutex)
 {
+	cout << "----NORTH BORDER ENTRY----" << endl;
+	EnclaveCollectionActivateListT2 buglist;
 	//HeapMutex.lock();
-	for (int x = 1; x < 7; x++)
+	for (int x = 0; x < 8; x++)
 	{
 		int stdchunkbitmask = 1;
+		unsigned char actualbitmaskvalue = 1;
 		//cout << "current byte value: " << int(elevationMapCopy[x][0]) << endl;
 		for (int bitloop = 0; bitloop < 8; bitloop++)		// bitloop value serves as current y coordinate
 		{
@@ -93,6 +115,7 @@ void EnclaveCollection::SetNorthBorder(ElevationMapRef elevationMapCopy, Enclave
 			{
 				// cout << "valid enclave key: " << x << ", " << bitloop << ", " << 0 << endl;
 				// set 16 blocks to have their North face flagged (16)
+				//cout << "chunkbitmask: " << stdchunkbitmask << endl;
 				EnclaveArray[x][bitloop][0].UnveilSinglePoly(0, 0, 0, 0, 1, 0, 16, 0);	// x = 0, all 4 up
 				EnclaveArray[x][bitloop][0].UnveilSinglePoly(0, 1, 0, 0, 1, 0, 16, 0);
 				EnclaveArray[x][bitloop][0].UnveilSinglePoly(0, 2, 0, 0, 1, 0, 16, 0);
@@ -114,21 +137,35 @@ void EnclaveCollection::SetNorthBorder(ElevationMapRef elevationMapCopy, Enclave
 				EnclaveArray[x][bitloop][0].UnveilSinglePoly(3, 3, 0, 0, 1, 0, 16, 0);
 
 				//HeapMutex.lock();
-				//cout << "Before edit: (North)" << int(activateListRef->flagArray[x][0]) << endl;
-				activateListRef->flagArray[x][0] = activateListRef->flagArray[x][0] | stdchunkbitmask;		// perform bitwise logical append
-				//activateListRef->flagArray[x][0] = 5;		// perform bitwise logical append
+				//cout << "Before edit: (North)" << int(activateListRef.flagArray[0][6]) << endl;
+				//cout << "value of x: " << x << endl;
+				//cout << "value of bitloop: " << bitloop << endl;
+
+				//activateListRef.flagArray[x][0] = activateListRef.flagArray[x][0] | stdchunkbitmask;		// perform bitwise logical append
+				//activateListRef.flagArray[1][0] = activateListRef.flagArray[0][0] | stdchunkbitmask;		// perform bitwise logical append
+				//activateListRef.flagArray[x][0] = activateListRef.flagArray[x][0] + actualbitmaskvalue;		// perform bitwise logical append
+				unsigned char lolchar = 127;
+				//activateListRef.flagArray[x][0] = lolchar;	
+				//activateListRef.flagArray[x][0] = 128;		// perform bitwise logical append
+				//buglist.flagArray[x][0] = buglist.flagArray[x][0] | stdchunkbitmask;
+				//buglist.flagArray[x][0] = buglist.flagArray[x][0] | stdchunkbitmask;
+				//buglist.flagArray[0][z] = buglist.flagArray[0][z] | stdchunkbitmask;
 				//HeapMutex.unlock();
 			}
-			
+			//cout << "chunkbitmask: " << stdchunkbitmask << endl;
 
 			stdchunkbitmask <<= 1;
+			actualbitmaskvalue *= 2;
 		}
 	}
+	cout << "final value of the 0: " << int(activateListRef.flagArray[0][0]) << endl;
 	//HeapMutex.unlock();
+	return buglist;
 }
 
 void EnclaveCollection::SetEastBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2 &activateListRef, mutex& HeapMutex)
 {
+	
 	for (int z = 0; z < 8; z++) // traverse along the z axis, exclude border chunks
 	{
 		int stdchunkbitmask = 1;
@@ -169,7 +206,7 @@ void EnclaveCollection::SetEastBorder(ElevationMapRef elevationMapCopy, EnclaveC
 
 void EnclaveCollection::SetSouthBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2 &activateListRef, mutex& HeapMutex)
 {
-	for (int x = 1; x < 7; x++)
+	for (int x = 0; x < 8; x++)
 	{
 		int stdchunkbitmask = 1;
 		//cout << "current byte value: " << int(elevationMapCopy[x][0]) << endl;
