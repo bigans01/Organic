@@ -437,10 +437,10 @@ void OrganicSystem::MaterializeAllCollectionsInRenderList()
 	MDListJobMaterializeCollection* list2 = &MatCollList.MaterializeCollectionList.back();
 
 	std::future<void> coll_3 = tpref->submit5(&OrganicSystem::JobMaterializeMultiCollectionFromFactory2, this, std::ref(list1), std::ref(mutexval), std::ref(FactoryPtr), 1);
-	//std::future<void> coll_4 = tpref2->submit5(&OrganicSystem::JobMaterializeMultiCollectionFromFactory2, this, std::ref(list2), std::ref(mutexval), std::ref(FactoryPtr2), 2);
+	std::future<void> coll_4 = tpref2->submit5(&OrganicSystem::JobMaterializeMultiCollectionFromFactory2, this, std::ref(list2), std::ref(mutexval), std::ref(FactoryPtr2), 2);
 
 	coll_3.wait();
-	//coll_4.wait();
+	coll_4.wait();
 }
 
 void OrganicSystem::SetupFutureCollectionMM(int x, int y, int z)
@@ -838,7 +838,7 @@ void OrganicSystem::JobMaterializeMultiCollectionFromFactory2(MDListJobMateriali
 		cout << "Key of this Collection: " << Key1.x << ", " << Key1.y << ", " << Key1.z << endl;
 		mutexval.unlock();
 		
-		EnclaveCollectionsRef->JobInstantiateAndPopulateEnclaveAlpha2(0, 7 + 1, std::ref(*CollectionRef), Key1, std::ref(blueprintptr), std::ref(BlueprintMatrixRef), std::ref(newListPtr), std::ref(mutexval));	// run the instantiation job on this thread (all 512 enclaves) //EnclaveCollectionMap[Key]
+		EnclaveCollectionsRef->JobInstantiateAndPopulateEnclaveAlpha2(0, 7 + 1, std::ref(*CollectionRef), Key1, std::ref(blueprintptr), std::ref(BlueprintMatrixRef), std::ref(newListPtr), std::ref(listT2_1), std::ref(mutexval));	// run the instantiation job on this thread (all 512 enclaves) //EnclaveCollectionMap[Key]
 		//mutexval.unlock();																																			
 		int dumbarray[9][9] = { 0 };
 		dumbarray[8][8] = 128;
@@ -876,6 +876,30 @@ void OrganicSystem::JobMaterializeMultiCollectionFromFactory2(MDListJobMateriali
 			}
 		}
 		
+		for (int x = 0; x < 8; x++)
+		{
+			chunkbitmask = 1;
+			bitmaskval = 0;
+			for (int y = 0; y < 8; y++)
+			{
+				for (int z = 0; z < 8; z++)
+				{
+					if ((listT2_1.flagArray[x][z] & chunkbitmask) == chunkbitmask)
+						//if ((listT2_1.flagArray[x][z] & chunkbitmask) == chunkbitmask)
+					{
+						EnclaveKeyDef::EnclaveKey tempKey;						// create a tempKey for this iteration
+						tempKey.x = x;
+						tempKey.y = bitmaskval;									// set the y to be equivalent to the current value of bitmask val (i.e, 1, 2, 4, 8 , 16, 32, 64, 128)
+						tempKey.z = z;
+						renderablecount++;
+						CollectionRef->ActivateEnclaveForRendering(tempKey);	// activate the enclave for rendering
+					}
+
+				}
+				chunkbitmask <<= 1;
+				bitmaskval++;
+			}
+		}
 
 		//cout << "renderable count: " << renderablecount << endl;
 

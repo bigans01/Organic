@@ -147,8 +147,8 @@ EnclaveCollectionActivateListT2 EnclaveCollection::SetNorthBorder(ElevationMapRe
 				unsigned char lolchar = 127;
 				//activateListRef.flagArray[x][0] = lolchar;	
 				//activateListRef.flagArray[x][0] = 128;		// perform bitwise logical append
-				//buglist.flagArray[x][0] = buglist.flagArray[x][0] | stdchunkbitmask;
-				//buglist.flagArray[x][0] = buglist.flagArray[x][0] | stdchunkbitmask;
+				buglist.flagArray[x][0] = buglist.flagArray[x][0] | stdchunkbitmask;
+				//buglist.flagArray[x][0] = buglist.flagArray[x][0] = 128;
 				//buglist.flagArray[0][z] = buglist.flagArray[0][z] | stdchunkbitmask;
 				//HeapMutex.unlock();
 			}

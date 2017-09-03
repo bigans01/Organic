@@ -999,6 +999,7 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 	EnclaveCollectionBlueprint* blueprint,
 	EnclaveCollectionBlueprintMatrix* blueprintmatrix,
 	EnclaveCollectionActivateListT2& activateListRef,
+	EnclaveCollectionActivateListT2& activateListRef2,
 	mutex& HeapMutex)
 {
 	//HeapMutex.lock();
@@ -1069,6 +1070,7 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 						//collectionRef.EnclaveArray[x][y][z] = stackEnclave;
 						//collectionRef.EnclaveArray[x][y][z].InitializeRenderArray(1);
 						activateListRef.flagArray[x][z] = activateListRef.flagArray[x][z] | chunkbitmask;
+						//activateListRef.flagArray[x][z] = 200;
 						// do unveil metadata loop here
 						//EnclaveKeyDef::EnclaveKey currentKey;
 						//currentKey.x = x;
@@ -1086,7 +1088,7 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 	if (borderFlags.North == 1)
 	{
 		//collectionRef.SetNorthBorder(standardPaintableChunk, activateListRef, std::ref(HeapMutex));		// set up north border 
-		EnclaveCollectionActivateListT2 returnList = collectionRef.SetNorthBorder(standardPaintableChunk, std::ref(activateListRef), std::ref(HeapMutex));		// set up west border -- using the standardPaintableChunk; 
+		EnclaveCollectionActivateListT2 returnList = collectionRef.SetNorthBorder(standardPaintableChunk, std::ref(activateListRef2), std::ref(HeapMutex));		// set up west border -- using the standardPaintableChunk; 
 
 		
 		for (int x = beginRange; x < endRange; x++)
@@ -1104,8 +1106,8 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 						//Enclave stackEnclave(Key, x, y, z);
 						//collectionRef.EnclaveArray[x][y][z] = stackEnclave;
 						//collectionRef.EnclaveArray[x][y][z].InitializeRenderArray(1);
-						activateListRef.flagArray[x][z] = activateListRef.flagArray[x][z] | chunkbitmask;
-						//activateListRef.flagArray[x][z] = 128;
+						activateListRef2.flagArray[x][z] = activateListRef.flagArray[x][z] | chunkbitmask;
+						//activateListRef.flagArray[x][z] = 200;
 						// do unveil metadata loop here
 						//EnclaveKeyDef::EnclaveKey currentKey;
 						//currentKey.x = x;
