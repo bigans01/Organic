@@ -97,6 +97,7 @@ void Enclave::InitializeRenderArray()
 
 void Enclave::InitializeRenderArray(int blockid)
 {
+	/* Summary: sets up an enclave's meta data, and sets the material of all blocks to be the input parameter "blockid" */
 	int index = 0, i, j, k;			// declare variables for following loops
 	for (i = 0; i < 4; ++i)
 	{
@@ -197,9 +198,9 @@ void Enclave::SortRenderArray() // this function performs sorting on RenderArray
 }
 
 
-void Enclave::UnveilSinglePoly(int x, int y, int z, int in_readorder, int in_otherflags, short in_blockid, char in_t1, char in_t2)		// reveals ("unveils") and changes one block at xyz, 
+void Enclave::UnveilSinglePolyWithMtrl(int x, int y, int z, int in_readorder, int in_otherflags, short in_blockid, char in_t1, char in_t2)		// reveals ("unveils") and changes the material of one block at xyz, 
 {
-	/* Summary: changes a polygon's render state to true if the otherflags member variable >= 1*/
+	/* Summary: changes a polygon's render state to true if the otherflags member variable >= 1; also changes the block's material during the unveiling */
 	int OldFlags = StorageArray[x][y][z].otherflags;			// store the old data in OldFlags
 	StorageArray[x][y][z].otherflags = in_otherflags;		    // set other flags
 	StorageArray[x][y][z].blockid = in_blockid;					// set block id
@@ -294,6 +295,101 @@ void Enclave::UnveilSinglePoly(int x, int y, int z, int in_readorder, int in_oth
 
 }
 
+void Enclave::UnveilSinglePoly(int x, int y, int z, int in_readorder, int in_otherflags, char in_t1, char in_t2)
+{
+	/* Summary: changes a polygon's render state to true if the otherflags member variable >= 1*/
+	int OldFlags = StorageArray[x][y][z].otherflags;			// store the old data in OldFlags
+	StorageArray[x][y][z].otherflags = in_otherflags;		    // set other flags
+	StorageArray[x][y][z].t1_flags = in_t1;						// set type 1 renderable faces
+	StorageArray[x][y][z].t2_flags = in_t2;						// set type 2 renderable faces
+
+																//cout << "TEST:::" << OldFlags << endl;															// set up loop to find this polygon's position in Sorted (which contains a sorted array of pointers to StorageArray, sorted by renderables first)
+	int i, j, tempInt, zeroindexcheck;
+	EnclavePolyArray *tempPtr = Sorted.RenderArray[0];
+	int multi_to_single = (x * 16) + (y * 4) + z;				// convert from 3d array coords to single array
+																// do the following, if the new form of the cube is set to renderable
+	if (in_otherflags >= 1)
+	{
+		//std::cout << "debug:" << StorageArray[x][y][z].otherflags << endl;
+		zeroindexcheck = 0;
+		for (i = 0; i < 64; ++i)
+		{
+			//cout << "test:" << Sorted.PolyArrayIndex[i] << endl;
+			//cout << "test: multi_to_single: " << multi_to_single << endl;
+			if (Sorted.PolyArrayIndex[i] == multi_to_single) // find the index of the element to change, by finding the
+															 // match index that was converted from 3d to 1d to its appropriate index in Sorted.PolyArrayindex
+			{
+
+
+				//std::cout << "debug (sorted entry):" << StorageArray[x][y][z].otherflags << endl;
+
+				// do sorting for this one polygon, if the previous polygon wasn't already renderable
+				if (OldFlags == 0)
+				{
+					//cout << "TEST2:::" << OldFlags << endl;
+
+					if (i != 0)
+					{
+						for (j = i; j >= 1; --j)
+						{
+							//cout << "value of j: " << j << endl;
+							//cout << " test" << Sorted.RenderArray[j]->otherflags << endl;
+							if ((Sorted.RenderArray[j]->otherflags >= 1) && (Sorted.RenderArray[j - 1]->otherflags == 0)) // swap values first
+							{
+								//cout << "TEST" << i << ": " << OldFlags << endl;
+								// sort the values first
+								tempInt = Sorted.PolyArrayIndex[j];
+								Sorted.PolyArrayIndex[j] = Sorted.PolyArrayIndex[j - 1];
+								Sorted.PolyArrayIndex[j - 1] = tempInt;
+
+								// sort the pointers second
+								tempPtr = Sorted.RenderArray[j]; // Questionable...??
+								Sorted.RenderArray[j] = Sorted.RenderArray[j - 1];
+								Sorted.RenderArray[j - 1] = tempPtr;
+								//cout << "single sort count:" << ++sortcount << endl;
+							}
+							else
+							{
+								break;
+							}
+							//cout << "for loop count" << ++sortcount << endl;
+						}
+						++TotalRenderable;
+						// loop for each bit of in_t1 here
+						total_triangles += GetTotalTrianglesInBlock(in_t1);
+						zeroindexcheck = 1;
+						//cout << "Chunk (" << this->UniqueKey.x << ", " << this->UniqueKey.y << ", " << this->UniqueKey.z << ") Total triangles in chunk so far: " << total_triangles << endl;
+
+
+						break;
+					}
+					else
+					{
+
+						++TotalRenderable;
+						// loop for each bit of in_t1 here
+						total_triangles += GetTotalTrianglesInBlock(in_t1);
+						zeroindexcheck = 1;
+						//cout << "Chunk (" << this->UniqueKey.x << ", " << this->UniqueKey.y << ", " << this->UniqueKey.z << ") Total triangles in chunk so far: " << total_triangles << endl;
+					}
+				}
+
+			}
+
+			//testcount++;
+		}
+		if ((zeroindexcheck == 0) && (OldFlags == 0))	// do this, if the very first block to be sorted is the one at 0, 0, 0
+		{
+			++TotalRenderable;
+			total_triangles += GetTotalTrianglesInBlock(in_t1);
+			//cout << "Very first block is 0: " << total_triangles << endl;
+		}
+		//cout << "test count value: " << testcount;
+	}
+
+	// perform post unveil operations; notify neighboring enclaves and blocks of required changes
+}
+
 void Enclave::VeilSinglePoly(int x, int y, int z, int in_readorder, int in_otherflags, short in_blockid, char in_t1, char in_t2)		// reveals ("unveils") and changes one block at xyz, 
 {
 	/* Summary: changes a polygon's render state to false if the otherflags member variable == 0*/
@@ -317,32 +413,45 @@ void Enclave::VeilSinglePoly(int x, int y, int z, int in_readorder, int in_other
 			{
 				if (OldFlags >= 1)
 				{
-					for (j = i; j < 63; ++j) // don't touch the last element, stop at element 63 (which is at index 62)
+
+					if (i != 0)
 					{
-						if ((Sorted.RenderArray[j]->otherflags == 0) && (Sorted.RenderArray[j + 1]->otherflags >= 1)) // swap values first
+						for (j = i; j < 63; ++j) // don't touch the last element, stop at element 63 (which is at index 62)
 						{
-							// sort the values first
-							tempInt = Sorted.PolyArrayIndex[j];
-							Sorted.PolyArrayIndex[j] = Sorted.PolyArrayIndex[j + 1];
-							Sorted.PolyArrayIndex[j + 1] = tempInt;
+							if ((Sorted.RenderArray[j]->otherflags == 0) && (Sorted.RenderArray[j + 1]->otherflags >= 1)) // swap values first
+							{
+								// sort the values first
+								tempInt = Sorted.PolyArrayIndex[j];
+								Sorted.PolyArrayIndex[j] = Sorted.PolyArrayIndex[j + 1];
+								Sorted.PolyArrayIndex[j + 1] = tempInt;
 
-							// sort the pointers second
-							tempPtr = Sorted.RenderArray[j]; // Questionable...??
-							Sorted.RenderArray[j] = Sorted.RenderArray[j + 1];
-							Sorted.RenderArray[j + 1] = tempPtr;
-							//cout << "single sort count:" << ++sortcount << endl;
+								// sort the pointers second
+								tempPtr = Sorted.RenderArray[j]; // Questionable...??
+								Sorted.RenderArray[j] = Sorted.RenderArray[j + 1];
+								Sorted.RenderArray[j + 1] = tempPtr;
+								//cout << "single sort count:" << ++sortcount << endl;
+							}
+							else
+							{
+								break;
+							}
 						}
-						else
-						{
-							break;
-						}
+						--TotalRenderable;
+						// loop for each bit of in_t1 here
+						total_triangles -= GetTotalTrianglesInBlock(in_t1);
+						cout << "Total triangles in chunk so far: " << total_triangles << endl;
+
+						break;
 					}
-					--TotalRenderable;
-					// loop for each bit of in_t1 here
-					total_triangles -= GetTotalTrianglesInBlock(in_t1);
-					cout << "Total triangles in chunk so far: " << total_triangles << endl;
+					else
+					{
 
-					break;
+						--TotalRenderable;
+						// loop for each bit of in_t1 here
+						total_triangles -= GetTotalTrianglesInBlock(in_t1);
+						zeroindexcheck = 1;
+						//cout << "Chunk (" << this->UniqueKey.x << ", " << this->UniqueKey.y << ", " << this->UniqueKey.z << ") Total triangles in chunk so far: " << total_triangles << endl;
+					}
 				}
 
 			}

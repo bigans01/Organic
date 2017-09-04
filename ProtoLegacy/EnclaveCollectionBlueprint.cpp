@@ -82,7 +82,7 @@ ElevationMapRef& EnclaveCollectionBlueprint::GetCustomPaintableChunkData()
 
 ElevationMapRef& EnclaveCollectionBlueprint::GetStandardPaintableChunkData()
 {
-	std::cout << "before return call" << int(StandardPaintableChunks[0][1]) << std::endl;
+	//std::cout << "before return call" << int(StandardPaintableChunks[0][1]) << std::endl;
 	return StandardPaintableChunks;
 }
 
@@ -146,53 +146,59 @@ void EnclaveCollectionBlueprint::CarveSlope()
 	{
 		for (int z = 0; z < 8; z++)
 		{
-			tempPlan.CPArray[0 + (x * 4)][0 + (z * 4)] = BlockKeyToSingle(0 + (x * 4), currentYpos, 0 + (z * 4)) + 1;		// BlockKeyToSingle(0 + (x * 4), currentYpos, 0 + (z * 4)) + 1, BlockKeyToSingle(0 + (x * 4), currentYpos, 0 + (z * 4))
-			tempPlan.CPArray[0 + (x * 4)][1 + (z * 4)] = BlockKeyToSingle(0 + (x * 4), currentYpos, 1 + (z * 4)) + 1;
-			tempPlan.CPArray[0 + (x * 4)][2 + (z * 4)] = BlockKeyToSingle(0 + (x * 4), currentYpos, 2 + (z * 4)) + 1;
-			tempPlan.CPArray[0 + (x * 4)][3 + (z * 4)] = BlockKeyToSingle(0 + (x * 4), currentYpos, 3 + (z * 4)) + 1;
-														 													
-			tempPlan.CPArray[1 + (x * 4)][0 + (z * 4)] = BlockKeyToSingle(1 + (x * 4), currentYpos, 0 + (z * 4)) + 1;
-			tempPlan.CPArray[1 + (x * 4)][1 + (z * 4)] = BlockKeyToSingle(1 + (x * 4), currentYpos, 1 + (z * 4)) + 1;
-			tempPlan.CPArray[1 + (x * 4)][2 + (z * 4)] = BlockKeyToSingle(1 + (x * 4), currentYpos, 2 + (z * 4)) + 1;
-			tempPlan.CPArray[1 + (x * 4)][3 + (z * 4)] = BlockKeyToSingle(1 + (x * 4), currentYpos, 3 + (z * 4)) + 1;
-														 														
-			tempPlan.CPArray[2 + (x * 4)][0 + (z * 4)] = BlockKeyToSingle(2 + (x * 4), currentYpos, 0 + (z * 4)) + 1;
-			tempPlan.CPArray[2 + (x * 4)][1 + (z * 4)] = BlockKeyToSingle(2 + (x * 4), currentYpos, 1 + (z * 4)) + 1;
-			tempPlan.CPArray[2 + (x * 4)][2 + (z * 4)] = BlockKeyToSingle(2 + (x * 4), currentYpos, 2 + (z * 4)) + 1;
-			tempPlan.CPArray[2 + (x * 4)][3 + (z * 4)] = BlockKeyToSingle(2 + (x * 4), currentYpos, 3 + (z * 4)) + 1;
-														 														
-			tempPlan.CPArray[3 + (x * 4)][0 + (z * 4)] = BlockKeyToSingle(3 + (x * 4), currentYpos, 0 + (z * 4)) + 1;
-			tempPlan.CPArray[3 + (x * 4)][1 + (z * 4)] = BlockKeyToSingle(3 + (x * 4), currentYpos, 1 + (z * 4)) + 1;
-			tempPlan.CPArray[3 + (x * 4)][2 + (z * 4)] = BlockKeyToSingle(3 + (x * 4), currentYpos, 2 + (z * 4)) + 1;
-			tempPlan.CPArray[3 + (x * 4)][3 + (z * 4)] = BlockKeyToSingle(3 + (x * 4), currentYpos, 3 + (z * 4)) + 1;
+			// 6, 7, 0
+			tempPlan.CPArray[0 + (x * 4)][0 + (z * 4)] = BlockKeyToSingle(0, currentYpos, 0);		// BlockKeyToSingle(0 + (x * 4), currentYpos, 0 + (z * 4)) + 1, BlockKeyToSingle(0 + (x * 4), currentYpos, 0 + (z * 4))
+			tempPlan.CPArray[0 + (x * 4)][1 + (z * 4)] = BlockKeyToSingle(0, currentYpos, 1);
+			tempPlan.CPArray[0 + (x * 4)][2 + (z * 4)] = BlockKeyToSingle(0, currentYpos, 2);
+			tempPlan.CPArray[0 + (x * 4)][3 + (z * 4)] = BlockKeyToSingle(0, currentYpos, 3);
+														 									
+			tempPlan.CPArray[1 + (x * 4)][0 + (z * 4)] = BlockKeyToSingle(1, currentYpos, 0);
+			tempPlan.CPArray[1 + (x * 4)][1 + (z * 4)] = BlockKeyToSingle(1, currentYpos, 1);
+			tempPlan.CPArray[1 + (x * 4)][2 + (z * 4)] = BlockKeyToSingle(1, currentYpos, 2);
+			tempPlan.CPArray[1 + (x * 4)][3 + (z * 4)] = BlockKeyToSingle(1, currentYpos, 3);
+														 									
+			tempPlan.CPArray[2 + (x * 4)][0 + (z * 4)] = BlockKeyToSingle(2, currentYpos, 0);
+			tempPlan.CPArray[2 + (x * 4)][1 + (z * 4)] = BlockKeyToSingle(2, currentYpos, 1);
+			tempPlan.CPArray[2 + (x * 4)][2 + (z * 4)] = BlockKeyToSingle(2, currentYpos, 2);
+			tempPlan.CPArray[2 + (x * 4)][3 + (z * 4)] = BlockKeyToSingle(2, currentYpos, 3);
+														 									
+			tempPlan.CPArray[3 + (x * 4)][0 + (z * 4)] = BlockKeyToSingle(3, currentYpos, 0);
+			tempPlan.CPArray[3 + (x * 4)][1 + (z * 4)] = BlockKeyToSingle(3, currentYpos, 1);
+			tempPlan.CPArray[3 + (x * 4)][2 + (z * 4)] = BlockKeyToSingle(3, currentYpos, 2);
+			tempPlan.CPArray[3 + (x * 4)][3 + (z * 4)] = BlockKeyToSingle(3, currentYpos, 3);
 		}																										
 		currentYpos++;																							
 	}																											
 																												
-	// east chunks																								
+	// east chunks		
+	currentYpos = 0;
 	for (int x = 4; x < 8; x++)																					
 	{																											
 		for (int z = 0; z < 8; z++)																				
-		{																										
-			tempPlan.CPArray[0 + (x * 4)][0 + (z * 4)] = BlockKeyToSingle(0 + (x * 4), currentYpos, 0 + (z * 4)) + 1;
-			tempPlan.CPArray[0 + (x * 4)][1 + (z * 4)] = BlockKeyToSingle(0 + (x * 4), currentYpos, 1 + (z * 4)) + 1;
-			tempPlan.CPArray[0 + (x * 4)][2 + (z * 4)] = BlockKeyToSingle(0 + (x * 4), currentYpos, 2 + (z * 4)) + 1;
-			tempPlan.CPArray[0 + (x * 4)][3 + (z * 4)] = BlockKeyToSingle(0 + (x * 4), currentYpos, 3 + (z * 4)) + 1;
-																												
-			tempPlan.CPArray[1 + (x * 4)][0 + (z * 4)] = BlockKeyToSingle(1 + (x * 4), currentYpos, 0 + (z * 4)) + 1;
-			tempPlan.CPArray[1 + (x * 4)][1 + (z * 4)] = BlockKeyToSingle(1 + (x * 4), currentYpos, 1 + (z * 4)) + 1;
-			tempPlan.CPArray[1 + (x * 4)][2 + (z * 4)] = BlockKeyToSingle(1 + (x * 4), currentYpos, 2 + (z * 4)) + 1;
-			tempPlan.CPArray[1 + (x * 4)][3 + (z * 4)] = BlockKeyToSingle(1 + (x * 4), currentYpos, 3 + (z * 4)) + 1;
-																											
-			tempPlan.CPArray[2 + (x * 4)][0 + (z * 4)] = BlockKeyToSingle(2 + (x * 4), currentYpos, 0 + (z * 4)) + 1;
-			tempPlan.CPArray[2 + (x * 4)][1 + (z * 4)] = BlockKeyToSingle(2 + (x * 4), currentYpos, 1 + (z * 4)) + 1;
-			tempPlan.CPArray[2 + (x * 4)][2 + (z * 4)] = BlockKeyToSingle(2 + (x * 4), currentYpos, 2 + (z * 4)) + 1;
-			tempPlan.CPArray[2 + (x * 4)][3 + (z * 4)] = BlockKeyToSingle(2 + (x * 4), currentYpos, 3 + (z * 4)) + 1;
-																											
-			tempPlan.CPArray[3 + (x * 4)][0 + (z * 4)] = BlockKeyToSingle(3 + (x * 4), currentYpos, 0 + (z * 4)) + 1;
-			tempPlan.CPArray[3 + (x * 4)][1 + (z * 4)] = BlockKeyToSingle(3 + (x * 4), currentYpos, 1 + (z * 4)) + 1;
-			tempPlan.CPArray[3 + (x * 4)][2 + (z * 4)] = BlockKeyToSingle(3 + (x * 4), currentYpos, 2 + (z * 4)) + 1;
-			tempPlan.CPArray[3 + (x * 4)][3 + (z * 4)] = BlockKeyToSingle(3 + (x * 4), currentYpos, 3 + (z * 4)) + 1;
+		{										
+			if (x == 6 && z == 0)
+			{
+				std::cout << "test value of block key to single: " << BlockKeyToSingle(0, currentYpos, 0) + 1 << std::endl;
+			}
+			tempPlan.CPArray[0 + (x * 4)][0 + (z * 4)] = BlockKeyToSingle(0, currentYpos, 0);
+			tempPlan.CPArray[0 + (x * 4)][1 + (z * 4)] = BlockKeyToSingle(0, currentYpos, 1);
+			tempPlan.CPArray[0 + (x * 4)][2 + (z * 4)] = BlockKeyToSingle(0, currentYpos, 2);
+			tempPlan.CPArray[0 + (x * 4)][3 + (z * 4)] = BlockKeyToSingle(0, currentYpos, 3);
+																							
+			tempPlan.CPArray[1 + (x * 4)][0 + (z * 4)] = BlockKeyToSingle(1, currentYpos, 0);
+			tempPlan.CPArray[1 + (x * 4)][1 + (z * 4)] = BlockKeyToSingle(1, currentYpos, 1);
+			tempPlan.CPArray[1 + (x * 4)][2 + (z * 4)] = BlockKeyToSingle(1, currentYpos, 2);
+			tempPlan.CPArray[1 + (x * 4)][3 + (z * 4)] = BlockKeyToSingle(1, currentYpos, 3);
+																							
+			tempPlan.CPArray[2 + (x * 4)][0 + (z * 4)] = BlockKeyToSingle(2, currentYpos, 0);
+			tempPlan.CPArray[2 + (x * 4)][1 + (z * 4)] = BlockKeyToSingle(2, currentYpos, 1);
+			tempPlan.CPArray[2 + (x * 4)][2 + (z * 4)] = BlockKeyToSingle(2, currentYpos, 2);
+			tempPlan.CPArray[2 + (x * 4)][3 + (z * 4)] = BlockKeyToSingle(2, currentYpos, 3);
+																							
+			tempPlan.CPArray[3 + (x * 4)][0 + (z * 4)] = BlockKeyToSingle(3, currentYpos, 0);
+			tempPlan.CPArray[3 + (x * 4)][1 + (z * 4)] = BlockKeyToSingle(3, currentYpos, 1);
+			tempPlan.CPArray[3 + (x * 4)][2 + (z * 4)] = BlockKeyToSingle(3, currentYpos, 2);
+			tempPlan.CPArray[3 + (x * 4)][3 + (z * 4)] = BlockKeyToSingle(3, currentYpos, 3);
 		}
 		currentYpos++;
 	}
@@ -204,7 +210,7 @@ void EnclaveCollectionBlueprint::CarveSlope()
 	for (int z = 0; z < 8; z++)
 	{
 		StandardPaintableChunks[0][z] = 63;
-		std::cout << "current value: " << int(StandardPaintableChunks[0][z]) << std::endl;
+		//std::cout << "current value: " << int(StandardPaintableChunks[0][z]) << std::endl;
 	}
 
 	// North flags, not border chunks

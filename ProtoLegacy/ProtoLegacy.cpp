@@ -198,35 +198,11 @@ int main()
 	std::chrono::duration<double> bpelapsed = bpend - bpstart;
 	std::cout << "Elapsed time (Blueprint loop): " << bpelapsed.count() << endl;
 
-
-
-
-
 	
 	tempPainterKey.x = 7;
 	tempPainterKey.y = 6;
 	tempPainterKey.z = 0;
-	//auto bluestart = std::chrono::high_resolution_clock::now();
-	//testBlueprint.AddNewPaintList2(tempPainterKey, testPaintList);
 
-
-
-
-
-
-
-
-
-	//auto blueend = std::chrono::high_resolution_clock::now();
-	//ElevationMapRef SolidChunks;
-
-	EnclaveCollectionBlueprint testBlueprint2;
-	EnclaveKeyDef::EnclaveKey bpkeytest;
-	bpkeytest.x = 0;
-	bpkeytest.y = 0;
-	bpkeytest.z = 1;
-	
-	
 
 	// STAGE 2: initialization of enclaves 
 
@@ -241,10 +217,7 @@ int main()
 
 	
 	EnclaveCollectionBlueprint testBlueprint3;
-	EnclaveKeyDef::EnclaveKey tbpkey;
-	tbpkey.x = 0;
-	tbpkey.y = 0;
-	tbpkey.z = 0;
+
 
 
 	// New blueprint style testing
@@ -290,7 +263,6 @@ int main()
 	}
 
 	// *********** Enclave Collection load type 2: instantiate a set of collections
-
 	/*
 	EnclaveKeyDef::EnclaveKey key1, key2, key3, key4, key5, key6, key7, key8, key9;
 	key1.x = 5;
@@ -392,7 +364,7 @@ int main()
 	NEWkey8.x = 3;
 	NEWkey8.y = 0;
 	NEWkey8.z = 1;
-
+	auto bluestart = std::chrono::high_resolution_clock::now();
 	Organic.AddBlueprint(NEWkey1.x, NEWkey1.y, NEWkey1.z, testBlueprint3);
 	Organic.AddBlueprint(NEWkey2.x, NEWkey2.y, NEWkey2.z, testBlueprint3);
 	Organic.AddBlueprint(NEWkey3.x, NEWkey3.y, NEWkey3.z, testBlueprint3);
@@ -401,7 +373,9 @@ int main()
 	Organic.AddBlueprint(NEWkey6.x, NEWkey6.y, NEWkey6.z, testBlueprint3);
 	Organic.AddBlueprint(NEWkey7.x, NEWkey7.y, NEWkey7.z, testBlueprint3);
 	Organic.AddBlueprint(NEWkey8.x, NEWkey8.y, NEWkey8.z, testBlueprint3);
-	
+	auto blueend = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> blueelapsed = blueend - bluestart;
+
 	Organic.ArrayTest();
 	Organic.MaterializeAllCollectionsInRenderList();
 
@@ -409,10 +383,10 @@ int main()
 	cout << "-------------------------PASS" << endl;
 	// *********** Enclave Collection load type 1: add and instantiate a single collection
 		// add the test blueprint to the OrganicSystem
-	auto bluestart = std::chrono::high_resolution_clock::now();
+	//auto bluestart = std::chrono::high_resolution_clock::now();
 	//Organic.AddBlueprint(bpkeytest.x, bpkeytest.y, bpkeytest.z, testBlueprint2);
-	auto blueend = std::chrono::high_resolution_clock::now();
-	std::chrono::duration<double> blueelapsed = blueend - bluestart;
+	//auto blueend = std::chrono::high_resolution_clock::now();
+	//std::chrono::duration<double> blueelapsed = blueend - bluestart;
 	std::cout << "Elapsed time (Blueprint addition): " << blueelapsed.count() << endl;
 	//cout << Organic.BlueprintMatrix.BlueprintMap[EnclaveCollectionTestKey].SolidChunks[0][0];
 	/*
@@ -456,13 +430,6 @@ int main()
 	std::chrono::duration<double> elapsed = finish - start;
 	std::cout << "Elapsed time (Massive Unveil Poly call: , " << count << "): " << elapsed.count() << endl;
 
-	//cout << "re test of enclave: " << tempEnclave->GetTotalTrianglesInEnclave() << endl;
-	
-
-	
-
-	// set up final array(s) for OpenGL rendering here
-	//ManifestCollections.GetColletedEnclaveManifestAt(testkey, 3, 0, 0);
 	auto start7 = std::chrono::high_resolution_clock::now();
 	cout << "debug line 2" << endl;
 	//RenderCollections.CreateRenderArrayFromManifestCollection(testkey2);										//change here... OLD: testkey
@@ -472,11 +439,11 @@ int main()
 
 
 	//ManifestCollections.GetCollectedEnclaveManifestAt(testkey2, 1, 0, 0);									//change here... OLD: testkey
-	// NEW TEST: (7/2/2017) -- check if RenderCollection::UpdateManifestArray is called
+
 	//Enclave *tempEnclave = &EnclaveCollections.GetEnclaveFromXYZ(69, 0, 0);				// MUST be a pointer, to not get a copy!!
 	//tempEnclave = &EnclaveCollections.GetEnclaveFromXYZ(0, 0, 0);											//change here... OLD: tempEnclave = &EnclaveCollections.GetEnclaveFromXYZ(77, 0, 0);		
 	cout << "Before new unveil call... " << endl;
-	//tempEnclave->UnveilSinglePoly(3, 2, 0, 0, 1, 0, 40, 0);
+	//tempEnclave->UnveilSinglePolyWithMtrl(3, 2, 0, 0, 1, 0, 40, 0);
 
 	auto start2 = std::chrono::high_resolution_clock::now();
 	//ManifestCollections.UpdateAttachedManifest(testkey2, 0, 0, 0);				// problem is after this call	// change here... OLD: testkey
@@ -496,33 +463,12 @@ int main()
 	// ------------------------------------BEGIN OPEN GL SET UP
 
 	// Initialise GLFW
+	Organic.SetGraphicsAPI();												// setup the graphics API (OpenGL context, etc)
+	auto start3 = std::chrono::high_resolution_clock::now();				// benchmark testing only
 
-	//Organic.SetGraphicsAPI();
-
-	Organic.SetGraphicsAPI();
-	auto start3 = std::chrono::high_resolution_clock::now();
+	// send all processed collections to OPEN GL	
+	Organic.SendRenderListToGLTerrainBuffer();							
 	/*
-	//GLfloat* tempTestPtr = Organic.GetVertexDataFromRenderCollection(0,0,0);
-	//Organic.SendDataFromCollectionToGLBuffer(tempTestPtr, 73872); // 73872 | 73728
-	
-	RenderCollection* renderCollectionPtr = Organic.GetRenderCollectionPtr(0, 0, 0);
-	Organic.SendDataFromRenderPtrToGLBuffer(renderCollectionPtr);
-
-	RenderCollection* renderCollectionPtr2 = Organic.GetRenderCollectionPtr(1, 0, 1);
-	Organic.SendDataFromRenderPtrToGLBuffer(renderCollectionPtr2);
-
-	RenderCollection* renderCollectionPtr3 = Organic.GetRenderCollectionPtr(2, 0, 1);
-	Organic.SendDataFromRenderPtrToGLBuffer(renderCollectionPtr3);
-
-//	RenderCollection* renderCollectionPtr4 = Organic.GetRenderCollectionPtr(3, 0, 1);
-	//cout << "testing of ptr4: " << renderCollectionPtr4->RenderCollectionArraySize << endl;
-	RenderCollection* renderCollectionPtr4 = Organic.GetRenderCollectionPtr(3, 0, 1);
-	Organic.SendDataFromRenderPtrToGLBuffer(renderCollectionPtr4);
-	*/
-	
-	
-	
-	
 	RenderCollection* newRenderCollPtr;
 
 	newRenderCollPtr = Organic.GetRenderCollectionPtr(0, 0, 0);
@@ -548,7 +494,7 @@ int main()
 
 	newRenderCollPtr = Organic.GetRenderCollectionPtr(3, 0, 1);
 	Organic.SendDataFromRenderPtrToGLBuffer(newRenderCollPtr);
-
+	*/
 
 
 

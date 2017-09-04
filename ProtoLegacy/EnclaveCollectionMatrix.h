@@ -71,7 +71,6 @@ public:
 		EnclaveCollectionBlueprint* blueprint,
 		EnclaveCollectionBlueprintMatrix* blueprintmatrix,
 		EnclaveCollectionActivateListT2& activateListRef,
-		TestList& testval,
 		mutex& HeapMutex);
 
 

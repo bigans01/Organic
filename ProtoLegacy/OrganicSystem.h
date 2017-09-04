@@ -99,9 +99,10 @@ public:
 																RenderCollectionMatrix *RenderCollectionRef, 
 																mutex& mutexval);								
 	void DummyJob(int value, EnclaveManifestFactoryT1 *FactoryRef, mutex& mutexval);																							// dummy thread pool job, for testing only.
-	void RenderGLTerrain();																																					
-	void GLCleanup();
-	void ArrayTest();
+	void RenderGLTerrain();																																						// renders everything in the Terrain buffer
+	void GLCleanup();																																							// for deallocating and/or turning off OpenGL components
+	void ArrayTest();																																							// testing only
+	void SendRenderListToGLTerrainBuffer();																																		// will send all renderable enclaves listed in the renderCollectionList to the OpenGL buffer
 	thread_pool* getCell1();																																					// gets a pointer to worker thread (Cell) #1
 	thread_pool* getCell2();																																					// gets a pointer to worker thread (Cell) #2
 

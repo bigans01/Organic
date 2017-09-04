@@ -67,11 +67,13 @@ public:
 	
 	
 
-	int testsize();										// can be removed at a later point in time; returns size of enclave
-	void InitializeRenderArray();						// Initializes the contents of the array, when the object is created on the heap. NOTE: This should always be called immediately after the enclave is added to the heap (for instance, a vector).
-	void InitializeRenderArray(int blockid);
-	void SortRenderArray();								// this function performs sorting on RenderArray -- will be used after InitializeRenderArray() is called, to sort for the first time (Insertion sort?)
-	void UnveilSinglePoly(int x, int y, int z, int in_readorder, int in_otherflags, short in_blockid, char in_t1, char in_t2);	// Reveals one block at xyz, so that it may be rendered.
+	int testsize();																																	// can be removed at a later point in time; returns size of enclave
+	void InitializeRenderArray();																													/* Initializes the contents of the array, when the object is created on the heap. NOTE: This should always be called immediately after the 
+																																					 enclave is added to the heap (for instance, a vector).*/
+	void InitializeRenderArray(int blockid);																										// initializes arrays in the enclave, and sets all blocks to be the value of the input parameter 
+	void SortRenderArray();																															// this function performs sorting on RenderArray -- will be used after InitializeRenderArray() is called, to sort for the first time (Insertion sort?)
+	void UnveilSinglePolyWithMtrl(int x, int y, int z, int in_readorder, int in_otherflags, short in_blockid, char in_t1, char in_t2);				// Reveals one block at xyz and sets its material, so that it may be rendered.
+	void UnveilSinglePoly(int x, int y, int z, int in_readorder, int in_otherflags, char in_t1, char in_t2);
 	void VeilSinglePoly(int x, int y, int z, int in_readorder, int in_otherflags, short in_blockid, char in_t1, char in_t2);	// Hides one block at xyz, so that it will no longer be rendered.
 	void ChangePolyMaterial(int x, int y, int z, int newmaterial);	// changes the material of a block at the x/y/z value within the chunk
 	void TestTopLayer();								// testing purpose only

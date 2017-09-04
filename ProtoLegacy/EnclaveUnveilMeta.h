@@ -18,8 +18,8 @@ class EnclaveUnveilMeta
 {
 public:
 	int numberOfBlocks = 0;
-	char EnclaveBlockLocation[4][4];
-	char BlockFacesToRender[4][4];
+	unsigned char EnclaveBlockLocation[4][4];
+	unsigned char BlockFacesToRender[4][4];
 };
 
 #endif

@@ -11,7 +11,7 @@ void EnclaveCollectionBlueprintMatrix::DetermineBlueprintBordersToRender(Enclave
 	tempKey.x = blueprintKey.x;		
 	tempKey.y = blueprintKey.y;
 	tempKey.z = blueprintKey.z;
-	std::cout << "neighboring east border being rendered...ignoring west border..." << std::endl;
+	//std::cout << "neighboring east border being rendered...ignoring west border..." << std::endl;
 
 	// Check West (negative x)
 	tempKey.x -= 1;										// subtract 1 to get the blueprint at -1 x 

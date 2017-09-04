@@ -168,14 +168,14 @@ void RenderCollection::CombineManifestArraysFromT1Factory(EnclaveManifestFactory
 																	//cout << "total enclaves in factory will be: " << TotalEnclavesInFactory << endl;
 
 																	// STEP 1: get the size of the array
-	cout << "total enclaves in factory: " << TotalEnclavesInFactory << endl;
+	//cout << "total enclaves in factory: " << TotalEnclavesInFactory << endl;
 
 	for (int x = 0; x < TotalEnclavesInFactory; x++)
 	{
 		EnclaveManifestFactoryT1Storage *StoragePtr = &factoryRef->StorageArray[x];			// get the pointer to the storage unit
 		totalfloats += StoragePtr->VertexArrayCount;										// increment totalfloats by VertexArrayCount from the pointed-to enclave
 	}
-	cout << "total triangles to render will be: " << totalfloats << endl;
+	//cout << "total triangles to render will be: " << totalfloats << endl;
 
 
 	// STEP 2: create the dynamic array, acquire heap lock while doing so
@@ -210,7 +210,7 @@ void RenderCollection::CombineManifestArraysFromT1Factory(EnclaveManifestFactory
 		//cout << "test  " << dumbval << ", " << dumbval2 << ", " << dumbval3 << endl;
 		GLFloatPtr[currentBegin] = dumbval;
 		//cout << "Render 2 entry:" << endl;
-		cout << "Key output: " << StoragePtr->StorageKey.x << ", " << StoragePtr->StorageKey.y << "," << StoragePtr->StorageKey.z << " | " << dumbval << endl ;
+		//cout << "Key output: " << StoragePtr->StorageKey.x << ", " << StoragePtr->StorageKey.y << "," << StoragePtr->StorageKey.z << " | " << dumbval << endl ;
 		enclaveDataStart[x].DFKey = StoragePtr->StorageKey;
 		enclaveDataStart[x].indexStart = currentBegin;
 		enclaveDataStart[x].totalTriangles = currentEnclaveTriangles;
@@ -325,7 +325,7 @@ void RenderCollection::UpdateManifestArray(EnclaveKeyDef::EnclaveKey Key)	// upd
 		delete[] tempGLptr00;
 
 		int index2 = 0;
-		//EnclavePtr->UnveilSinglePoly(in_x, in_y, in_z, 0, in_otherflags, 0, 40, 0); // reveal the polygon to the world	
+		//EnclavePtr->UnveilSinglePolyWithMtrl(in_x, in_y, in_z, 0, in_otherflags, 0, 40, 0); // reveal the polygon to the world	
 		auto finish4 = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<double> elapsed4 = finish4 - start4;
 		//cout << "Array 1 reassembly duration = " << elapsed4.count() << endl;
@@ -500,10 +500,10 @@ RenderCollection::~RenderCollection()
 	/* Summary: removes dynamically allocated array, if it exists */
 	if (IsGLFloatPtrLoaded == 1)
 	{
-		cout << "DELETING RENDER COLLECTION" << endl;
+		//cout << "DELETING RENDER COLLECTION" << endl;
 		delete[] GLFloatPtr;
 		IsGLFloatPtrLoaded = 0;
-		cout << "DELETE COMPLETE" << endl;
+		//cout << "DELETE COMPLETE" << endl;
 	}
 }
 
