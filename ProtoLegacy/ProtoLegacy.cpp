@@ -235,6 +235,7 @@ int main()
 
 	
 	//OrganicSystem Organic;
+	auto STARTUPbegin = std::chrono::high_resolution_clock::now();
 	OrganicSystem Organic(2);
 	Organic.SetOrganicCell1(mainthreadpoolref);				// set the Organic instance's first worker thread
 	Organic.SetOrganicCell2(mainthreadpoolref2);			// set the Organic instance's second worker thread
@@ -243,12 +244,13 @@ int main()
 	// add first 4 keys to render
 	
 	/*
+		(9/4/2017)
 		RAM USAGE NOTES:   total number of collections	|	before GL	|	post GL
 							8							|	 353		|	 470
 							64							|	 488		|	 602
 							256							|    954        |    1082
 	*/
-	int cmultiplier = 8*4;
+	int cmultiplier = 1;
 	for (int x = 0; x < 4*cmultiplier; x++)						
 													
 	{
@@ -401,8 +403,8 @@ int main()
 
 
 	//ManifestCollections.GetColletedEnclaveManifestAt(testkey, 1, 0, 0);
-	cout << "preparing to clean all enclaves..." << endl;
-	cin >> val;
+	//cout << "preparing to clean all enclaves..." << endl;
+	//cin >> val;
 
 
 
@@ -451,6 +453,10 @@ int main()
 	std::cout << "Elapsed time, sending data to OpenGL buffer: " << elapsed3.count() <<  endl;						// elapsed time is  hhere
 
 
+	auto STARTUPend = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> STARTUPduration = STARTUPend - STARTUPbegin;
+	std::cout << "Total pre-loop startup time: " << STARTUPduration.count() << endl;
+
 	// ------------------------------------END OPEN GL SET UP
 
 
@@ -461,7 +467,7 @@ int main()
 		Organic.RenderGLTerrain();	// perform render frame work
 		auto finish3 = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<double> elapsed3 = finish3 - start3;
-		std::cout << "Frame render time: " << elapsed3.count() << endl;
+		//std::cout << "Frame render time: " << elapsed3.count() << endl;
 	} 
 	while (glfwGetKey(Organic.OGLM.GLwindow, GLFW_KEY_ESCAPE) != GLFW_PRESS &&	// loop until escape key is pressed in OpenGL window
 		glfwWindowShouldClose(Organic.OGLM.GLwindow) == 0);

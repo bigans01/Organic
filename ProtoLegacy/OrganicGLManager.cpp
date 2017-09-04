@@ -288,7 +288,7 @@ void OrganicGLManager::sendDataToBuffer(GLfloat* floatPtr, int size)
 
 void OrganicGLManager::sendRenderCollectionDataToBuffer(RenderCollection *renderCollPtr)
 {
-	cout << "Test; array size: " << renderCollPtr->RenderCollectionArraySize <<endl;
+	//cout << "Test; array size: " << renderCollPtr->RenderCollectionArraySize <<endl;
 	glBufferSubData(GL_ARRAY_BUFFER, RMContainer.CurrentIndex*CollectionBufferSize, renderCollPtr->RenderCollectionArraySize, renderCollPtr->GLFloatPtr);
 	RMContainer.RenderMetaArray[RMContainer.CurrentIndex].MetaIndex = RMContainer.CurrentIndex;
 	RMContainer.RenderMetaArray[RMContainer.CurrentIndex].ArraySize = renderCollPtr->RenderCollectionArraySize;
