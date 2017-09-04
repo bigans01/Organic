@@ -36,7 +36,8 @@ public:
 	int RenderablePolyCount = 0;															// the number of currently "unveiled" polygons in the enclave
 	int TotalEnclaveTriangles = 0;															// the total number of triangles that will be rendered in this enclave manifest
 	GLfloat *EnclaveGLPtr;																	// pointer to the array of OpenGL floats, which will be used by an instnce of RenderCollection.
-	GLfloat *TextureGLPtr;
+	GLfloat *VertexShaderGLptr;
+	GLfloat *TextureGLPtr;																	// pointer to the array of texture data
 	RenderCollection *RenderCollectionRef;													// pointer to the RenderCollection that this EnclaveManifest belongs to; this is used to signal 
 																							// the RenderCollection that this instance of EnclaveManifest has changed
 	OrganicTextureDictionary *TextureDictionaryRef;

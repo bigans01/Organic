@@ -37,7 +37,7 @@ public:
 	GLuint OrganicMVPHandle;													// OpenGL: pointer/handle to the MVP matrix result
 	GLfloat *OrganicGLarrayPTR;													// (temporary) OpenGL: used to point to a dynamic array containing vertex data
 	//const int CollectionBufferSize = 1024 * 1024;								// the size of the data buffer for each RenderCollection; 
-	const int CollectionBufferSize = 1179648;										//alternate = 73728   , 147456, 294912, 589824, 1179648
+	const int CollectionBufferSize = 589824;										//alternate = 73728   , 147456, 294912, 589824, 1179648
 	glm::mat4 Projection;														// (temporary) OpenGL projection matrix
 	glm::mat4 View;																// (temporary) OpenGL view matrix
 	glm::mat4 Model;															// (temporary) OpenGL model matrix

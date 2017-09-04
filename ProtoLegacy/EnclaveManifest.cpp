@@ -26,6 +26,7 @@ void EnclaveManifest::AttachToEnclave(Enclave &in_ptr)	// "attaches" this manife
 	if (IsEnclaveGLPtrLoaded == 1)						// check to see if it was loaded already, on a previous call.
 	{
 		delete[] EnclaveGLPtr;							// delete old array
+		delete[] VertexShaderGLptr;
 		delete[] TextureGLPtr;
 	}
 
@@ -56,6 +57,7 @@ void EnclaveManifest::AttachToEnclave(Enclave &in_ptr)	// "attaches" this manife
 	//EnclaveManifestRenderables = new EnclaveManifest::EnclaveManifestTuple[EnclavePtr->GetTotalTrianglesInEnclave()];				// FIX THIS!
 	//auto orgstart = std::chrono::high_resolution_clock::now();
 	EnclaveGLPtr = new GLfloat[(EnclavePtr.GetTotalTrianglesInEnclave())*9];
+	VertexShaderGLptr = new GLfloat[(EnclavePtr.GetTotalTrianglesInEnclave()) * 9];
 	TextureGLPtr = new GLfloat[(EnclavePtr.GetTotalTrianglesInEnclave()) * 6];						// new array would be GetTotalTrianglesInEnclave*6 (a pair of UV coordinates per vertex)
 	//auto orgend = std::chrono::high_resolution_clock::now();
 	//std::chrono::duration<double> orgelapsed = orgend - orgstart;

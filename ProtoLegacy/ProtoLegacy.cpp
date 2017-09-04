@@ -242,96 +242,39 @@ int main()
 
 	// add first 4 keys to render
 	
-	for (int x = 0; x < 4; x++)
+	/*
+		RAM USAGE NOTES:   total number of collections	|	before GL	|	post GL
+							8							|	 353		|	 470
+							64							|				|
+	*/
+	int cmultiplier = 1;
+	for (int x = 0; x < 4*cmultiplier; x++)						
+													
 	{
 		EnclaveKeyDef::EnclaveKey tempKeyToAdd;
 		tempKeyToAdd.x = x;
 		tempKeyToAdd.y = 0;
 		tempKeyToAdd.z = 0;
 		Organic.AddKeyToRenderList(tempKeyToAdd);
+		Organic.AddBlueprint(tempKeyToAdd.x, tempKeyToAdd.y, tempKeyToAdd.z, testBlueprint3);
 	}
 	
 
+	
 	// add second 4 keys to render
-	for (int x = 0; x < 4; x++)
+	
+	for (int x = 0; x < 4*cmultiplier; x++)						
 	{
 		EnclaveKeyDef::EnclaveKey tempKeyToAdd;
 		tempKeyToAdd.x = x;
 		tempKeyToAdd.y = 0;
 		tempKeyToAdd.z = 1;
 		Organic.AddKeyToRenderList(tempKeyToAdd);
+		Organic.AddBlueprint(tempKeyToAdd.x, tempKeyToAdd.y, tempKeyToAdd.z, testBlueprint3);
 	}
-
-	// *********** Enclave Collection load type 2: instantiate a set of collections
-	/*
-	EnclaveKeyDef::EnclaveKey key1, key2, key3, key4, key5, key6, key7, key8, key9;
-	key1.x = 5;
-	key1.y = 0;
-	key1.z = 1;
-
-	key2.x = 6;
-	key2.y = 0;
-	key2.z = 1;
-
-	key3.x = 7;
-	key3.y = 0;
-	key3.z = 1;
-
-	key4.x = 8;
-	key4.y = 0;
-	key4.z = 1;
-
-	key5.x = 9;
-	key5.y = 0;
-	key5.z = 1;
-
-	key6.x = 10;
-	key6.y = 0;
-	key6.z = 1;
-
-	key7.x = 2;
-	key7.y = 0;
-	key7.z = 1;
-
-	key8.x = 1;
-	key8.y = 0;
-	key8.z = 1;
-
-	key9.x = 3;
-	key9.y = 0;
-	key9.z = 1;
-
-	// add/instantiate the new collections here
-	//Organic.AddBlueprint(EnclaveCollectionTestKey.x, EnclaveCollectionTestKey.y, EnclaveCollectionTestKey.z, testBlueprint);
-	Organic.AddBlueprint(EnclaveCollectionTestKey.x, EnclaveCollectionTestKey.y, EnclaveCollectionTestKey.z, testBlueprint3);		// new blueprint testing
-	Organic.AddBlueprint(key1.x, key1.y, key1.z, testBlueprint);
-	Organic.AddBlueprint(key2.x, key2.y, key2.z, testBlueprint);
-	Organic.AddBlueprint(key3.x, key3.y, key3.z, testBlueprint);
-	Organic.AddBlueprint(key4.x, key4.y, key4.z, testBlueprint);
-	Organic.AddBlueprint(key5.x, key5.y, key5.z, testBlueprint);
-	Organic.AddBlueprint(key6.x, key6.y, key6.z, testBlueprint);
-
-	// th ese two are currently being tested
-	Organic.AddBlueprint(key8.x, key8.y, key8.z, testBlueprint3);			// (1, 0, 1)
-	Organic.AddBlueprint(key7.x, key7.y, key7.z, testBlueprint3);			// (2, 0, 1)
 	
 
-
-	//Organic.AddBlueprint(key9.x, key9.y, key9.z, testBlueprint);
-
-	Organic.SetupFutureCollectionMM(key1.x, key1.y, key1.z);
-	Organic.SetupFutureCollectionMM(key2.x, key2.y, key2.z);
-	Organic.SetupFutureCollectionMM(key4.x, key4.y, key4.z);
-	Organic.SetupFutureCollectionMM(key5.x, key5.y, key5.z);
-	Organic.SetupFutureCollectionMM(key6.x, key6.y, key6.z);
-	Organic.SetupFutureCollectionMM(key7.x, key7.y, key7.z);
-	Organic.SetupFutureCollectionMM(key8.x, key8.y, key8.z);
-	Organic.SetupFutureCollectionMM(key3.x, key3.y, key3.z);
-	//Organic.SetupFutureCollectionMM(key9.x, key9.y, key9.z);
-
-	//Organic.MaterializeCollection(key1, key2);
-	*/
-
+	/*
 	EnclaveKeyDef::EnclaveKey NEWkey1, NEWkey2, NEWkey3, NEWkey4, NEWkey5, NEWkey6, NEWkey7, NEWkey8;
 	NEWkey1.x = 0;
 	NEWkey1.y = 0;
@@ -369,13 +312,17 @@ int main()
 	Organic.AddBlueprint(NEWkey2.x, NEWkey2.y, NEWkey2.z, testBlueprint3);
 	Organic.AddBlueprint(NEWkey3.x, NEWkey3.y, NEWkey3.z, testBlueprint3);
 	Organic.AddBlueprint(NEWkey4.x, NEWkey4.y, NEWkey4.z, testBlueprint3);
+
+	
 	Organic.AddBlueprint(NEWkey5.x, NEWkey5.y, NEWkey5.z, testBlueprint3);
 	Organic.AddBlueprint(NEWkey6.x, NEWkey6.y, NEWkey6.z, testBlueprint3);
 	Organic.AddBlueprint(NEWkey7.x, NEWkey7.y, NEWkey7.z, testBlueprint3);
 	Organic.AddBlueprint(NEWkey8.x, NEWkey8.y, NEWkey8.z, testBlueprint3);
+	
 	auto blueend = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> blueelapsed = blueend - bluestart;
-
+	std::cout << "Elapsed time (Blueprint addition): " << blueelapsed.count() << endl;
+	*/
 	Organic.ArrayTest();
 	Organic.MaterializeAllCollectionsInRenderList(0);			// 0 = use a set of Factories, 1 = use a ManifestMatrix style
 
@@ -387,7 +334,7 @@ int main()
 	//Organic.AddBlueprint(bpkeytest.x, bpkeytest.y, bpkeytest.z, testBlueprint2);
 	//auto blueend = std::chrono::high_resolution_clock::now();
 	//std::chrono::duration<double> blueelapsed = blueend - bluestart;
-	std::cout << "Elapsed time (Blueprint addition): " << blueelapsed.count() << endl;
+	
 	//cout << Organic.BlueprintMatrix.BlueprintMap[EnclaveCollectionTestKey].SolidChunks[0][0];
 	/*
 	cout << "testing of solidChunk data in blueprints found in the OrganicSystem: " << endl;
@@ -513,7 +460,7 @@ int main()
 		Organic.RenderGLTerrain();	// perform render frame work
 		auto finish3 = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<double> elapsed3 = finish3 - start3;
-		std::cout << "Frame render time: " << elapsed3.count() << endl;
+		//std::cout << "Frame render time: " << elapsed3.count() << endl;
 	} 
 	while (glfwGetKey(Organic.OGLM.GLwindow, GLFW_KEY_ESCAPE) != GLFW_PRESS &&	// loop until escape key is pressed in OpenGL window
 		glfwWindowShouldClose(Organic.OGLM.GLwindow) == 0);

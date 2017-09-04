@@ -169,30 +169,6 @@ void OrganicGLManager::RenderReadyArrays()
 	// Send our transformation to the currently bound shader, 
 	// in the "MVP" uniform -- 
 	glUniformMatrix4fv(OrganicMVPHandle, 1, GL_FALSE, &MVP[0][0]);		// select the matrix to use.
-
-
-	// 1rst attribute buffer : vertices
-	/*glEnableVertexAttribArray(0);										 select the buffer we will be using (we are only using vertexes here; if we 
-																		   were using a fragment shader as well, we would need to run this command again, but for a value of 1 instead...
-																		   we would then need to bind to a different buffer that points to the vertex shader data
-																		*/
-																				
-	//glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexBufferID);				// OrganicGLVertexBufferArray[0], OrganicGLVertexBufferID
-	//auto GLstart = std::chrono::high_resolution_clock::now();			// optional, performance testing only
-	//glVertexAttribPointer(
-	//	0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-	//	3,                  // size
-	//	GL_FLOAT,           // type
-	//	GL_FALSE,           // normalized?
-	//	0,                  // stride
-	//	(void*)0            /* array buffer offset. Number following (void*) indicates offset point to begin reading from in the pointed-to buffer, measured in bytes;
-	//						   For instance, if the data begins at byte 10000, you would put (void*)10000 in the array you are reading.
-	//						*/
-	//);
-	//auto GLend = std::chrono::high_resolution_clock::now();				// optional performance testing values
-															
-	//auto GLstart = std::chrono::high_resolution_clock::now();	
-	
 	for (int y = 0; y < 64; y++)
 	{
 		for (int x = 0; x < RMContainer.TotalRenderable; x++)
@@ -212,7 +188,7 @@ void OrganicGLManager::RenderReadyArrays()
 	//std::cout << "Frame render Time: " << GLelapsed.count() << std::endl;
 	//std::cout << "RUN MULTI JOB 1 ELAPSED ITERATOR TIME: " << elapsed4.count() << std::endl;
 
-	//glDisableVertexAttribArray(0);										// disable the array that was just used.
+	//glDisableVertexAttribArray(0);										// disable the array that was just used. (::::SENT TO BE USED IN ShutdownOpenGL() ::::)
 
 	glfwSwapBuffers(GLwindow);											// ??
 	glfwPollEvents();													// listen for input to the current OpenGL context window

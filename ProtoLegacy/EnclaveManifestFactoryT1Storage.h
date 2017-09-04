@@ -27,6 +27,8 @@ public:
 	int TotalEnclaveTriangles = 0;				// total triangles to be rendered, stored within this enclave; equivalent of the same variable in EnclaveManifest
 	int VertexArrayCount = 0;					// the count of actual vertexes used in the VertexArray below 
 	GLfloat VertexArray[13824];					// 108 GLfloats per cube, x 64 = 6912.   (alternate: 13824)		(other alternate: 3456) // 6912 / 8 = 864
+	int VertexColorArrayCount = 0;
+	GLfloat VertexColorArray[13824];
 	int TextureArrayCount = 0;					// the count of actual texture data used in the TextureArray below
 	GLfloat TextureArray[13824];				// 108 GLfloats per cube, x 64 = 6912.
 	
