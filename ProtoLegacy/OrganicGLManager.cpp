@@ -57,13 +57,18 @@ void OrganicGLManager::InitializeOpenGL()
 		//return -1;
 	}
 
-
+	// Enable depth test
+	glEnable(GL_DEPTH_TEST);
+	// Accept fragment if it closer to the camera than the former one
+	glDepthFunc(GL_LESS);
 
 	// Ensure we can capture the escape key being pressed below
 	glfwSetInputMode(GLwindow, GLFW_STICKY_KEYS, GL_TRUE);
 
 	// Dark blue background
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+
+
 
 	// Create Vertex Array Object
 	glGenVertexArrays(1, &OrganicGLVertexArrayID);
@@ -162,7 +167,8 @@ void OrganicGLManager::InitializeOpenGL()
 void OrganicGLManager::RenderReadyArrays()
 {
 	auto GLstart = std::chrono::high_resolution_clock::now();	
-	glClear(GL_COLOR_BUFFER_BIT);										// clear the screen?
+	//glClear(GL_COLOR_BUFFER_BIT);										// clear the screen?
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	//glUseProgram(OrganicGLprogramID);									// select the already compiled program	(::::SENT TO BE USED IN selectDefaultShader() ::::)
 	computeMatricesFromInputs();											// gather inputs from keyboard
 
@@ -265,7 +271,7 @@ void OrganicGLManager::computeMatricesFromInputs()
 	float FoV = initialFoV;// - 5 * glfwGetMouseWheel(); // Now GLFW 3 requires setting up a callback for this. It's a bit too complicated for this beginner's tutorial, so it's disabled instead.
 
 	// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
-	Projection = glm::perspective(FoV, 4.0f / 3.0f, 0.1f, 100.0f);
+	Projection = glm::perspective(FoV, 4.0f / 3.0f, 0.1f, 400.0f);
 	// Camera matrix
 	View = glm::lookAt(
 		position,           // Camera is here

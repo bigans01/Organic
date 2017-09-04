@@ -195,6 +195,12 @@
     <ClInclude Include="OrganicTextureDictionary.h" />
     <ClInclude Include="OrganicTextureMeta.h" />
     <ClInclude Include="OrganicTextureMetaArray.h" />
+    <ClInclude Include="OrganicVtxColorBlockMeta.h" />
+    <ClInclude Include="OrganicVtxColorFaceMeta.h" />
+    <ClInclude Include="OrganicVtxColorMeta.h" />
+    <ClInclude Include="OrganicVtxColorMetaArray.h" />
+    <ClInclude Include="OrganicVtxColorDictionary.h" />
+    <ClInclude Include="OrganicVtxColorRGB.h" />
     <ClInclude Include="PathTraceContainer.h" />
     <ClInclude Include="ProtoLegacy.h" />
     <ClInclude Include="RenderCollection.h" />
@@ -227,6 +233,8 @@
     <ClCompile Include="OrganicSystem.cpp" />
     <ClCompile Include="OrganicTextureDictionary.cpp" />
     <ClCompile Include="OrganicTextureMeta.cpp" />
+    <ClCompile Include="OrganicVtxColorDictionary.cpp" />
+    <ClCompile Include="OrganicVtxColorMeta.cpp" />
     <ClCompile Include="ProtoLegacy.cpp" />
     <ClCompile Include="RenderCollection.cpp" />
     <ClCompile Include="RenderCollectionMatrix.cpp" />

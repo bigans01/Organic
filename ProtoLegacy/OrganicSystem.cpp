@@ -520,6 +520,39 @@ void OrganicSystem::AddOrganicTextureMetaArray(string mapname)
 	tempMetaRef->BlockData.FaceIndex[0].FaceData[0].U = 2;									// test data only, will be fixed later.
 }
 
+void OrganicSystem::AddOrganicVtxColorMetaArray(string mapname)
+{
+	OrganicVtxColorMeta tempColorMeta(0);
+	VertexColorDictionary.Dictionary[mapname].Index[1] = tempColorMeta;
+	OrganicVtxColorMeta *tempColorMetaRef = &VertexColorDictionary.Dictionary[mapname].Index[1];
+
+	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[0].red = 0.583f;
+	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[0].green = 0.771f;
+	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[0].blue = 0.014f;
+
+	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[1].red = 0.771f;
+	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[1].green = 0.221f;
+	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[1].blue = 0.014f;
+
+	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[2].red = 0.171f;
+	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[2].green = 0.221f;
+	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[2].blue = 0.44f;
+
+	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[3].red = 0.44f;
+	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[3].green = 0.221f;
+	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[3].blue = 0.144f;
+
+	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[4].red = 0.171f;
+	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[4].green = 0.621f;
+	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[4].blue = 0.131f;
+
+	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[5].red = 0.371f;
+	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[5].green = 0.44f;
+	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[5].blue = 0.521f;
+
+
+}
+
 void OrganicSystem::JobMaterializeMultiCollectionFromMM(MDListJobMaterializeCollection* mdjob, mutex& mutexval, int ThreadID)
 {
 	/* Summary: this method materializes one or more EnclaveCollections, by using a ManifestMatrix. */

@@ -240,6 +240,7 @@ int main()
 	Organic.SetOrganicCell1(mainthreadpoolref);				// set the Organic instance's first worker thread
 	Organic.SetOrganicCell2(mainthreadpoolref2);			// set the Organic instance's second worker thread
 	Organic.AddOrganicTextureMetaArray("base");					// set up the texture map; first ever map will be named "base"
+	Organic.AddOrganicVtxColorMetaArray("base");
 
 	// add first 4 keys to render
 	

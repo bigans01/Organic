@@ -24,6 +24,7 @@ Dependents: a valid instance of ManifestCollectionMatrix
 #include "EnclaveCollection.h"
 #include "EnclaveManifest.h"
 #include "OrganicTextureDictionary.h"
+#include "OrganicVtxColorDictionary.h"
 
 class EnclaveManifestFactoryT1
 {
@@ -31,6 +32,7 @@ public:
 	EnclaveCollection *EnclaveCollectionPtr;												// pointer to a valid EnclaveCollection
 	Enclave::EnclavePolyArray *EnclavePolyArrayPtr;											// pointer to an EnclavePolyArray within previous EnclaveCollection
 	OrganicTextureDictionary *TextureDictionaryRef;											// pointer to a valid OrganicTextureDictionary
+	OrganicVtxColorDictionary *VertexColorDictionaryRef;
 
 	EnclaveManifestFactoryT1Storage StorageArray[512];										// an array of 512 storage units 
 	int CurrentStorage = 0;																	// a member variable that stores the current number of stored Enclaves

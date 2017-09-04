@@ -25,6 +25,7 @@ Dependents: a valid instance of Enclave
 #include "Enclave.h"
 #include "EnclaveCollectionMatrix.h"
 #include "OrganicTextureDictionary.h"
+#include "OrganicVtxColorDictionary.h"
 //#include "RenderCollection.h"
 
 class RenderCollection;																		// why did this work? (7/2/2017) (forward declaration solved compiler issue) 
@@ -40,7 +41,9 @@ public:
 	GLfloat *TextureGLPtr;																	// pointer to the array of texture data
 	RenderCollection *RenderCollectionRef;													// pointer to the RenderCollection that this EnclaveManifest belongs to; this is used to signal 
 																							// the RenderCollection that this instance of EnclaveManifest has changed
-	OrganicTextureDictionary *TextureDictionaryRef;
+	OrganicTextureDictionary *TextureDictionaryRef;											// reference to the Organic system's OrganicTextureDictionary
+	OrganicVtxColorDictionary *VertexColorDictionaryRef;
+
 	int IsRenderCollectionRefSet = 0;														// determines whether or not the pointer RenderCollectionRef is set
 	Enclave EnclavePtr;																		// pointer to the enclave to gain data from
 	Enclave::EnclavePolyArray *EnclavePolyArrayPtr;											// pointer to the sorted array in the enclave. in the Sorted struct. (see Enclave.h)

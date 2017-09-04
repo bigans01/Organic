@@ -23,6 +23,7 @@ OrganicSystem object contains all objects necessary to preserve information on t
 #include "EnclaveCollectionBlueprint.h"
 #include "EnclaveCollectionBlueprintMatrix.h"
 #include "OrganicTextureDictionary.h"
+#include "OrganicVtxColorDictionary.h"
 #include "MDJobMaterializeCollection.h"
 #include "MDListJobMaterializeCollection.h"
 #include "EnclaveManifestFactoryT1.h"
@@ -51,6 +52,7 @@ public:
 	ManifestCollectionMatrix ManifestCollections;								// matrix of ManifestCollections (up to 512 chunks, unordered map)
 	RenderCollectionMatrix RenderCollections;									// matrix of RenderCollections
 	OrganicTextureDictionary TextureDictionary;									// an instance for an OrganicTextureDictionary
+	OrganicVtxColorDictionary VertexColorDictionary;							// an instance for an OrganicVtxColorDictionary
 	OrganicGLManager OGLM;														// an instance of the OrganicGLManager; will be used to manage OpenGL buffer data and other similiar operations
 	EnclaveManifestFactoryT1Index OrganicFactoryIndex;							// FactoryIndex for this OrganicSystem
 	EnclaveKeyContainer renderCollectionList;									// contains a a list of Keys that determine which EnclaveCollections to render and/or process	
@@ -75,6 +77,7 @@ public:
 	void SetOrganicCell1(thread_pool *thread_pool_ref);											// sets the pointer for Cell1 to be a valid worker thread
 	void SetOrganicCell2(thread_pool *thread_pool_ref);											// sets the pointer for Cell2 to be a valid worker thread
 	void AddOrganicTextureMetaArray(string mapname);											// adds a new texture meta array, which is a list that is used to map block IDs to texture UV coordinates.
+	void AddOrganicVtxColorMetaArray(string mapname);											// adds a new vertex color meta array, which is a list that is used to color individual vertexes.
 	void SetGraphicsAPI();
 	GLfloat* GetVertexDataFromRenderCollection(int x, int y, int z);
 	RenderCollection* GetRenderCollectionPtr(int x, int y, int z);
