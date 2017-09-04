@@ -169,8 +169,8 @@ void OrganicGLManager::RenderReadyArrays()
 	// Send our transformation to the currently bound shader, 
 	// in the "MVP" uniform -- 
 	glUniformMatrix4fv(OrganicMVPHandle, 1, GL_FALSE, &MVP[0][0]);		// select the matrix to use.
-	for (int y = 0; y < 64; y++)
-	{
+	//for (int y = 0; y < 64; y++)
+	//{
 		for (int x = 0; x < RMContainer.TotalRenderable; x++)
 		{
 			// summary:
@@ -181,7 +181,7 @@ void OrganicGLManager::RenderReadyArrays()
 			glDrawArrays(GL_TRIANGLES, x*(CollectionBufferSize / 12), ((RMContainer.RenderMetaArray[x].ArraySize) / 12));
 
 		}
-	}
+	//}
 
 	auto GLend = std::chrono::high_resolution_clock::now();	// optional performance testing values
 	std::chrono::duration<double> GLelapsed = GLend - GLstart;
