@@ -31,8 +31,11 @@ public:
 	int renderMode = 0;
 	GLFWwindow  *GLwindow;														// OpenGL: pointer/handle to the OpenGL window (context?)
 	GLuint OrganicGLprogramID;													// OpenGL: pointer/handle to the program used for shading	
+	GLuint OrganicGLVCprogramID;
 	GLuint OrganicGLVertexArrayID;												// OpenGL: pointer/handle to the vertex array handler
 	GLuint OrganicGLVertexBufferID;												// OpenGL: pointer/handle to the vertex buffer handler (single buffer)
+
+	GLuint OrganicGLVertexColorBufferID;										// OpenGL: pointer/handle to the vertex color buffer handler (single buffer)
 	GLuint OrganicGLVertexBufferArray[10];										// OpenGL: array of potential buffers
 	GLuint OrganicMVPHandle;													// OpenGL: pointer/handle to the MVP matrix result
 	GLfloat *OrganicGLarrayPTR;													// (temporary) OpenGL: used to point to a dynamic array containing vertex data
@@ -62,8 +65,11 @@ public:
 	void RenderReadyArrays();
 	void ShutdownOpenGL();
 	void computeMatricesFromInputs();
-	void sendDataToBuffer(GLfloat* floatPtr, int size);
+	//void sendDataToBuffer(GLfloat* floatPtr, int size);
+	//void sendVertexColorDataToBuffer(GLfloat* floatPtr, int size);
 	void sendRenderCollectionDataToBuffer(RenderCollection *renderCollPtr);
+	void sendRenderCollectionVCDataToBuffer(RenderCollection *renderCollPtr);
+
 	void selectShader();
 };
 

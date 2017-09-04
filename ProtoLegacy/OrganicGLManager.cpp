@@ -77,6 +77,7 @@ void OrganicGLManager::InitializeOpenGL()
 	// Setup programID
 	OrganicGLprogramID = LoadShaders("SimpleTransform.vertexshader", "SimpleFragmentShader.fragmentshader");		/* NOTE: these shaders need to be in the same directory as the .exe file;
 																													How to put these in another directory should be investigated. (8/19/2017) */
+	OrganicGLVCprogramID = LoadShaders("TransformVertexShader.vertexshader", "ColorFragmentShader.fragmentshader");
 
 
 	// Setup OpenGL matrices
@@ -143,7 +144,9 @@ void OrganicGLManager::InitializeOpenGL()
 																													 is required to use glBufferSubData in this buffer.
 
 																					*/
-																					
+	glGenBuffers(1, &OrganicGLVertexColorBufferID);
+	glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexColorBufferID);
+	glBufferStorage(GL_ARRAY_BUFFER, CollectionBufferSize * 500, NULL, GL_DYNAMIC_STORAGE_BIT);
 
 	/* ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
@@ -210,6 +213,22 @@ void OrganicGLManager::ShutdownOpenGL()
 		glDeleteVertexArrays(1, &OrganicGLVertexArrayID);
 		glDeleteProgram(OrganicGLprogramID);
 		glDisableVertexAttribArray(0);
+		glfwTerminate();										// Close OpenGL window and terminate GLFW
+	}
+
+	if (renderMode == 1)
+	{
+		// Cleanup VBOs for renderMode 0
+		glDeleteBuffers(1, &OrganicGLVertexBufferID);
+		glDeleteBuffers(1, &OrganicGLVertexColorBufferID);
+		//glDeleteBuffers(1, &OrganicGLVertexBufferArray[1]);	// OrganicGLVertexBufferArray[0], OrganicGLVertexBufferID
+		glDeleteVertexArrays(1, &OrganicGLVertexArrayID);
+
+		glDeleteProgram(OrganicGLprogramID);
+		glDeleteProgram(OrganicGLVCprogramID);
+
+		glDisableVertexAttribArray(0);
+		glDisableVertexAttribArray(1);
 		glfwTerminate();										// Close OpenGL window and terminate GLFW
 	}
 }
@@ -287,15 +306,38 @@ void OrganicGLManager::computeMatricesFromInputs()
 	lastTime = currentTime;
 }
 
+/*
 void OrganicGLManager::sendDataToBuffer(GLfloat* floatPtr, int size)
 {
+	glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexBufferID);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, size, floatPtr);
 }
+*/
 
 void OrganicGLManager::sendRenderCollectionDataToBuffer(RenderCollection *renderCollPtr)
 {
 	//cout << "Test; array size: " << renderCollPtr->RenderCollectionArraySize <<endl;
+	glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexBufferID);				// OrganicGLVertexBufferArray[0], OrganicGLVertexBufferID
 	glBufferSubData(GL_ARRAY_BUFFER, RMContainer.CurrentIndex*CollectionBufferSize, renderCollPtr->RenderCollectionArraySize, renderCollPtr->GLFloatPtr);
+	RMContainer.RenderMetaArray[RMContainer.CurrentIndex].MetaIndex = RMContainer.CurrentIndex;
+	RMContainer.RenderMetaArray[RMContainer.CurrentIndex].ArraySize = renderCollPtr->RenderCollectionArraySize;
+	RMContainer.CurrentIndex++;
+	RMContainer.TotalRenderable++;
+}
+
+/*
+void OrganicGLManager::sendVertexColorDataToBuffer(GLfloat* floatPtr, int size)
+{
+	glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexColorBufferID);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, size, floatPtr);
+
+}
+*/
+
+void OrganicGLManager::sendRenderCollectionVCDataToBuffer(RenderCollection *renderCollPtr)
+{
+	glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexColorBufferID);
+	glBufferSubData(GL_ARRAY_BUFFER, RMContainer.CurrentIndex*CollectionBufferSize, renderCollPtr->RenderCollectionArraySize, renderCollPtr->VertexColorArrayPtr);
 	RMContainer.RenderMetaArray[RMContainer.CurrentIndex].MetaIndex = RMContainer.CurrentIndex;
 	RMContainer.RenderMetaArray[RMContainer.CurrentIndex].ArraySize = renderCollPtr->RenderCollectionArraySize;
 	RMContainer.CurrentIndex++;
@@ -321,4 +363,35 @@ void OrganicGLManager::selectShader()
 								*/
 		);
 	}	
+
+	if (renderMode == 1)
+	{
+		glUseProgram(OrganicGLVCprogramID);
+
+		glEnableVertexAttribArray(0);										//select the buffer we will be using
+		glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexBufferID);				// OrganicGLVertexBufferArray[0], OrganicGLVertexBufferID
+		glVertexAttribPointer(
+			0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+			3,                  // size
+			GL_FLOAT,           // type
+			GL_FALSE,           // normalized?
+			0,                  // stride
+			(void*)0            /* array buffer offset. Number following (void*) indicates offset point to begin reading from in the pointed-to buffer, measured in bytes;
+								For instance, if the data begins at byte 10000, you would put (void*)10000 in the array you are reading.
+								*/
+		);
+
+		glEnableVertexAttribArray(1);										//select the buffer we will be using
+		glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexColorBufferID);				// OrganicGLVertexBufferArray[0], OrganicGLVertexBufferID
+		glVertexAttribPointer(
+			1,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+			3,                  // size
+			GL_FLOAT,           // type
+			GL_FALSE,           // normalized?
+			0,                  // stride
+			(void*)0            /* array buffer offset. Number following (void*) indicates offset point to begin reading from in the pointed-to buffer, measured in bytes;
+								For instance, if the data begins at byte 10000, you would put (void*)10000 in the array you are reading.
+								*/
+		);
+	}
 }

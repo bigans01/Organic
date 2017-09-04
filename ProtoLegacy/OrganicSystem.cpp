@@ -942,7 +942,12 @@ GLfloat* OrganicSystem::GetVertexDataFromRenderCollection(int x, int y, int z)
 
 void OrganicSystem::SendDataFromCollectionToGLBuffer(GLfloat* inFloatPtr, int inSize)
 {
-	OGLM.sendDataToBuffer(inFloatPtr, inSize);
+	//OGLM.sendDataToBuffer(inFloatPtr, inSize);
+}
+
+void OrganicSystem::SendVertexColorDataFromCollectionToGLBuffer(GLfloat* inFloatPtr, int inSize)
+{
+	//OGLM.sendVertexColorDataToBuffer(inFloatPtr, inSize);
 }
 
 RenderCollection* OrganicSystem::GetRenderCollectionPtr(int x, int y, int z)
@@ -958,6 +963,11 @@ RenderCollection* OrganicSystem::GetRenderCollectionPtr(int x, int y, int z)
 void OrganicSystem::SendDataFromRenderPtrToGLBuffer(RenderCollection* renderCollectionPtr)
 {
 	OGLM.sendRenderCollectionDataToBuffer(renderCollectionPtr);
+}
+
+void OrganicSystem::LoadVCDataToGLBuffer(RenderCollection* renderCollectionPtr)
+{
+	OGLM.sendRenderCollectionVCDataToBuffer(renderCollectionPtr);
 }
 
 void OrganicSystem::AnalyzeRenderArray(int x, int y, int z, int xyz)
@@ -1023,11 +1033,23 @@ void OrganicSystem::SendRenderListToGLTerrainBuffer()
 {
 	std::vector<EnclaveKeyDef::EnclaveKey>::iterator renderListIter = renderCollectionList.KeyVector.begin();
 	RenderCollection* newRenderCollPtr;
+
+	// send first vertex attribute: positions
+	OGLM.RMContainer.CurrentIndex = 0;
 	for (renderListIter; renderListIter != renderCollectionList.KeyVector.end(); ++renderListIter)
 	{
 		EnclaveKeyDef::EnclaveKey tempKey = *renderListIter;						// get the key at this point in the vector
 		newRenderCollPtr = GetRenderCollectionPtr(tempKey.x, tempKey.y, tempKey.z);	// get the pointer to the RenderCollection that has this key
 		SendDataFromRenderPtrToGLBuffer(newRenderCollPtr);							// send this RenderCollection's data to the buffer
+	}
+
+	// send second vertex attribute: colors
+	OGLM.RMContainer.CurrentIndex = 0;
+	for (renderListIter; renderListIter != renderCollectionList.KeyVector.end(); ++renderListIter)
+	{
+		EnclaveKeyDef::EnclaveKey tempKey = *renderListIter;						// get the key at this point in the vector
+		newRenderCollPtr = GetRenderCollectionPtr(tempKey.x, tempKey.y, tempKey.z);	// get the pointer to the RenderCollection that has this key
+		LoadVCDataToGLBuffer(newRenderCollPtr);							// send this RenderCollection's data to the buffer
 	}
 }
 

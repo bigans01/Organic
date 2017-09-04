@@ -81,8 +81,13 @@ public:
 	void SetGraphicsAPI();
 	GLfloat* GetVertexDataFromRenderCollection(int x, int y, int z);
 	RenderCollection* GetRenderCollectionPtr(int x, int y, int z);
+
 	void SendDataFromCollectionToGLBuffer(GLfloat* inFloatPtr, int inSize);
+	void SendVertexColorDataFromCollectionToGLBuffer(GLfloat* inFloatPtr, int inSize);
+
 	void SendDataFromRenderPtrToGLBuffer(RenderCollection* renderCollectionPtr);
+	void LoadVCDataToGLBuffer(RenderCollection* renderCollectionPtr);
+
 	void AnalyzeRenderArray(int x, int y, int z, int xyz);
 	void AllocateFactories(int noOfFactories);
 	void JobMaterializeSingleCollectionFromMM(	EnclaveKeyDef::EnclaveKey Key1,																									// materializes a single collection from the ground up, utilizing a manifest matrix

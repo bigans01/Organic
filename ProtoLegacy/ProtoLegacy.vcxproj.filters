@@ -313,5 +313,11 @@
     <None Include="..\x64\Debug\SimpleTransform.vertexshader">
       <Filter>shaders</Filter>
     </None>
+    <None Include="..\x64\Debug\TransformVertexShader.vertexshader">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="..\x64\Debug\ColorFragmentShader.fragmentshader">
+      <Filter>shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -250,8 +250,10 @@
     <ClCompile Include="VertexReadingOrder.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\x64\Debug\ColorFragmentShader.fragmentshader" />
     <None Include="..\x64\Debug\SimpleFragmentShader.fragmentshader" />
     <None Include="..\x64\Debug\SimpleTransform.vertexshader" />
+    <None Include="..\x64\Debug\TransformVertexShader.vertexshader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
