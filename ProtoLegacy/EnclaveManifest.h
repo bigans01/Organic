@@ -37,7 +37,7 @@ public:
 	int RenderablePolyCount = 0;															// the number of currently "unveiled" polygons in the enclave
 	int TotalEnclaveTriangles = 0;															// the total number of triangles that will be rendered in this enclave manifest
 	GLfloat *EnclaveGLPtr;																	// pointer to the array of OpenGL floats, which will be used by an instnce of RenderCollection.
-	GLfloat *VertexShaderGLptr;
+	GLfloat *VertexColorGLPtr;
 	GLfloat *TextureGLPtr;																	// pointer to the array of texture data
 	RenderCollection *RenderCollectionRef;													// pointer to the RenderCollection that this EnclaveManifest belongs to; this is used to signal 
 																							// the RenderCollection that this instance of EnclaveManifest has changed
@@ -61,7 +61,7 @@ public:
 
 
 	EnclaveManifest(int x, int y, int z);													// constructor which sets the value of the EnclaveManifest's UniqueKey
-	EnclaveManifest(int x, int y, int z, OrganicTextureDictionary *texturedictionaryptr);
+	EnclaveManifest(int x, int y, int z, OrganicTextureDictionary *texturedictionaryptr, OrganicVtxColorDictionary *vertexcolordictionaryptr);
 	EnclaveManifest();																		// potentially unused
 
 																			// TempTuple: temporarily stores the x/y/z tuple that contains the final values for a block's representation in 3d space

@@ -33,6 +33,7 @@ public:
 	ManifestCollection *ManifestCollectionPtr;															// the pointer to the related ManifestCollection.
 	EnclaveCollection *EnclaveCollectionPtr;															// pointer to the associated EnclaveCollection.
 	GLfloat *GLFloatPtr;																				// the pointer to this RenderCollection's dynamically created 3d array.
+	GLfloat *VertexColorArrayPtr;
 	int IsGLFloatPtrLoaded = 0;																			// indicates whether or not there is a valid dynamic array pointed to by GLFloatPtr.
 	int LastCollectionTriangleCount = 0;																// potentially unused?
 	int RenderCollectionArraySize = 0;																	// indicates the size of the dynamic array in bytes (required for OpenGL glBufferData)

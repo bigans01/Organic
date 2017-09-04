@@ -7,7 +7,6 @@
 #include "EnclaveKeyDef.h"
 #include "EnclaveMatrix.h"
 #include "EnclaveManifest.h"
-#include "OrganicTextureDictionary.h"
 #include "OrganicSystem.h"
 
 
@@ -45,7 +44,8 @@ void ManifestCollection::AddManifestToMatrix(int x, int y, int z, EnclaveKeyDef:
 	tempkey.z = z;
 	//EnclaveCollectionMatrix *dumbref = std::ref(WrappedCollectionMatrixRef->get());
 	OrganicTextureDictionary *tempDictionaryRef = &CollectionMatrixRef->OrganicPointer->TextureDictionary;
-	EnclaveManifest tempmanifest(x, y, z, tempDictionaryRef);
+	OrganicVtxColorDictionary *tempColorDictionaryRef = &CollectionMatrixRef->OrganicPointer->VertexColorDictionary;
+	EnclaveManifest tempmanifest(x, y, z, tempDictionaryRef, tempColorDictionaryRef);
 
 	ManMatrix[tempkey] = tempmanifest;
 	//EnclaveManifest *tptr;
@@ -70,7 +70,8 @@ void ManifestCollection::AddManifestToMatrix(int x, int y, int z, EnclaveKeyDef:
 	tempkey.z = z;
 	//EnclaveCollectionMatrix *dumbref = std::ref(WrappedCollectionMatrixRef->get());
 	OrganicTextureDictionary *tempDictionaryRef = &CollectionMatrixRef->OrganicPointer->TextureDictionary;
-	EnclaveManifest tempmanifest(x, y, z, tempDictionaryRef);
+	OrganicVtxColorDictionary *tempColorDictionaryRef = &CollectionMatrixRef->OrganicPointer->VertexColorDictionary;
+	EnclaveManifest tempmanifest(x, y, z, tempDictionaryRef, tempColorDictionaryRef);
 
 	ManMatrix[tempkey] = tempmanifest;
 	//EnclaveManifest *tptr;
@@ -95,7 +96,8 @@ void ManifestCollection::AddManifestToMatrix(int x, int y, int z, EnclaveKeyDef:
 	tempkey.z = z;
 	//EnclaveCollectionMatrix *dumbref = std::ref(WrappedCollectionMatrixRef->get());
 	OrganicTextureDictionary *tempDictionaryRef = &CollectionMatrixRef->OrganicPointer->TextureDictionary;
-	EnclaveManifest tempmanifest(x, y, z, tempDictionaryRef);
+	OrganicVtxColorDictionary *tempColorDictionaryRef = &CollectionMatrixRef->OrganicPointer->VertexColorDictionary;
+	EnclaveManifest tempmanifest(x, y, z, tempDictionaryRef, tempColorDictionaryRef);
 
 	ManMatrix[tempkey] = tempmanifest;
 	//EnclaveManifest *tptr;

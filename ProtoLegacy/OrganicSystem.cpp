@@ -1082,10 +1082,12 @@ void OrganicSystem::MaterializeRenderablesByMM()
 	OrganicFactoryIndex.FactoryMap["Factory 1"].StorageArray[0].VertexArrayCount = 0;
 	EnclaveManifestFactoryT1 *FactoryPtr = &OrganicFactoryIndex.FactoryMap["Factory 1"];
 	FactoryPtr->TextureDictionaryRef = &TextureDictionary;
+	FactoryPtr->VertexColorDictionaryRef = &VertexColorDictionary;
 
 	OrganicFactoryIndex.FactoryMap["Factory 2"].StorageArray[0].VertexArrayCount = 0;
 	EnclaveManifestFactoryT1 *FactoryPtr2 = &OrganicFactoryIndex.FactoryMap["Factory 2"];
 	FactoryPtr2->TextureDictionaryRef = &TextureDictionary;
+	FactoryPtr2->VertexColorDictionaryRef = &VertexColorDictionary;
 
 	MDListJobMaterializeCollection* list1 = &MatCollList.MaterializeCollectionList.front();
 	MDListJobMaterializeCollection* list2 = &MatCollList.MaterializeCollectionList.back();
@@ -1155,10 +1157,12 @@ void OrganicSystem::MaterializeRenderablesByFactory()
 	OrganicFactoryIndex.FactoryMap["Factory 1"].StorageArray[0].VertexArrayCount = 0;
 	EnclaveManifestFactoryT1 *FactoryPtr = &OrganicFactoryIndex.FactoryMap["Factory 1"];
 	FactoryPtr->TextureDictionaryRef = &TextureDictionary;
+	FactoryPtr->VertexColorDictionaryRef = &VertexColorDictionary;
 
 	OrganicFactoryIndex.FactoryMap["Factory 2"].StorageArray[0].VertexArrayCount = 0;
 	EnclaveManifestFactoryT1 *FactoryPtr2 = &OrganicFactoryIndex.FactoryMap["Factory 2"];
 	FactoryPtr2->TextureDictionaryRef = &TextureDictionary;
+	FactoryPtr2->VertexColorDictionaryRef = &VertexColorDictionary;
 
 	MDListJobMaterializeCollection* list1 = &MatCollList.MaterializeCollectionList.front();
 	MDListJobMaterializeCollection* list2 = &MatCollList.MaterializeCollectionList.back();

@@ -10,11 +10,16 @@ void EnclaveManifestFactoryT1::AttachManifestToEnclave(Enclave *in_ptr)
 	OrganicTextureMetaArray *textureMetaArrayRef;
 	textureMetaArrayRef = &TextureDictionaryRef->Dictionary["base"];
 
+	OrganicVtxColorMeta *vertexColorMetaRef;
+	OrganicVtxColorMetaArray *vertexColorMetaArrayRef;
+	vertexColorMetaArrayRef = &VertexColorDictionaryRef->Dictionary["base"];
+
 	//StorageArray[CurrentStorage].VertexArrayCount =	(in_ptr->GetTotalTrianglesInEnclave()) * 9;	// set the total amount of vertex data to store
 	//StorageArray[CurrentStorage].TextureArrayCount = (in_ptr->GetTotalTrianglesInEnclave()) * 6; // set the total amount of texture data to store
 	StorageArray[CurrentStorage].StorageKey = in_ptr->UniqueKey;
-	StorageArray[CurrentStorage].VertexArrayCount = 0;	// set the total amount of vertex data to store
-	StorageArray[CurrentStorage].TextureArrayCount = 0; // set the total amount of texture data to store
+	StorageArray[CurrentStorage].VertexArrayCount = 0;			// set the total amount of vertex data to store
+	StorageArray[CurrentStorage].TextureArrayCount = 0;			// set the total amount of texture data to store
+	StorageArray[CurrentStorage].VertexColorArrayCount = 0;		// set the total amount of vertex color data to store
 	StorageArray[CurrentStorage].TotalEnclaveTriangles = in_ptr->GetTotalTrianglesInEnclave();	// total triangles in the attached enclave (saved for later use)
 	int RenderablePolyCount = in_ptr->TotalRenderable;
 
@@ -36,7 +41,10 @@ void EnclaveManifestFactoryT1::AttachManifestToEnclave(Enclave *in_ptr)
 		EnclavePolyArrayPtr = in_ptr->Sorted.RenderArray[i];
 		int t1_flagsint = EnclavePolyArrayPtr->t1_flags;
 		polyfacebitmask = 32;
+
 		textureMetaRef = &textureMetaArrayRef->Index[1];
+		vertexColorMetaRef = &vertexColorMetaArrayRef->Index[1];
+
 		EnclaveManifestOffset = SingleToMulti(in_ptr->Sorted.PolyArrayIndex[i]);
 		for (int j = 0; j < 6; ++j)
 		{																	// iterate through each bit
@@ -66,6 +74,10 @@ void EnclaveManifestFactoryT1::AttachManifestToEnclave(Enclave *in_ptr)
 
 					StorageArray[CurrentStorage].TextureArray[StorageArray[CurrentStorage].TextureArrayCount++] = textureMetaRef->BlockData.FaceIndex[0].FaceData[0].U;
 					StorageArray[CurrentStorage].TextureArray[StorageArray[CurrentStorage].TextureArrayCount++] = textureMetaRef->BlockData.FaceIndex[0].FaceData[0].U;
+
+					StorageArray[CurrentStorage].VertexColorArray[StorageArray[CurrentStorage].VertexColorArrayCount++] = vertexColorMetaRef->BlockData.FaceIndex[0].FaceMeta[k].red;
+					StorageArray[CurrentStorage].VertexColorArray[StorageArray[CurrentStorage].VertexColorArrayCount++] = vertexColorMetaRef->BlockData.FaceIndex[0].FaceMeta[k].green;
+					StorageArray[CurrentStorage].VertexColorArray[StorageArray[CurrentStorage].VertexColorArrayCount++] = vertexColorMetaRef->BlockData.FaceIndex[0].FaceMeta[k].blue;
 					//TextureGLPtr[texturetuples++] = textureMetaRef->BlockData.FaceIndex[0].FaceData[0].U;
 					//TextureGLPtr[texturetuples++] = textureMetaRef->BlockData.FaceIndex[0].FaceData[0].U;
 					//EnclaveManifestRenderables[totaltuples++] = TempTuple;	

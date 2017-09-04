@@ -19,6 +19,8 @@ Dependents: a valid instance of ManifestCollectionMatrix
 #include "EnclaveMatrix.h"
 #include "EnclaveManifest.h"
 #include "EnclaveCollectionMatrix.h"
+#include "OrganicTextureDictionary.h"
+#include "OrganicVtxColorDictionary.h"
 #include <functional>
 #include <mutex>
 

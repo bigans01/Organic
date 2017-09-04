@@ -184,6 +184,7 @@ void RenderCollection::CombineManifestArraysFromT1Factory(EnclaveManifestFactory
 	mutexval.lock();
 	IsGLFloatPtrLoaded = 1;									// indicate that the pointer was loaded with data
 	GLFloatPtr = new GLfloat[totalfloats];	// 9 floats per triangle
+	VertexColorArrayPtr = new GLfloat[totalfloats];
 											//cout << "totalfloats: " << totalfloats << endl;
 	mutexval.unlock();
 	//cout << "Render 2 entry:" << endl;
@@ -205,10 +206,12 @@ void RenderCollection::CombineManifestArraysFromT1Factory(EnclaveManifestFactory
 
 		int pointedBegin = 0;
 		GLfloat dumbval = StoragePtr->VertexArray[pointedBegin];
+		GLfloat dumbval2 = StoragePtr->VertexColorArray[pointedBegin];
 		//GLfloat dumbval2 = StoragePtr->VertexArray[pointedBegin+1];
 		//GLfloat dumbval3 = StoragePtr->VertexArray[pointedBegin+2];
 		//cout << "test  " << dumbval << ", " << dumbval2 << ", " << dumbval3 << endl;
 		GLFloatPtr[currentBegin] = dumbval;
+		VertexColorArrayPtr[currentBegin] = dumbval2;
 		//cout << "Render 2 entry:" << endl;
 		//cout << "Key output: " << StoragePtr->StorageKey.x << ", " << StoragePtr->StorageKey.y << "," << StoragePtr->StorageKey.z << " | " << dumbval << endl ;
 		enclaveDataStart[x].DFKey = StoragePtr->StorageKey;
@@ -220,6 +223,11 @@ void RenderCollection::CombineManifestArraysFromT1Factory(EnclaveManifestFactory
 			GLFloatPtr[currentBegin] = StoragePtr->VertexArray[pointedBegin];
 			GLFloatPtr[currentBegin + 1] = StoragePtr->VertexArray[pointedBegin + 1];
 			GLFloatPtr[currentBegin + 2] = StoragePtr->VertexArray[pointedBegin + 2];
+
+			VertexColorArrayPtr[currentBegin] = StoragePtr->VertexColorArray[pointedBegin];
+			VertexColorArrayPtr[currentBegin + 1] = StoragePtr->VertexColorArray[pointedBegin + 1];
+			VertexColorArrayPtr[currentBegin + 2] = StoragePtr->VertexColorArray[pointedBegin + 2];
+
 			currentBegin += 3;
 			pointedBegin += 3;
 		}
@@ -502,6 +510,7 @@ RenderCollection::~RenderCollection()
 	{
 		//cout << "DELETING RENDER COLLECTION" << endl;
 		delete[] GLFloatPtr;
+		delete[] VertexColorArrayPtr;
 		IsGLFloatPtrLoaded = 0;
 		//cout << "DELETE COMPLETE" << endl;
 	}
