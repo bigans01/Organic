@@ -28,6 +28,7 @@ Summary: An instance of OrganicGLManager is responsible for managing all OpenGL 
 class OrganicGLManager
 {
 public:
+	int renderMode = 0;
 	GLFWwindow  *GLwindow;														// OpenGL: pointer/handle to the OpenGL window (context?)
 	GLuint OrganicGLprogramID;													// OpenGL: pointer/handle to the program used for shading	
 	GLuint OrganicGLVertexArrayID;												// OpenGL: pointer/handle to the vertex array handler
@@ -63,6 +64,7 @@ public:
 	void computeMatricesFromInputs();
 	void sendDataToBuffer(GLfloat* floatPtr, int size);
 	void sendRenderCollectionDataToBuffer(RenderCollection *renderCollPtr);
+	void selectShader();
 };
 
 #endif

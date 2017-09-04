@@ -65,7 +65,7 @@ public:
 	void AddAndMaterializeSingleCollectionMM(int x, int y, int z);								/* adds a single new MM-based collection, and renders all top faces in all 64 top level chunks;
 																								 this task will run on the same thread on which it is called (will not utilize thread pool)*/
 	void MaterializeCollection(EnclaveKeyDef::EnclaveKey Key1, EnclaveKeyDef::EnclaveKey Key2);	// temporary test function only; attempts to run all types of collection materialization jobs
-	void MaterializeAllCollectionsInRenderList();												// will attempt to materialize all collections in renderCollectionList.
+	void MaterializeAllCollectionsInRenderList(int renderProcess);								// will attempt to materialize all collections in renderCollectionList; 0 = Factory mode, 1 = MM mode
 	void ChangeSingleBlockMaterialAtXYZ(int x, int y, int z, int newmaterial);					// changes the material block at an x/y/z location
 	void AddBlueprint(int x, int y, int z, EnclaveCollectionBlueprint blueprint);				// adds a blueprint to the OrganicSystem's blueprint matrix.
 	void AddKeyToRenderList(EnclaveKeyDef::EnclaveKey tempKey);									// adds 1 key to the renderCollectionList.
@@ -90,7 +90,7 @@ public:
 												EnclaveCollection *CollectionRef,
 												ManifestCollection *ManifestCollectionRef
 												);
-	void JobMaterializeMultiCollectionFromMM(MDListJobMaterializeCollection mdjob, mutex& mutexval, int ThreadID);																// materializes multiple collections from the ground up, utilizing a manifest matrix.
+	void JobMaterializeMultiCollectionFromMM(MDListJobMaterializeCollection* mdjob, mutex& mutexval, int ThreadID);																// materializes multiple collections from the ground up, utilizing a manifest matrix.
 	void JobMaterializeMultiCollectionFromFactory(MDListJobMaterializeCollection mdjob, mutex& mutexval, EnclaveManifestFactoryT1 *FactoryRef, int ThreadID);					// materializes multiple collections from the ground up, utilizing a factory.
 	void JobMaterializeMultiCollectionFromFactory2(MDListJobMaterializeCollection* mdjob, mutex& mutexval, EnclaveManifestFactoryT1 *FactoryRef, int ThreadID);					// materializes multiple collections from the ground up, utilizing a factory. (testing only, may be erased)
 	void JobRematerializeSingleExistingCollectionFromFactory(	EnclaveKeyDef::EnclaveKey Key1,																					// rematerializes a single collection on a currently loaded EnclaveCollection, from a Factory
@@ -99,12 +99,17 @@ public:
 																RenderCollectionMatrix *RenderCollectionRef, 
 																mutex& mutexval);								
 	void DummyJob(int value, EnclaveManifestFactoryT1 *FactoryRef, mutex& mutexval);																							// dummy thread pool job, for testing only.
+	void SetRenderMode(int x);																																					// sets the RenderMode variable in the OGLM object
 	void RenderGLTerrain();																																						// renders everything in the Terrain buffer
 	void GLCleanup();																																							// for deallocating and/or turning off OpenGL components
 	void ArrayTest();																																							// testing only
 	void SendRenderListToGLTerrainBuffer();																																		// will send all renderable enclaves listed in the renderCollectionList to the OpenGL buffer
 	thread_pool* getCell1();																																					// gets a pointer to worker thread (Cell) #1
 	thread_pool* getCell2();																																					// gets a pointer to worker thread (Cell) #2
+
+private:
+	void MaterializeRenderablesByMM();						// this function will attempt to render all RenderCollections having keys found in this list, regardless of their status, by using a ManifestMatrix (ManifestCollectionMatrix)
+	void MaterializeRenderablesByFactory();					// this function  will attempt to render all RenderCollections having keys found in this list, regardless of their status, by using one or more Factories. (EnclaveManifestFactoryT1)
 
 };
 
