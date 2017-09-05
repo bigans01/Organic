@@ -57,11 +57,9 @@ public:
 	void CombineManifestArraysFromT1Factory(EnclaveManifestFactoryT1 *factoryRef, mutex& mutexval);		// iterates through all of the current elements found in a T1 factory.
 	void UpdateManifestArray(EnclaveKeyDef::EnclaveKey Key);											// rebuilds the dynamic array pointed to by GLFloatPtr by updating a single enclave manifest; designed for single enclave operations.
 	void SetManifestCollectionPtr(ManifestCollection *manifestcollectionref);							// sets the pointer to the corresponding ManifestCollection that this RenderCollection will be associated with. 
-	void SetEnclaveCollectionPtr(EnclaveCollection *enclavecollectionref);
-	GLfloat* GetGLData();
+	void SetEnclaveCollectionPtr(EnclaveCollection *enclavecollectionref);								// sets the pointer to the corresponding EnclaveCollection that this RenderCollection will be associated with.
+																		
 
-
-																// create a single instance of CollectionMeta
 	
 };
 #endif

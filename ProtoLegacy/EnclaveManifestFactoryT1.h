@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------------------------------
 
---EnclaveManifestFactoryT1.h	(Last Update 8/16/2017)
+--EnclaveManifestFactoryT1.h	(Last Update 9/4/2017)
 
 Description: Header file for EnclaveManifestFactoryT1.cpp
 
@@ -31,8 +31,8 @@ class EnclaveManifestFactoryT1
 public:
 	EnclaveCollection *EnclaveCollectionPtr;												// pointer to a valid EnclaveCollection
 	Enclave::EnclavePolyArray *EnclavePolyArrayPtr;											// pointer to an EnclavePolyArray within previous EnclaveCollection
-	OrganicTextureDictionary *TextureDictionaryRef;											// pointer to a valid OrganicTextureDictionary
-	OrganicVtxColorDictionary *VertexColorDictionaryRef;
+	OrganicTextureDictionary *TextureDictionaryRef;											// pointer to a valid OrganicTextureDictionary contained within an OrganicSystem instance
+	OrganicVtxColorDictionary *VertexColorDictionaryRef;									// pointer to a valid OrganicVtxColorDictionary contained within an OrganicSystem instance
 
 	EnclaveManifestFactoryT1Storage StorageArray[512];										// an array of 512 storage units 
 	int CurrentStorage = 0;																	// a member variable that stores the current number of stored Enclaves

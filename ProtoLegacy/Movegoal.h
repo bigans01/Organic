@@ -1,3 +1,9 @@
+/*
+
+This function will be revisited at a later time (9/4/2017)
+
+*/
+
 // adding guards
 #ifndef MOVEGOAL_H
 #define MOVEGOAL_H

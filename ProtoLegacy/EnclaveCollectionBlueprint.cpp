@@ -52,18 +52,7 @@ void EnclaveCollectionBlueprint::AddNewPaintList(EnclaveKeyDef::EnclaveKey InKey
 	//std::cout << "Elapsed time (Blueprint addition to int): " << blueelapsed.count() << std::endl;
 }
 
-void EnclaveCollectionBlueprint::AddNewPaintList2(EnclaveKeyDef::EnclaveKey InKey, EnclavePainterList InPaintList)
-{
-	//auto bluestart = std::chrono::high_resolution_clock::now();
-	//PaintListMatrix.PainterListMatrix[InKey] = InPaintList;
-	//auto blueend = std::chrono::high_resolution_clock::now();
-	//auto bluestart = std::chrono::high_resolution_clock::now();
-	int returnval = BPKeyToSingle(InKey);
-	PaintListMatrix.PainterListMatrix2[returnval] = InPaintList;
-	//auto blueend = std::chrono::high_resolution_clock::now();
-	//std::chrono::duration<double> blueelapsed = blueend - bluestart;
-	//std::cout << "Elapsed time (Blueprint addition to int): " << blueelapsed.count() << std::endl;
-}
+
 
 ElevationMapRef& EnclaveCollectionBlueprint::GetSurfaceChunkData()
 {

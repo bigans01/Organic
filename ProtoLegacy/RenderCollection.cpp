@@ -515,8 +515,3 @@ RenderCollection::~RenderCollection()
 		//cout << "DELETE COMPLETE" << endl;
 	}
 }
-
-GLfloat* RenderCollection::GetGLData()
-{
-	return GLFloatPtr;
-}

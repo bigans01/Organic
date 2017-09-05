@@ -52,7 +52,7 @@ public:
 											EnclaveKeyDef::EnclaveKey Key, 
 											EnclaveCollectionBlueprint *blueprint);
 
-	void JobInstantiateAndPopulateEnclaveBeta(	int beginRange,												// (potentially unused) this function is designed for multithreading; it will return a list of enclaves that need to be rendered as a result
+	void JobInstantiateAndPopulateEnclaveBeta(	int beginRange,																		// (potentially unused) this function is designed for multithreading; it will return a list of enclaves that need to be rendered as a result
 																		int endRange,												// of this job being run.			
 																		EnclaveCollection &collectionRef,
 																		EnclaveKeyDef::EnclaveKey Key,
@@ -65,8 +65,8 @@ public:
 												EnclaveCollectionActivateListT2 &activateListRef);
 
 	void JobInstantiateAndPopulateEnclaveAlpha2(int beginRange,																		// this function is designed for multithreading; it will return a list of enclaves that need to be rendered as a result
-		int endRange,																		// of this job being run. It is the defacto job to call when dealing with populating/instantiating Enclaves	
-		EnclaveCollection &collectionRef,													// as part of a multithreaded operation.
+		int endRange,																												// of this job being run. It is the defacto job to call when dealing with populating/instantiating Enclaves	
+		EnclaveCollection &collectionRef,																							// as part of a multithreaded operation.
 		EnclaveKeyDef::EnclaveKey Key,
 		EnclaveCollectionBlueprint* blueprint,
 		EnclaveCollectionBlueprintMatrix* blueprintmatrix,

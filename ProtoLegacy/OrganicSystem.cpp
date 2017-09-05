@@ -538,12 +538,12 @@ void OrganicSystem::AddOrganicVtxColorMetaArray(string mapname)
 	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[2].green = 0.221f;
 	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[2].blue = 0.44f;
 
-	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[3].red = 0.44f;
-	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[3].green = 0.221f;
-	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[3].blue = 0.144f;
+	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[3].red = 0.95f;
+	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[3].green = 0.021f;
+	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[3].blue = 0.044f;
 
-	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[4].red = 0.171f;
-	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[4].green = 0.621f;
+	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[4].red = 0.971f;
+	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[4].green = 0.121f;
 	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[4].blue = 0.131f;
 
 	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[5].red = 0.371f;
@@ -914,6 +914,12 @@ void OrganicSystem::SetRenderMode(int x)
 		OGLM.renderMode = 0;		// sets to default render mode
 		OGLM.selectShader();		// selects the default shader (because renderMode was set to 0)
 	}
+
+	if (x == 1)
+	{
+		OGLM.renderMode = 1;
+		OGLM.selectShader();
+	}
 }
 
 void OrganicSystem::RenderGLTerrain()
@@ -926,32 +932,10 @@ void OrganicSystem::GLCleanup()
 	OGLM.ShutdownOpenGL();
 }
 
-GLfloat* OrganicSystem::GetVertexDataFromRenderCollection(int x, int y, int z)
-{
-	EnclaveKeyDef::EnclaveKey tempKey;
-	tempKey.x = x;
-	tempKey.y = y;
-	tempKey.z = z;
-	//GLfloat *returnPtr = &RenderCollections.RenderMatrix[tempKey].GetGLData;
-	//return &RenderCollections.RenderMatrix[tempKey].GetGLData;
-	//return returnPtr;
-	GLfloat *tempPtr = RenderCollections.RenderMatrix[tempKey].GetGLData();
-	return tempPtr;
-	
-}
-
-void OrganicSystem::SendDataFromCollectionToGLBuffer(GLfloat* inFloatPtr, int inSize)
-{
-	//OGLM.sendDataToBuffer(inFloatPtr, inSize);
-}
-
-void OrganicSystem::SendVertexColorDataFromCollectionToGLBuffer(GLfloat* inFloatPtr, int inSize)
-{
-	//OGLM.sendVertexColorDataToBuffer(inFloatPtr, inSize);
-}
 
 RenderCollection* OrganicSystem::GetRenderCollectionPtr(int x, int y, int z)
 {
+	/* Summary: returns a pointer to a RenderCollection, by using x/y/z passed in as input*/
 	EnclaveKeyDef::EnclaveKey tempKey;
 	tempKey.x = x;
 	tempKey.y = y;
@@ -1045,8 +1029,10 @@ void OrganicSystem::SendRenderListToGLTerrainBuffer()
 
 	// send second vertex attribute: colors
 	OGLM.RMContainer.CurrentIndex = 0;
+	renderListIter = renderCollectionList.KeyVector.begin();
 	for (renderListIter; renderListIter != renderCollectionList.KeyVector.end(); ++renderListIter)
 	{
+		//cout << " test " << endl;
 		EnclaveKeyDef::EnclaveKey tempKey = *renderListIter;						// get the key at this point in the vector
 		newRenderCollPtr = GetRenderCollectionPtr(tempKey.x, tempKey.y, tempKey.z);	// get the pointer to the RenderCollection that has this key
 		LoadVCDataToGLBuffer(newRenderCollPtr);							// send this RenderCollection's data to the buffer

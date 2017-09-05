@@ -65,8 +65,6 @@ public:
 	void RenderReadyArrays();
 	void ShutdownOpenGL();
 	void computeMatricesFromInputs();
-	//void sendDataToBuffer(GLfloat* floatPtr, int size);
-	//void sendVertexColorDataToBuffer(GLfloat* floatPtr, int size);
 	void sendRenderCollectionDataToBuffer(RenderCollection *renderCollPtr);
 	void sendRenderCollectionVCDataToBuffer(RenderCollection *renderCollPtr);
 

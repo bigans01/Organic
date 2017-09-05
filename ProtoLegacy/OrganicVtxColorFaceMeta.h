@@ -16,7 +16,7 @@ Description: Contains meta data for a cube-based texture that will be used in th
 class OrganicVtxColorFaceMeta
 {
 	public:
-		OrganicVtxColorRGB FaceMeta[6];
+		OrganicVtxColorRGB FaceMeta[6];			// an array for storing 6 RGB float triplet values (one block face has 6 of these)
 };
 
 #endif

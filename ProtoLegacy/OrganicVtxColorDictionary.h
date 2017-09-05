@@ -17,8 +17,8 @@ Description: contains one or more entries of OrganicVtxColorMetaArrays (?)
 class OrganicVtxColorDictionary
 {
 public:
-	std::unordered_map<std::string, OrganicVtxColorMetaArray> Dictionary;
-	OrganicVtxColorDictionary();
+	std::unordered_map<std::string, OrganicVtxColorMetaArray> Dictionary;	// unordered map that actually contains the Dictionary objects
+	OrganicVtxColorDictionary();											// required so that te Dictionary can be added into the unordered map
 };
 
 #endif

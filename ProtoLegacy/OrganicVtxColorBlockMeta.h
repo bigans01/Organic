@@ -18,7 +18,7 @@ Description: contains up to 32000~ different OrganicTextureMeta entries.
 class OrganicVtxColorBlockMeta
 {
 public:
-	OrganicVtxColorFaceMeta FaceIndex[6];
+	OrganicVtxColorFaceMeta FaceIndex[6];	// contains values for all 6 faces of a block
 };
 
 #endif

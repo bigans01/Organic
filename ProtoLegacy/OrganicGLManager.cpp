@@ -12,12 +12,6 @@ OrganicGLManager::OrganicGLManager()
 void OrganicGLManager::InitializeOpenGL()
 {
 
-
-
-
-
-
-
 	/* ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 	
 	BEGIN CONTEXT/PREREQUISITE TESTS
@@ -306,13 +300,6 @@ void OrganicGLManager::computeMatricesFromInputs()
 	lastTime = currentTime;
 }
 
-/*
-void OrganicGLManager::sendDataToBuffer(GLfloat* floatPtr, int size)
-{
-	glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexBufferID);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, size, floatPtr);
-}
-*/
 
 void OrganicGLManager::sendRenderCollectionDataToBuffer(RenderCollection *renderCollPtr)
 {
@@ -325,14 +312,7 @@ void OrganicGLManager::sendRenderCollectionDataToBuffer(RenderCollection *render
 	RMContainer.TotalRenderable++;
 }
 
-/*
-void OrganicGLManager::sendVertexColorDataToBuffer(GLfloat* floatPtr, int size)
-{
-	glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexColorBufferID);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, size, floatPtr);
 
-}
-*/
 
 void OrganicGLManager::sendRenderCollectionVCDataToBuffer(RenderCollection *renderCollPtr)
 {
@@ -380,6 +360,8 @@ void OrganicGLManager::selectShader()
 								For instance, if the data begins at byte 10000, you would put (void*)10000 in the array you are reading.
 								*/
 		);
+
+
 
 		glEnableVertexAttribArray(1);										//select the buffer we will be using
 		glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexColorBufferID);				// OrganicGLVertexBufferArray[0], OrganicGLVertexBufferID

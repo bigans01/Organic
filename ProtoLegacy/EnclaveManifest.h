@@ -42,7 +42,7 @@ public:
 	RenderCollection *RenderCollectionRef;													// pointer to the RenderCollection that this EnclaveManifest belongs to; this is used to signal 
 																							// the RenderCollection that this instance of EnclaveManifest has changed
 	OrganicTextureDictionary *TextureDictionaryRef;											// reference to the Organic system's OrganicTextureDictionary
-	OrganicVtxColorDictionary *VertexColorDictionaryRef;
+	OrganicVtxColorDictionary *VertexColorDictionaryRef;									// reference to the Organic system's OrganicVtxColorDictionary
 
 	int IsRenderCollectionRefSet = 0;														// determines whether or not the pointer RenderCollectionRef is set
 	Enclave EnclavePtr;																		// pointer to the enclave to gain data from

@@ -1,3 +1,15 @@
+/*------------------------------------------------------------------------------------------
+
+--MaterializeCollectionListContainer.h (Last update 9/4/2017)
+
+Description: Header file for MaterializeCollectionListContainer data structure
+
+Summary: A MaterializeCollectionListContainer contains a vector of MDListJobMaterializeCollections. It is designed to be used with multithreading; one thread gets an instance of this list
+so that it knows all collections it needs to materialize.
+
+
+------------------------------------------------------------------------------------------*/
+
 #pragma once
 
 #ifndef MATERIALIZECOLLECTIONLISTCONTAINER_H

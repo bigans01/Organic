@@ -42,7 +42,6 @@ void ManifestCollection::AddManifestToMatrix(int x, int y, int z, EnclaveKeyDef:
 	tempkey.x = x;
 	tempkey.y = y;
 	tempkey.z = z;
-	//EnclaveCollectionMatrix *dumbref = std::ref(WrappedCollectionMatrixRef->get());
 	OrganicTextureDictionary *tempDictionaryRef = &CollectionMatrixRef->OrganicPointer->TextureDictionary;
 	OrganicVtxColorDictionary *tempColorDictionaryRef = &CollectionMatrixRef->OrganicPointer->VertexColorDictionary;
 	EnclaveManifest tempmanifest(x, y, z, tempDictionaryRef, tempColorDictionaryRef);
@@ -68,7 +67,6 @@ void ManifestCollection::AddManifestToMatrix(int x, int y, int z, EnclaveKeyDef:
 	tempkey.x = x;
 	tempkey.y = y;
 	tempkey.z = z;
-	//EnclaveCollectionMatrix *dumbref = std::ref(WrappedCollectionMatrixRef->get());
 	OrganicTextureDictionary *tempDictionaryRef = &CollectionMatrixRef->OrganicPointer->TextureDictionary;
 	OrganicVtxColorDictionary *tempColorDictionaryRef = &CollectionMatrixRef->OrganicPointer->VertexColorDictionary;
 	EnclaveManifest tempmanifest(x, y, z, tempDictionaryRef, tempColorDictionaryRef);
@@ -94,7 +92,6 @@ void ManifestCollection::AddManifestToMatrix(int x, int y, int z, EnclaveKeyDef:
 	tempkey.x = x;
 	tempkey.y = y;
 	tempkey.z = z;
-	//EnclaveCollectionMatrix *dumbref = std::ref(WrappedCollectionMatrixRef->get());
 	OrganicTextureDictionary *tempDictionaryRef = &CollectionMatrixRef->OrganicPointer->TextureDictionary;
 	OrganicVtxColorDictionary *tempColorDictionaryRef = &CollectionMatrixRef->OrganicPointer->VertexColorDictionary;
 	EnclaveManifest tempmanifest(x, y, z, tempDictionaryRef, tempColorDictionaryRef);
@@ -144,10 +141,6 @@ ManifestCollection::ManifestCollection(EnclaveCollectionMatrix *collectionref)
 	//cout << "New manifest collection add...." << endl;
 	CollectionMatrixRef = collectionref;
 	EnclaveCollectionMatrix *tptr = std::ref(collectionref);
-	reference_wrapper<EnclaveCollectionMatrix*> tptr2 = tptr;
-	reference_wrapper<EnclaveCollectionMatrix*> *tptr3 = &tptr2;
-	//WrappedCollectionMatrixRef = std::ref(collectionref);
-	WrappedCollectionMatrixRef = tptr3;
 }
 
 ManifestCollection::ManifestCollection()

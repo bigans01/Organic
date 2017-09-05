@@ -205,6 +205,7 @@ EnclaveManifest::EnclaveManifest(int x, int y, int z, OrganicTextureDictionary *
 	this->UniqueKey.y = y;
 	this->UniqueKey.z = z;
 	this->TextureDictionaryRef = texturedictionaryptr;
+	this->VertexColorDictionaryRef = vertexcolordictionaryptr;
 }
 
 EnclaveManifest::~EnclaveManifest()

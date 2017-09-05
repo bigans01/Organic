@@ -18,11 +18,6 @@ Dependents: none
 #ifndef ECBXAXISCARVEPLAN_H
 #define ECBXAXISCARVEPLAN_H
 
-
-#include "stdafx.h"
-#include <stdio.h>
-#include <iostream>
-
 class ECBXAxisCarvePlan
 {
 public:

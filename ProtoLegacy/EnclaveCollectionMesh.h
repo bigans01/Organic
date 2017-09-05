@@ -26,10 +26,6 @@ public:
 
 	EnclaveCollectionMesh(int arraysize, ManifestCollection *refmatrix);
 	~EnclaveCollectionMesh();												// destructor for killing arrays on heap
-	
-
-
-
 	void AddManifestPtr(EnclaveKeyDef::EnclaveKey Key);
 	void BuildRenderArray();
 	void PopulateRenderArray();

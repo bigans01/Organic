@@ -21,8 +21,6 @@ class EnclavePainterListMatrix {
 public:
 	std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclavePainterList, EnclaveKeyDef::KeyHasher> PainterListMatrix;	// the painter list matrix
 
-	//following line is for testing only
-	std::unordered_map<int, EnclavePainterList> PainterListMatrix2;
 
 
 

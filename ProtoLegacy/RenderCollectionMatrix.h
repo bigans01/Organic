@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------------------------------
 
---RenderCollectionMatrix.h		(Last update 8/16/2017)
+--RenderCollectionMatrix.h		(Last update 9/4/2017)
 
 Description: Header file for RenderCollectionMatrix.cpp.
 
@@ -34,7 +34,6 @@ class RenderCollectionMatrix
 		RenderCollectionMatrix(ManifestCollectionMatrix *manifestcollectionmatrixref);									// sets the ManifestCollectionMatrixPtr value; default constructor.
 		RenderCollectionMatrix();																						// constructor designed for use in OrganicSystem objects
 																														
-
 		void CreateRenderArrayFromManifestCollection(EnclaveKeyDef::EnclaveKey Key);												/* creates a new 3d vertex data array, for the RenderCollection having a value of Key, 																													
 																																	 by iterating through all elements of the ManifestCollection that has a value of Key.*/
 		void CreateRenderArrayFromFactory(EnclaveKeyDef::EnclaveKey Key, EnclaveManifestFactoryT1 *factoryRef, mutex& mutexRef);	/* creates a new 3d vertex data array, for the Factory having a value of Key, 	

@@ -418,6 +418,7 @@ int main()
 	auto start3 = std::chrono::high_resolution_clock::now();				// benchmark testing only
 
 	// send all processed collections to OPEN GL	
+	Organic.SetRenderMode(1);
 	Organic.SendRenderListToGLTerrainBuffer();							
 	/*
 	RenderCollection* newRenderCollPtr;
@@ -462,7 +463,7 @@ int main()
 
 
 	// ------------------------------------MAIN WORLD LOOP			NOTE: use cout << fixed for exact timestamp values!
-	Organic.SetRenderMode(0);
+	//Organic.SetRenderMode(0);
 	do {
 		auto start3 = std::chrono::high_resolution_clock::now();
 		Organic.RenderGLTerrain();	// perform render frame work

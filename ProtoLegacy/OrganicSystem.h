@@ -78,18 +78,12 @@ public:
 	void SetOrganicCell2(thread_pool *thread_pool_ref);											// sets the pointer for Cell2 to be a valid worker thread
 	void AddOrganicTextureMetaArray(string mapname);											// adds a new texture meta array, which is a list that is used to map block IDs to texture UV coordinates.
 	void AddOrganicVtxColorMetaArray(string mapname);											// adds a new vertex color meta array, which is a list that is used to color individual vertexes.
-	void SetGraphicsAPI();
-	GLfloat* GetVertexDataFromRenderCollection(int x, int y, int z);
-	RenderCollection* GetRenderCollectionPtr(int x, int y, int z);
-
-	void SendDataFromCollectionToGLBuffer(GLfloat* inFloatPtr, int inSize);
-	void SendVertexColorDataFromCollectionToGLBuffer(GLfloat* inFloatPtr, int inSize);
-
-	void SendDataFromRenderPtrToGLBuffer(RenderCollection* renderCollectionPtr);
-	void LoadVCDataToGLBuffer(RenderCollection* renderCollectionPtr);
-
-	void AnalyzeRenderArray(int x, int y, int z, int xyz);
-	void AllocateFactories(int noOfFactories);
+	void SetGraphicsAPI();																		// sets up initial data for OpenGL functionality						
+	RenderCollection* GetRenderCollectionPtr(int x, int y, int z);								// returns a pointer to a RenderCollection
+	void SendDataFromRenderPtrToGLBuffer(RenderCollection* renderCollectionPtr);				// sends all vertex data from the RenderCollection to the OGLM's OpenGL vertex data buffer (data buffer name: OrganicGLVertexBufferID)
+	void LoadVCDataToGLBuffer(RenderCollection* renderCollectionPtr);							// sends all vertex color data from the RenderCollection to the OGLM's OpenGL vertex color data buffer (data buffer name: OrganicGLVertexColorBufferID)
+	void AnalyzeRenderArray(int x, int y, int z, int xyz);										// reserved for future use.
+	void AllocateFactories(int noOfFactories);													// sets up Factories for future use. 
 	void JobMaterializeSingleCollectionFromMM(	EnclaveKeyDef::EnclaveKey Key1,																									// materializes a single collection from the ground up, utilizing a manifest matrix
 												EnclaveCollectionBlueprintMatrix BlueprintMatrixRef, 
 												EnclaveCollectionMatrix EnclaveCollectionsRef, 
