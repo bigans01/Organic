@@ -44,6 +44,12 @@ public:
 		}
 	};
 
+	struct Enclave2DKey			// for use with EnclaveUnveilMeta only (subject to change later)
+	{
+		int a;
+		int b;
+	};
+
 
 	struct KeyHasher
 	{

@@ -239,13 +239,16 @@ EnclaveUnveilMeta EnclaveCollectionBlueprint::SetupCarvePlan(EnclaveKeyDef::Encl
 		int CPZcoord = tempKey.z;
 		ECBXAxisCarvePlan* planRef = &XAxisCPVector.front();		// get the plan from the vector
 		EnclaveUnveilMeta returnMeta;
+		int returnMetaCount = 0;
 		for (int x = 0; x < 4; x++)
 		{
 			for (int z = 0; z < 4; z++)
 			{
 				returnMeta.EnclaveBlockLocation[x][z] = planRef->CPArray[(x + (CPXcoord*4))][(z + (CPZcoord * 4))];
+				returnMetaCount++;
  			}
 		}
+		returnMeta.numberOfBlocks = returnMetaCount;
 		return returnMeta;
 	}
 }

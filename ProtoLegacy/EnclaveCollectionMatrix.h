@@ -37,6 +37,7 @@ Dependents: none.
 class OrganicSystem;
 class EnclaveCollectionMatrix {
 public:
+	typedef unsigned char(&ElevationMapRef)[8][8];																					// typedef for returning an array of 8x8 chars
 	OrganicSystem *OrganicPointer;
 	std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveCollection, EnclaveKeyDef::KeyHasher> EnclaveCollectionMap;				// unordered map which stores the collections
 
@@ -78,7 +79,7 @@ public:
 	Enclave& GetEnclaveFromCollection(EnclaveKeyDef::EnclaveKey Key, int x, int y, int z);											// returns a reference to the enclave located at the x/y/z coordinate within the collection that has a key of value Key
 	Enclave& GetEnclaveFromXYZ(int x, int y, int z);																				// returns the enlave located at the absolute value of x/y/z
 	void TracePathToBlock(int x, int y, int z);																						// testing purposes -- will output the coordinates taken to find a particualr block (i.e., prints x of the collection, then x of the chunk, then x of the block)
-	typedef unsigned char(&ElevationMapRef)[8][8];																					// typedef for returning an array of 8x8 chars
+
 	ElevationMapRef& GetElevationMapFromCollection(EnclaveKeyDef::EnclaveKey InKey);												// returns a pointer to an ElevationMap corresponding to a particular EnclaveCollection
 	PathTraceContainer GetCoordTrace(int value);																					// returns a PathTraceContainer that contains the x, y, or z value of the collection, chunk, and individual block that would be returned when finding the coordinate. (would be called 3 times																																// to get a true x/y/z coordinate.
 	int KeyToSingle(EnclaveKeyDef::EnclaveKey InKey);																				// returns an integer representing the value of an EnclaveKey transformed to a single value (i.e., 7,7,7 = 512 -- the 8th enclave on x,y, and z)

@@ -331,7 +331,7 @@ int main()
 	Organic.MaterializeAllCollectionsInRenderList(0);			// 0 = use a set of Factories, 1 = use a ManifestMatrix style
 
 
-	cout << "-------------------------PASS" << endl;
+	//cout << "-------------------------PASS" << endl;
 	// *********** Enclave Collection load type 1: add and instantiate a single collection
 		// add the test blueprint to the OrganicSystem
 	//auto bluestart = std::chrono::high_resolution_clock::now();
@@ -379,14 +379,14 @@ int main()
 
 	auto finish = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> elapsed = finish - start;
-	std::cout << "Elapsed time (Massive Unveil Poly call: , " << count << "): " << elapsed.count() << endl;
+	//std::cout << "Elapsed time (Massive Unveil Poly call: , " << count << "): " << elapsed.count() << endl;
 
 	auto start7 = std::chrono::high_resolution_clock::now();
 	cout << "debug line 2" << endl;
 	//RenderCollections.CreateRenderArrayFromManifestCollection(testkey2);										//change here... OLD: testkey
 	auto finish7 = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> elapsed7 = finish7 - start7;
-	std::cout << "Elapsed time (Creating Render Array test: " << collectcount << "): " << elapsed7.count() << endl;
+	//std::cout << "Elapsed time (Creating Render Array test: " << collectcount << "): " << elapsed7.count() << endl;
 
 
 	//ManifestCollections.GetCollectedEnclaveManifestAt(testkey2, 1, 0, 0);									//change here... OLD: testkey

@@ -173,6 +173,7 @@
     <ClInclude Include="EnclaveMatrix.h" />
     <ClInclude Include="EnclaveCollectionMesh.h" />
     <ClInclude Include="EnclaveMultiJob.h" />
+    <ClInclude Include="EnclaveNeighborMeta.h" />
     <ClInclude Include="EnclavePainter.h" />
     <ClInclude Include="EnclavePainterList.h" />
     <ClInclude Include="EnclavePainterListMatrix.h" />

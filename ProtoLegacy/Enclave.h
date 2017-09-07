@@ -27,10 +27,18 @@ using namespace std;
 #include <iostream>
 #include <GL/glew.h>
 #include "EnclaveKeyDef.h"
+#include "EnclaveUnveilMeta.h"
+//#include "EnclaveCollection.h"
+#include "EnclaveCollectionBlueprintMatrix.h"
+#include "EnclaveCollectionBorderFlags.h"
+#include "EnclaveNeighborMeta.h"
+
+class EnclaveCollection;
 
 class Enclave {
 
 public:
+	typedef unsigned char(&ElevationMapRef)[8][8];
 	int total_triangles = 0;												// the sum of all triangles that will be rendered from the currently unveiled polygons.
 	EnclaveKeyDef::EnclaveKey UniqueKey, CollectionKey;						// the unique Key identifying the Enclave, and the key of the Collection that this enclave belongs to; 
 																			// CollectionKey is used when an EnclaveManifest is attached to an enclave, in order to get the exact x/y/z coords of the polygon in a chunk.
@@ -78,9 +86,13 @@ public:
 	void ChangePolyMaterial(int x, int y, int z, int newmaterial);	// changes the material of a block at the x/y/z value within the chunk
 	void TestTopLayer();								// testing purpose only
 	void ViewOtherFlags();								// testing purpose only
+	void UnveilMultipleAndNotifyNeighbors(EnclaveUnveilMeta metaArray, EnclaveCollectionBorderFlags* borderflagsref, ElevationMapRef mapRefVal, EnclaveCollection* enclaveCollectionRef, int filldirection);
+	EnclaveKeyDef::Enclave2DKey SingleTo2d(int input);
 	int	GetTotalTrianglesInBlock(char in_char);		// Gets that current number of trinagles at a block.
 	int GetTotalTrianglesInEnclave();					// Returns the total number of triangles that exist in the enclave. 
 	EnclaveKeyDef::EnclaveKey SingleToEnclaveKey(int input);
+	EnclaveNeighborMeta GenerateNeighborMeta(EnclaveCollection* enclaveCollectionRef);
+	int EnclaveCoordsToSingle(int in_x, int in_y, int in_z);
 	
 };
 

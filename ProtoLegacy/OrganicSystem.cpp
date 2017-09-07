@@ -1016,21 +1016,28 @@ void OrganicSystem::ArrayTest()
 void OrganicSystem::SendRenderListToGLTerrainBuffer()
 {
 	std::vector<EnclaveKeyDef::EnclaveKey>::iterator renderListIter = renderCollectionList.KeyVector.begin();
+	std::vector<EnclaveKeyDef::EnclaveKey>::iterator renderListIterEnd = renderCollectionList.KeyVector.end();
 	RenderCollection* newRenderCollPtr;
 
 	// send first vertex attribute: positions
 	OGLM.RMContainer.CurrentIndex = 0;
-	for (renderListIter; renderListIter != renderCollectionList.KeyVector.end(); ++renderListIter)
+	//auto factorystart = std::chrono::high_resolution_clock::now();
+	for (renderListIter; renderListIter != renderListIterEnd; ++renderListIter)
 	{
 		EnclaveKeyDef::EnclaveKey tempKey = *renderListIter;						// get the key at this point in the vector
+		
 		newRenderCollPtr = GetRenderCollectionPtr(tempKey.x, tempKey.y, tempKey.z);	// get the pointer to the RenderCollection that has this key
+		
 		SendDataFromRenderPtrToGLBuffer(newRenderCollPtr);							// send this RenderCollection's data to the buffer
 	}
+	//auto factoryend = std::chrono::high_resolution_clock::now();
+	//std::chrono::duration<double> factorytime = factoryend - factorystart;
+	//cout << "Test of first render collection send: " << factorytime.count() << endl;
 
 	// send second vertex attribute: colors
 	OGLM.RMContainer.CurrentIndex = 0;
 	renderListIter = renderCollectionList.KeyVector.begin();
-	for (renderListIter; renderListIter != renderCollectionList.KeyVector.end(); ++renderListIter)
+	for (renderListIter; renderListIter != renderListIterEnd; ++renderListIter)
 	{
 		//cout << " test " << endl;
 		EnclaveKeyDef::EnclaveKey tempKey = *renderListIter;						// get the key at this point in the vector

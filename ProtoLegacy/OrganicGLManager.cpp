@@ -32,7 +32,8 @@ void OrganicGLManager::InitializeOpenGL()
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	// Open a window and create its OpenGL context
-	GLwindow = glfwCreateWindow(1024, 768, "Tutorial 04 - Colored Cube", NULL, NULL);
+	//GLwindow = glfwCreateWindow(1024, 768, "Organic Testing", NULL, NULL);
+	GLwindow = glfwCreateWindow(2560, 1440, "Organic Testing", NULL, NULL);
 	if (GLwindow == NULL) {
 		fprintf(stderr, "Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible. Try the 2.1 version of the tutorials.\n");
 		getchar();

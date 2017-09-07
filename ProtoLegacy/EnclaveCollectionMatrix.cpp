@@ -1015,6 +1015,7 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 
 	// Step One: perform collection-wide painting (required)
 	collectionRef.RunCollectionPainters(blueprint);
+	EnclaveCollection* collectionRefPtr = &collectionRef;
 
 	// Step Two: determine what borders of this blueprint must be rendered, by comparing to borders in neighboring blueprints
 	EnclaveCollectionBorderFlags borderFlags;											// contains west, north, east, south, top, bottom flags. 
@@ -1058,7 +1059,6 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 	
 	if (borderFlags.North == 1)
 	{
-		//collectionRef.SetNorthBorder(standardPaintableChunk, activateListRef, std::ref(HeapMutex));		// set up north border 
 		collectionRef.SetNorthBorder(standardPaintableChunk, activateListRef);		// set up north border -- using the standardPaintableChunk; 
 	}
 	
@@ -1101,15 +1101,16 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 					// cout << "custom key value: " << currentKey.x << ", " << currentKey.y << ", " << currentKey.z << endl;
 					EnclaveUnveilMeta currentMeta = blueprint->SetupCarvePlan(currentKey);		// use the carve plan to determine the exact x/y/z chunk coords of each block to render
 					
-					for (int xx = 0; xx < 4; xx++)
-					{
-						for (int zz = 0; zz < 4; zz++)
-						{
+					//for (int xx = 0; xx < 4; xx++)
+					//{
+						//for (int zz = 0; zz < 4; zz++)
+						//{
 							EnclaveKeyDef::EnclaveKey tempBlockKey;
-							tempBlockKey = collectionRef.EnclaveArray[x][y][z].SingleToEnclaveKey(currentMeta.EnclaveBlockLocation[xx][zz]);
-							collectionRef.EnclaveArray[x][y][z].UnveilSinglePoly(tempBlockKey.x, tempBlockKey.y, tempBlockKey.z, 0, 1, 2, 0);
-						}
-					}
+							//tempBlockKey = collectionRef.EnclaveArray[x][y][z].SingleToEnclaveKey(currentMeta.EnclaveBlockLocation[xx][zz]);
+							//collectionRef.EnclaveArray[x][y][z].UnveilSinglePoly(tempBlockKey.x, tempBlockKey.y, tempBlockKey.z, 0, 1, 2, 0);
+							collectionRef.EnclaveArray[x][y][z].UnveilMultipleAndNotifyNeighbors(currentMeta, borderFlagsRef, customPaintableChunk, collectionRefPtr, 0); // 0 = go -y direction
+						//}
+					//}
 					activateListRef.flagArray[x][z] = activateListRef.flagArray[x][z] | chunkbitmask;
 					/*
 					if (currentKey.x == 6 && currentKey.y == 7 && currentKey.z == 0)	// testing only

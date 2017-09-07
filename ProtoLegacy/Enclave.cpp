@@ -16,7 +16,10 @@ using namespace std;
 #include <iostream>
 #include <GL/glew.h>
 #include "Enclave.h"
+#include "EnclaveCollection.h"
 
+class EnclaveCollection;
+typedef unsigned char(&ElevationMapRef)[8][8];
 Enclave::Enclave(void)
 {
 	/* Summary: unused, potentially used for later. */
@@ -553,4 +556,177 @@ EnclaveKeyDef::EnclaveKey Enclave::SingleToEnclaveKey(int input)
 	return tempkey;
 }
 
+void Enclave::UnveilMultipleAndNotifyNeighbors(EnclaveUnveilMeta metaArray, EnclaveCollectionBorderFlags* borderflagsref, ElevationMapRef mapRefVal, EnclaveCollection* collectionRefPtr, int filldirection)
+{
+	//cout << "test: " << metaArray.numberOfBlocks;
+	std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveCollectionBlueprint, EnclaveKeyDef::KeyHasher>::iterator blueprintMapIterator;
+	EnclaveKeyDef::EnclaveKey tempKey;
+	for (int x = 0; x < metaArray.numberOfBlocks; x++) // iterate for the number of blocks found in the metaArray
+	{
+		EnclaveKeyDef::Enclave2DKey retrieved2d = SingleTo2d(x);								// get 2d value
+		EnclaveKeyDef::EnclaveKey tempBlockKey = SingleToEnclaveKey(metaArray.EnclaveBlockLocation[retrieved2d.a][retrieved2d.b]);		// convert the single value at the 2d value to the appropriate enclave key;
 
+		EnclaveNeighborMeta neighborMeta = GenerateNeighborMeta(collectionRefPtr);
+
+		if (filldirection == 0) // negative y jobs
+		{
+			char fillflag = 2;			// the initial flag value, should be equal to top face value (2); top face should always be rendered for filldirection of 0 (- y)
+			//if (this->UniqueKey.z == 0) 
+
+
+			//************************************************************
+			// determine North faces for the chunk, if it's on the border north border
+			//************************************************************
+			if (this->UniqueKey.z == 0) 	// if the block is a border block on the enclave, do this 
+			{
+				
+				if (tempBlockKey.z == 0)
+				{
+					int tempval = (tempBlockKey.y + 1);		// set the tempval equal to the number of blocks, including this one and any below it.
+					for (int y = tempval; y > 0; y--)		// iterate from the top most block ( the top face) downward; 0 = the top block
+					{
+						//cout << "test" << endl;
+						fillflag = 2;
+
+						// check if north border flag is set; only render north faces if it is set
+						if (borderflagsref->North == 1)
+						{
+							if (y == tempval)
+							{
+
+								fillflag = fillflag | 16;		// x = 2 is the top, so set the top face this one time
+							}
+							else
+							{
+								fillflag = 16;
+							}
+							UnveilSinglePoly(tempBlockKey.x, y - 1, tempBlockKey.z, 0, 1, fillflag, 0);
+						}
+						if (borderflagsref->North == 0)
+						{
+							if (y == tempval)
+							{
+								UnveilSinglePoly(tempBlockKey.x, y - 1, tempBlockKey.z, 0, 1, fillflag, 0);
+							}
+						}
+
+
+						//UnveilSinglePoly(tempBlockKey.x, y-1, tempBlockKey.z, 0, 1, fillflag, 0);
+
+					}
+				}
+
+				else
+				{
+					UnveilSinglePoly(tempBlockKey.x, tempBlockKey.y, tempBlockKey.z, 0, 1, fillflag, 0);
+				}
+
+
+			}
+
+
+			//************************************************************
+			// determine South faces for the chunk, if it's on the south border
+			//************************************************************
+			else if (this->UniqueKey.z == 7)
+			{
+				if (tempBlockKey.z == 3)
+				{
+					int tempval = (tempBlockKey.y + 1);		// set the tempval equal to the number of blocks, including this one and any below it.
+					for (int y = tempval; y > 0; y--)		// iterate from the top most block ( the top face) downward; 0 = the top block
+					{
+						//cout << "test" << endl;
+						fillflag = 2;
+
+						// check if north border flag is set; only render north faces if it is set
+						if (borderflagsref->South == 1)
+						{
+							if (y == tempval)
+							{
+
+								fillflag = fillflag | 4;		// x = 2 is the top, so set the top face this one time
+							}
+							else
+							{
+								fillflag = 4;
+							}
+							UnveilSinglePoly(tempBlockKey.x, y - 1, tempBlockKey.z, 0, 1, fillflag, 0);
+						}
+						if (borderflagsref->South == 0)
+						{
+							if (y == tempval)
+							{
+								UnveilSinglePoly(tempBlockKey.x, y - 1, tempBlockKey.z, 0, 1, fillflag, 0);
+							}
+						}
+
+
+						//UnveilSinglePoly(tempBlockKey.x, y-1, tempBlockKey.z, 0, 1, fillflag, 0);
+
+					}
+				}
+
+				else
+				{
+					UnveilSinglePoly(tempBlockKey.x, tempBlockKey.y, tempBlockKey.z, 0, 1, fillflag, 0);
+				}
+			}
+
+
+			// do this for all non-border chunks
+			else  if (this->UniqueKey.z != 0 && this->UniqueKey.z != 7)
+			{
+				UnveilSinglePoly(tempBlockKey.x, tempBlockKey.y, tempBlockKey.z, 0, 1, fillflag, 0);
+			}
+		}
+
+	}
+}
+
+EnclaveKeyDef::Enclave2DKey Enclave::SingleTo2d(int input)
+{
+	EnclaveKeyDef::Enclave2DKey returnKey;
+
+	int x = input / 4;
+	int remainder_x = input % 4;
+
+	int y = remainder_x;
+
+	returnKey.a = x;
+	returnKey.b = y;
+
+	return returnKey;
+}
+
+EnclaveNeighborMeta Enclave::GenerateNeighborMeta(EnclaveCollection* enclaveCollectionRef)
+{
+	EnclaveNeighborMeta returnMeta;
+
+	//check west first
+	if (this->UniqueKey.x != 0)	// check only if it isn't a border chunk, first
+	{
+		Enclave* enclavePtr = &enclaveCollectionRef->EnclaveArray[(this->UniqueKey.x)-1][this->UniqueKey.y][this->UniqueKey.z];	// get the neighboring enclave at -1 x
+		for (int y = 0; y < 4; y++)		// iterate on y axis
+		{
+			for (int z = 0; z < 4; z++)	// iterate on z axis
+			{
+				if (enclavePtr->StorageArray[3][y][z].otherflags == 0)		// x is static = 3; this is equal to the east 
+				{
+					// index 0 = object for West unveil meta data
+					returnMeta.MetaArrays[0].unveilMeta.EnclaveBlockLocation[y][z] = EnclaveCoordsToSingle(0, y, z);
+					returnMeta.MetaArrays[0].unveilMeta.BlockFacesToRender[y][z] = 32;									// set west face bit
+				}
+			}
+		}
+	}
+
+	return returnMeta;
+}
+
+int Enclave::EnclaveCoordsToSingle(int in_x, int in_y, int in_z)
+{
+	int x = in_x * 16;
+	int y = in_y * 4;
+	//int z = InKey.z;
+	return x + y + in_z;
+}

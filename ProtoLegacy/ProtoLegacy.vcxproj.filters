@@ -216,6 +216,9 @@
     <ClInclude Include="OrganicVtxColorRGB.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="EnclaveNeighborMeta.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
