@@ -219,6 +219,9 @@
     <ClInclude Include="EnclaveNeighborMeta.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="OGLMBufferManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -306,6 +309,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="OrganicVtxColorMeta.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OGLMBufferManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

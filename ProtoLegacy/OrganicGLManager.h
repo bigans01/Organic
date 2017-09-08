@@ -24,6 +24,7 @@ Summary: An instance of OrganicGLManager is responsible for managing all OpenGL 
 #include "common/shader.hpp"
 #include "RenderCollection.h"
 #include "OrganicGLRenderCollectionMeta.h"
+#include "OGLMBufferManager.h"
 
 class OrganicGLManager
 {
@@ -38,9 +39,11 @@ public:
 	GLuint OrganicGLVertexColorBufferID;										// OpenGL: pointer/handle to the vertex color buffer handler (single buffer)
 	GLuint OrganicGLVertexBufferArray[10];										// OpenGL: array of potential buffers
 	GLuint OrganicMVPHandle;													// OpenGL: pointer/handle to the MVP matrix result
+	OGLMBufferManager OrganicBufferManager;
 	GLfloat *OrganicGLarrayPTR;													// (temporary) OpenGL: used to point to a dynamic array containing vertex data
 	//const int CollectionBufferSize = 1024 * 1024;								// the size of the data buffer for each RenderCollection; 
 	const int CollectionBufferSize = 589824;										//alternate = 73728   , 147456, 294912, 589824, 1179648
+	int numberOfBuffers = 0;													// initial value is 0, but will be reset
 	glm::mat4 Projection;														// (temporary) OpenGL projection matrix
 	glm::mat4 View;																// (temporary) OpenGL view matrix
 	glm::mat4 Model;															// (temporary) OpenGL model matrix
@@ -61,6 +64,7 @@ public:
 
 	OrganicGLManager();
 
+	void SetupBufferManagerArrays(int in_cubesize);
 	void InitializeOpenGL();													// prepares OpenGL for future use; set up OpenGL context, prepare buffers etc
 	void RenderReadyArrays();
 	void ShutdownOpenGL();

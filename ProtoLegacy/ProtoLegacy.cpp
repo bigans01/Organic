@@ -236,7 +236,7 @@ int main()
 	
 	//OrganicSystem Organic;
 	auto STARTUPbegin = std::chrono::high_resolution_clock::now();
-	OrganicSystem Organic(2);
+	OrganicSystem Organic(2, 8);					// number of factories, buffer size
 	Organic.SetOrganicCell1(mainthreadpoolref);				// set the Organic instance's first worker thread
 	Organic.SetOrganicCell2(mainthreadpoolref2);			// set the Organic instance's second worker thread
 	Organic.AddOrganicTextureMetaArray("base");					// set up the texture map; first ever map will be named "base"
@@ -465,11 +465,12 @@ int main()
 	// ------------------------------------MAIN WORLD LOOP			NOTE: use cout << fixed for exact timestamp values!
 	//Organic.SetRenderMode(0);
 	do {
+
 		auto start3 = std::chrono::high_resolution_clock::now();
 		Organic.RenderGLTerrain();	// perform render frame work
 		auto finish3 = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<double> elapsed3 = finish3 - start3;
-		//std::cout << "Frame render time: " << elapsed3.count() << endl;
+		std::cout << "Frame render time: " << elapsed3.count() << endl;
 	} 
 	while (glfwGetKey(Organic.OGLM.GLwindow, GLFW_KEY_ESCAPE) != GLFW_PRESS &&	// loop until escape key is pressed in OpenGL window
 		glfwWindowShouldClose(Organic.OGLM.GLwindow) == 0);

@@ -124,7 +124,7 @@ void OrganicGLManager::InitializeOpenGL()
 	glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexBufferID);					// binds the previously created buffer to be a GL_ARRAY_BUFFER
 
 	//glBufferData(GL_ARRAY_BUFFER, 1024, OrganicGLarrayPTR, GL_DYNAMIC_DRAW);		// Old method; no longer utilized.
-	glBufferStorage(GL_ARRAY_BUFFER, CollectionBufferSize * 500, NULL, GL_DYNAMIC_STORAGE_BIT);	/* REQUIRED: pre-allocates memory for the buffer, to any desired amount; this is so
+	glBufferStorage(GL_ARRAY_BUFFER, CollectionBufferSize * numberOfBuffers, NULL, GL_DYNAMIC_STORAGE_BIT);	/* REQUIRED: pre-allocates memory for the buffer, to any desired amount; this is so
 																					   that the buffer doesn't need to be resized in the future.
 																					
 																						Parameters:
@@ -141,7 +141,7 @@ void OrganicGLManager::InitializeOpenGL()
 																					*/
 	glGenBuffers(1, &OrganicGLVertexColorBufferID);
 	glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexColorBufferID);
-	glBufferStorage(GL_ARRAY_BUFFER, CollectionBufferSize * 500, NULL, GL_DYNAMIC_STORAGE_BIT);
+	glBufferStorage(GL_ARRAY_BUFFER, CollectionBufferSize * numberOfBuffers, NULL, GL_DYNAMIC_STORAGE_BIT);
 
 	/* ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
@@ -377,4 +377,13 @@ void OrganicGLManager::selectShader()
 								*/
 		);
 	}
+}
+
+void OrganicGLManager::SetupBufferManagerArrays(int in_cubesize)
+{
+	/* Summary: this sets up the OGLMBufferManager's arrays; it must be called before generating any OpenGL buffers. */
+	OrganicBufferManager.SetCubesize(in_cubesize);
+	OrganicBufferManager.GenerateArrays();
+	numberOfBuffers = (in_cubesize*in_cubesize*in_cubesize);
+	cout << "number of Buffers" << numberOfBuffers << endl;
 }

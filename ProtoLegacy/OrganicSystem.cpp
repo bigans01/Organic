@@ -12,11 +12,12 @@
 #include <mutex>
 #include <string>
 
-OrganicSystem::OrganicSystem(int numberOfFactories)
+OrganicSystem::OrganicSystem(int numberOfFactories, int bufferCubeSize)
 {
 	/* Summary: default constructor for the OrganicSystem */
 	InterlockBaseCollections();
-	AllocateFactories(numberOfFactories);
+	AllocateFactories(numberOfFactories);			// setup the factories
+	OGLM.SetupBufferManagerArrays(bufferCubeSize);	// setup the buffer manager
 }
 
 void OrganicSystem::InterlockBaseCollections()
