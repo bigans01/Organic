@@ -71,7 +71,7 @@ public:
 	void computeMatricesFromInputs();
 	void sendRenderCollectionDataToBuffer(RenderCollection *renderCollPtr);
 	void sendRenderCollectionVCDataToBuffer(RenderCollection *renderCollPtr);
-
+	void SendPointerToBufferManager(OrganicGLManager* in_OGLMptr);
 	void selectShader();
 };
 

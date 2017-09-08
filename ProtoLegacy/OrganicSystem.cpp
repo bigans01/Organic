@@ -17,6 +17,8 @@ OrganicSystem::OrganicSystem(int numberOfFactories, int bufferCubeSize)
 	/* Summary: default constructor for the OrganicSystem */
 	InterlockBaseCollections();
 	AllocateFactories(numberOfFactories);			// setup the factories
+	OrganicGLManager* tempGLManagerPtr = &OGLM;
+	OGLM.SendPointerToBufferManager(tempGLManagerPtr);
 	OGLM.SetupBufferManagerArrays(bufferCubeSize);	// setup the buffer manager
 }
 

@@ -470,7 +470,7 @@ int main()
 		Organic.RenderGLTerrain();	// perform render frame work
 		auto finish3 = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<double> elapsed3 = finish3 - start3;
-		std::cout << "Frame render time: " << elapsed3.count() << endl;
+		//std::cout << "Frame render time: " << elapsed3.count() << endl;
 	} 
 	while (glfwGetKey(Organic.OGLM.GLwindow, GLFW_KEY_ESCAPE) != GLFW_PRESS &&	// loop until escape key is pressed in OpenGL window
 		glfwWindowShouldClose(Organic.OGLM.GLwindow) == 0);

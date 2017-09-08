@@ -387,3 +387,8 @@ void OrganicGLManager::SetupBufferManagerArrays(int in_cubesize)
 	numberOfBuffers = (in_cubesize*in_cubesize*in_cubesize);
 	cout << "number of Buffers" << numberOfBuffers << endl;
 }
+
+void OrganicGLManager::SendPointerToBufferManager(OrganicGLManager* in_OGLMptr)
+{
+	OrganicBufferManager.SetOGLMPointer(in_OGLMptr);
+}
