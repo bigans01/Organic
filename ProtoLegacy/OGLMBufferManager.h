@@ -36,6 +36,7 @@ public:
 	void SetCubesize(int inCubesize);
 	void SetOGLMPointer(OrganicGLManager* in_OGLMptr);
 	void GenerateArrays();
+	void ShiftMatricesForNW();
 	int translateXYZToSingle(int x, int y, int z);
 };
 

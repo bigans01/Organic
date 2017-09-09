@@ -129,9 +129,9 @@ void EnclaveManifest::AttachToEnclave(Enclave &in_ptr)	// "attaches" this manife
 					TextureGLPtr[texturetuples++] = textureMetaRef->BlockData.FaceIndex[0].FaceData[0].U;
 					//EnclaveManifestRenderables[totaltuples++] = TempTuple;	
 
-					VertexColorGLPtr[colorindex++] = vertexColorMetaRef->BlockData.FaceIndex[0].FaceMeta[k].red;
-					VertexColorGLPtr[colorindex++] = vertexColorMetaRef->BlockData.FaceIndex[0].FaceMeta[k].green;
-					VertexColorGLPtr[colorindex++] = vertexColorMetaRef->BlockData.FaceIndex[0].FaceMeta[k].blue;
+					VertexColorGLPtr[colorindex++] = vertexColorMetaRef->BlockData.FaceIndex[j].FaceMeta[k].red;
+					VertexColorGLPtr[colorindex++] = vertexColorMetaRef->BlockData.FaceIndex[j].FaceMeta[k].green;
+					VertexColorGLPtr[colorindex++] = vertexColorMetaRef->BlockData.FaceIndex[j].FaceMeta[k].blue;
 
 					// switch out 0 to appropriate value (insert incrementing value?)
 					//cout << "{ " << TempTuple.x << ", " << TempTuple.y << ", " << TempTuple.z << " }" << endl;

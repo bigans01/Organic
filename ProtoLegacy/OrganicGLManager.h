@@ -52,7 +52,7 @@ public:
 	float horizontalAngle = 3.14f;												// Initial horizontal angle : toward -Z
 	float verticalAngle = 0.0f;													// Initial vertical angle : none
 	float initialFoV = 45.0f;													// Initial Field of View
-	float speed = 3.0f;															// 3 units / second
+	float speed = 10.0f;															// 3 units / second
 	float mouseSpeed = 0.005f;
 	struct RenderMetaContainer
 	{
@@ -72,6 +72,7 @@ public:
 	void sendRenderCollectionDataToBuffer(RenderCollection *renderCollPtr);
 	void sendRenderCollectionVCDataToBuffer(RenderCollection *renderCollPtr);
 	void SendPointerToBufferManager(OrganicGLManager* in_OGLMptr);
+	void PrepBuffersForMoveNW();
 	void selectShader();
 };
 

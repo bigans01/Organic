@@ -18,15 +18,8 @@ determine which faces to render on blocks that face other chunks.
 class EnclaveNeighborMeta
 {
 public:
-
-	int count;
-	struct UnveilMetaArray
-	{
-		int isSolid = 0;
-		int neighborsBorderDirection = 0;
-		EnclaveUnveilMeta unveilMeta;
-	};
-	UnveilMetaArray MetaArrays[6];
+	//unsigned char NeighborBlockAirFlags[4][4][4];
+	unsigned char NeighborBlockData[4][4][4];
 
 
 };

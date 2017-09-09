@@ -106,6 +106,7 @@ public:
 	void GLCleanup();																																							// for deallocating and/or turning off OpenGL components
 	void ArrayTest();																																							// testing only
 	void SendRenderListToGLTerrainBuffer();																																		// will send all renderable enclaves listed in the renderCollectionList to the OpenGL buffer
+	void LoadNWChunks();																																						// currently for testing: "moves the world" by preparing buffers to load data for RenderCollections +1 chunk NW of current camera position
 	thread_pool* getCell1();																																					// gets a pointer to worker thread (Cell) #1
 	thread_pool* getCell2();																																					// gets a pointer to worker thread (Cell) #2
 

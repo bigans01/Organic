@@ -237,6 +237,7 @@ int main()
 	//OrganicSystem Organic;
 	auto STARTUPbegin = std::chrono::high_resolution_clock::now();
 	OrganicSystem Organic(2, 8);					// number of factories, buffer size
+	Organic.LoadNWChunks();
 	Organic.SetOrganicCell1(mainthreadpoolref);				// set the Organic instance's first worker thread
 	Organic.SetOrganicCell2(mainthreadpoolref2);			// set the Organic instance's second worker thread
 	Organic.AddOrganicTextureMetaArray("base");					// set up the texture map; first ever map will be named "base"
@@ -251,6 +252,7 @@ int main()
 							64							|	 488		|	 602
 							256							|    954        |    1082
 	*/
+	auto collectionsSetupBEGIN = std::chrono::high_resolution_clock::now();
 	int cmultiplier = 1;
 	for (int x = 0; x < 4*cmultiplier; x++)						
 													
@@ -276,7 +278,9 @@ int main()
 		Organic.AddKeyToRenderList(tempKeyToAdd);
 		Organic.AddBlueprint(tempKeyToAdd.x, tempKeyToAdd.y, tempKeyToAdd.z, testBlueprint3);
 	}
-	
+	auto collectionsSetupEND = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> collectionsSetupELAPSED = collectionsSetupEND - collectionsSetupBEGIN;
+	//std::cout << "Elapsed time (Multiple collection instantiation): " << collectionsSetupELAPSED.count() << endl;
 
 	/*
 	EnclaveKeyDef::EnclaveKey NEWkey1, NEWkey2, NEWkey3, NEWkey4, NEWkey5, NEWkey6, NEWkey7, NEWkey8;

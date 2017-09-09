@@ -528,30 +528,156 @@ void OrganicSystem::AddOrganicVtxColorMetaArray(string mapname)
 	OrganicVtxColorMeta tempColorMeta(0);
 	VertexColorDictionary.Dictionary[mapname].Index[1] = tempColorMeta;
 	OrganicVtxColorMeta *tempColorMetaRef = &VertexColorDictionary.Dictionary[mapname].Index[1];
+	
+	// west face data
+	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[0].red = 0.583f;			// lighter
+	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[0].green = 0.331f;
+	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[0].blue = 0.150f;
 
-	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[0].red = 0.583f;
-	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[0].green = 0.771f;
-	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[0].blue = 0.014f;
+	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[1].red = 0.583f;			// lighter
+	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[1].green = 0.331f;
+	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[1].blue = 0.150f;
 
-	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[1].red = 0.771f;
-	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[1].green = 0.221f;
-	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[1].blue = 0.014f;
+	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[2].red = 0.383f;			// darker
+	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[2].green = 0.131f;
+	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[2].blue = 0.100f;
 
-	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[2].red = 0.171f;
-	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[2].green = 0.221f;
-	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[2].blue = 0.44f;
+	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[3].red = 0.583f;			// lighter
+	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[3].green = 0.331f;
+	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[3].blue = 0.150f;
+	
+	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[4].red = 0.583f;		// lighter
+	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[4].green = 0.331f;
+	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[4].blue = 0.150f;
 
-	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[3].red = 0.95f;
-	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[3].green = 0.021f;
-	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[3].blue = 0.044f;
+	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[5].red = 0.383f;			// darker
+	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[5].green = 0.131f;
+	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[5].blue = 0.100f;
 
-	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[4].red = 0.971f;
-	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[4].green = 0.121f;
-	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[4].blue = 0.131f;
+	//north face data
+	tempColorMetaRef->BlockData.FaceIndex[1].FaceMeta[0].red = 0.583f;			// lighter
+	tempColorMetaRef->BlockData.FaceIndex[1].FaceMeta[0].green = 0.331f;
+	tempColorMetaRef->BlockData.FaceIndex[1].FaceMeta[0].blue = 0.150f;
 
-	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[5].red = 0.371f;
-	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[5].green = 0.44f;
-	tempColorMetaRef->BlockData.FaceIndex[0].FaceMeta[5].blue = 0.521f;
+	tempColorMetaRef->BlockData.FaceIndex[1].FaceMeta[1].red = 0.583f;			// lighter
+	tempColorMetaRef->BlockData.FaceIndex[1].FaceMeta[1].green = 0.331f;
+	tempColorMetaRef->BlockData.FaceIndex[1].FaceMeta[1].blue = 0.150f;
+
+	tempColorMetaRef->BlockData.FaceIndex[1].FaceMeta[2].red = 0.383f;			// darker
+	tempColorMetaRef->BlockData.FaceIndex[1].FaceMeta[2].green = 0.131f;
+	tempColorMetaRef->BlockData.FaceIndex[1].FaceMeta[2].blue = 0.100f;
+
+	tempColorMetaRef->BlockData.FaceIndex[1].FaceMeta[3].red = 0.583f;			// lighter
+	tempColorMetaRef->BlockData.FaceIndex[1].FaceMeta[3].green = 0.331f;
+	tempColorMetaRef->BlockData.FaceIndex[1].FaceMeta[3].blue = 0.150f;
+
+	tempColorMetaRef->BlockData.FaceIndex[1].FaceMeta[4].red = 0.583f;		// lighter
+	tempColorMetaRef->BlockData.FaceIndex[1].FaceMeta[4].green = 0.331f;
+	tempColorMetaRef->BlockData.FaceIndex[1].FaceMeta[4].blue = 0.150f;
+
+	tempColorMetaRef->BlockData.FaceIndex[1].FaceMeta[5].red = 0.383f;			// darker
+	tempColorMetaRef->BlockData.FaceIndex[1].FaceMeta[5].green = 0.131f;
+	tempColorMetaRef->BlockData.FaceIndex[1].FaceMeta[5].blue = 0.100f;
+
+	//east face data
+	tempColorMetaRef->BlockData.FaceIndex[2].FaceMeta[0].red = 0.583f;			// lighter
+	tempColorMetaRef->BlockData.FaceIndex[2].FaceMeta[0].green = 0.331f;
+	tempColorMetaRef->BlockData.FaceIndex[2].FaceMeta[0].blue = 0.150f;
+
+	tempColorMetaRef->BlockData.FaceIndex[2].FaceMeta[1].red = 0.583f;			// lighter
+	tempColorMetaRef->BlockData.FaceIndex[2].FaceMeta[1].green = 0.331f;
+	tempColorMetaRef->BlockData.FaceIndex[2].FaceMeta[1].blue = 0.150f;
+
+	tempColorMetaRef->BlockData.FaceIndex[2].FaceMeta[2].red = 0.383f;			// darker
+	tempColorMetaRef->BlockData.FaceIndex[2].FaceMeta[2].green = 0.131f;
+	tempColorMetaRef->BlockData.FaceIndex[2].FaceMeta[2].blue = 0.100f;
+
+	tempColorMetaRef->BlockData.FaceIndex[2].FaceMeta[3].red = 0.583f;			// lighter
+	tempColorMetaRef->BlockData.FaceIndex[2].FaceMeta[3].green = 0.331f;
+	tempColorMetaRef->BlockData.FaceIndex[2].FaceMeta[3].blue = 0.150f;
+
+	tempColorMetaRef->BlockData.FaceIndex[2].FaceMeta[4].red = 0.583f;		// lighter
+	tempColorMetaRef->BlockData.FaceIndex[2].FaceMeta[4].green = 0.331f;
+	tempColorMetaRef->BlockData.FaceIndex[2].FaceMeta[4].blue = 0.150f;
+
+	tempColorMetaRef->BlockData.FaceIndex[2].FaceMeta[5].red = 0.383f;			// darker
+	tempColorMetaRef->BlockData.FaceIndex[2].FaceMeta[5].green = 0.131f;
+	tempColorMetaRef->BlockData.FaceIndex[2].FaceMeta[5].blue = 0.100f;
+
+	//south face data
+	tempColorMetaRef->BlockData.FaceIndex[3].FaceMeta[0].red = 0.583f;			// lighter
+	tempColorMetaRef->BlockData.FaceIndex[3].FaceMeta[0].green = 0.331f;
+	tempColorMetaRef->BlockData.FaceIndex[3].FaceMeta[0].blue = 0.150f;
+
+	tempColorMetaRef->BlockData.FaceIndex[3].FaceMeta[1].red = 0.583f;			// lighter
+	tempColorMetaRef->BlockData.FaceIndex[3].FaceMeta[1].green = 0.331f;
+	tempColorMetaRef->BlockData.FaceIndex[3].FaceMeta[1].blue = 0.150f;
+
+	tempColorMetaRef->BlockData.FaceIndex[3].FaceMeta[2].red = 0.383f;			// darker
+	tempColorMetaRef->BlockData.FaceIndex[3].FaceMeta[2].green = 0.131f;
+	tempColorMetaRef->BlockData.FaceIndex[3].FaceMeta[2].blue = 0.100f;
+
+	tempColorMetaRef->BlockData.FaceIndex[3].FaceMeta[3].red = 0.583f;			// lighter
+	tempColorMetaRef->BlockData.FaceIndex[3].FaceMeta[3].green = 0.331f;
+	tempColorMetaRef->BlockData.FaceIndex[3].FaceMeta[3].blue = 0.150f;
+
+	tempColorMetaRef->BlockData.FaceIndex[3].FaceMeta[4].red = 0.583f;		// lighter
+	tempColorMetaRef->BlockData.FaceIndex[3].FaceMeta[4].green = 0.331f;
+	tempColorMetaRef->BlockData.FaceIndex[3].FaceMeta[4].blue = 0.150f;
+
+	tempColorMetaRef->BlockData.FaceIndex[3].FaceMeta[5].red = 0.383f;			// darker
+	tempColorMetaRef->BlockData.FaceIndex[3].FaceMeta[5].green = 0.131f;
+	tempColorMetaRef->BlockData.FaceIndex[3].FaceMeta[5].blue = 0.100f;
+
+	//top face data
+	tempColorMetaRef->BlockData.FaceIndex[4].FaceMeta[0].red = 0.183f;
+	tempColorMetaRef->BlockData.FaceIndex[4].FaceMeta[0].green = 0.771f;
+	tempColorMetaRef->BlockData.FaceIndex[4].FaceMeta[0].blue = 0.014f;
+										  
+	tempColorMetaRef->BlockData.FaceIndex[4].FaceMeta[1].red = 0.171f;
+	tempColorMetaRef->BlockData.FaceIndex[4].FaceMeta[1].green = 0.901f;
+	tempColorMetaRef->BlockData.FaceIndex[4].FaceMeta[1].blue = 0.014f;
+										  
+	tempColorMetaRef->BlockData.FaceIndex[4].FaceMeta[2].red = 0.171f;
+	tempColorMetaRef->BlockData.FaceIndex[4].FaceMeta[2].green = 0.800f;
+	tempColorMetaRef->BlockData.FaceIndex[4].FaceMeta[2].blue = 0.04f;
+										  
+	tempColorMetaRef->BlockData.FaceIndex[4].FaceMeta[3].red = 0.183f;
+	tempColorMetaRef->BlockData.FaceIndex[4].FaceMeta[3].green = 0.771f;
+	tempColorMetaRef->BlockData.FaceIndex[4].FaceMeta[3].blue = 0.014f;
+
+	tempColorMetaRef->BlockData.FaceIndex[4].FaceMeta[4].red = 0.171f;
+	tempColorMetaRef->BlockData.FaceIndex[4].FaceMeta[4].green = 0.901f;
+	tempColorMetaRef->BlockData.FaceIndex[4].FaceMeta[4].blue = 0.014f;
+
+	tempColorMetaRef->BlockData.FaceIndex[4].FaceMeta[5].red = 0.171f;
+	tempColorMetaRef->BlockData.FaceIndex[4].FaceMeta[5].green = 0.800f;
+	tempColorMetaRef->BlockData.FaceIndex[4].FaceMeta[5].blue = 0.04f;
+
+	//bottom face data
+	tempColorMetaRef->BlockData.FaceIndex[5].FaceMeta[0].red = 0.583f;
+	tempColorMetaRef->BlockData.FaceIndex[5].FaceMeta[0].green = 0.771f;
+	tempColorMetaRef->BlockData.FaceIndex[5].FaceMeta[0].blue = 0.014f;
+										  
+	tempColorMetaRef->BlockData.FaceIndex[5].FaceMeta[1].red = 0.771f;
+	tempColorMetaRef->BlockData.FaceIndex[5].FaceMeta[1].green = 0.221f;
+	tempColorMetaRef->BlockData.FaceIndex[5].FaceMeta[1].blue = 0.014f;
+										  
+	tempColorMetaRef->BlockData.FaceIndex[5].FaceMeta[2].red = 0.171f;
+	tempColorMetaRef->BlockData.FaceIndex[5].FaceMeta[2].green = 0.221f;
+	tempColorMetaRef->BlockData.FaceIndex[5].FaceMeta[2].blue = 0.44f;
+										  
+	tempColorMetaRef->BlockData.FaceIndex[5].FaceMeta[3].red = 0.95f;
+	tempColorMetaRef->BlockData.FaceIndex[5].FaceMeta[3].green = 0.021f;
+	tempColorMetaRef->BlockData.FaceIndex[5].FaceMeta[3].blue = 0.044f;
+										  
+	tempColorMetaRef->BlockData.FaceIndex[5].FaceMeta[4].red = 0.971f;
+	tempColorMetaRef->BlockData.FaceIndex[5].FaceMeta[4].green = 0.121f;
+	tempColorMetaRef->BlockData.FaceIndex[5].FaceMeta[4].blue = 0.131f;
+										  
+	tempColorMetaRef->BlockData.FaceIndex[5].FaceMeta[5].red = 0.371f;
+	tempColorMetaRef->BlockData.FaceIndex[5].FaceMeta[5].green = 0.44f;
+	tempColorMetaRef->BlockData.FaceIndex[5].FaceMeta[5].blue = 0.521f;
 
 
 }
@@ -1196,4 +1322,9 @@ void OrganicSystem::MaterializeRenderablesByFactory()
 
 	std::chrono::duration<double> lowelapsed = lowend - lowstart;
 	cout << "Dual coollection instantiation speed (Low Memory Efficiency):  " << lowelapsed.count() << endl;
+}
+
+void OrganicSystem::LoadNWChunks()
+{
+	OGLM.PrepBuffersForMoveNW();
 }

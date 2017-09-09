@@ -17,6 +17,7 @@ using namespace std;
 #include <GL/glew.h>
 #include "Enclave.h"
 #include "EnclaveCollection.h"
+#include "EnclaveCollectionNeighborList.h"
 
 class EnclaveCollection;
 typedef unsigned char(&ElevationMapRef)[8][8];
@@ -556,17 +557,18 @@ EnclaveKeyDef::EnclaveKey Enclave::SingleToEnclaveKey(int input)
 	return tempkey;
 }
 
-void Enclave::UnveilMultipleAndNotifyNeighbors(EnclaveUnveilMeta metaArray, EnclaveCollectionBorderFlags* borderflagsref, ElevationMapRef mapRefVal, EnclaveCollection* collectionRefPtr, int filldirection)
+void Enclave::UnveilMultipleAndNotifyNeighbors(EnclaveUnveilMeta metaArray, EnclaveCollectionBorderFlags* borderflagsref, ElevationMapRef mapRefVal, EnclaveCollection* collectionRefPtr, EnclaveCollectionNeighborList neighborList, int filldirection)
 {
 	//cout << "test: " << metaArray.numberOfBlocks;
 	std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveCollectionBlueprint, EnclaveKeyDef::KeyHasher>::iterator blueprintMapIterator;
 	EnclaveKeyDef::EnclaveKey tempKey;
+	EnclaveNeighborMeta neighborMeta = GenerateNeighborMeta(collectionRefPtr, neighborList);
 	for (int x = 0; x < metaArray.numberOfBlocks; x++) // iterate for the number of blocks found in the metaArray
 	{
 		EnclaveKeyDef::Enclave2DKey retrieved2d = SingleTo2d(x);								// get 2d value
 		EnclaveKeyDef::EnclaveKey tempBlockKey = SingleToEnclaveKey(metaArray.EnclaveBlockLocation[retrieved2d.a][retrieved2d.b]);		// convert the single value at the 2d value to the appropriate enclave key;
 
-		EnclaveNeighborMeta neighborMeta = GenerateNeighborMeta(collectionRefPtr);
+		
 
 		if (filldirection == 0) // negative y jobs
 		{
@@ -594,31 +596,47 @@ void Enclave::UnveilMultipleAndNotifyNeighbors(EnclaveUnveilMeta metaArray, Encl
 							if (y == tempval)
 							{
 
-								fillflag = fillflag | 16;		// x = 2 is the top, so set the top face this one time
+								fillflag = fillflag | 16;		// x = 2 is the top, so set the top face + 16 (the north face) this one time
 							}
 							else
 							{
 								fillflag = 16;
 							}
-							UnveilSinglePoly(tempBlockKey.x, y - 1, tempBlockKey.z, 0, 1, fillflag, 0);
+							//fillflag = fillflag | (neighborMeta.NeighborBlockData[tempBlockKey.x][y - 1][tempBlockKey.z]);
+
+							UnveilSinglePoly(tempBlockKey.x, y - 1, tempBlockKey.z, 0, 1, fillflag | (neighborMeta.NeighborBlockData[tempBlockKey.x][y - 1][tempBlockKey.z]), 0);
 						}
 						if (borderflagsref->North == 0)
 						{
 							if (y == tempval)
 							{
-								UnveilSinglePoly(tempBlockKey.x, y - 1, tempBlockKey.z, 0, 1, fillflag, 0);
+								UnveilSinglePoly(tempBlockKey.x, y - 1, tempBlockKey.z, 0, 1, fillflag | (neighborMeta.NeighborBlockData[tempBlockKey.x][y - 1][tempBlockKey.z]), 0);
 							}
 						}
 
 
+
+						/*
+						if (this->UniqueKey.x == 1 && this->UniqueKey.y == 6 && this->UniqueKey.z == 0)
+						{
+							if (tempBlockKey.x == 0 && tempBlockKey.y == 1 && tempBlockKey.z == 0)
+							{
+								cout << "bit value: " << int(neighborMeta.NeighborBlockData[tempBlockKey.x][y - 1][tempBlockKey.z]) << endl;
+							}
+							
+						}
+						*/
 						//UnveilSinglePoly(tempBlockKey.x, y-1, tempBlockKey.z, 0, 1, fillflag, 0);
+						//UnveilSinglePoly(tempBlockKey.x, y-1, tempBlockKey.z, 0, 1, fillflag | (neighborMeta.NeighborBlockData[tempBlockKey.x][y-1][tempBlockKey.z]), 0);
+
 
 					}
 				}
 
 				else
 				{
-					UnveilSinglePoly(tempBlockKey.x, tempBlockKey.y, tempBlockKey.z, 0, 1, fillflag, 0);
+					//fillflag | (neighborMeta.NeighborBlockData[tempBlockKey.x][tempBlockKey.y][tempBlockKey.z])
+					UnveilSinglePoly(tempBlockKey.x, tempBlockKey.y, tempBlockKey.z, 0, 1, fillflag | (neighborMeta.NeighborBlockData[tempBlockKey.x][tempBlockKey.y][tempBlockKey.z]), 0);
 				}
 
 
@@ -638,25 +656,28 @@ void Enclave::UnveilMultipleAndNotifyNeighbors(EnclaveUnveilMeta metaArray, Encl
 						//cout << "test" << endl;
 						fillflag = 2;
 
-						// check if north border flag is set; only render north faces if it is set
+						// check if south border flag is set; only render north faces if it is set
 						if (borderflagsref->South == 1)
 						{
 							if (y == tempval)
 							{
 
-								fillflag = fillflag | 4;		// x = 2 is the top, so set the top face this one time
+								fillflag = fillflag | 4;		// x = 2 is the top, so set the top face + 4 (the south face) this one time
 							}
 							else
 							{
 								fillflag = 4;
 							}
-							UnveilSinglePoly(tempBlockKey.x, y - 1, tempBlockKey.z, 0, 1, fillflag, 0);
+							//fillflag = fillflag | (neighborMeta.NeighborBlockData[tempBlockKey.x][y - 1][tempBlockKey.z]);
+
+							UnveilSinglePoly(tempBlockKey.x, y - 1, tempBlockKey.z, 0, 1, fillflag | (neighborMeta.NeighborBlockData[tempBlockKey.x][y - 1][tempBlockKey.z]), 0);
 						}
 						if (borderflagsref->South == 0)
 						{
 							if (y == tempval)
 							{
-								UnveilSinglePoly(tempBlockKey.x, y - 1, tempBlockKey.z, 0, 1, fillflag, 0);
+								UnveilSinglePoly(tempBlockKey.x, y - 1, tempBlockKey.z, 0, 1, fillflag | (neighborMeta.NeighborBlockData[tempBlockKey.x][y - 1][tempBlockKey.z]), 0);
+								//UnveilSinglePoly(tempBlockKey.x, y - 1, tempBlockKey.z, 0, 1, fillflag, 0);
 							}
 						}
 
@@ -668,7 +689,7 @@ void Enclave::UnveilMultipleAndNotifyNeighbors(EnclaveUnveilMeta metaArray, Encl
 
 				else
 				{
-					UnveilSinglePoly(tempBlockKey.x, tempBlockKey.y, tempBlockKey.z, 0, 1, fillflag, 0);
+					UnveilSinglePoly(tempBlockKey.x, tempBlockKey.y, tempBlockKey.z, 0, 1, fillflag | (neighborMeta.NeighborBlockData[tempBlockKey.x][tempBlockKey.y][tempBlockKey.z]), 0);
 				}
 			}
 
@@ -676,7 +697,8 @@ void Enclave::UnveilMultipleAndNotifyNeighbors(EnclaveUnveilMeta metaArray, Encl
 			// do this for all non-border chunks
 			else  if (this->UniqueKey.z != 0 && this->UniqueKey.z != 7)
 			{
-				UnveilSinglePoly(tempBlockKey.x, tempBlockKey.y, tempBlockKey.z, 0, 1, fillflag, 0);
+				//UnveilSinglePoly(tempBlockKey.x, tempBlockKey.y, tempBlockKey.z, 0, 1, fillflag, 0);
+				UnveilSinglePoly(tempBlockKey.x, tempBlockKey.y, tempBlockKey.z, 0, 1, fillflag | (neighborMeta.NeighborBlockData[tempBlockKey.x][tempBlockKey.y][tempBlockKey.z]), 0);
 			}
 		}
 
@@ -698,11 +720,23 @@ EnclaveKeyDef::Enclave2DKey Enclave::SingleTo2d(int input)
 	return returnKey;
 }
 
-EnclaveNeighborMeta Enclave::GenerateNeighborMeta(EnclaveCollection* enclaveCollectionRef)
+EnclaveNeighborMeta Enclave::GenerateNeighborMeta(EnclaveCollection* enclaveCollectionRef, EnclaveCollectionNeighborList neighborList)
 {
 	EnclaveNeighborMeta returnMeta;
+	// required: initialize array to all 0s
+	for (int x = 0; x < 4; x++)
+	{
+		for (int y = 0; y < 4; y++)
+		{
+			for (int z = 0; z < 4; z++)
+			{
+				returnMeta.NeighborBlockData[x][y][z] = 0;
+			}
+		}
+	}
+	returnMeta.NeighborBlockData[0][0][0] = 0;
 
-	//check west first
+	//check west
 	if (this->UniqueKey.x != 0)	// check only if it isn't a border chunk, first
 	{
 		Enclave* enclavePtr = &enclaveCollectionRef->EnclaveArray[(this->UniqueKey.x)-1][this->UniqueKey.y][this->UniqueKey.z];	// get the neighboring enclave at -1 x
@@ -712,13 +746,33 @@ EnclaveNeighborMeta Enclave::GenerateNeighborMeta(EnclaveCollection* enclaveColl
 			{
 				if (enclavePtr->StorageArray[3][y][z].otherflags == 0)		// x is static = 3; this is equal to the east 
 				{
-					// index 0 = object for West unveil meta data
-					returnMeta.MetaArrays[0].unveilMeta.EnclaveBlockLocation[y][z] = EnclaveCoordsToSingle(0, y, z);
-					returnMeta.MetaArrays[0].unveilMeta.BlockFacesToRender[y][z] = 32;									// set west face bit
+					returnMeta.NeighborBlockData[0][y][z] = returnMeta.NeighborBlockData[0][y][z] | 32;
 				}
 			}
 		}
 	}
+	if (this->UniqueKey.x == 0)
+	{
+		if (neighborList.WestNeighborExists == 0)			// there is no neighboring collection to the west; all west sides of border chunks need to be painted
+		{
+			//cout << "no west neighbor!" << endl;
+			for (int y = 0; y < 4; y++)		// iterate on y axis
+			{
+				for (int z = 0; z < 4; z++)	// iterate on z axis
+				{
+						returnMeta.NeighborBlockData[0][y][z] = returnMeta.NeighborBlockData[0][y][z] | 32;
+								
+				}
+			}
+		}
+	}
+
+
+
+
+	// check east
+
+
 
 	return returnMeta;
 }

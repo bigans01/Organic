@@ -392,3 +392,8 @@ void OrganicGLManager::SendPointerToBufferManager(OrganicGLManager* in_OGLMptr)
 {
 	OrganicBufferManager.SetOGLMPointer(in_OGLMptr);
 }
+
+void OrganicGLManager::PrepBuffersForMoveNW()
+{
+	OrganicBufferManager.ShiftMatricesForNW();
+}

@@ -6,6 +6,7 @@
 #include "EnclaveCollection.h"
 #include "EnclavePainterList.h"
 #include "EnclaveCollectionActivateListT2.h"
+#include "EnclaveCollectionNeighborList.h"
 #include "OrganicSystem.h"
 #include "thread_pool.h"
 #include <chrono>
@@ -1021,7 +1022,7 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 	EnclaveCollectionBorderFlags borderFlags;											// contains west, north, east, south, top, bottom flags. 
 	EnclaveCollectionBorderFlags* borderFlagsRef = &borderFlags;						// get pointer to borderFlags
 	//HeapMutex.lock();
-	blueprintmatrix->DetermineBlueprintBordersToRender(Key, blueprint, borderFlagsRef);	// check this blueprint's neighbors
+	EnclaveCollectionNeighborList neighborList = blueprintmatrix->DetermineBlueprintBordersToRender(Key, blueprint, borderFlagsRef);	// check this blueprint's neighbors
 	//HeapMutex.unlock();
 
 
@@ -1051,6 +1052,7 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 	// Step Four: unveil all polys in border chunks	
 	//HeapMutex.lock();
 	
+	// a flag of one indicates that there is no bordering collection on that side (i.e., West = 1 means there is no collection to render that is West of this collection)
 	if (borderFlags.West == 1)
 	{
 		collectionRef.SetWestBorder(standardPaintableChunk, activateListRef);		// set up west border -- using the standardPaintableChunk; 
@@ -1108,7 +1110,7 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 							EnclaveKeyDef::EnclaveKey tempBlockKey;
 							//tempBlockKey = collectionRef.EnclaveArray[x][y][z].SingleToEnclaveKey(currentMeta.EnclaveBlockLocation[xx][zz]);
 							//collectionRef.EnclaveArray[x][y][z].UnveilSinglePoly(tempBlockKey.x, tempBlockKey.y, tempBlockKey.z, 0, 1, 2, 0);
-							collectionRef.EnclaveArray[x][y][z].UnveilMultipleAndNotifyNeighbors(currentMeta, borderFlagsRef, customPaintableChunk, collectionRefPtr, 0); // 0 = go -y direction
+							collectionRef.EnclaveArray[x][y][z].UnveilMultipleAndNotifyNeighbors(currentMeta, borderFlagsRef, customPaintableChunk, collectionRefPtr, neighborList, 0); // 0 = go -y direction
 						//}
 					//}
 					activateListRef.flagArray[x][z] = activateListRef.flagArray[x][z] | chunkbitmask;

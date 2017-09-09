@@ -28,12 +28,12 @@ using namespace std;
 #include <GL/glew.h>
 #include "EnclaveKeyDef.h"
 #include "EnclaveUnveilMeta.h"
-//#include "EnclaveCollection.h"
 #include "EnclaveCollectionBlueprintMatrix.h"
 #include "EnclaveCollectionBorderFlags.h"
 #include "EnclaveNeighborMeta.h"
 
 class EnclaveCollection;
+class EnclaveCollectionNeighborList;
 
 class Enclave {
 
@@ -86,12 +86,12 @@ public:
 	void ChangePolyMaterial(int x, int y, int z, int newmaterial);	// changes the material of a block at the x/y/z value within the chunk
 	void TestTopLayer();								// testing purpose only
 	void ViewOtherFlags();								// testing purpose only
-	void UnveilMultipleAndNotifyNeighbors(EnclaveUnveilMeta metaArray, EnclaveCollectionBorderFlags* borderflagsref, ElevationMapRef mapRefVal, EnclaveCollection* enclaveCollectionRef, int filldirection);
+	void UnveilMultipleAndNotifyNeighbors(EnclaveUnveilMeta metaArray, EnclaveCollectionBorderFlags* borderflagsref, ElevationMapRef mapRefVal, EnclaveCollection* enclaveCollectionRef, EnclaveCollectionNeighborList neighborList, int filldirection);
 	EnclaveKeyDef::Enclave2DKey SingleTo2d(int input);
 	int	GetTotalTrianglesInBlock(char in_char);		// Gets that current number of trinagles at a block.
 	int GetTotalTrianglesInEnclave();					// Returns the total number of triangles that exist in the enclave. 
 	EnclaveKeyDef::EnclaveKey SingleToEnclaveKey(int input);
-	EnclaveNeighborMeta GenerateNeighborMeta(EnclaveCollection* enclaveCollectionRef);
+	EnclaveNeighborMeta GenerateNeighborMeta(EnclaveCollection* enclaveCollectionRef, EnclaveCollectionNeighborList neighborList);
 	int EnclaveCoordsToSingle(int in_x, int in_y, int in_z);
 	
 };

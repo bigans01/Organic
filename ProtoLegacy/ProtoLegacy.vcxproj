@@ -163,6 +163,7 @@
     <ClInclude Include="EnclaveCollectionBorderFlags.h" />
     <ClInclude Include="EnclaveCollectionMatrix.h" />
     <ClInclude Include="Enclave.h" />
+    <ClInclude Include="EnclaveCollectionNeighborList.h" />
     <ClInclude Include="EnclaveDataFinder.h" />
     <ClInclude Include="EnclaveKeyContainer.h" />
     <ClInclude Include="EnclaveKeyDef.h" />

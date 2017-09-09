@@ -75,9 +75,9 @@ void EnclaveManifestFactoryT1::AttachManifestToEnclave(Enclave *in_ptr)
 					StorageArray[CurrentStorage].TextureArray[StorageArray[CurrentStorage].TextureArrayCount++] = textureMetaRef->BlockData.FaceIndex[0].FaceData[0].U;
 					StorageArray[CurrentStorage].TextureArray[StorageArray[CurrentStorage].TextureArrayCount++] = textureMetaRef->BlockData.FaceIndex[0].FaceData[0].U;
 
-					StorageArray[CurrentStorage].VertexColorArray[StorageArray[CurrentStorage].VertexColorArrayCount++] = vertexColorMetaRef->BlockData.FaceIndex[0].FaceMeta[k].red;
-					StorageArray[CurrentStorage].VertexColorArray[StorageArray[CurrentStorage].VertexColorArrayCount++] = vertexColorMetaRef->BlockData.FaceIndex[0].FaceMeta[k].green;
-					StorageArray[CurrentStorage].VertexColorArray[StorageArray[CurrentStorage].VertexColorArrayCount++] = vertexColorMetaRef->BlockData.FaceIndex[0].FaceMeta[k].blue;
+					StorageArray[CurrentStorage].VertexColorArray[StorageArray[CurrentStorage].VertexColorArrayCount++] = vertexColorMetaRef->BlockData.FaceIndex[j].FaceMeta[k].red;
+					StorageArray[CurrentStorage].VertexColorArray[StorageArray[CurrentStorage].VertexColorArrayCount++] = vertexColorMetaRef->BlockData.FaceIndex[j].FaceMeta[k].green;
+					StorageArray[CurrentStorage].VertexColorArray[StorageArray[CurrentStorage].VertexColorArrayCount++] = vertexColorMetaRef->BlockData.FaceIndex[j].FaceMeta[k].blue;
 					//TextureGLPtr[texturetuples++] = textureMetaRef->BlockData.FaceIndex[0].FaceData[0].U;
 					//TextureGLPtr[texturetuples++] = textureMetaRef->BlockData.FaceIndex[0].FaceData[0].U;
 					//EnclaveManifestRenderables[totaltuples++] = TempTuple;	
