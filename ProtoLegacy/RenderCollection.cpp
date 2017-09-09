@@ -29,6 +29,7 @@ void RenderCollection::CombineManifestArrays()
 	if (IsGLFloatPtrLoaded == 1)		// delete old array if it was previously set
 	{
 		delete[] GLFloatPtr;
+		delete[] VertexColorArrayPtr;
 	}
 	IsGLFloatPtrLoaded = 1;
 
@@ -91,7 +92,10 @@ void RenderCollection::CombineManifestArrays()
 	//GLfloat *glfloatptr;
 
 
-	GLFloatPtr = new GLfloat[totaltrianglestorender*9];	// 9 floats per triangle
+	GLFloatPtr = new GLfloat[totaltrianglestorender*9];	// 9 floats per triangle; stores vertex data
+	VertexColorArrayPtr = new GLfloat[totaltrianglestorender * 9];
+
+
 	RenderCollectionArraySize = totaltrianglestorender * 4 * 9;
 	//cout << "value of RenderCollectionArraySize: " << RenderCollectionArraySize << endl;
 	int index = 0;
@@ -105,8 +109,12 @@ void RenderCollection::CombineManifestArrays()
 	{
 
 
-		GLfloat *tempGLptr;																// temp pointer to the array
+		GLfloat *tempGLptr;																// temp pointer to the vertex data array
 		tempGLptr = ManMatrixIter->second.EnclaveGLPtr;									// set tempGLptr equivalent to the EnclaveGLPtr in the currently found manifest
+
+		GLfloat *tempGLColorPtr;
+		tempGLColorPtr = ManMatrixIter->second.VertexColorGLPtr;
+
 		int pointedBegin = 0;
 		for (int bb = 0; bb < (ManMatrixIter->second.TotalEnclaveTriangles) * 3; bb++)
 		{
@@ -117,7 +125,11 @@ void RenderCollection::CombineManifestArrays()
 
 			GLFloatPtr[currentBegin + 2] = tempGLptr[pointedBegin + 2];									// for first coord, x
 			GLFloatPtr[currentBegin + 1] = tempGLptr[pointedBegin + 1];									// for first coord, x
-			GLFloatPtr[currentBegin] = tempGLptr[pointedBegin];
+			GLFloatPtr[currentBegin] =     tempGLptr[pointedBegin];
+
+			VertexColorArrayPtr[currentBegin + 2] = tempGLColorPtr[pointedBegin + 2];
+			VertexColorArrayPtr[currentBegin + 1] = tempGLColorPtr[pointedBegin + 1];
+			VertexColorArrayPtr[currentBegin] = tempGLColorPtr[pointedBegin];
 
 			// NOTE: current begin should be 0...check this!
 			// currentBegin = end index of currently checked enclave manifest....
@@ -182,6 +194,11 @@ void RenderCollection::CombineManifestArraysFromT1Factory(EnclaveManifestFactory
 
 
 	mutexval.lock();
+	if (IsGLFloatPtrLoaded == 1)		// delete old array if it was previously set
+	{
+		delete[] GLFloatPtr;
+		delete[] VertexColorArrayPtr;
+	}
 	IsGLFloatPtrLoaded = 1;									// indicate that the pointer was loaded with data
 	GLFloatPtr = new GLfloat[totalfloats];	// 9 floats per triangle
 	VertexColorArrayPtr = new GLfloat[totalfloats];

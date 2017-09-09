@@ -317,9 +317,10 @@ void OrganicGLManager::sendRenderCollectionDataToBuffer(RenderCollection *render
 
 void OrganicGLManager::sendRenderCollectionVCDataToBuffer(RenderCollection *renderCollPtr)
 {
+	cout << "test: " << RMContainer.CurrentIndex << endl;
 	glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexColorBufferID);
 	glBufferSubData(GL_ARRAY_BUFFER, RMContainer.CurrentIndex*CollectionBufferSize, renderCollPtr->RenderCollectionArraySize, renderCollPtr->VertexColorArrayPtr);
-	RMContainer.RenderMetaArray[RMContainer.CurrentIndex].MetaIndex = RMContainer.CurrentIndex;
+	RMContainer.RenderMetaArray[RMContainer.CurrentIndex].MetaIndex = RMContainer.CurrentIndex;						// crash happens here with render mode 1 (MM)
 	RMContainer.RenderMetaArray[RMContainer.CurrentIndex].ArraySize = renderCollPtr->RenderCollectionArraySize;
 	RMContainer.CurrentIndex++;
 	RMContainer.TotalRenderable++;
