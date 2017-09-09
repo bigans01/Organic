@@ -252,7 +252,9 @@ int main()
 							64							|	 488		|	 602
 							256							|    954        |    1082
 	*/
+
 	auto collectionsSetupBEGIN = std::chrono::high_resolution_clock::now();
+	
 	int cmultiplier = 1;
 	for (int x = 0; x < 4*cmultiplier; x++)						
 													
@@ -281,6 +283,35 @@ int main()
 	auto collectionsSetupEND = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> collectionsSetupELAPSED = collectionsSetupEND - collectionsSetupBEGIN;
 	//std::cout << "Elapsed time (Multiple collection instantiation): " << collectionsSetupELAPSED.count() << endl;
+	
+	int height = 3;
+	/* vertical blueprints */
+	for (int y = 0; y < height; y++)
+	{
+		EnclaveKeyDef::EnclaveKey tempKeyToAdd;
+		tempKeyToAdd.x = 0;
+		tempKeyToAdd.y = -y;
+		cout << "debug: " << y << endl;
+		tempKeyToAdd.z = 2;
+		Organic.AddKeyToRenderList(tempKeyToAdd);
+		Organic.AddBlueprint(tempKeyToAdd.x, tempKeyToAdd.y, tempKeyToAdd.z, testBlueprint3);
+
+	}
+
+	/*debug loop*/
+	for (int y = 0; y < height; y++)
+	{
+		EnclaveKeyDef::EnclaveKey keyToFind;
+		keyToFind.x = 0;
+		keyToFind.y = -y;
+		keyToFind.z = 2;
+		std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveCollectionBlueprint, EnclaveKeyDef::KeyHasher>::iterator tempIter = Organic.BlueprintMatrix.BlueprintMap.find(keyToFind);
+		if (tempIter != Organic.BlueprintMatrix.BlueprintMap.end())
+		{
+			cout << "Key was found" << endl;
+		}
+
+	}
 
 	/*
 	EnclaveKeyDef::EnclaveKey NEWkey1, NEWkey2, NEWkey3, NEWkey4, NEWkey5, NEWkey6, NEWkey7, NEWkey8;

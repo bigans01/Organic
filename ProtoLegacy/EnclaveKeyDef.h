@@ -59,8 +59,10 @@ public:
 			using std::size_t;
 			using std::hash;
 			using std::string;
-			return ((hash<int>()(k.x)
-				^ (hash<int>()(k.y) << 1)) >> 1)
+			return (
+					(hash<int>()(k.x)
+				^ (hash<int>()(k.y) << 1)
+						) >> 1)
 				^ (hash<int>()(k.z) << 1);
 		}
 	};

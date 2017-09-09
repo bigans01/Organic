@@ -735,8 +735,9 @@ EnclaveNeighborMeta Enclave::GenerateNeighborMeta(EnclaveCollection* enclaveColl
 		}
 	}
 	returnMeta.NeighborBlockData[0][0][0] = 0;
+	/* -------------------------WEST CHECKS-------------------------*/
 
-	//check west
+	//check west, if not a border chunk
 	if (this->UniqueKey.x != 0)	// check only if it isn't a border chunk, first
 	{
 		Enclave* enclavePtr = &enclaveCollectionRef->EnclaveArray[(this->UniqueKey.x)-1][this->UniqueKey.y][this->UniqueKey.z];	// get the neighboring enclave at -1 x
@@ -751,6 +752,8 @@ EnclaveNeighborMeta Enclave::GenerateNeighborMeta(EnclaveCollection* enclaveColl
 			}
 		}
 	}
+
+	// if it is a border chunk, ch
 	if (this->UniqueKey.x == 0)
 	{
 		if (neighborList.WestNeighborExists == 0)			// there is no neighboring collection to the west; all west sides of border chunks need to be painted
@@ -764,6 +767,10 @@ EnclaveNeighborMeta Enclave::GenerateNeighborMeta(EnclaveCollection* enclaveColl
 								
 				}
 			}
+		}
+		if (neighborList.WestNeighborExists == 1)
+		{
+
 		}
 	}
 

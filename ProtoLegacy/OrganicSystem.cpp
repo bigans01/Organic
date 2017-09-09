@@ -1183,6 +1183,7 @@ void OrganicSystem::MaterializeRenderablesByMM()
 	int totalCollectionsToRender = 0;																				// will count total number of collections to be rendered from renderCollectionList
 	int numberOfThreadsToRun = 2;																					// indicates the number of threads that will be running these jobs
 	int collectionsPerThread = 0;																					// indicates how many collections each thread will process.
+	int oddflag = 0;																								// indicates if the number of collections to render is even or odd
 	std::vector<EnclaveKeyDef::EnclaveKey>::iterator collectionListIter = renderCollectionList.KeyVector.begin();	// set iterator to be the beginning of the list.
 	std::vector<EnclaveKeyDef::EnclaveKey>::iterator collectionListIter2 = renderCollectionList.KeyVector.begin();
 
@@ -1195,6 +1196,11 @@ void OrganicSystem::MaterializeRenderablesByMM()
 
 	// split up the collections into MDListJobMaterializeCollection objects; number of MDListJobMaterializeCollection objects will be equal to numberOfThreadsToRun
 	collectionsPerThread = totalCollectionsToRender / numberOfThreadsToRun;				// determine the number of collections per thread
+	if (totalCollectionsToRender % numberOfThreadsToRun == 1)
+	{
+		cout << "odd number of collections!!!" << endl;
+		oddflag = 1;
+	}
 
 	EnclaveCollectionBlueprintMatrix *passBlueprintMatrixPtr = &BlueprintMatrix;		// set up required pointers that are used as parameters for each MDJob
 	EnclaveCollectionMatrix *passEnclaveCollectionPtr = &EnclaveCollections;
@@ -1219,6 +1225,17 @@ void OrganicSystem::MaterializeRenderablesByMM()
 			tempMatCollListRef->ListMatrix[tempKey] = tempMDJob;
 
 		}
+	}
+
+	// if the number of collections was odd, add the remainining collection to the first list
+	if (oddflag == 1)
+	{
+		MDListJobMaterializeCollection* tempMatCollListRef = &MatCollList.MaterializeCollectionList.front();
+		EnclaveKeyDef::EnclaveKey tempKey = *collectionListIter2;
+		passCollectionPtrNew = &EnclaveCollections.EnclaveCollectionMap[tempKey];
+		passManifestPtrNew = &ManifestCollections.ManiCollectionMap[tempKey];
+		MDJobMaterializeCollection tempMDJob(tempKey, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew));
+		tempMatCollListRef->ListMatrix[tempKey] = tempMDJob;
 	}
 
 	std::mutex mutexval;
@@ -1258,6 +1275,7 @@ void OrganicSystem::MaterializeRenderablesByFactory()
 	int totalCollectionsToRender = 0;																				// will count total number of collections to be rendered from renderCollectionList
 	int numberOfThreadsToRun = 2;																					// indicates the number of threads that will be running these jobs
 	int collectionsPerThread = 0;																					// indicates how many collections each thread will process.
+	int oddflag = 0;																								// indicates if the number of collections to render is even or odd
 	std::vector<EnclaveKeyDef::EnclaveKey>::iterator collectionListIter = renderCollectionList.KeyVector.begin();	// set iterator to be the beginning of the list.
 	std::vector<EnclaveKeyDef::EnclaveKey>::iterator collectionListIter2 = renderCollectionList.KeyVector.begin();
 
@@ -1270,6 +1288,11 @@ void OrganicSystem::MaterializeRenderablesByFactory()
 
 	// split up the collections into MDListJobMaterializeCollection objects; number of MDListJobMaterializeCollection objects will be equal to numberOfThreadsToRun
 	collectionsPerThread = totalCollectionsToRender / numberOfThreadsToRun;				// determine the number of collections per thread
+	if (totalCollectionsToRender % numberOfThreadsToRun == 1)
+	{
+		cout << "odd number of collections!!!" << endl;
+		oddflag = 1;
+	}
 
 	EnclaveCollectionBlueprintMatrix *passBlueprintMatrixPtr = &BlueprintMatrix;		// set up required pointers that are used as parameters for each MDJob
 	EnclaveCollectionMatrix *passEnclaveCollectionPtr = &EnclaveCollections;
@@ -1278,7 +1301,7 @@ void OrganicSystem::MaterializeRenderablesByFactory()
 	EnclaveCollection *passCollectionPtrNew;
 	ManifestCollection *passManifestPtrNew;
 
-
+	// add collections to list(s)
 	for (int x = 0; x < numberOfThreadsToRun; x++)
 	{
 		MDListJobMaterializeCollection tempMatCollList;
@@ -1294,6 +1317,17 @@ void OrganicSystem::MaterializeRenderablesByFactory()
 			tempMatCollListRef->ListMatrix[tempKey] = tempMDJob;
 
 		}
+	}
+
+	// if the number of collections was odd, add the remainining collection to the first list
+	if (oddflag == 1)
+	{
+		MDListJobMaterializeCollection* tempMatCollListRef = &MatCollList.MaterializeCollectionList.front();
+		EnclaveKeyDef::EnclaveKey tempKey = *collectionListIter2;
+		passCollectionPtrNew = &EnclaveCollections.EnclaveCollectionMap[tempKey];
+		passManifestPtrNew = &ManifestCollections.ManiCollectionMap[tempKey];
+		MDJobMaterializeCollection tempMDJob(tempKey, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew));
+		tempMatCollListRef->ListMatrix[tempKey] = tempMDJob;
 	}
 
 	std::mutex mutexval;
