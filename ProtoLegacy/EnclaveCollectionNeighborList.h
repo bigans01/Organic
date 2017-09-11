@@ -23,6 +23,7 @@ public:
 	int TopNeighborExists = 0;
 	int BottomNeighborExists = 0;
 
+	EnclaveCollectionBlueprint* originPtr;
 	EnclaveCollectionBlueprint* westPtr;
 	EnclaveCollectionBlueprint* northPtr;
 	EnclaveCollectionBlueprint* eastPtr;

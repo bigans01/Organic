@@ -1073,7 +1073,31 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 		collectionRef.SetSouthBorder(standardPaintableChunk, activateListRef);
 	}
 	
-	
+	//...but if the flag is 0 (meaning there is a neighbor), each border chunk must be compared to the opposite border chunk in the neighbor.
+	if (borderFlags.West == 0)
+	{
+		EnclaveCollectionNeighborList* neighborListRef = &neighborList;
+		collectionRef.SetWestBorder(standardPaintableChunk, activateListRef, neighborListRef);
+	}
+
+	if (borderFlags.North == 0)
+	{
+		EnclaveCollectionNeighborList* neighborListRef = &neighborList;
+		collectionRef.SetNorthBorder(standardPaintableChunk, activateListRef, neighborListRef);
+	}
+
+	if (borderFlags.East == 0)
+	{
+		EnclaveCollectionNeighborList* neighborListRef = &neighborList;
+		collectionRef.SetEastBorder(standardPaintableChunk, activateListRef, neighborListRef);
+	}
+
+	if (borderFlags.South == 0)
+	{
+		EnclaveCollectionNeighborList* neighborListRef = &neighborList;
+		collectionRef.SetSouthBorder(standardPaintableChunk, activateListRef, neighborListRef);
+	}
+
 	//HeapMutex.unlock();
 
 

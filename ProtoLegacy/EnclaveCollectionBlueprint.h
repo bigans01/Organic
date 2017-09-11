@@ -18,6 +18,7 @@ and has the ability to store EnclavePainters, which have the ability to change t
 #include "EnclavePainterListMatrix.h"
 #include "ECBXAxisCarvePlan.h"
 #include "ECBCollectionPainter.h"
+#include "ECBOutwardFaceFlags.h"
 #include "EnclaveUnveilMeta.h"
 #include <iostream>
 #include <string>
@@ -29,10 +30,17 @@ class EnclaveCollectionBlueprint {
 public:
 	int CarveMode = 1;											// determines the current carve mode; default is 1
 	typedef unsigned char(&ElevationMapRef)[8][8];				// set up type def for rest of header file
-	unsigned char SurfaceChunks[8][8];							// set up the 64 byte array for surface chunks (any chunk exposed to air)
-	unsigned char SolidChunks[8][8];							// set up the 64 byte array for non-air chunks
-	unsigned char CustomPaintableChunks[8][8];					// stores a list of custom chunks to be painted
-	unsigned char StandardPaintableChunks[8][8];				// stores a list of standard chunks ot be painted (for basic painting operations where entire sides of an Enclave will be painted)
+	unsigned char SurfaceChunks[8][8] = { 0 } ;							// set up the 64 byte array for surface chunks (any chunk exposed to air)
+	unsigned char SolidChunks[8][8] = { 0 } ;							// set up the 64 byte array for non-air chunks
+	unsigned char AirtightChunks[8][8] = { 0 };							// stores a list of all airtight chunks (airtight meaning no air blocks exist in the chunk)
+	unsigned char CustomPaintableChunks[8][8] = { 0 };					// stores a list of custom chunks to be painted
+	unsigned char StandardPaintableChunks[8][8] = { 0 };				// stores a list of standard chunks ot be painted (for basic painting operations where entire sides of an Enclave will be painted)
+	ECBOutwardFaceFlags WestBorderBlocks;						// stores bitwise flags for the west border blocks
+	ECBOutwardFaceFlags NorthBorderBlocks;						// stores bitwise flags for the north border blocks
+	ECBOutwardFaceFlags EastBorderBlocks;						// stores bitwise flags for the east border blocks
+	ECBOutwardFaceFlags SouthBorderBlocks;						// stores bitwise flags for the south border blocks
+	ECBOutwardFaceFlags TopBorderBlocks;						// stores bitwise flags for the top border blocks
+	ECBOutwardFaceFlags BottomBorderBlocks;						// stores bitwise flags for the bottom border blocks
 	EnclavePainterListMatrix PaintListMatrix;					// stores the actual paint jobs that will be run
 	std::vector<ECBXAxisCarvePlan> XAxisCPVector;				// vector for storing x axis carve plans
 	std::unordered_map<std::string, ECBCollectionPainter> CollectionPainterMap;
@@ -56,6 +64,7 @@ public:
 	ElevationMapRef& GetStandardPaintableChunkData();
 	void CarveSlope();
 	EnclaveUnveilMeta SetupCarvePlan(EnclaveKeyDef::EnclaveKey tempKey);
+	EnclaveUnveilMeta ReturnBorderChunkFacesToRender(int x, int y, int z, EnclaveCollectionBlueprint* originBlueprint, EnclaveCollectionBlueprint*  comparedBlueprint, int directionOfNeighbor);
 
 };
 

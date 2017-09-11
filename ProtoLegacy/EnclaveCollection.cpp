@@ -84,6 +84,10 @@ void EnclaveCollection::SetWestBorder(ElevationMapRef elevationMapCopy, EnclaveC
 
 }
 
+void EnclaveCollection::SetWestBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2& activateListRef, EnclaveCollectionNeighborList* neighborListPtr)
+{
+
+}
 void EnclaveCollection::SetNorthBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2& activateListRef)
 {
 	//cout << "----NORTH BORDER ENTRY----" << endl;
@@ -132,6 +136,11 @@ void EnclaveCollection::SetNorthBorder(ElevationMapRef elevationMapCopy, Enclave
 
 }
 
+void EnclaveCollection::SetNorthBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2& activateListRef, EnclaveCollectionNeighborList* neighborListPtr)
+{
+
+}
+
 void EnclaveCollection::SetEastBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2 &activateListRef)
 {
 	
@@ -171,6 +180,41 @@ void EnclaveCollection::SetEastBorder(ElevationMapRef elevationMapCopy, EnclaveC
 		}
 	}
 
+}
+
+void EnclaveCollection::SetEastBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2& activateListRef, EnclaveCollectionNeighborList* neighborListPtr)
+{
+	EnclaveCollectionBlueprint* blueprintPtr = neighborListPtr->eastPtr;	// get the blueprint to the east of this one
+	EnclaveCollectionBlueprint* originPtr = neighborListPtr->originPtr;
+	int bitmask1 = 1;
+	int actual_y = 0;
+	int iterationtest = 0;
+	for (int z = 0; z < 8; z++)
+	{
+		bitmask1 = 1;
+		for (int y = 0; y < 8; y++)
+		{
+			if ((blueprintPtr->SolidChunks[0][z] & bitmask1) == bitmask1)			// check the solids of the neighboring blueprint
+			{
+				if (
+					((blueprintPtr->AirtightChunks[0][z] & bitmask1) != bitmask1)			// if the neighboring chunk to check is not airtight...
+					&&																		// ...AND...
+					((originPtr->SolidChunks[7][z] & bitmask1) == bitmask1)					// the border chunk in the originating blueprint to compare to is solid...
+				)
+																							// ...now check to see if it isn't an airtight chunk...
+				{
+					// if it isn't an airtight chunk, we need to do things.
+					blueprintPtr->ReturnBorderChunkFacesToRender(7, actual_y, z, originPtr, blueprintPtr, 8); // 8 = the originPtr blueprint will be compared to blueprintPtr, which is to the East (8)
+					Enclave* enclavePtr = &EnclaveArray[7][actual_y][z];
+					//cout << "test thingy" << endl;
+					iterationtest++;
+				}
+			}
+			bitmask1 <<= 1;			// shift to the left by one
+			actual_y++;
+		}
+	}
+	//cout << "test thingy: " << iterationtest << endl;
 }
 
 void EnclaveCollection::SetSouthBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2 &activateListRef)
@@ -213,12 +257,27 @@ void EnclaveCollection::SetSouthBorder(ElevationMapRef elevationMapCopy, Enclave
 	}
 }
 
+void EnclaveCollection::SetSouthBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2& activateListRef, EnclaveCollectionNeighborList* neighborListPtr)
+{
+
+}
+
 void EnclaveCollection::SetTopBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2 &activateListRef)
 {
 
 }
 
+void EnclaveCollection::SetTopBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2& activateListRef, EnclaveCollectionNeighborList* neighborListPtr)
+{
+
+}
+
 void EnclaveCollection::SetBottomBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2 &activateListRef)
+{
+
+}
+
+void EnclaveCollection::SetBottomBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2& activateListRef, EnclaveCollectionNeighborList* neighborListPtr)
 {
 
 }

@@ -40,16 +40,17 @@ GLFWwindow* window;
 
 int main()
 {
+	int count = 0;
 
+	/*
 	EnclaveKeyDef::EnclaveKey EnclaveCollectionTestKey;
 	EnclaveCollectionTestKey.x = 0;
 	EnclaveCollectionTestKey.y = 0;
 	EnclaveCollectionTestKey.z = 0;
 	char val;
-	int count = 0;
 	int collectcount = 0;
 
-	/* Organic testing. */
+	
 	
 	// STAGE 1: blueprint set up
 	EnclaveCollectionBlueprint testBlueprint;
@@ -170,7 +171,7 @@ int main()
 	tempPainterKey.y = 6;
 	tempPainterKey.z = 0;
 	testBlueprint.AddNewPaintList(tempPainterKey, testPaintList);
-	*/
+	
 	auto bpstart = std::chrono::high_resolution_clock::now();
 	//auto bpstart = std::chrono::high_resolution_clock::now();
 	int bptestcount = 0;
@@ -202,7 +203,7 @@ int main()
 	tempPainterKey.x = 7;
 	tempPainterKey.y = 6;
 	tempPainterKey.z = 0;
-
+	*/
 
 	// STAGE 2: initialization of enclaves 
 
@@ -284,34 +285,38 @@ int main()
 	std::chrono::duration<double> collectionsSetupELAPSED = collectionsSetupEND - collectionsSetupBEGIN;
 	//std::cout << "Elapsed time (Multiple collection instantiation): " << collectionsSetupELAPSED.count() << endl;
 	
-	int height = 3;
-	/* vertical blueprints */
+	/*
+	// vertical blueprints
+	int height = 7;
 	for (int y = 0; y < height; y++)
 	{
 		EnclaveKeyDef::EnclaveKey tempKeyToAdd;
 		tempKeyToAdd.x = 0;
-		tempKeyToAdd.y = -y;
-		cout << "debug: " << y << endl;
+		tempKeyToAdd.y = y;
+		//cout << "debug: " << y << endl;
 		tempKeyToAdd.z = 2;
 		Organic.AddKeyToRenderList(tempKeyToAdd);
 		Organic.AddBlueprint(tempKeyToAdd.x, tempKeyToAdd.y, tempKeyToAdd.z, testBlueprint3);
 
 	}
 
-	/*debug loop*/
+
 	for (int y = 0; y < height; y++)
 	{
-		EnclaveKeyDef::EnclaveKey keyToFind;
-		keyToFind.x = 0;
-		keyToFind.y = -y;
-		keyToFind.z = 2;
-		std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveCollectionBlueprint, EnclaveKeyDef::KeyHasher>::iterator tempIter = Organic.BlueprintMatrix.BlueprintMap.find(keyToFind);
-		if (tempIter != Organic.BlueprintMatrix.BlueprintMap.end())
-		{
-			cout << "Key was found" << endl;
-		}
+		EnclaveKeyDef::EnclaveKey tempKeyToAdd;
+		tempKeyToAdd.x = 0;
+		tempKeyToAdd.y = y;
+		//cout << "debug: " << y << endl;
+		tempKeyToAdd.z = -2;
+		Organic.AddKeyToRenderList(tempKeyToAdd);
+		Organic.AddBlueprint(tempKeyToAdd.x, tempKeyToAdd.y, tempKeyToAdd.z, testBlueprint3);
 
 	}
+	*/
+
+	int shiftval = 1;
+	shiftval <<= 7;
+	cout << "test bit shift: " << shiftval << endl;
 
 	/*
 	EnclaveKeyDef::EnclaveKey NEWkey1, NEWkey2, NEWkey3, NEWkey4, NEWkey5, NEWkey6, NEWkey7, NEWkey8;
@@ -493,6 +498,10 @@ int main()
 	auto STARTUPend = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> STARTUPduration = STARTUPend - STARTUPbegin;
 	std::cout << "Total pre-loop startup time: " << STARTUPduration.count() << endl;
+
+	int dummy = 1;
+	dummy <<= 0;
+	cout << "integer test:" << dummy << endl;
 
 	// ------------------------------------END OPEN GL SET UP
 

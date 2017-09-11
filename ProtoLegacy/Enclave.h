@@ -30,6 +30,7 @@ using namespace std;
 #include "EnclaveUnveilMeta.h"
 #include "EnclaveCollectionBlueprintMatrix.h"
 #include "EnclaveCollectionBorderFlags.h"
+#include "ECBOutwardFaceFlags.h"
 #include "EnclaveNeighborMeta.h"
 
 class EnclaveCollection;

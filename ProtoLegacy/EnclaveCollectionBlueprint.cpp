@@ -115,6 +115,7 @@ void EnclaveCollectionBlueprint::CarveSlope()
 		{
 			SolidChunks[x][z] = 127;		// all chunks except top chunk will be solid
 			CustomPaintableChunks[x][z] = 64;		// paint only the top chunk (for now)
+			AirtightChunks[x][z] = 63;
 		}
 	}
 
@@ -125,6 +126,7 @@ void EnclaveCollectionBlueprint::CarveSlope()
 		{
 			SolidChunks[x][z] = 255;		// all chunks painted
 			CustomPaintableChunks[x][z] = 128;	// paint only the top chunk (for now)
+			AirtightChunks[x][z] = 127;
 		}
 	}
 
@@ -251,4 +253,42 @@ EnclaveUnveilMeta EnclaveCollectionBlueprint::SetupCarvePlan(EnclaveKeyDef::Encl
 		returnMeta.numberOfBlocks = returnMetaCount;
 		return returnMeta;
 	}
+}
+
+EnclaveUnveilMeta EnclaveCollectionBlueprint::ReturnBorderChunkFacesToRender(int x, int y, int z, EnclaveCollectionBlueprint* originBlueprint, EnclaveCollectionBlueprint*  comparedBlueprint, int directionOfNeighbor)
+{
+	EnclaveUnveilMeta returnMeta;
+	if (directionOfNeighbor == 8) // neighbor is to the east
+	{
+		int begin_y = y * 4;
+		int begin_z = z * 4;
+
+		int slice_1 = begin_z;
+		int slice_2 = begin_z + 1;
+		int slice_3 = begin_z + 2;
+		int slice_4 = begin_z + 3;
+
+		for (int aa = slice_1; aa < (slice_1 + 4); aa++)
+		{
+			for (int bb = begin_y; bb < (begin_y + 4); bb++)
+			{
+				int bitmaskshifter = 1;
+				bitmaskshifter <<= bb;			// shifts it to the left, up to 31 times.
+				if (
+					((originBlueprint->EastBorderBlocks.faceflagarray[aa] && bitmaskshifter) == bitmaskshifter)		// check if the slice at aa (in this case, slices going along the z axis south) has a flag set that matches the bitmaskshifter
+					&&
+					((comparedBlueprint->WestBorderBlocks.faceflagarray[aa] & bitmaskshifter) != bitmaskshifter)	// ...now compare it to the west face of the neighboring blueprint at that same point. If it is not equal, than the block is not being rendered at the border, and we 
+																													// may now reveal the east face of the block at this location.			
+					)
+				{
+
+				}
+
+			}
+		}
+
+
+
+	}
+	return returnMeta;
 }

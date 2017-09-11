@@ -9,6 +9,7 @@ EnclaveCollectionNeighborList EnclaveCollectionBlueprintMatrix::DetermineBluepri
 	std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveCollectionBlueprint, EnclaveKeyDef::KeyHasher>::iterator blueprintMapIterator;
 	EnclaveKeyDef::EnclaveKey tempKey;
 	EnclaveCollectionNeighborList returnList;
+	returnList.originPtr = originBlueprint;
 
 	tempKey.x = blueprintKey.x;		
 	tempKey.y = blueprintKey.y;

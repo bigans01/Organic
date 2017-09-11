@@ -614,7 +614,9 @@ void Enclave::UnveilMultipleAndNotifyNeighbors(EnclaveUnveilMeta metaArray, Encl
 							}
 						}
 
-
+						/* --------------------------------------
+						Need logic for adding additional blocks to unveil, based on data in EnclaveNeighborMeta 
+						--------------------------------------*/
 
 						/*
 						if (this->UniqueKey.x == 1 && this->UniqueKey.y == 6 && this->UniqueKey.z == 0)
@@ -770,14 +772,23 @@ EnclaveNeighborMeta Enclave::GenerateNeighborMeta(EnclaveCollection* enclaveColl
 		}
 		if (neighborList.WestNeighborExists == 1)
 		{
+			ECBOutwardFaceFlags* faceFlagsRef = &neighborList.westPtr->EastBorderBlocks;
+			int zoffset = (this->UniqueKey.z) * 4;											// will store which of the EastBorderBlock integers to start at
+			int yoffset = (this->UniqueKey.y) * 4;											// will store which bits in the integer to start at
 
+
+
+
+			//cout << "west chunk found!" << endl;
 		}
 	}
 
+	/* -------------------------EAST CHECKS-------------------------*/
+	// check east, if not a border chunk
+	if (this->UniqueKey.x == 7)
+	{
 
-
-
-	// check east
+	}
 
 
 

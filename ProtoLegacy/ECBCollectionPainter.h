@@ -17,7 +17,7 @@ class ECBCollectionPainter
 {
 public:
 	int blockID = 0;
-	unsigned char chunksToPaint[8][8];
+	unsigned char chunksToPaint[8][8] = { 0 };
 };
 
 #endif
