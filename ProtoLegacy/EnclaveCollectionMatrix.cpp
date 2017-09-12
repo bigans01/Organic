@@ -1048,7 +1048,7 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 		}
 	}
 
-	
+	//cout << "test within blueprint processing: (2) " << blueprint->WestBorderBlocks.faceflagarray[1] << endl;
 	// Step Four: unveil all polys in border chunks	
 	//HeapMutex.lock();
 	
@@ -1115,6 +1115,7 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 				// Render customized chunks here
 				if ((customPaintableChunk[x][z] & chunkbitmask) == chunkbitmask)
 				{
+					//cout << "Collection Ref:" << Key.x << ", " << Key.y << ", " << Key.z << endl;
 					Enclave stackEnclave(Key, x, y, z);
 					collectionRef.EnclaveArray[x][y][z] = stackEnclave;
 					collectionRef.EnclaveArray[x][y][z].InitializeRenderArray(1);
@@ -1126,7 +1127,11 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 					currentKey.z = z;
 					// cout << "custom key value: " << currentKey.x << ", " << currentKey.y << ", " << currentKey.z << endl;
 					EnclaveUnveilMeta currentMeta = blueprint->SetupCarvePlan(currentKey);		// use the carve plan to determine the exact x/y/z chunk coords of each block to render
-					
+					if (x == 7 && y == 6 && z == 0)
+					{
+						//cout << "Collection Ref:" << Key.x << ", " << Key.y << ", " << Key.z << endl;
+						cout << "border chunk will be rendered(1)!!!" << endl;
+					}
 					//for (int xx = 0; xx < 4; xx++)
 					//{
 						//for (int zz = 0; zz < 4; zz++)

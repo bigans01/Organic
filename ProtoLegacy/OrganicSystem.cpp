@@ -921,7 +921,7 @@ void OrganicSystem::JobMaterializeMultiCollectionFromFactory2(MDListJobMateriali
 		std::chrono::duration<double> initelapsed = initend - initstart;										// ""
 
 		EnclaveCollectionActivateListT2 listT2_1;		
-		
+		//cout << "test within blueprint processing: " << blueprintptr->WestBorderBlocks.faceflagarray[1] << endl;
 		EnclaveCollectionsRef->JobInstantiateAndPopulateEnclaveAlpha2(0, 7 + 1, std::ref(*CollectionRef), Key1, std::ref(blueprintptr), std::ref(BlueprintMatrixRef), std::ref(listT2_1), std::ref(mutexval));	// run the instantiation job on this thread (all 512 enclaves) //EnclaveCollectionMap[Key]
 		int chunkbitmask = 1;	// set the chunk bit mask used below
 		int bitmaskval = 0;		// ""

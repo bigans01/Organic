@@ -225,6 +225,15 @@ int main()
 	auto carvestart = std::chrono::high_resolution_clock::now();
 
 	testBlueprint3.CarveSlope();
+	testBlueprint3.SetBorderBlockFlags(32, 0, 24);	// west direction, 1st slice, 24th "floor" (would be first block on y axis in the 7th chunk
+	testBlueprint3.SetBorderBlockFlags(8, 0, 24);  // east direction (8)
+	testBlueprint3.SetBorderBlockFlags(8, 0, 25);  // east direction (8)
+	testBlueprint3.SetBorderBlockFlags(8, 0, 26);  // east direction (8)
+
+	//testBlueprint3.SetBorderBlockFlags(32, 5, 24);	// west direction, 1st slice, 24th "floor" (would be first block on y axis in the 7th chunk
+	//testBlueprint3.SetBorderBlockFlags(8, 5, 24);  // east direction (8)
+	//testBlueprint3.SetBorderBlockFlags(8, 5, 25);  // east direction (8)
+	//testBlueprint3.SetBorderBlockFlags(8, 5, 26);  // east direction (8)
 	//cout << "blueprint size: " << sizeof(testBlueprint3) << endl;
 
 	auto carveend = std::chrono::high_resolution_clock::now();
@@ -266,6 +275,10 @@ int main()
 		tempKeyToAdd.z = 0;
 		Organic.AddKeyToRenderList(tempKeyToAdd);
 		Organic.AddBlueprint(tempKeyToAdd.x, tempKeyToAdd.y, tempKeyToAdd.z, testBlueprint3);
+		//Organic.BlueprintMatrix.BlueprintMap[tempKeyToAdd].SetBorderBlockFlags(32, 1, 24);
+		//Organic.BlueprintMatrix.BlueprintMap[tempKeyToAdd].SetBorderBlockFlags(16, 1, 24);
+		//Organic.BlueprintMatrix.BlueprintMap[tempKeyToAdd].SetBorderBlockFlags(16, 1, 25);
+		//Organic.BlueprintMatrix.BlueprintMap[tempKeyToAdd].SetBorderBlockFlags(16, 1, 26);
 	}
 	
 
@@ -280,6 +293,11 @@ int main()
 		tempKeyToAdd.z = 1;
 		Organic.AddKeyToRenderList(tempKeyToAdd);
 		Organic.AddBlueprint(tempKeyToAdd.x, tempKeyToAdd.y, tempKeyToAdd.z, testBlueprint3);
+		//Organic.BlueprintMatrix.BlueprintMap[tempKeyToAdd].SetBorderBlockFlags(32, 1, 24);
+		//Organic.BlueprintMatrix.BlueprintMap[tempKeyToAdd].SetBorderBlockFlags(16, 1, 24);
+		//Organic.BlueprintMatrix.BlueprintMap[tempKeyToAdd].SetBorderBlockFlags(16, 1, 25);
+		//Organic.BlueprintMatrix.BlueprintMap[tempKeyToAdd].SetBorderBlockFlags(16, 1, 26);
+
 	}
 	auto collectionsSetupEND = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> collectionsSetupELAPSED = collectionsSetupEND - collectionsSetupBEGIN;

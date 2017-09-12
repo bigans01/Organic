@@ -262,33 +262,71 @@ EnclaveUnveilMeta EnclaveCollectionBlueprint::ReturnBorderChunkFacesToRender(int
 	{
 		int begin_y = y * 4;
 		int begin_z = z * 4;
+		int unveil_y_location = 0;				// for location on the y axis inside the unveil meta return value
+		int unveil_z_location = 0;
 
 		int slice_1 = begin_z;
 		int slice_2 = begin_z + 1;
 		int slice_3 = begin_z + 2;
 		int slice_4 = begin_z + 3;
 
+		int actualmaskbit = 1;
+
 		for (int aa = slice_1; aa < (slice_1 + 4); aa++)
 		{
+			unveil_y_location = 0;
 			for (int bb = begin_y; bb < (begin_y + 4); bb++)
 			{
 				int bitmaskshifter = 1;
-				bitmaskshifter <<= bb;			// shifts it to the left, up to 31 times.
+				if (bb != 0)
+				{
+					bitmaskshifter <<= (bb+1);			// shifts it to the left, up to 31 times.
+					//std::cout << "bb is NOT 0!" << std::endl;
+				}
+				if (originBlueprint->WestBorderBlocks.faceflagarray[aa] > 0)
+				{
+					//std::cout << "origin: " << originBlueprint->EastBorderBlocks.faceflagarray[aa] << std::endl;
+					//std::cout << "compared: " << comparedBlueprint->WestBorderBlocks.faceflagarray[aa] << std::endl;
+				}
 				if (
-					((originBlueprint->EastBorderBlocks.faceflagarray[aa] && bitmaskshifter) == bitmaskshifter)		// check if the slice at aa (in this case, slices going along the z axis south) has a flag set that matches the bitmaskshifter
+					((originBlueprint->EastBorderBlocks.faceflagarray[aa] & bitmaskshifter) == bitmaskshifter)		// check if the slice at aa (in this case, slices going along the z axis south) has a flag set that matches the bitmaskshifter
 					&&
 					((comparedBlueprint->WestBorderBlocks.faceflagarray[aa] & bitmaskshifter) != bitmaskshifter)	// ...now compare it to the west face of the neighboring blueprint at that same point. If it is not equal, than the block is not being rendered at the border, and we 
 																													// may now reveal the east face of the block at this location.			
 					)
 				{
-
+					//std::cout << "----hit! (" << bb << ") " << unveil_y_location << " " << unveil_z_location  << std::endl;
+					returnMeta.EnclaveBlockLocation[unveil_y_location][unveil_z_location] = BlockKeyToSingle(3, unveil_y_location, unveil_z_location);
+					returnMeta.BlockFacesToRender[unveil_y_location][unveil_z_location] = 8;
+					returnMeta.UnveilFlag[unveil_y_location][unveil_z_location] = 1;
+					returnMeta.numberOfBlocks++;
 				}
-
+				unveil_y_location++;
 			}
+			unveil_z_location++;
 		}
 
 
 
 	}
 	return returnMeta;
+}
+
+void EnclaveCollectionBlueprint::SetBorderBlockFlags(int direction, int slice, int slice_offset)
+{
+	// do modifications for west
+	int initial_offset = 1;
+	if (direction == 32)
+	{
+		initial_offset <<= slice_offset;
+		WestBorderBlocks.faceflagarray[slice] = initial_offset;
+		//std::cout << "west blocks set: " << WestBorderBlocks.faceflagarray[slice];
+	}
+
+	// do modifications for east
+	if (direction == 8)
+	{
+		initial_offset <<= slice_offset;
+		EastBorderBlocks.faceflagarray[slice] = initial_offset;
+	}
 }

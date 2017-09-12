@@ -103,6 +103,10 @@ void EnclaveCollection::SetNorthBorder(ElevationMapRef elevationMapCopy, Enclave
 				// cout << "valid enclave key: " << x << ", " << bitloop << ", " << 0 << endl;
 				// set 16 blocks to have their North face flagged (16)
 				//cout << "chunkbitmask: " << stdchunkbitmask << endl;
+				//if (x == 7 && bitloop == 6)
+				//{
+					//cout << "border chunk will be rendered!" << endl;
+				//}
 				EnclaveArray[x][bitloop][0].UnveilSinglePoly(0, 0, 0, 0, 1, 16, 0);	// x = 0, all 4 up
 				EnclaveArray[x][bitloop][0].UnveilSinglePoly(0, 1, 0, 0, 1, 16, 0);
 				EnclaveArray[x][bitloop][0].UnveilSinglePoly(0, 2, 0, 0, 1, 16, 0);
@@ -138,7 +142,37 @@ void EnclaveCollection::SetNorthBorder(ElevationMapRef elevationMapCopy, Enclave
 
 void EnclaveCollection::SetNorthBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2& activateListRef, EnclaveCollectionNeighborList* neighborListPtr)
 {
+	EnclaveCollectionBlueprint* blueprintPtr = neighborListPtr->northPtr;
+	EnclaveCollectionBlueprint* originPtr = neighborListPtr->originPtr;
+	int bitmask1 = 1;
+	int actual_y = 0;
+	int iterationtest = 0;
+	for (int x = 0; x < 8; x++)
+	{
+		bitmask1 = 1;
+		for (int y = 0; y < 8; y++)
+		{
+			if ((blueprintPtr->SolidChunks[x][7] & bitmask1) == bitmask1)			// check the solids of the neighboring blueprint (actually checking northern neighbor's southern chunk wall)
+			{
+				if (
+					((blueprintPtr->AirtightChunks[x][7] & bitmask1) != bitmask1)
+					&&
+					((originPtr->SolidChunks[x][0] & bitmask1) == bitmask1)
+				)
 
+				{
+					// if it isn't an airtight chunk, we need to do things.
+					//cout << "test within blueprint processing: (3) " << blueprintPtr->WestBorderBlocks.faceflagarray[1] << endl;
+
+
+					EnclaveUnveilMeta tempUnveilMeta = blueprintPtr->ReturnBorderChunkFacesToRender(x, actual_y, 0, originPtr, blueprintPtr, 16); // 8 = the originPtr blueprint will be compared to blueprintPtr, which is to the North (16)
+					activateListRef.flagArray[x][7] = activateListRef.flagArray[x][7] | bitmask1;
+				}
+			}
+			bitmask1 <<= 1;			// shift to the left by one
+			actual_y++;
+		}
+	}
 }
 
 void EnclaveCollection::SetEastBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2 &activateListRef)
@@ -194,7 +228,7 @@ void EnclaveCollection::SetEastBorder(ElevationMapRef elevationMapCopy, EnclaveC
 		bitmask1 = 1;
 		for (int y = 0; y < 8; y++)
 		{
-			if ((blueprintPtr->SolidChunks[0][z] & bitmask1) == bitmask1)			// check the solids of the neighboring blueprint
+			if ((blueprintPtr->SolidChunks[0][z] & bitmask1) == bitmask1)			// check the solids of the neighboring blueprint (actually checking eastern neighbor's western chunk wall)
 			{
 				if (
 					((blueprintPtr->AirtightChunks[0][z] & bitmask1) != bitmask1)			// if the neighboring chunk to check is not airtight...
@@ -204,10 +238,25 @@ void EnclaveCollection::SetEastBorder(ElevationMapRef elevationMapCopy, EnclaveC
 																							// ...now check to see if it isn't an airtight chunk...
 				{
 					// if it isn't an airtight chunk, we need to do things.
-					blueprintPtr->ReturnBorderChunkFacesToRender(7, actual_y, z, originPtr, blueprintPtr, 8); // 8 = the originPtr blueprint will be compared to blueprintPtr, which is to the East (8)
+					//cout << "test within blueprint processing: (3) " << blueprintPtr->WestBorderBlocks.faceflagarray[1] << endl;
+					
+
+					EnclaveUnveilMeta tempUnveilMeta = blueprintPtr->ReturnBorderChunkFacesToRender(7, actual_y, z, originPtr, blueprintPtr, 8); // 8 = the originPtr blueprint will be compared to blueprintPtr, which is to the East (8)
 					Enclave* enclavePtr = &EnclaveArray[7][actual_y][z];
 					//cout << "test thingy" << endl;
+
+					for (int x = 0; x < tempUnveilMeta.numberOfBlocks; x++)
+					{
+						//if (actual_y == 6 && z == 0)
+						//{
+							//cout << "east corner chunk set for unveiling." << endl;
+						//}
+						EnclaveKeyDef::EnclaveKey tempKey = enclavePtr->SingleToEnclaveKey(tempUnveilMeta.EnclaveBlockLocation[1][0]);
+						//cout << "x: " << tempKey.x << " " << tempKey.y << " " << tempKey.z << endl;
+						enclavePtr->UnveilSinglePoly(tempKey.x, tempKey.y, tempKey.z, 0, 1, tempUnveilMeta.BlockFacesToRender[1][0], 0);
+					}
 					iterationtest++;
+					activateListRef.flagArray[7][z] = activateListRef.flagArray[7][z] | bitmask1;
 				}
 			}
 			bitmask1 <<= 1;			// shift to the left by one

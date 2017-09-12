@@ -65,6 +65,7 @@ public:
 	void CarveSlope();
 	EnclaveUnveilMeta SetupCarvePlan(EnclaveKeyDef::EnclaveKey tempKey);
 	EnclaveUnveilMeta ReturnBorderChunkFacesToRender(int x, int y, int z, EnclaveCollectionBlueprint* originBlueprint, EnclaveCollectionBlueprint*  comparedBlueprint, int directionOfNeighbor);
+	void SetBorderBlockFlags(int direction, int slice, int slice_offset);
 
 };
 

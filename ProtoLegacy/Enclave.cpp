@@ -208,8 +208,8 @@ void Enclave::UnveilSinglePolyWithMtrl(int x, int y, int z, int in_readorder, in
 	int OldFlags = StorageArray[x][y][z].otherflags;			// store the old data in OldFlags
 	StorageArray[x][y][z].otherflags = in_otherflags;		    // set other flags
 	StorageArray[x][y][z].blockid = in_blockid;					// set block id
-	StorageArray[x][y][z].t1_flags = in_t1;						// set type 1 renderable faces
-	StorageArray[x][y][z].t2_flags = in_t2;						// set type 2 renderable faces
+	StorageArray[x][y][z].t1_flags = StorageArray[x][y][z].t1_flags | in_t1;						// set type 1 renderable faces
+	StorageArray[x][y][z].t2_flags = StorageArray[x][y][z].t1_flags | in_t2;						// set type 2 renderable faces
 
 	//cout << "TEST:::" << OldFlags << endl;															// set up loop to find this polygon's position in Sorted (which contains a sorted array of pointers to StorageArray, sorted by renderables first)
 	int i, j, tempInt, zeroindexcheck;
@@ -304,8 +304,8 @@ void Enclave::UnveilSinglePoly(int x, int y, int z, int in_readorder, int in_oth
 	/* Summary: changes a polygon's render state to true if the otherflags member variable >= 1*/
 	int OldFlags = StorageArray[x][y][z].otherflags;			// store the old data in OldFlags
 	StorageArray[x][y][z].otherflags = in_otherflags;		    // set other flags
-	StorageArray[x][y][z].t1_flags = in_t1;						// set type 1 renderable faces
-	StorageArray[x][y][z].t2_flags = in_t2;						// set type 2 renderable faces
+	StorageArray[x][y][z].t1_flags = StorageArray[x][y][z].t1_flags | in_t1;						// set type 1 renderable faces
+	StorageArray[x][y][z].t2_flags = StorageArray[x][y][z].t1_flags | in_t2;						// set type 2 renderable faces
 
 																//cout << "TEST:::" << OldFlags << endl;															// set up loop to find this polygon's position in Sorted (which contains a sorted array of pointers to StorageArray, sorted by renderables first)
 	int i, j, tempInt, zeroindexcheck;
