@@ -1030,6 +1030,7 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 	// Step Three: prepare all solid chunks
 	for (int x = beginRange; x < endRange; x++)
 	{
+		int actualmask = 0;
 		chunkbitmask = 1;
 		for (int y = 0; y < 8; y++)
 		{
@@ -1042,9 +1043,15 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 					collectionRef.EnclaveArray[x][y][z] = stackEnclave;
 					collectionRef.EnclaveArray[x][y][z].InitializeRenderArray(1);				// setup this solid enclave
 					//cout << "Enclave set up complete: " << x << ", " << y << ", " << z << endl;
+					if (x == 7 && actualmask == 7 && z == 0)
+					{
+						cout << "test call" << endl;
+					}
+					
 				}
 			}
 			chunkbitmask <<= 1;
+			actualmask++;
 		}
 	}
 
@@ -1099,7 +1106,12 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 	}
 
 	//HeapMutex.unlock();
+	cout << "Final renderable poly number (1): " << collectionRef.EnclaveArray[7][7][0].TotalRenderable << endl;
 
+	EnclaveKeyDef::EnclaveKey ckey1;
+	ckey1.x = 7;
+	ckey1.y = 7;
+	ckey1.z = 0;
 
 	
 	// Step Five: find paintable chunks and determine the faces for the paintable blocks (which is later passed to UnveilPoly)
@@ -1118,8 +1130,22 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 					//cout << "Collection Ref:" << Key.x << ", " << Key.y << ", " << Key.z << endl;
 					Enclave stackEnclave(Key, x, y, z);
 					collectionRef.EnclaveArray[x][y][z] = stackEnclave;
-					collectionRef.EnclaveArray[x][y][z].InitializeRenderArray(1);
+					EnclaveKeyDef::EnclaveKey ckey2;
+					ckey2.x = x;
+					ckey2.y = y;
+					ckey2.z = z;
+					//cout << "HIT" << endl;
+					
+					//if (!(ckey1 == ckey2))
 
+					//if (!(x == 7 && y == 7 && z == 0))
+					//{
+						//cout << "x = " << x;
+						//cout << "y = " << y;
+						//cout << "z = " << z;
+						collectionRef.EnclaveArray[x][y][z].InitializeRenderArray(1);
+					//}
+					//cout << "POST-HIT:" << x << ", " << y << ", " << z << endl;
 					// do unveil metadata loop here
 					EnclaveKeyDef::EnclaveKey currentKey;
 					currentKey.x = x;
@@ -1127,10 +1153,11 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 					currentKey.z = z;
 					// cout << "custom key value: " << currentKey.x << ", " << currentKey.y << ", " << currentKey.z << endl;
 					EnclaveUnveilMeta currentMeta = blueprint->SetupCarvePlan(currentKey);		// use the carve plan to determine the exact x/y/z chunk coords of each block to render
-					if (x == 7 && y == 6 && z == 0)
+					if (x == 7 && y == 7 && z == 0)
 					{
 						//cout << "Collection Ref:" << Key.x << ", " << Key.y << ", " << Key.z << endl;
-						cout << "border chunk will be rendered(1)!!!" << endl;
+						//cout << "border chunk will be rendered(1)!!!" << endl;
+						cout << "Final renderable poly number (2): " << collectionRef.EnclaveArray[x][y][z].TotalRenderable << endl;
 					}
 					//for (int xx = 0; xx < 4; xx++)
 					//{
@@ -1143,6 +1170,7 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 						//}
 					//}
 					activateListRef.flagArray[x][z] = activateListRef.flagArray[x][z] | chunkbitmask;
+					
 					/*
 					if (currentKey.x == 6 && currentKey.y == 7 && currentKey.z == 0)	// testing only
 					{

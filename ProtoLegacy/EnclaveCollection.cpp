@@ -150,6 +150,7 @@ void EnclaveCollection::SetNorthBorder(ElevationMapRef elevationMapCopy, Enclave
 	for (int x = 0; x < 8; x++)
 	{
 		bitmask1 = 1;
+		actual_y = 0;
 		for (int y = 0; y < 8; y++)
 		{
 			if ((blueprintPtr->SolidChunks[x][7] & bitmask1) == bitmask1)			// check the solids of the neighboring blueprint (actually checking northern neighbor's southern chunk wall)
@@ -223,42 +224,76 @@ void EnclaveCollection::SetEastBorder(ElevationMapRef elevationMapCopy, EnclaveC
 	int bitmask1 = 1;
 	int actual_y = 0;
 	int iterationtest = 0;
+
+	
+
 	for (int z = 0; z < 8; z++)
 	{
 		bitmask1 = 1;
+		
+		actual_y = 0;
 		for (int y = 0; y < 8; y++)
 		{
-			if ((blueprintPtr->SolidChunks[0][z] & bitmask1) == bitmask1)			// check the solids of the neighboring blueprint (actually checking eastern neighbor's western chunk wall)
+			if (
+					(originPtr->CustomPaintableChunks[7][0] & bitmask1) == bitmask1
+					&&
+					(blueprintPtr->AirtightChunks[0][0] & bitmask1) != bitmask1
+				)
 			{
+				cout << "hello! " << actual_y << endl;
+			}
+			/*
+			if (
+					((blueprintPtr->SolidChunks[0][z] & bitmask1) == bitmask1)			// check the solids of the neighboring blueprint (actually checking eastern neighbor's western chunk wall)
+					||
+					((blueprintPtr->SolidChunks[0][z] & bitmask1) == bitmask1)
+				)
+			{
+			*/
 				if (
-					((blueprintPtr->AirtightChunks[0][z] & bitmask1) != bitmask1)			// if the neighboring chunk to check is not airtight...
+					(((blueprintPtr->AirtightChunks[0][z] & bitmask1) != bitmask1)			// if the neighboring chunk to check is not airtight...
 					&&																		// ...AND...
-					((originPtr->SolidChunks[7][z] & bitmask1) == bitmask1)					// the border chunk in the originating blueprint to compare to is solid...
+					((originPtr->SolidChunks[7][z] & bitmask1) == bitmask1))					// the border chunk in the originating blueprint to compare to is solid...
+					||
+					(
+						
+					((originPtr->CustomPaintableChunks[7][z] & bitmask1) == bitmask1)
+					&&
+					((blueprintPtr->AirtightChunks[0][z] & bitmask1) != bitmask1)
+					
+						)
 				)
 																							// ...now check to see if it isn't an airtight chunk...
 				{
-					// if it isn't an airtight chunk, we need to do things.
-					//cout << "test within blueprint processing: (3) " << blueprintPtr->WestBorderBlocks.faceflagarray[1] << endl;
-					
 
 					EnclaveUnveilMeta tempUnveilMeta = blueprintPtr->ReturnBorderChunkFacesToRender(7, actual_y, z, originPtr, blueprintPtr, 8); // 8 = the originPtr blueprint will be compared to blueprintPtr, which is to the East (8)
+					//cout << "flermp!" << endl;
 					Enclave* enclavePtr = &EnclaveArray[7][actual_y][z];
-					//cout << "test thingy" << endl;
-
 					for (int x = 0; x < tempUnveilMeta.numberOfBlocks; x++)
-					{
-						//if (actual_y == 6 && z == 0)
-						//{
-							//cout << "east corner chunk set for unveiling." << endl;
-						//}
-						EnclaveKeyDef::EnclaveKey tempKey = enclavePtr->SingleToEnclaveKey(tempUnveilMeta.EnclaveBlockLocation[1][0]);
+					{					
 						//cout << "x: " << tempKey.x << " " << tempKey.y << " " << tempKey.z << endl;
-						enclavePtr->UnveilSinglePoly(tempKey.x, tempKey.y, tempKey.z, 0, 1, tempUnveilMeta.BlockFacesToRender[1][0], 0);
+						for (int zz = 0; zz < 4; zz++)
+						{
+							for (int yy = 0; yy < 4; yy++)
+							{
+								if (tempUnveilMeta.UnveilFlag[zz][yy] == 1)
+								{
+									
+									EnclaveKeyDef::EnclaveKey tempKey = enclavePtr->SingleToEnclaveKey(tempUnveilMeta.EnclaveBlockLocation[zz][yy]);
+									//cout << "tempKey results: " << tempKey.x << ", " << tempKey.y << ", " << tempKey.z << endl;
+									enclavePtr->UnveilSinglePoly(tempKey.x, tempKey.y, tempKey.z, 0, 1, tempUnveilMeta.BlockFacesToRender[zz][yy], 0);
+									if (enclavePtr->UniqueKey.x == 7 && enclavePtr->UniqueKey.y == 7 && enclavePtr->UniqueKey.z == 0)
+									{
+										cout << "current number of renderables: " << enclavePtr->TotalRenderable << endl;
+									}
+								}
+							}
+						}
 					}
 					iterationtest++;
 					activateListRef.flagArray[7][z] = activateListRef.flagArray[7][z] | bitmask1;
 				}
-			}
+			//}					// removeable
 			bitmask1 <<= 1;			// shift to the left by one
 			actual_y++;
 		}

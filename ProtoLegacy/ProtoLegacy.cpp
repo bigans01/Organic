@@ -227,13 +227,22 @@ int main()
 	testBlueprint3.CarveSlope();
 	testBlueprint3.SetBorderBlockFlags(32, 0, 24);	// west direction, 1st slice, 24th "floor" (would be first block on y axis in the 7th chunk
 	testBlueprint3.SetBorderBlockFlags(8, 0, 24);  // east direction (8)
-	testBlueprint3.SetBorderBlockFlags(8, 0, 25);  // east direction (8)
-	testBlueprint3.SetBorderBlockFlags(8, 0, 26);  // east direction (8)
+	testBlueprint3.SetBorderBlockFlags(8, 0, 25);  // east direction (8)			// final parametr should be up to 31, no greater.
+	testBlueprint3.SetBorderBlockFlags(8, 0, 29);  // east direction (8)	
+	//testBlueprint3.SetBorderBlockFlags(8, 0, 26);  // east direction (8)
 
-	//testBlueprint3.SetBorderBlockFlags(32, 5, 24);	// west direction, 1st slice, 24th "floor" (would be first block on y axis in the 7th chunk
-	//testBlueprint3.SetBorderBlockFlags(8, 5, 24);  // east direction (8)
-	//testBlueprint3.SetBorderBlockFlags(8, 5, 25);  // east direction (8)
-	//testBlueprint3.SetBorderBlockFlags(8, 5, 26);  // east direction (8)
+	testBlueprint3.SetBorderBlockFlags(32, 1, 24);	// west direction, 1st slice, 24th "floor" (would be first block on y axis in the 7th chunk
+	testBlueprint3.SetBorderBlockFlags(8, 1, 24);  // east direction (8)
+	testBlueprint3.SetBorderBlockFlags(8, 1, 25);  // east direction (8)
+	//testBlueprint3.SetBorderBlockFlags(8, 1, 26);  // east direction (8)
+	//testBlueprint3.SetBorderBlockFlags(8, 1, 27);  // east direction (8)
+	//testBlueprint3.SetBorderBlockFlags(8, 1, 28);  // east direction (8)
+
+
+	testBlueprint3.SetBorderBlockFlags(32, 4, 24);	// west direction, 1st slice, 24th "floor" (would be first block on y axis in the 7th chunk
+	testBlueprint3.SetBorderBlockFlags(8, 4, 24);  // east direction (8)
+	testBlueprint3.SetBorderBlockFlags(8, 4, 25);  // east direction (8)
+	testBlueprint3.SetBorderBlockFlags(8, 4, 26);  // east direction (8)
 	//cout << "blueprint size: " << sizeof(testBlueprint3) << endl;
 
 	auto carveend = std::chrono::high_resolution_clock::now();
