@@ -228,7 +228,9 @@ int main()
 	testBlueprint3.SetBorderBlockFlags(32, 0, 24);	// west direction, 1st slice, 24th "floor" (would be first block on y axis in the 7th chunk
 	testBlueprint3.SetBorderBlockFlags(8, 0, 24);  // east direction (8)
 	testBlueprint3.SetBorderBlockFlags(8, 0, 25);  // east direction (8)			// final parametr should be up to 31, no greater.
-	testBlueprint3.SetBorderBlockFlags(8, 0, 29);  // east direction (8)	
+	testBlueprint3.SetBorderBlockFlags(8, 0, 29);  // east direction (8)
+	//testBlueprint3.SetBorderBlockFlags(8, 0, 30);
+	//testBlueprint3.SetBorderBlockFlags(8, 0, 31);  // east direction (8)
 	//testBlueprint3.SetBorderBlockFlags(8, 0, 26);  // east direction (8)
 
 	testBlueprint3.SetBorderBlockFlags(32, 1, 24);	// west direction, 1st slice, 24th "floor" (would be first block on y axis in the 7th chunk
@@ -395,7 +397,7 @@ int main()
 	std::cout << "Elapsed time (Blueprint addition): " << blueelapsed.count() << endl;
 	*/
 	Organic.ArrayTest();
-	Organic.MaterializeAllCollectionsInRenderList(0);			// 0 = use a set of Factories, 1 = use a ManifestMatrix style
+	Organic.MaterializeAllCollectionsInRenderList(1);			// 0 = use a set of Factories, 1 = use a ManifestMatrix style
 
 
 	//cout << "-------------------------PASS" << endl;

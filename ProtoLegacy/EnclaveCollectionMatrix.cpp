@@ -1002,8 +1002,6 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 	EnclaveCollectionActivateListT2& activateListRef,
 	mutex& HeapMutex)
 {
-	//HeapMutex.lock();
-
 	auto start = std::chrono::high_resolution_clock::now();			
 	int chunkbitmask = 1;																				// set initial value of bitmask to be 128 (which is the top chunk)
 	int stdchunkbitmask = 1;
@@ -1012,7 +1010,6 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 	ElevationMapRef solidChunk = blueprint->GetSolidChunkData();							// ?? better optimized? unknown. compare to declaring outside of loop (7/18/2017)
 	ElevationMapRef customPaintableChunk = blueprint->GetCustomPaintableChunkData();		// custom chunk data
 	ElevationMapRef standardPaintableChunk = blueprint->GetStandardPaintableChunkData();	// standard chunk data
-	//cout << "standardPaintableChunk data check: " << int(standardPaintableChunk[0][1]) << endl;
 
 	// Step One: perform collection-wide painting (required)
 	collectionRef.RunCollectionPainters(blueprint);
@@ -1021,9 +1018,7 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 	// Step Two: determine what borders of this blueprint must be rendered, by comparing to borders in neighboring blueprints
 	EnclaveCollectionBorderFlags borderFlags;											// contains west, north, east, south, top, bottom flags. 
 	EnclaveCollectionBorderFlags* borderFlagsRef = &borderFlags;						// get pointer to borderFlags
-	//HeapMutex.lock();
 	EnclaveCollectionNeighborList neighborList = blueprintmatrix->DetermineBlueprintBordersToRender(Key, blueprint, borderFlagsRef);	// check this blueprint's neighbors
-	//HeapMutex.unlock();
 
 
 
@@ -1043,10 +1038,10 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 					collectionRef.EnclaveArray[x][y][z] = stackEnclave;
 					collectionRef.EnclaveArray[x][y][z].InitializeRenderArray(1);				// setup this solid enclave
 					//cout << "Enclave set up complete: " << x << ", " << y << ", " << z << endl;
-					if (x == 7 && actualmask == 7 && z == 0)
-					{
-						cout << "test call" << endl;
-					}
+					//if (x == 7 && actualmask == 7 && z == 0)
+					//{
+						//cout << "test call" << endl;
+					//}
 					
 				}
 			}
@@ -1055,9 +1050,8 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 		}
 	}
 
-	//cout << "test within blueprint processing: (2) " << blueprint->WestBorderBlocks.faceflagarray[1] << endl;
 	// Step Four: unveil all polys in border chunks	
-	//HeapMutex.lock();
+
 	
 	// a flag of one indicates that there is no bordering collection on that side (i.e., West = 1 means there is no collection to render that is West of this collection)
 	if (borderFlags.West == 1)
@@ -1105,15 +1099,6 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 		collectionRef.SetSouthBorder(standardPaintableChunk, activateListRef, neighborListRef);
 	}
 
-	//HeapMutex.unlock();
-	cout << "Final renderable poly number (1): " << collectionRef.EnclaveArray[7][7][0].TotalRenderable << endl;
-
-	EnclaveKeyDef::EnclaveKey ckey1;
-	ckey1.x = 7;
-	ckey1.y = 7;
-	ckey1.z = 0;
-
-	
 	// Step Five: find paintable chunks and determine the faces for the paintable blocks (which is later passed to UnveilPoly)
 	for (int x = beginRange; x < endRange; x++)
 	{
@@ -1122,55 +1107,17 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 		{
 			for (int z = 0; z < 8; z++)
 			{
-				
-
 				// Render customized chunks here
 				if ((customPaintableChunk[x][z] & chunkbitmask) == chunkbitmask)
 				{
-					//cout << "Collection Ref:" << Key.x << ", " << Key.y << ", " << Key.z << endl;
-					Enclave stackEnclave(Key, x, y, z);
-					collectionRef.EnclaveArray[x][y][z] = stackEnclave;
-					EnclaveKeyDef::EnclaveKey ckey2;
-					ckey2.x = x;
-					ckey2.y = y;
-					ckey2.z = z;
-					//cout << "HIT" << endl;
-					
-					//if (!(ckey1 == ckey2))
-
-					//if (!(x == 7 && y == 7 && z == 0))
-					//{
-						//cout << "x = " << x;
-						//cout << "y = " << y;
-						//cout << "z = " << z;
-						collectionRef.EnclaveArray[x][y][z].InitializeRenderArray(1);
-					//}
-					//cout << "POST-HIT:" << x << ", " << y << ", " << z << endl;
-					// do unveil metadata loop here
 					EnclaveKeyDef::EnclaveKey currentKey;
 					currentKey.x = x;
 					currentKey.y = y;
 					currentKey.z = z;
 					// cout << "custom key value: " << currentKey.x << ", " << currentKey.y << ", " << currentKey.z << endl;
 					EnclaveUnveilMeta currentMeta = blueprint->SetupCarvePlan(currentKey);		// use the carve plan to determine the exact x/y/z chunk coords of each block to render
-					if (x == 7 && y == 7 && z == 0)
-					{
-						//cout << "Collection Ref:" << Key.x << ", " << Key.y << ", " << Key.z << endl;
-						//cout << "border chunk will be rendered(1)!!!" << endl;
-						cout << "Final renderable poly number (2): " << collectionRef.EnclaveArray[x][y][z].TotalRenderable << endl;
-					}
-					//for (int xx = 0; xx < 4; xx++)
-					//{
-						//for (int zz = 0; zz < 4; zz++)
-						//{
-							EnclaveKeyDef::EnclaveKey tempBlockKey;
-							//tempBlockKey = collectionRef.EnclaveArray[x][y][z].SingleToEnclaveKey(currentMeta.EnclaveBlockLocation[xx][zz]);
-							//collectionRef.EnclaveArray[x][y][z].UnveilSinglePoly(tempBlockKey.x, tempBlockKey.y, tempBlockKey.z, 0, 1, 2, 0);
-							collectionRef.EnclaveArray[x][y][z].UnveilMultipleAndNotifyNeighbors(currentMeta, borderFlagsRef, customPaintableChunk, collectionRefPtr, neighborList, 0); // 0 = go -y direction
-						//}
-					//}
+					collectionRef.EnclaveArray[x][y][z].UnveilMultipleAndNotifyNeighbors(currentMeta, borderFlagsRef, customPaintableChunk, collectionRefPtr, neighborList, 0); // 0 = go -y direction
 					activateListRef.flagArray[x][z] = activateListRef.flagArray[x][z] | chunkbitmask;
-					
 					/*
 					if (currentKey.x == 6 && currentKey.y == 7 && currentKey.z == 0)	// testing only
 					{
@@ -1184,10 +1131,6 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 					}
 					*/
 				}
-
-				
-
-				
 			}
 			chunkbitmask <<= 1;
 		}
@@ -1198,7 +1141,6 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 	//std::chrono::duration<double> elapsed = finish - start;
 	//std::cout << "Elapsed time (multi-threaded enclave instantiation: " << elapsed.count() << endl;	// ""
 
-	//HeapMutex.unlock();
 }
 
 

@@ -85,7 +85,7 @@ void ManifestCollection::AddManifestToMatrix(int x, int y, int z, EnclaveKeyDef:
 void ManifestCollection::AddManifestToMatrix(int x, int y, int z, EnclaveKeyDef::EnclaveKey Key, int outputdebug, mutex& HeapMutex)
 {
 	/* Summary: adds a newly instanced manifest to the matrix; the manifest will correspond to the Enclave at x/y/z within the EnclaveCollection having a key value of Key */
-	HeapMutex.lock();
+	//HeapMutex.lock();
 
 	//cout << "test call" << endl;
 	EnclaveKeyDef::EnclaveKey tempkey;
@@ -101,11 +101,12 @@ void ManifestCollection::AddManifestToMatrix(int x, int y, int z, EnclaveKeyDef:
 	//tptr = &ManMatrix[tempkey];
 	//ManMatrix.emplace(tempkey,EnclaveManifest (x, y, z));
 	//cout << "test AddManifestTomatrix: " << EnclaveMatrixRef->GetEnclaveFromMatrix(x, y, z).GetTotalTrianglesInEnclave() << endl;
-	ManMatrix[tempkey].AttachToEnclave(CollectionMatrixRef->GetEnclaveFromCollection(Key, x, y, z));
+	//HeapMutex.lock();
+	ManMatrix[tempkey].AttachToEnclave(CollectionMatrixRef->GetEnclaveFromCollection(Key, x, y, z), HeapMutex);
 	//cout << "test call: " << outputdebug << endl;
 
 	//cout << "test value of triangles:: (" << tempkey.x << ", " << tempkey.y << ", " << tempkey.z << ") " << ManMatrix[tempkey].TotalEnclaveTriangles << endl;
-	HeapMutex.unlock();
+	//HeapMutex.unlock();
 }
 
 void ManifestCollection::UpdateManifest(int x, int y, int z, EnclaveKeyDef::EnclaveKey Key)

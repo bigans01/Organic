@@ -705,8 +705,6 @@ void OrganicSystem::JobMaterializeMultiCollectionFromMM(MDListJobMaterializeColl
 
 	for (JobIterator = mdjob->ListMatrix.begin(); JobIterator != JobIteratorEnd; ++JobIterator)			// begin iterator looping
 	{
-	
-	
 		auto initstart = std::chrono::high_resolution_clock::now();											// performance testing only
 		EnclaveKeyDef::EnclaveKey Key1 = JobIterator->second.MDKey;											// set the EnclaveKey for this loop iteration
 		EnclaveCollectionBlueprint *blueprintptr = &BlueprintMatrixRef->BlueprintMap[Key1];					// set a pointer to the appropriate blueprint
@@ -725,7 +723,10 @@ void OrganicSystem::JobMaterializeMultiCollectionFromMM(MDListJobMaterializeColl
 
 		EnclaveCollectionActivateListT2 listT2_1;																									// creation an activation list for instantiating the enclaves
 		//EnclaveCollectionsRef->JobInstantiateAndPopulateEnclaveAlpha(0, 7 + 1, std::ref(*CollectionRef), Key1, blueprintptr, std::ref(listT2_1));	// run the instantiation job on this thread (all 512 enclaves)
+		mutexval.lock();
+	
 		EnclaveCollectionsRef->JobInstantiateAndPopulateEnclaveAlpha2(0, 7 + 1, std::ref(*CollectionRef), Key1, std::ref(blueprintptr), std::ref(BlueprintMatrixRef), std::ref(listT2_1), std::ref(mutexval));	// run the instantiation job on this thread (all 512 enclaves) //EnclaveCollectionMap[Key]
+		mutexval.unlock();
 		int chunkbitmask = 1;		// set the chunk bit mask used below
 		int bitmaskval = 0;			// ""
 
@@ -759,28 +760,28 @@ void OrganicSystem::JobMaterializeMultiCollectionFromMM(MDListJobMaterializeColl
 
 		// Phase 2: ManifestCollection set up
 		//mutexval.lock();
+		Enclave testEnclavePtr = CollectionRef->EnclaveArray[0][0][0];
+		//cout << "TEST: " << testEnclavePtr.GetTotalTrianglesInEnclave() * 9 << endl;
+		
 		int manifestCounter = CollectionRef->totalRenderableEnclaves;	// set the manifestCounter equal to the number of renderable manifests from the EnclaveCollection ref
 		auto start5 = std::chrono::high_resolution_clock::now();	// optional performance testing values
 		EnclaveKeyDef::EnclaveKey innerTempKey;		// create a variable to store a temporary key
 		for (int a = 0; a < manifestCounter; a++)	// loop count is equal to the number of manifests to be rendered 
 		{
 			innerTempKey = CollectionRef->RenderableEnclaves[a];
+			//cout << "innerTempKey: " << innerTempKey.x << ", " << innerTempKey.y << ", " << innerTempKey.z << endl;
 			ManifestCollectionRef->AddManifestToMatrix(innerTempKey.x, innerTempKey.y, innerTempKey.z, Key1, 3, std::ref(mutexval));
 		}
 		auto finish5 = std::chrono::high_resolution_clock::now();									// optional, for debugging
 		std::chrono::duration<double> elapsed5 = finish5 - start5;									// ""
-		//mutexval.unlock();
+																									
+		//mutexval.unlock();	
 		//cout << "HOO BOY!" << ManifestCollectionRef->ManMatrix[innerTempKey].TotalEnclaveTriangles << endl;				// RENAME THIS TO SOMETHING ELSE! (ManifestCollectionRef)
-
-
 		// Phase 3: Render collection set up
-		mutexval.lock();																		/*thread safety:
-																								make sure only one thread is actually accessing a ManifestCollection from a MM at a time;
-																								without the lock, one thread could write (on the heap) while another reads -- resulting in potential heap corruption.
-																								*/
+		mutexval.lock();														
 		RenderCollectionsRef->CreateRenderArrayFromManifestCollection(Key1);						// creates the to-be rendered array, from a MM
 		mutexval.unlock();
-
+		
 		
 		
 	}
@@ -1254,6 +1255,7 @@ void OrganicSystem::MaterializeRenderablesByMM()
 	MDListJobMaterializeCollection* list2 = &MatCollList.MaterializeCollectionList.back();
 
 	//OrganicSystem::JobMaterializeMultiCollectionFromMM(MDListJobMaterializeCollection mdjob, mutex& mutexval, int ThreadID)
+	cout << "before job submit" << endl;
 	std::future<void> coll_3 = tpref->submit5(&OrganicSystem::JobMaterializeMultiCollectionFromMM, this, std::ref(list1), std::ref(mutexval), 1);
 	std::future<void> coll_4 = tpref2->submit5(&OrganicSystem::JobMaterializeMultiCollectionFromMM, this, std::ref(list2), std::ref(mutexval), 2);
 

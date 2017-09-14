@@ -31,7 +31,7 @@ void EnclaveManifest::AttachToEnclave(Enclave &in_ptr)	// "attaches" this manife
 	}
 
 	IsEnclaveGLPtrLoaded = 1;
-	//cout << "Enclave Attach call..." << endl;
+	cout << "Enclave Attach call..." << endl;
 	EnclavePtr = in_ptr;													// set the pointer equal to the reference of the input parameter
 	//cout << "Info for Enclave at: " << EnclavePtr.UniqueKey.x << ", " << EnclavePtr.UniqueKey.y << ", " << EnclavePtr.UniqueKey.z << " " << endl;
 	//cout << "Total triangles from attached enclave:" << EnclavePtr->GetTotalTrianglesInEnclave() << endl;
@@ -155,6 +155,162 @@ void EnclaveManifest::AttachToEnclave(Enclave &in_ptr)	// "attaches" this manife
 	//delete[] EnclaveGLPtr;
 }
 
+void EnclaveManifest::AttachToEnclave(Enclave &in_ptr, mutex& heapmutex)
+{
+	EnclavePtr = in_ptr;
+	if (EnclavePtr.GetTotalTrianglesInEnclave() != 0)
+	{
+		/* Summary: Attaches to an existing, valid instance of an Enclave. 3d point data is generated based on the contents of the Enclave. */
+		
+		if (IsEnclaveGLPtrLoaded == 1)						// check to see if it was loaded already, on a previous call
+		{
+			delete[] EnclaveGLPtr;							// delete old array
+			delete[] VertexColorGLPtr;
+			delete[] TextureGLPtr;
+		}
+
+		IsEnclaveGLPtrLoaded = 1;
+		//cout << "Enclave Attach call..." << endl;
+		//EnclavePtr = in_ptr;													// set the pointer equal to the reference of the input parameter
+																				//cout << "Info for Enclave at: " << EnclavePtr.UniqueKey.x << ", " << EnclavePtr.UniqueKey.y << ", " << EnclavePtr.UniqueKey.z << " " << endl;
+																				//cout << "Total triangles from attached enclave:" << EnclavePtr->GetTotalTrianglesInEnclave() << endl;
+
+
+																				//TextureDictionary.Dictionary[mapname].Index[1] = tempMeta;		
+																				//OrganicTextureMeta *tempMetaRef = &TextureDictionary.Dictionary[mapname].Index[1];		// set up a reference to the new texture data for the block
+																				//tempMetaRef->BlockData.FaceIndex[0].FaceData[0].U = 2;
+																				//Organic.AddAndMaterializeCollection(0, 0, 0);
+		//cout << "before dictionary..." << endl;
+		OrganicTextureMeta *textureMetaRef;
+		//OrganicTextureMeta textureMetaCopy;
+		OrganicTextureMetaArray *textureMetaArrayRef;
+		textureMetaArrayRef = &TextureDictionaryRef->Dictionary["base"];
+
+		OrganicVtxColorMeta *vertexColorMetaRef;
+		OrganicVtxColorMetaArray *vertexColorMetaArrayRef;
+		vertexColorMetaArrayRef = &VertexColorDictionaryRef->Dictionary["base"];
+
+		//auto orgstart = std::chrono::high_resolution_clock::now();
+		//int testval2 = TextureDictionaryRef->Dictionary["base"].Index[1].BlockData.FaceIndex[0].FaceData[0].U;
+		//auto orgend = std::chrono::high_resolution_clock::now();
+		//std::chrono::duration<double> orgelapsed = orgend - orgstart;
+		//std::cout << "Elapsed time (Organic collection instantiation): " << orgelapsed.count() << endl;
+		//cout << "testing of new Texture data: " << testval2 << endl;
+		if (EnclavePtr.GetTotalTrianglesInEnclave() == 0)
+		{
+			cout << "Enclave location: " << EnclavePtr.UniqueKey.x << ", " << EnclavePtr.UniqueKey.y << ", " << EnclavePtr.UniqueKey.z << " : " << IsEnclaveGLPtrLoaded << endl;
+			cout << "POTENTIAL ERROR!" << endl;
+		}
+		//EnclaveManifestRenderables = new EnclaveManifest::EnclaveManifestTuple[EnclavePtr->GetTotalTrianglesInEnclave()];				// FIX THIS!
+		//auto orgstart = std::chrono::high_resolution_clock::now();
+		heapmutex.lock();
+		//cout << "before new... " << (EnclavePtr.GetTotalTrianglesInEnclave()) * 9 << endl;
+		EnclaveGLPtr = new GLfloat[(EnclavePtr.GetTotalTrianglesInEnclave()) * 9];
+		VertexColorGLPtr = new GLfloat[(EnclavePtr.GetTotalTrianglesInEnclave()) * 9];
+		//cout << "mid-new..." << endl;
+		TextureGLPtr = new GLfloat[(EnclavePtr.GetTotalTrianglesInEnclave()) * 6];						// new array would be GetTotalTrianglesInEnclave*6 (a pair of UV coordinates per vertex)
+		//cout << "after new..." << EnclavePtr.GetTotalTrianglesInEnclave() * 6 << endl;
+		heapmutex.unlock();																								//auto orgend = std::chrono::high_resolution_clock::now();
+																										//std::chrono::duration<double> orgelapsed = orgend - orgstart;
+		EnclaveGLPtr[0] = 1;																				//std::cout << "Elapsed time (2x dynamic array allocation time): " << orgelapsed.count() << endl;
+			//cout << "after new (2)..." << endl;
+		TotalEnclaveTriangles = EnclavePtr.GetTotalTrianglesInEnclave();
+		//cout << "test: TotalEnclaveTriangles ->" << TotalEnclaveTriangles << endl;
+		RenderablePolyCount = EnclavePtr.TotalRenderable;						// don't perform unnecessary loops through all 64 elements, only go x times (where x is number of polygons to render)
+
+																				//polyfacebitmask = 32;															// set bitmask to 32 initially.
+																				//cout << "out test initial " << polyfacebitmask << "; renderable poly count = " << RenderablePolyCount << endl;							// testing
+
+		char testval[36] = { 0, 1, 2, 1, 2, 3,								// negative x			(WEST)		(32)	// this array could be constant?	
+			4, 0, 6, 0, 6, 2,								// negative z			(NORTH)		(16)	// OLD:  1, 5, 3, 5, 3, 7,
+			5, 4, 7, 4, 7, 6,								// positive x			(EAST)		(8)
+			1, 5, 3, 5, 3, 7,								// positive z			(SOUTH)		(4)		// OLD: 0, 4, 6, 0, 6, 2,
+			1, 5, 0, 5, 0, 4,								// positive y			(TOP)		(2)
+			3, 7, 2, 7, 2, 6								// negative y			(BOTTOM)	(1)
+		};												// also for testing
+		GLfloat GL_x = 0.5f;		// instantiate within stack frame
+		GLfloat GL_y = 0.5f;
+		GLfloat GL_z = 0.5f;
+		int iteratorval, totaltuples = 0, texturetuples = 0, colorindex = 0;
+		//cout << "after new... (2)" << endl;
+		for (int i = 0; i < RenderablePolyCount; ++i)
+		{
+			EnclavePolyArrayPtr = EnclavePtr.Sorted.RenderArray[i];			// point to the Enclave's sorted poly array 
+																			//cout << "debug: RenderablePolyCount before crash: " << RenderablePolyCount << endl;
+			int t1_flagsint = EnclavePolyArrayPtr->t1_flags;
+			polyfacebitmask = 32;
+			//cout << ">> t1 flags" << t1_flagsint << endl;
+			//cout << ">> polyfacebitmask" << polyfacebitmask << endl;
+
+			//textureMetaCopy = TextureDictionaryRef->Dictionary["base"].Index[1];
+			//textureMetaRef = &TextureDictionaryRef->Dictionary["base"].Index[1];
+			//textureMetaArrayRef = &TextureDictionaryRef->Dictionary["base"];
+			textureMetaRef = &textureMetaArrayRef->Index[1];
+			vertexColorMetaRef = &vertexColorMetaArrayRef->Index[1];
+
+			EnclaveManifestOffset = SingleToMulti(EnclavePtr.Sorted.PolyArrayIndex[i]);			// set the offset values based on the xyz coords
+																								//cout << "Offset: " << EnclaveManifestOffset.x << endl;
+			for (int j = 0; j < 6; ++j)
+			{																	// iterate through each bit
+				iteratorval = 0;
+				//cout << "face will be rendered: " << j << " " << polyfacebitmask << endl;
+				if ((t1_flagsint & polyfacebitmask) == polyfacebitmask)
+				{
+
+					for (int k = 0; k < 6; ++k)		// 6 different vertexes = 1 face = 2 triangles = 18 floats
+					{
+						GL_x = 0.5f;
+						GL_y = 0.5f;
+						GL_z = 0.5f;
+						// below 3 lines: GL_x = (x of vertex at structarray) + (enclave's unique x * 4) + (x offset)
+						GL_x = GL_x * (EnclavePtr.Sorted.RenderArray[i]->structarray[testval[(j * 6) + iteratorval]].x) + ((EnclavePtr.UniqueKey.x) * 4) + ((EnclavePtr.CollectionKey.x) * 32) + EnclaveManifestOffset.x;			// multiply by x coord of vertex at structarray[...]	array index of: [(j*6) + some int] 
+						GL_y = GL_y * (EnclavePtr.Sorted.RenderArray[i]->structarray[testval[(j * 6) + iteratorval]].y) + ((EnclavePtr.UniqueKey.y) * 4) + ((EnclavePtr.CollectionKey.y) * 32) + EnclaveManifestOffset.y;			// multiply by y coord of vertex at structarray[...]	array index of: [(j*6) + some int]
+						GL_z = GL_z * (EnclavePtr.Sorted.RenderArray[i]->structarray[testval[(j * 6) + iteratorval]].z) + ((EnclavePtr.UniqueKey.z) * 4) + ((EnclavePtr.CollectionKey.z) * 32) + EnclaveManifestOffset.z;			// multiply by z coord of vertex at structarray[...]	array index of: [(j*6) + some int]
+						TempTuple.x = GL_x;
+						TempTuple.y = GL_y;
+						TempTuple.z = GL_z;
+						//cout << "cool;" << GL_x << ", " << GL_y << "," << GL_z << ":" << texturetuples << endl;
+						EnclaveGLPtr[totaltuples++] = TempTuple.x;			// EnclaveGLPtr[totaltuples++] = TempTuple.x;
+						EnclaveGLPtr[totaltuples++] = TempTuple.y;			//EnclaveGLPtr[totaltuples++] = TempTuple.y;
+						EnclaveGLPtr[totaltuples++] = TempTuple.z;			//EnclaveGLPtr[totaltuples++] = TempTuple.z;
+						if (totaltuples > ((EnclavePtr.GetTotalTrianglesInEnclave()) * 9))
+						{
+							cout << "Enclave location: " << EnclavePtr.UniqueKey.x << ", " << EnclavePtr.UniqueKey.y << ", " << EnclavePtr.UniqueKey.z << " : " << IsEnclaveGLPtrLoaded << endl;
+							cout << "DANGER!! Should be " << (EnclavePtr.GetTotalTrianglesInEnclave()) * 9 << ", but is " << totaltuples << endl;
+						}
+						TextureGLPtr[texturetuples++] = textureMetaRef->BlockData.FaceIndex[0].FaceData[0].U;
+						TextureGLPtr[texturetuples++] = textureMetaRef->BlockData.FaceIndex[0].FaceData[0].U;
+						//EnclaveManifestRenderables[totaltuples++] = TempTuple;	
+
+						VertexColorGLPtr[colorindex++] = vertexColorMetaRef->BlockData.FaceIndex[j].FaceMeta[k].red;
+						VertexColorGLPtr[colorindex++] = vertexColorMetaRef->BlockData.FaceIndex[j].FaceMeta[k].green;
+						VertexColorGLPtr[colorindex++] = vertexColorMetaRef->BlockData.FaceIndex[j].FaceMeta[k].blue;
+
+						// switch out 0 to appropriate value (insert incrementing value?)
+						//cout << "{ " << TempTuple.x << ", " << TempTuple.y << ", " << TempTuple.z << " }" << endl;
+						//cout << "test contents of actual array: " << EnclaveGLPtr[30] << endl
+						iteratorval++;
+
+					}
+
+				}
+				polyfacebitmask >>= 1;													// move bit mask to the right one bit, after one iteration.
+																						//cout << "out test value " << polyfacebitmask <<  endl;
+																						//cout << "vertexes for this chunk so far: " << totaltuples << endl;
+			}
+		}
+		//cout << "after new... (3)" << endl;
+		if (IsRenderCollectionRefSet == 1)
+		{
+			//cout << "HOO AHHH" << endl;
+			//cout << "after new... (4)" << endl;
+			RenderCollectionRef->UpdateManifestArray(this->UniqueKey);
+		}
+		//delete[] EnclaveManifestRenderables;
+		//delete[] EnclaveGLPtr;
+	}
+}
+
 EnclaveManifest::EnclaveManifestTuple EnclaveManifest::SingleToMulti(int input)
 {
 	/* Summary: takes a single value between 0 to 63, and returns the x/y/z of the block within the chunk */
@@ -217,6 +373,7 @@ EnclaveManifest::~EnclaveManifest()
 	{
 		//cout << "delete flag entry in destructor..." << endl;
 		delete[] EnclaveGLPtr;
+		delete[] VertexColorGLPtr;
 		delete[] TextureGLPtr;
 		IsEnclaveGLPtrLoaded = 0;
 	}
