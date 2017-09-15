@@ -37,7 +37,7 @@ Enclave& EnclaveCollection::GetEnclaveByKey(EnclaveKeyDef::EnclaveKey InKey)
 	return EnclaveArray[InKey.x][InKey.y][InKey.z];
 }
 
-void EnclaveCollection::SetWestBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2& activateListRef)
+void EnclaveCollection::SetWestBorder(ElevationMapRef elevationMapCopy,  EnclaveCollectionActivateListT2& activateListRef)
 {
 	EnclaveCollectionActivateListT2 buglist;
 	//cout << "----WEST BORDER ENTRY----" << endl;
@@ -88,6 +88,7 @@ void EnclaveCollection::SetWestBorder(ElevationMapRef elevationMapCopy, EnclaveC
 {
 
 }
+
 void EnclaveCollection::SetNorthBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2& activateListRef)
 {
 	//cout << "----NORTH BORDER ENTRY----" << endl;
@@ -176,7 +177,7 @@ void EnclaveCollection::SetNorthBorder(ElevationMapRef elevationMapCopy, Enclave
 	}
 }
 
-void EnclaveCollection::SetEastBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2 &activateListRef)
+void EnclaveCollection::SetEastBorder(ElevationMapRef elevationMapCopy,  EnclaveCollectionActivateListT2 &activateListRef)
 {
 	
 	for (int z = 0; z < 8; z++) // traverse along the z axis, exclude border chunks
@@ -285,7 +286,7 @@ void EnclaveCollection::SetEastBorder(ElevationMapRef elevationMapCopy, EnclaveC
 	}
 }
 
-void EnclaveCollection::SetSouthBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2 &activateListRef)
+void EnclaveCollection::SetSouthBorder(ElevationMapRef elevationMapCopy,  EnclaveCollectionActivateListT2 &activateListRef)
 {
 	for (int x = 0; x < 8; x++)
 	{
@@ -294,6 +295,7 @@ void EnclaveCollection::SetSouthBorder(ElevationMapRef elevationMapCopy, Enclave
 		for (int bitloop = 0; bitloop < 8; bitloop++)		// bitloop value serves as current y coordinate
 		{
 			if ((elevationMapCopy[x][7] & stdchunkbitmask) == stdchunkbitmask)
+
 			{
 				// cout << "valid enclave key: " << x << ", " << bitloop << ", " << 0 << endl;
 				// set 16 blocks to have their North face flagged (16)
@@ -330,7 +332,7 @@ void EnclaveCollection::SetSouthBorder(ElevationMapRef elevationMapCopy, Enclave
 
 }
 
-void EnclaveCollection::SetTopBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2 &activateListRef)
+void EnclaveCollection::SetTopBorder(ElevationMapRef elevationMapCopy,  EnclaveCollectionActivateListT2 &activateListRef)
 {
 
 }
@@ -340,7 +342,7 @@ void EnclaveCollection::SetTopBorder(ElevationMapRef elevationMapCopy, EnclaveCo
 
 }
 
-void EnclaveCollection::SetBottomBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2 &activateListRef)
+void EnclaveCollection::SetBottomBorder(ElevationMapRef elevationMapCopy,  EnclaveCollectionActivateListT2 &activateListRef)
 {
 
 }

@@ -1071,7 +1071,7 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 	}
 	if (borderFlags.South == 1)
 	{
-		collectionRef.SetSouthBorder(standardPaintableChunk, activateListRef);
+		collectionRef.SetSouthBorder(standardPaintableChunk,  activateListRef);
 	}
 	
 	//...but if the flag is 0 (meaning there is a neighbor), each border chunk must be compared to the opposite border chunk in the neighbor.
@@ -1138,6 +1138,10 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 	
 
 	auto finish = std::chrono::high_resolution_clock::now();
+
+	// Step Six: apply any blocks that need to be veiled
+
+
 	//std::chrono::duration<double> elapsed = finish - start;
 	//std::cout << "Elapsed time (multi-threaded enclave instantiation: " << elapsed.count() << endl;	// ""
 

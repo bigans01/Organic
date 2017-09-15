@@ -30,17 +30,17 @@ public:
 	int totalRenderableEnclaves = 0;
 	void ActivateEnclaveForRendering(EnclaveKeyDef::EnclaveKey Key);
 	Enclave& GetEnclaveByKey(EnclaveKeyDef::EnclaveKey InKey);
-	void SetWestBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2& activateListRef);
+	void SetWestBorder(ElevationMapRef standardMapCopy,  EnclaveCollectionActivateListT2& activateListRef);
 	void SetWestBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2& activateListRef, EnclaveCollectionNeighborList* neighborListPtr);
-	void SetNorthBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2& activateListRef);
+	void SetNorthBorder(ElevationMapRef standardMapCopy, EnclaveCollectionActivateListT2& activateListRef);
 	void SetNorthBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2& activateListRef, EnclaveCollectionNeighborList* neighborListPtr);
-	void SetEastBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2 &activateListRef);
+	void SetEastBorder(ElevationMapRef standardMapCopy,  EnclaveCollectionActivateListT2 &activateListRef);
 	void SetEastBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2& activateListRef, EnclaveCollectionNeighborList* neighborListPtr);
-	void SetSouthBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2 &activateListRef);
+	void SetSouthBorder(ElevationMapRef standardMapCopy,  EnclaveCollectionActivateListT2 &activateListRef);
 	void SetSouthBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2& activateListRef, EnclaveCollectionNeighborList* neighborListPtr);
-	void SetTopBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2 &activateListRef);
+	void SetTopBorder(ElevationMapRef standardMapCopy,  EnclaveCollectionActivateListT2 &activateListRef);
 	void SetTopBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2& activateListRef, EnclaveCollectionNeighborList* neighborListPtr);
-	void SetBottomBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2 &activateListRef);
+	void SetBottomBorder(ElevationMapRef standardMapCopy, EnclaveCollectionActivateListT2 &activateListRef);
 	void SetBottomBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2& activateListRef, EnclaveCollectionNeighborList* neighborListPtr);
 	void RunCollectionPainters(EnclaveCollectionBlueprint* blueprintRef);
 

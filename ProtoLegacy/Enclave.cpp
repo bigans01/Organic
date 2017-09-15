@@ -662,7 +662,7 @@ void Enclave::UnveilMultipleAndNotifyNeighbors(EnclaveUnveilMeta metaArray, Encl
 			//************************************************************
 			// determine South faces for the chunk, if it's on the south border
 			//************************************************************
-			else if (this->UniqueKey.z == 7)
+			if (this->UniqueKey.z == 7)
 			{
 				if (tempBlockKey.z == 3)
 				{
@@ -709,9 +709,51 @@ void Enclave::UnveilMultipleAndNotifyNeighbors(EnclaveUnveilMeta metaArray, Encl
 				}
 			}
 
+			//************************************************************
+			// determine East faces for the chunk, if it's on the east border
+			//************************************************************
+			
+			if (this->UniqueKey.x == 7)
+			{
+
+				if (tempBlockKey.x == 3)
+				{
+					int tempval = (tempBlockKey.y + 1);
+					for (int y = tempval; y > 0; y--)		// iterate from the top most block ( the top face) downward; 0 = the top block
+					{
+						//cout << "test" << endl;
+						fillflag = 2;
+
+						// check if east border flag is set; only render north faces if it is set
+						if (borderflagsref->East == 1)
+						{
+							if (y == tempval)
+							{
+
+								fillflag = fillflag | 8;		// x = 2 is the top, so set the top face + 4 (the south face) this one time
+							}
+							else
+							{
+								fillflag = 8;
+							}
+
+							UnveilSinglePoly(tempBlockKey.x, y - 1, tempBlockKey.z, 0, 1, fillflag | (neighborMeta.NeighborBlockData[tempBlockKey.x][y - 1][tempBlockKey.z]), 0);
+						}
+						if (borderflagsref->East == 0)
+						{
+							if (y == tempval)
+							{
+								UnveilSinglePoly(tempBlockKey.x, y - 1, tempBlockKey.z, 0, 1, fillflag | (neighborMeta.NeighborBlockData[tempBlockKey.x][y - 1][tempBlockKey.z]), 0);
+							}
+						}
+					}
+				}
+			}
+			
+
 
 			// do this for all non-border chunks
-			else  if (this->UniqueKey.z != 0 && this->UniqueKey.z != 7)
+			if (this->UniqueKey.z != 0 && this->UniqueKey.z != 7)
 			{
 				//UnveilSinglePoly(tempBlockKey.x, tempBlockKey.y, tempBlockKey.z, 0, 1, fillflag, 0);
 				UnveilSinglePoly(tempBlockKey.x, tempBlockKey.y, tempBlockKey.z, 0, 1, fillflag | (neighborMeta.NeighborBlockData[tempBlockKey.x][tempBlockKey.y][tempBlockKey.z]), 0);
@@ -752,16 +794,15 @@ EnclaveNeighborMeta Enclave::GenerateNeighborMeta(EnclaveCollection* enclaveColl
 	}
 	returnMeta.NeighborBlockData[0][0][0] = 0;
 	/* -------------------------WEST CHECKS-------------------------*/
-
 	//check west, if not a border chunk
 	if (this->UniqueKey.x != 0)	// check only if it isn't a border chunk, first
 	{
-		Enclave* enclavePtr = &enclaveCollectionRef->EnclaveArray[(this->UniqueKey.x)-1][this->UniqueKey.y][this->UniqueKey.z];	// get the neighboring enclave at -1 x
+		Enclave* enclaveNeighborPtr = &enclaveCollectionRef->EnclaveArray[(this->UniqueKey.x)-1][this->UniqueKey.y][this->UniqueKey.z];	// get the neighboring enclave at -1 x
 		for (int y = 0; y < 4; y++)		// iterate on y axis
 		{
 			for (int z = 0; z < 4; z++)	// iterate on z axis
 			{
-				if (enclavePtr->StorageArray[3][y][z].otherflags == 0)		// x is static = 3; this is equal to the east 
+				if (enclaveNeighborPtr->StorageArray[3][y][z].otherflags == 0)		// x is static = 3; this is equal to the east 
 				{
 					returnMeta.NeighborBlockData[0][y][z] = returnMeta.NeighborBlockData[0][y][z] | 32;
 				}
@@ -769,7 +810,7 @@ EnclaveNeighborMeta Enclave::GenerateNeighborMeta(EnclaveCollection* enclaveColl
 		}
 	}
 
-	// if it is a border chunk, ch
+	// if it is a border chunk,
 	if (this->UniqueKey.x == 0)
 	{
 		if (neighborList.WestNeighborExists == 0)			// there is no neighboring collection to the west; all west sides of border chunks need to be painted
@@ -799,8 +840,20 @@ EnclaveNeighborMeta Enclave::GenerateNeighborMeta(EnclaveCollection* enclaveColl
 
 	/* -------------------------EAST CHECKS-------------------------*/
 	// check east, if not a border chunk
+	int tempcount = 0;
 	if (this->UniqueKey.x == 7)
 	{
+		if (neighborList.EastNeighborExists == 0)
+		{
+			for (int y = 0; y < 4; y++)
+			{
+				for (int z = 0; z < 4; z++)
+				{
+					returnMeta.NeighborBlockData[3][y][z] = returnMeta.NeighborBlockData[3][y][z] | 8;
+				}
+			}
+		}
+
 
 	}
 
