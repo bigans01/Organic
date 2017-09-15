@@ -266,8 +266,73 @@ EnclaveUnveilMeta EnclaveCollectionBlueprint::SetupCarvePlan(EnclaveKeyDef::Encl
 EnclaveUnveilMeta EnclaveCollectionBlueprint::ReturnBorderChunkFacesToRender(int x, int y, int z, EnclaveCollectionBlueprint* originBlueprint, EnclaveCollectionBlueprint*  comparedBlueprint, int directionOfNeighbor)
 {
 	EnclaveUnveilMeta returnMeta;
-	int totalrenderedcount = 0;
-	if (directionOfNeighbor == 8) // neighbor is to the east
+	if (directionOfNeighbor == 32)	// neighbor is to the west
+	{
+		int begin_y = y * 4;
+		int begin_z = z * 4;
+		int unveil_y_location = 0;				// for location on the y axis inside the unveil meta return value
+		int unveil_z_location = 0;
+		int slice_1 = begin_z;
+		for (int aa = slice_1; aa < (slice_1 + 4); aa++)
+		{
+			unveil_y_location = 0;
+			for (int bb = begin_y; bb < (begin_y + 4); bb++)
+			{
+				int bitmaskshifter = 1;
+				bitmaskshifter <<= bb;			// shifts it to the left, up to 31 times.
+				if (
+					((originBlueprint->WestBorderBlocks.faceflagarray[aa] & bitmaskshifter) == bitmaskshifter)		// check if the slice at aa (in this case, slices going along the z axis south) has a flag set that matches the bitmaskshifter
+					&&
+					((comparedBlueprint->EastBorderBlocks.faceflagarray[aa] & bitmaskshifter) != bitmaskshifter)	// ...now compare it to the east face of the neighboring blueprint at that same point. If it is not equal, than the block is not being rendered at the border, and we 
+																													// may now reveal the east face of the block at this location.			
+					)
+				{
+
+					//std::cout << "----hit! (" << bb << ") " << unveil_y_location << " " << unveil_z_location  << std::endl;
+					returnMeta.EnclaveBlockLocation[unveil_y_location][unveil_z_location] = BlockKeyToSingle(0, unveil_y_location, unveil_z_location);
+					returnMeta.BlockFacesToRender[unveil_y_location][unveil_z_location] = 32;
+					returnMeta.UnveilFlag[unveil_y_location][unveil_z_location] = 1;
+					returnMeta.numberOfBlocks++;
+				}
+				unveil_y_location++;
+			}
+			unveil_z_location++;
+		}
+	}
+
+	else if (directionOfNeighbor == 16) // neighbor is to the north
+	{
+		int begin_y = y * 4;
+		int begin_x = x * 4;
+		int unveil_y_location = 0;
+		int unveil_x_location = 0;
+		int slice_1 = begin_x;
+		for (int aa = slice_1; aa < (slice_1 + 4); aa++)
+		{
+			unveil_y_location = 0;
+			for (int bb = begin_y; bb < (begin_y + 4); bb++)
+			{
+				int bitmaskshifter = 1;
+				bitmaskshifter <<= bb;
+				if (
+					((originBlueprint->NorthBorderBlocks.faceflagarray[aa] & bitmaskshifter) == bitmaskshifter)
+					&&
+					((comparedBlueprint->SouthBorderBlocks.faceflagarray[aa] & bitmaskshifter) != bitmaskshifter)
+
+					)
+				{
+					returnMeta.EnclaveBlockLocation[unveil_y_location][unveil_x_location] = BlockKeyToSingle(unveil_x_location, unveil_y_location, 0);
+					returnMeta.BlockFacesToRender[unveil_y_location][unveil_x_location] = 16;
+					returnMeta.UnveilFlag[unveil_y_location][unveil_x_location] = 1;
+					returnMeta.numberOfBlocks++;
+				}
+				unveil_y_location++;
+			}
+			unveil_x_location++;
+		}
+	}
+
+	else if (directionOfNeighbor == 8) // neighbor is to the east
 	{
 		int begin_y = y * 4;
 		int begin_z = z * 4;
@@ -275,26 +340,13 @@ EnclaveUnveilMeta EnclaveCollectionBlueprint::ReturnBorderChunkFacesToRender(int
 		int unveil_z_location = 0;
 
 		int slice_1 = begin_z;
-		int slice_2 = begin_z + 1;
-		int slice_3 = begin_z + 2;
-		int slice_4 = begin_z + 3;
-
-		int actualmaskbit = 1;
-		
-
 		for (int aa = slice_1; aa < (slice_1 + 4); aa++)
 		{
 			unveil_y_location = 0;
 			for (int bb = begin_y; bb < (begin_y + 4); bb++)
 			{
 				int bitmaskshifter = 1;
-
-				//if (bb != 0)
-				//{
-				bitmaskshifter <<= (bb);			// shifts it to the left, up to 31 times.
-					//std::cout << "bb is NOT 0!" << std::endl;
-				//}
-
+				bitmaskshifter <<= bb;			// shifts it to the left, up to 31 times.
 				if (
 					((originBlueprint->EastBorderBlocks.faceflagarray[aa] & bitmaskshifter) == bitmaskshifter)		// check if the slice at aa (in this case, slices going along the z axis south) has a flag set that matches the bitmaskshifter
 					&&
@@ -308,7 +360,6 @@ EnclaveUnveilMeta EnclaveCollectionBlueprint::ReturnBorderChunkFacesToRender(int
 					returnMeta.BlockFacesToRender[unveil_y_location][unveil_z_location] = 8;
 					returnMeta.UnveilFlag[unveil_y_location][unveil_z_location] = 1;
 					returnMeta.numberOfBlocks++;
-					totalrenderedcount++;
 				}
 				unveil_y_location++;
 			}
@@ -316,6 +367,21 @@ EnclaveUnveilMeta EnclaveCollectionBlueprint::ReturnBorderChunkFacesToRender(int
 		}
 
 
+
+	}
+
+	else if (directionOfNeighbor == 4)	// neighbor is to the south
+	{
+
+	}
+
+	else if (directionOfNeighbor == 2) // neighbor is above
+	{
+
+	}
+						
+	else                         // neighnor is below
+	{
 
 	}
 	//std::cout << "total count: " << totalrenderedcount << std::endl;
@@ -353,7 +419,10 @@ void EnclaveCollectionBlueprint::DetermineBorderWall(int direction, int valuearr
 
 	if (direction == 16) // north
 	{
-
+		for (int x = 0; x < 32; x++)
+		{
+			NorthBorderBlocks.faceflagarray[x] = valuearray[x];
+		}
 	}
 
 	if (direction == 8) // east
@@ -366,16 +435,71 @@ void EnclaveCollectionBlueprint::DetermineBorderWall(int direction, int valuearr
 
 	if (direction == 4) // south
 	{
-
+		for (int x = 0; x < 32; x++)
+		{
+			SouthBorderBlocks.faceflagarray[x] = valuearray[x];
+		}
 	}
 
 	if (direction == 2) // top
 	{
-
+		for (int x = 0; x < 32; x++)
+		{
+			TopBorderBlocks.faceflagarray[x] = valuearray[x];
+		}
 	}
 
 	if (direction == 1) // bottom
 	{
-
+		for (int x = 0; x < 32; x++)
+		{
+			BottomBorderBlocks.faceflagarray[x] = valuearray[x];
+		}
 	}
+}
+
+void EnclaveCollectionBlueprint::FlattenToElevation()
+{
+	ECBXAxisCarvePlan tempPlan;
+	ECBCollectionPainter tempCollectionPainter;
+	tempCollectionPainter.blockID = 2; // dirt?
+
+	// all chunk carvings
+	for (int x = 0; x < 8; x++)
+	{
+		for (int z = 0; z < 8; z++)
+		{
+			SolidChunks[x][z] = 1;		// all chunks except top chunk will be solid
+			CustomPaintableChunks[x][z] = 1;		// paint only the top chunk (for now)
+			AirtightChunks[x][z] = 1;
+		}
+	}
+
+	int currentYpos = 3;
+	for (int x = 0; x < 8; x++)
+	{
+		for (int z = 0; z < 8; z++)
+		{
+			tempPlan.CPArray[0 + (x * 4)][0 + (z * 4)] = BlockKeyToSingle(0, currentYpos, 0);		// BlockKeyToSingle(0 + (x * 4), currentYpos, 0 + (z * 4)) + 1, BlockKeyToSingle(0 + (x * 4), currentYpos, 0 + (z * 4))
+			tempPlan.CPArray[0 + (x * 4)][1 + (z * 4)] = BlockKeyToSingle(0, currentYpos, 1);
+			tempPlan.CPArray[0 + (x * 4)][2 + (z * 4)] = BlockKeyToSingle(0, currentYpos, 2);
+			tempPlan.CPArray[0 + (x * 4)][3 + (z * 4)] = BlockKeyToSingle(0, currentYpos, 3);
+
+			tempPlan.CPArray[1 + (x * 4)][0 + (z * 4)] = BlockKeyToSingle(1, currentYpos, 0);
+			tempPlan.CPArray[1 + (x * 4)][1 + (z * 4)] = BlockKeyToSingle(1, currentYpos, 1);
+			tempPlan.CPArray[1 + (x * 4)][2 + (z * 4)] = BlockKeyToSingle(1, currentYpos, 2);
+			tempPlan.CPArray[1 + (x * 4)][3 + (z * 4)] = BlockKeyToSingle(1, currentYpos, 3);
+
+			tempPlan.CPArray[2 + (x * 4)][0 + (z * 4)] = BlockKeyToSingle(2, currentYpos, 0);
+			tempPlan.CPArray[2 + (x * 4)][1 + (z * 4)] = BlockKeyToSingle(2, currentYpos, 1);
+			tempPlan.CPArray[2 + (x * 4)][2 + (z * 4)] = BlockKeyToSingle(2, currentYpos, 2);
+			tempPlan.CPArray[2 + (x * 4)][3 + (z * 4)] = BlockKeyToSingle(2, currentYpos, 3);
+
+			tempPlan.CPArray[3 + (x * 4)][0 + (z * 4)] = BlockKeyToSingle(3, currentYpos, 0);
+			tempPlan.CPArray[3 + (x * 4)][1 + (z * 4)] = BlockKeyToSingle(3, currentYpos, 1);
+			tempPlan.CPArray[3 + (x * 4)][2 + (z * 4)] = BlockKeyToSingle(3, currentYpos, 2);
+			tempPlan.CPArray[3 + (x * 4)][3 + (z * 4)] = BlockKeyToSingle(3, currentYpos, 3);
+		}
+	}
+	XAxisCPVector.push_back(tempPlan);
 }

@@ -217,13 +217,36 @@ int main()
 	thread_pool* mainthreadpoolref2 = &mainthreadpool2;
 
 	
-	EnclaveCollectionBlueprint testBlueprint3;
+	EnclaveCollectionBlueprint testBlueprint3, flatBlueprint;
 
 
 
 	// New blueprint style testing
 	auto carvestart = std::chrono::high_resolution_clock::now();
 
+	// ------------------- flat blueprint settings ----------------------------
+
+	//setting the east wall
+	flatBlueprint.FlattenToElevation();
+	int flatEastWall = 0;
+	int flatEastWallBitShift = 1;
+	for (int x = 3; x > 0; x--)
+	{
+		flatEastWallBitShift <<= x;
+		flatEastWall = flatEastWall | flatEastWallBitShift;
+		flatEastWallBitShift = 1;
+	}
+
+	int flatArrayToPass[32];
+	for (int x = 0; x < 32; x++)
+	{
+		flatArrayToPass[x] = flatEastWall;
+	}
+	flatBlueprint.DetermineBorderWall(8, flatArrayToPass);			
+
+
+
+	// ------------------- sloped blueprint settings --------------------------
 	testBlueprint3.CarveSlope();
 	testBlueprint3.SetBorderBlockFlags(32, 0, 24);	// west direction, 1st slice, 24th "floor" (would be first block on y axis in the 7th chunk
 	testBlueprint3.SetBorderBlockFlags(8, 0, 24);  // east direction (8)
@@ -250,7 +273,7 @@ int main()
 	//auto carveend = std::chrono::high_resolution_clock::now();
 	int setEastWall = 0;
 	int setEastWallBitShift = 1;
-	for (int x = 31; x > 16; x--)
+	for (int x = 31; x > 0; x--)
 	{
 		setEastWallBitShift <<= x;		// shift by x
 		setEastWall = setEastWall | setEastWallBitShift;
@@ -280,7 +303,7 @@ int main()
 	{
 		arrayToPass2[x] = setWestWall;
 	}
-	testBlueprint3.DetermineBorderWall(32, arrayToPass2);		// set this value for the east wall
+	testBlueprint3.DetermineBorderWall(32, arrayToPass2);		// set this value for the west wall
 
 	//cout << "blueprint size: " << sizeof(testBlueprint3) << endl;
 	auto carveend = std::chrono::high_resolution_clock::now();
@@ -337,10 +360,19 @@ int main()
 		Organic.AddKeyToRenderList(tempKeyToAdd);
 		Organic.AddBlueprint(tempKeyToAdd.x, tempKeyToAdd.y, tempKeyToAdd.z, testBlueprint3);
 	}
+
+	EnclaveKeyDef::EnclaveKey flatKeyToAdd;
+	flatKeyToAdd.x = -1;
+	flatKeyToAdd.y = 0;
+	flatKeyToAdd.z = 0;
+	Organic.AddKeyToRenderList(flatKeyToAdd);
+	Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, flatBlueprint);
+
 	auto collectionsSetupEND = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> collectionsSetupELAPSED = collectionsSetupEND - collectionsSetupBEGIN;
 	//std::cout << "Elapsed time (Multiple collection instantiation): " << collectionsSetupELAPSED.count() << endl;
 	
+
 	/*
 	// vertical blueprints
 	int height = 7;
