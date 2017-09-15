@@ -778,9 +778,9 @@ void OrganicSystem::JobMaterializeMultiCollectionFromMM(MDListJobMaterializeColl
 		//mutexval.unlock();	
 		//cout << "HOO BOY!" << ManifestCollectionRef->ManMatrix[innerTempKey].TotalEnclaveTriangles << endl;				// RENAME THIS TO SOMETHING ELSE! (ManifestCollectionRef)
 		// Phase 3: Render collection set up
-		mutexval.lock();														
-		RenderCollectionsRef->CreateRenderArrayFromManifestCollection(Key1);						// creates the to-be rendered array, from a MM
-		mutexval.unlock();
+		//mutexval.lock();														
+		RenderCollectionsRef->CreateRenderArrayFromManifestCollection(Key1, std::ref(mutexval));						// creates the to-be rendered array, from a MM
+		//mutexval.unlock();
 		
 		
 		

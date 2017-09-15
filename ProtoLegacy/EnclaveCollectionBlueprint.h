@@ -45,7 +45,7 @@ public:
 	std::vector<ECBXAxisCarvePlan> XAxisCPVector;				// vector for storing x axis carve plans
 	std::unordered_map<std::string, ECBCollectionPainter> CollectionPainterMap;
 	int CurrentCollectionPainterMapIndex = 0;
-	int RenderWestBorder = 1;									// flags for determining if any chunks on this border side will be rendered; default is 1
+	int RenderWestBorder = 1;									// flags for determining if any chunks on this border side will be rendered; default is 1	(1 means there is no border)
 	int RenderNorthBorder = 1;
 	int RenderEastBorder = 1;
 	int RenderSouthBorder = 1;
@@ -66,6 +66,7 @@ public:
 	EnclaveUnveilMeta SetupCarvePlan(EnclaveKeyDef::EnclaveKey tempKey);
 	EnclaveUnveilMeta ReturnBorderChunkFacesToRender(int x, int y, int z, EnclaveCollectionBlueprint* originBlueprint, EnclaveCollectionBlueprint*  comparedBlueprint, int directionOfNeighbor);
 	void SetBorderBlockFlags(int direction, int slice, int slice_offset);
+	void DetermineBorderWall(int direction, int valuearray[32]);
 
 };
 

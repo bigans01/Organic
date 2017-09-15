@@ -181,7 +181,7 @@ void OrganicGLManager::RenderReadyArrays()
 			// first argument: GL_TRIANGLES
 			// second argument: vertex offset, so if byte begins at 73728, offset is 6144. (One vertex = 12 bytes)
 			// last argument of glDrawArrays = number of vertices; 6144 for an entire collection face
-
+			//glUniformMatrix4fv(OrganicMVPHandle, 1, GL_FALSE, &MVP[0][0]);		// select the matrix to use.
 			glDrawArrays(GL_TRIANGLES, x*(CollectionBufferSize / 12), ((RMContainer.RenderMetaArray[x].ArraySize) / 12));
 
 		}

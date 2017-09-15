@@ -245,11 +245,47 @@ int main()
 	testBlueprint3.SetBorderBlockFlags(8, 4, 24);  // east direction (8)
 	testBlueprint3.SetBorderBlockFlags(8, 4, 25);  // east direction (8)
 	testBlueprint3.SetBorderBlockFlags(8, 4, 26);  // east direction (8)
-	//cout << "blueprint size: " << sizeof(testBlueprint3) << endl;
 
+	//cout << "blueprint size: " << sizeof(testBlueprint3) << endl;
+	//auto carveend = std::chrono::high_resolution_clock::now();
+	int setEastWall = 0;
+	int setEastWallBitShift = 1;
+	for (int x = 31; x > 16; x--)
+	{
+		setEastWallBitShift <<= x;		// shift by x
+		setEastWall = setEastWall | setEastWallBitShift;
+		setEastWallBitShift = 1;		// reset to 1
+	}
+	int arrayToPass1[32];
+
+	for (int x = 0; x < 32; x++)
+	{
+		arrayToPass1[x] = setEastWall;
+	}
+	testBlueprint3.DetermineBorderWall(8, arrayToPass1);		// set this value for the east wall
+
+
+
+
+	int setWestWall = 0;
+	int setWestWallBitShift = 1;
+	for (int x = 24; x > 0; x--)
+	{
+		setWestWallBitShift <<= x;		// shift by x
+		setWestWall = setWestWall | setWestWallBitShift;
+		setWestWallBitShift = 1;		// reset to 1
+	}
+	int arrayToPass2[32];
+	for (int x = 0; x < 32; x++)
+	{
+		arrayToPass2[x] = setWestWall;
+	}
+	testBlueprint3.DetermineBorderWall(32, arrayToPass2);		// set this value for the east wall
+
+	//cout << "blueprint size: " << sizeof(testBlueprint3) << endl;
 	auto carveend = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> carveelapsed = carveend - carvestart;
-	//std::cout << "Elapsed time (Carve time): " << carveelapsed.count() << endl;
+	std::cout << "Elapsed time (Carve time): " << carveelapsed.count() << endl;
 
 
 
@@ -286,10 +322,6 @@ int main()
 		tempKeyToAdd.z = 0;
 		Organic.AddKeyToRenderList(tempKeyToAdd);
 		Organic.AddBlueprint(tempKeyToAdd.x, tempKeyToAdd.y, tempKeyToAdd.z, testBlueprint3);
-		//Organic.BlueprintMatrix.BlueprintMap[tempKeyToAdd].SetBorderBlockFlags(32, 1, 24);
-		//Organic.BlueprintMatrix.BlueprintMap[tempKeyToAdd].SetBorderBlockFlags(16, 1, 24);
-		//Organic.BlueprintMatrix.BlueprintMap[tempKeyToAdd].SetBorderBlockFlags(16, 1, 25);
-		//Organic.BlueprintMatrix.BlueprintMap[tempKeyToAdd].SetBorderBlockFlags(16, 1, 26);
 	}
 	
 
@@ -304,11 +336,6 @@ int main()
 		tempKeyToAdd.z = 1;
 		Organic.AddKeyToRenderList(tempKeyToAdd);
 		Organic.AddBlueprint(tempKeyToAdd.x, tempKeyToAdd.y, tempKeyToAdd.z, testBlueprint3);
-		//Organic.BlueprintMatrix.BlueprintMap[tempKeyToAdd].SetBorderBlockFlags(32, 1, 24);
-		//Organic.BlueprintMatrix.BlueprintMap[tempKeyToAdd].SetBorderBlockFlags(16, 1, 24);
-		//Organic.BlueprintMatrix.BlueprintMap[tempKeyToAdd].SetBorderBlockFlags(16, 1, 25);
-		//Organic.BlueprintMatrix.BlueprintMap[tempKeyToAdd].SetBorderBlockFlags(16, 1, 26);
-
 	}
 	auto collectionsSetupEND = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> collectionsSetupELAPSED = collectionsSetupEND - collectionsSetupBEGIN;

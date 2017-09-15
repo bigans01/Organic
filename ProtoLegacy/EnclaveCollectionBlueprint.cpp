@@ -208,6 +208,10 @@ void EnclaveCollectionBlueprint::CarveSlope()
 	for (int x = 0; x < 8; x++)
 	{
 		StandardPaintableChunks[x][0] = 63;
+		if (x >= 4)								// fill enclaves at x >= 4, and y = 7
+		{
+			StandardPaintableChunks[x][0] = StandardPaintableChunks[x][0] | 64;
+		}
 	}
 
 	// East flags, not border chunks
@@ -220,6 +224,10 @@ void EnclaveCollectionBlueprint::CarveSlope()
 	for (int x = 0; x < 8; x++)
 	{
 		StandardPaintableChunks[x][7] = 63;
+		if (x >= 4)								// fill enclaves at x >= 4, and y = 7
+		{
+			StandardPaintableChunks[x][7] = StandardPaintableChunks[x][7] | 64;
+		}
 	}
 
 
@@ -330,5 +338,44 @@ void EnclaveCollectionBlueprint::SetBorderBlockFlags(int direction, int slice, i
 	{
 		initial_offset <<= slice_offset;
 		EastBorderBlocks.faceflagarray[slice] = EastBorderBlocks.faceflagarray[slice] | initial_offset;
+	}
+}
+
+void EnclaveCollectionBlueprint::DetermineBorderWall(int direction, int valuearray[32])
+{
+	if (direction == 32) // west
+	{
+		for (int x = 0; x < 32; x++)
+		{
+			WestBorderBlocks.faceflagarray[x] = valuearray[x];
+		}
+	}
+
+	if (direction == 16) // north
+	{
+
+	}
+
+	if (direction == 8) // east
+	{
+		for (int x = 0; x < 32; x++)
+		{
+			EastBorderBlocks.faceflagarray[x] = valuearray[x];
+		}
+	}
+
+	if (direction == 4) // south
+	{
+
+	}
+
+	if (direction == 2) // top
+	{
+
+	}
+
+	if (direction == 1) // bottom
+	{
+
 	}
 }

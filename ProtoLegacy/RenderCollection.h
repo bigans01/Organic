@@ -54,6 +54,7 @@ public:
 	~RenderCollection();																				// required for manual memory management; deletes dynamic array pointed to by GLFloatPtr (if it exists) 
 
 	void CombineManifestArrays();																		// iterates through all elements found in the ManifestCollection, and generates a dynamic array that is pointed to by GLFloatPtr.
+	void CombineManifestArrays(mutex& mutexval);														// iterates through all elements found in the ManifestCollection, and generates a dynamic array that is pointed to by GLFloatPtr. (uses a mutex)
 	void CombineManifestArraysFromT1Factory(EnclaveManifestFactoryT1 *factoryRef, mutex& mutexval);		// iterates through all of the current elements found in a T1 factory.
 	void UpdateManifestArray(EnclaveKeyDef::EnclaveKey Key);											// rebuilds the dynamic array pointed to by GLFloatPtr by updating a single enclave manifest; designed for single enclave operations.
 	void SetManifestCollectionPtr(ManifestCollection *manifestcollectionref);							// sets the pointer to the corresponding ManifestCollection that this RenderCollection will be associated with. 
