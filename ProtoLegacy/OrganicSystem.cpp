@@ -747,6 +747,10 @@ void OrganicSystem::JobMaterializeMultiCollectionFromMM(MDListJobMaterializeColl
 						tempKey.y = bitmaskval;											// set the y to be equivalent to the current value of bitmask val (i.e, 1, 2, 4, 8 , 16, 32, 64, 128)
 						tempKey.z = z;													
 						CollectionRef->ActivateEnclaveForRendering(tempKey);			// activate the enclave for rendering
+						//if (tempKey.x == 3 && tempKey.y == 1 && tempKey.z == 0)
+						//{
+							//cout << "enclave will be rendered..." << endl;
+						//}
 						//cout << "value of key 1::: " << tempKey.x << ", " << tempKey.y << ", " << tempKey.z << "||" << int(listT2_1.flagArray[x][z]) << endl;
 					}
 
@@ -760,8 +764,11 @@ void OrganicSystem::JobMaterializeMultiCollectionFromMM(MDListJobMaterializeColl
 
 		// Phase 2: ManifestCollection set up
 		//mutexval.lock();
-		Enclave testEnclavePtr = CollectionRef->EnclaveArray[0][0][0];
-		//cout << "TEST: " << testEnclavePtr.GetTotalTrianglesInEnclave() * 9 << endl;
+		if (Key1.x == 0 && Key1.y == 0 && Key1.z == 0)
+		{
+			Enclave testEnclavePtr = CollectionRef->EnclaveArray[2][1][0];
+			cout << "TEST: " << testEnclavePtr.GetTotalTrianglesInEnclave() << endl;
+		}
 		
 		int manifestCounter = CollectionRef->totalRenderableEnclaves;	// set the manifestCounter equal to the number of renderable manifests from the EnclaveCollection ref
 		auto start5 = std::chrono::high_resolution_clock::now();	// optional performance testing values
@@ -769,6 +776,14 @@ void OrganicSystem::JobMaterializeMultiCollectionFromMM(MDListJobMaterializeColl
 		for (int a = 0; a < manifestCounter; a++)	// loop count is equal to the number of manifests to be rendered 
 		{
 			innerTempKey = CollectionRef->RenderableEnclaves[a];
+			if (Key1.x == 0 && Key1.y == 0 && Key1.z == 0)
+			{
+				if (innerTempKey.x == 3 && innerTempKey.y == 1 && innerTempKey.z == 0)
+				{
+					cout << "---------------------------------innerTempKey: " << innerTempKey.x << ", " << innerTempKey.y << ", " << innerTempKey.z << " | " << CollectionRef->EnclaveArray[4][1][0].TotalRenderable <<endl;
+
+				}
+			}
 			//cout << "innerTempKey: " << innerTempKey.x << ", " << innerTempKey.y << ", " << innerTempKey.z << endl;
 			ManifestCollectionRef->AddManifestToMatrix(innerTempKey.x, innerTempKey.y, innerTempKey.z, Key1, 3, std::ref(mutexval));
 		}
@@ -894,6 +909,7 @@ void OrganicSystem::JobMaterializeMultiCollectionFromFactory(MDListJobMaterializ
 
 void OrganicSystem::JobMaterializeMultiCollectionFromFactory2(MDListJobMaterializeCollection* mdjob, mutex& mutexval, EnclaveManifestFactoryT1 *FactoryRef, int ThreadID)
 {
+	int totalProcessed = 0;
 	/* Summary: this method materializes one or more EnclaveCollections, by using a Factory */
 	//mutexval.lock();
 	auto truestart = std::chrono::high_resolution_clock::now();		// optional, for performance testing only																										
@@ -978,7 +994,7 @@ void OrganicSystem::JobMaterializeMultiCollectionFromFactory2(MDListJobMateriali
 		//cout << "Total renderables for Key (" << Key1.x << ", " << Key1.y << ", " << Key1.z << ") :" << tempdumbcount << ": " << collPtr->RenderCollectionArraySize << endl;
 		//trueend = std::chrono::high_resolution_clock::now();
 		
-
+		totalProcessed++;
 	}
 	trueend = std::chrono::high_resolution_clock::now();
 	mutexval.lock();
@@ -987,7 +1003,7 @@ void OrganicSystem::JobMaterializeMultiCollectionFromFactory2(MDListJobMateriali
 	std::chrono::duration<double> trueelapsed = trueend - truestart;
 	//std::chrono::duration<double> unordered_elapsed = unordered_end - unordered_start;
 
-	cout << "Total time: " << trueelapsed.count() << endl;
+	cout << "Total time, " << totalProcessed << "collections: (" << ThreadID << ") " << trueelapsed.count() << endl;
 	mutexval.unlock();
 }
 
@@ -1317,7 +1333,6 @@ void OrganicSystem::MaterializeRenderablesByFactory()
 			MDJobMaterializeCollection tempMDJob(tempKey, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew));
 			++collectionListIter2;
 			tempMatCollListRef->ListMatrix[tempKey] = tempMDJob;
-
 		}
 	}
 

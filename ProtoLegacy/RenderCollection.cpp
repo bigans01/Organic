@@ -207,7 +207,11 @@ void RenderCollection::CombineManifestArrays(mutex& mutexval)
 		RenderableManifestMeta.CollectionTriangleCount += RenderableManifestMeta.MetaArray[RenderableManifestMeta.EnclaveManifestCount].currentTriangleCount;
 		RenderableManifestMeta.EnclaveManifestCount++;
 
-		//cout << "enclave found! (" << totaltrianglestorender << ")" <<  endl;
+		if (ManMatrixIter->second.UniqueKey.x == 3 && ManMatrixIter->second.UniqueKey.y == 1 && ManMatrixIter->second.UniqueKey.z == 0)
+		{
+			cout << "enclave found! (" << ManMatrixIter->second.TotalEnclaveTriangles << ")" << endl;
+			cout << "key of found enclave: " << ManMatrixIter->second.UniqueKey.x << ", " << ManMatrixIter->second.UniqueKey.y << ", " << ManMatrixIter->second.UniqueKey.z << endl;
+		}
 		//cout << "key of found enclave: " << ManMatrixIter->second.UniqueKey.x << ", " << ManMatrixIter->second.UniqueKey.y << ", " << ManMatrixIter->second.UniqueKey.z << endl;
 		totalenclavesfound++;
 	}

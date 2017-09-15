@@ -247,6 +247,9 @@ void EnclaveManifest::AttachToEnclave(Enclave &in_ptr, mutex& heapmutex)
 			//textureMetaArrayRef = &TextureDictionaryRef->Dictionary["base"];
 			textureMetaRef = &textureMetaArrayRef->Index[1];
 			vertexColorMetaRef = &vertexColorMetaArrayRef->Index[1];
+			
+
+			
 
 			EnclaveManifestOffset = SingleToMulti(EnclavePtr.Sorted.PolyArrayIndex[i]);			// set the offset values based on the xyz coords
 																								//cout << "Offset: " << EnclaveManifestOffset.x << endl;
@@ -287,6 +290,15 @@ void EnclaveManifest::AttachToEnclave(Enclave &in_ptr, mutex& heapmutex)
 						VertexColorGLPtr[colorindex++] = vertexColorMetaRef->BlockData.FaceIndex[j].FaceMeta[k].blue;
 
 						// switch out 0 to appropriate value (insert incrementing value?)
+						if (EnclavePtr.CollectionKey.x == 0 && EnclavePtr.CollectionKey.y == 0 && EnclavePtr.CollectionKey.z == 0)
+						{
+							if (EnclavePtr.UniqueKey.x == 3 && EnclavePtr.UniqueKey.y == 1 && EnclavePtr.UniqueKey.z == 0)
+							{
+								//cout << "{ " << TempTuple.x << ", " << TempTuple.y << ", " << TempTuple.z << " }" << endl;
+								//cout << "||||||||||||||||||||test" << endl;
+							}
+						}
+					
 						//cout << "{ " << TempTuple.x << ", " << TempTuple.y << ", " << TempTuple.z << " }" << endl;
 						//cout << "test contents of actual array: " << EnclaveGLPtr[30] << endl
 						iteratorval++;
@@ -308,6 +320,15 @@ void EnclaveManifest::AttachToEnclave(Enclave &in_ptr, mutex& heapmutex)
 		}
 		//delete[] EnclaveManifestRenderables;
 		//delete[] EnclaveGLPtr;
+		if (EnclavePtr.CollectionKey.x == 0 && EnclavePtr.CollectionKey.y == 0 && EnclavePtr.CollectionKey.z == 0)
+		{
+			if (EnclavePtr.UniqueKey.x == 3 && EnclavePtr.UniqueKey.y == 1 && EnclavePtr.UniqueKey.z == 0)
+			{
+				cout << "total triangles in manifest (debug): " << TotalEnclaveTriangles << endl;
+				cout << "total triangles in target enclave (debug): " << EnclavePtr.GetTotalTrianglesInEnclave() << endl;
+				//cout << "||||||||||||||||||||test" << endl;
+			}
+		}
 	}
 }
 

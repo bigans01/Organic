@@ -243,6 +243,7 @@ int main()
 		flatArrayToPass[x] = flatEastWall;
 	}
 	flatBlueprint.DetermineBorderWall(8, flatArrayToPass);			
+	flatBlueprint.DetermineBorderWall(4, flatArrayToPass);			// south wall
 
 
 
@@ -287,7 +288,7 @@ int main()
 	}
 	testBlueprint3.DetermineBorderWall(8, arrayToPass1);		// set this value for the east wall
 
-
+	
 
 
 	int setWestWall = 0;
@@ -304,6 +305,12 @@ int main()
 		arrayToPass2[x] = setWestWall;
 	}
 	testBlueprint3.DetermineBorderWall(32, arrayToPass2);		// set this value for the west wall
+
+	// make north wall values same as west wall (temporary)
+	testBlueprint3.DetermineBorderWall(16, arrayToPass2);
+
+	// set south as well
+	testBlueprint3.DetermineBorderWall(4, arrayToPass2);
 
 	//cout << "blueprint size: " << sizeof(testBlueprint3) << endl;
 	auto carveend = std::chrono::high_resolution_clock::now();
@@ -332,6 +339,7 @@ int main()
 							64							|	 488		|	 602
 							256							|    954        |    1082
 	*/
+	EnclaveKeyDef::EnclaveKey flatKeyToAdd;
 
 	auto collectionsSetupBEGIN = std::chrono::high_resolution_clock::now();
 	
@@ -346,7 +354,19 @@ int main()
 		Organic.AddKeyToRenderList(tempKeyToAdd);
 		Organic.AddBlueprint(tempKeyToAdd.x, tempKeyToAdd.y, tempKeyToAdd.z, testBlueprint3);
 	}
-	
+
+	flatKeyToAdd.x = -1;
+	flatKeyToAdd.y = 0;
+	flatKeyToAdd.z = 0;
+	Organic.AddKeyToRenderList(flatKeyToAdd);
+	Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, flatBlueprint);		// flatBlueprint
+
+	flatKeyToAdd.x = 0;
+	flatKeyToAdd.y = 0;
+	flatKeyToAdd.z = -1;
+	Organic.AddKeyToRenderList(flatKeyToAdd);
+	Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, flatBlueprint);
+
 
 	
 	// add second 4 keys to render
@@ -361,12 +381,21 @@ int main()
 		Organic.AddBlueprint(tempKeyToAdd.x, tempKeyToAdd.y, tempKeyToAdd.z, testBlueprint3);
 	}
 
-	EnclaveKeyDef::EnclaveKey flatKeyToAdd;
-	flatKeyToAdd.x = -1;
+	//EnclaveKeyDef::EnclaveKey flatKeyToAdd;
+	
+
+	flatKeyToAdd.x = 0;
 	flatKeyToAdd.y = 0;
-	flatKeyToAdd.z = 0;
-	Organic.AddKeyToRenderList(flatKeyToAdd);
-	Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, flatBlueprint);
+	flatKeyToAdd.z = -2;
+	//Organic.AddKeyToRenderList(flatKeyToAdd);
+	//Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, flatBlueprint);
+
+	flatKeyToAdd.x = 0;
+	flatKeyToAdd.y = 0;
+	flatKeyToAdd.z = -3;
+	//Organic.AddKeyToRenderList(flatKeyToAdd);
+	//Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, flatBlueprint);
+
 
 	auto collectionsSetupEND = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> collectionsSetupELAPSED = collectionsSetupEND - collectionsSetupBEGIN;

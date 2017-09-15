@@ -1073,7 +1073,8 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 	{
 		collectionRef.SetSouthBorder(standardPaintableChunk,  activateListRef);
 	}
-	
+
+
 	//...but if the flag is 0 (meaning there is a neighbor), each border chunk must be compared to the opposite border chunk in the neighbor.
 	if (borderFlags.West == 0)
 	{
@@ -1098,6 +1099,8 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 		EnclaveCollectionNeighborList* neighborListRef = &neighborList;
 		collectionRef.SetSouthBorder(standardPaintableChunk, activateListRef, neighborListRef);
 	}
+
+
 
 	// Step Five: find paintable chunks and determine the faces for the paintable blocks (which is later passed to UnveilPoly)
 	for (int x = beginRange; x < endRange; x++)
@@ -1136,6 +1139,11 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 		}
 	}
 	
+	//if (Key.x == 0 && Key.y == 0 && Key.z == 0)
+	//{
+		//Enclave testEnclavePtr = collectionRef.EnclaveArray[2][1][0];
+		//cout << "TEST3: (after border set 2)" << testEnclavePtr->GetTotalTrianglesInEnclave() << endl;
+	//}
 
 	auto finish = std::chrono::high_resolution_clock::now();
 

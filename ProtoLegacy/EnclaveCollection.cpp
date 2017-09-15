@@ -115,8 +115,6 @@ void EnclaveCollection::SetWestBorder(ElevationMapRef elevationMapCopy, EnclaveC
 				{
 					EnclaveUnveilMeta tempUnveilMeta = blueprintPtr->ReturnBorderChunkFacesToRender(0, actual_y, x, originPtr, blueprintPtr, 32); // 32 = the originPtr blueprint will be compared to blueprintPtr, which is to the West (32)
 					Enclave* enclavePtr = &EnclaveArray[0][actual_y][x];
-					for (int x = 0; x < tempUnveilMeta.numberOfBlocks; x++)
-					{
 						for (int zz = 0; zz < 4; zz++)
 						{
 							for (int yy = 0; yy < 4; yy++)
@@ -128,7 +126,7 @@ void EnclaveCollection::SetWestBorder(ElevationMapRef elevationMapCopy, EnclaveC
 								}
 							}
 						}
-					}
+
 					activateListRef.flagArray[0][x] = activateListRef.flagArray[0][x] | bitmask1;
 				}
 
@@ -229,21 +227,33 @@ void EnclaveCollection::SetNorthBorder(ElevationMapRef elevationMapCopy, Enclave
 
 					EnclaveUnveilMeta tempUnveilMeta = blueprintPtr->ReturnBorderChunkFacesToRender(x, actual_y, 0, originPtr, blueprintPtr, 16); // 16 = the originPtr blueprint will be compared to blueprintPtr, which is to the North (16)
 					Enclave* enclavePtr = &EnclaveArray[x][actual_y][0];
-					for (int x = 0; x < tempUnveilMeta.numberOfBlocks; x++)
+					if (enclavePtr->UniqueKey.x == 3 && enclavePtr->UniqueKey.y == 1 && enclavePtr->UniqueKey.z == 0)
 					{
+						cout << "border call..." << endl;
+						cout << "current triangles renderable: " << enclavePtr->GetTotalTrianglesInEnclave() << endl;
+						cout << "temp unveil meta number of blocks: " << tempUnveilMeta.numberOfBlocks << endl;
+					}
+
 						for (int zz = 0; zz < 4; zz++)
 						{
 							for (int yy = 0; yy < 4; yy++)
 							{
 								if (tempUnveilMeta.UnveilFlag[zz][yy] == 1)
 								{
+									
 									EnclaveKeyDef::EnclaveKey tempKey = enclavePtr->SingleToEnclaveKey(tempUnveilMeta.EnclaveBlockLocation[zz][yy]);
 									enclavePtr->UnveilSinglePoly(tempKey.x, tempKey.y, tempKey.z, 0, 1, tempUnveilMeta.BlockFacesToRender[zz][yy], 0);
 								}
 							}
 						}
-					}
 
+
+					if (enclavePtr->UniqueKey.x == 3 && enclavePtr->UniqueKey.y == 1 && enclavePtr->UniqueKey.z == 0)
+					{
+						//cout << "border call..." << endl;
+						cout << "current triangles renderable (post renderable): " << enclavePtr->GetTotalTrianglesInEnclave() << endl;
+						//cout << "temp unveil meta number of blocks: " << tempUnveilMeta.numberOfBlocks << endl;
+					}
 					activateListRef.flagArray[x][0] = activateListRef.flagArray[x][0] | bitmask1;
 
 				}
@@ -328,8 +338,7 @@ void EnclaveCollection::SetEastBorder(ElevationMapRef elevationMapCopy, EnclaveC
 					EnclaveUnveilMeta tempUnveilMeta = blueprintPtr->ReturnBorderChunkFacesToRender(7, actual_y, z, originPtr, blueprintPtr, 8); // 8 = the originPtr blueprint will be compared to blueprintPtr, which is to the East (8)
 					//cout << "flermp!" << endl;
 					Enclave* enclavePtr = &EnclaveArray[7][actual_y][z];
-					for (int x = 0; x < tempUnveilMeta.numberOfBlocks; x++)
-					{					
+			
 						//cout << "x: " << tempKey.x << " " << tempKey.y << " " << tempKey.z << endl;
 						for (int zz = 0; zz < 4; zz++)
 						{
@@ -348,7 +357,7 @@ void EnclaveCollection::SetEastBorder(ElevationMapRef elevationMapCopy, EnclaveC
 								}
 							}
 						}
-					}
+					
 					activateListRef.flagArray[7][z] = activateListRef.flagArray[7][z] | bitmask1;
 				}
 			bitmask1 <<= 1;			// shift to the left by one

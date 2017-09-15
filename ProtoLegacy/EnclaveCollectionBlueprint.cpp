@@ -417,7 +417,7 @@ void EnclaveCollectionBlueprint::DetermineBorderWall(int direction, int valuearr
 		}
 	}
 
-	if (direction == 16) // north
+	else if (direction == 16) // north
 	{
 		for (int x = 0; x < 32; x++)
 		{
@@ -425,7 +425,7 @@ void EnclaveCollectionBlueprint::DetermineBorderWall(int direction, int valuearr
 		}
 	}
 
-	if (direction == 8) // east
+	else if (direction == 8) // east
 	{
 		for (int x = 0; x < 32; x++)
 		{
@@ -433,7 +433,7 @@ void EnclaveCollectionBlueprint::DetermineBorderWall(int direction, int valuearr
 		}
 	}
 
-	if (direction == 4) // south
+	else if (direction == 4) // south
 	{
 		for (int x = 0; x < 32; x++)
 		{
@@ -441,7 +441,7 @@ void EnclaveCollectionBlueprint::DetermineBorderWall(int direction, int valuearr
 		}
 	}
 
-	if (direction == 2) // top
+	else if (direction == 2) // top
 	{
 		for (int x = 0; x < 32; x++)
 		{
@@ -449,7 +449,7 @@ void EnclaveCollectionBlueprint::DetermineBorderWall(int direction, int valuearr
 		}
 	}
 
-	if (direction == 1) // bottom
+	else if (direction == 1) // bottom
 	{
 		for (int x = 0; x < 32; x++)
 		{
