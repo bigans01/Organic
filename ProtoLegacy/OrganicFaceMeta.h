@@ -16,7 +16,7 @@ Description: Contains 6 instances of OrganicTextureCoords; this all comes togeth
 class OrganicFaceMeta
 {
 	public:
-		OrganicTextureCoords FaceData[6];
+		OrganicTextureCoords FaceData[6];	// one pair of texture coords per vertex (6 vertexes per face)
 };
 
 #endif

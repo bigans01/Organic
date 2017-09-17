@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------------------------------
 
---EnclaveManifest.h		(Last update 7/8/2017)
+--EnclaveManifest.h		(Last update 9/15/2017)
 
 Description: Header file for EnclaveManifest.cpp.
 
@@ -67,7 +67,7 @@ public:
 
 																			// TempTuple: temporarily stores the x/y/z tuple that contains the final values for a block's representation in 3d space
 	void AttachToEnclave(Enclave &in_ptr);									// "Attaches" the enclave manifest to an appropriate instance of Enclave; this action generates the 3d data that will be stored in the EnclaveManifest.
-	void AttachToEnclave(Enclave &in_ptr, mutex& heapmutex);
+	void AttachToEnclave(Enclave &in_ptr, mutex& heapmutex);				// Same as AttachToEnclave(Enclave &in_ptr), but passes in a mutex for finer-grained control and release of the mutex.
 	int ReturnEnclaveTriangles();											// returns the total number of triangles rendered in this manifest. This will be used by a RenderCollection.
 	EnclaveManifestTuple SingleToMulti(int input);							// takes in a single value, from 0 to 63, and returns a chunk-level x/y/z offset or coordinate
 	EnclaveManifest::~EnclaveManifest();									// required destructor for memory management

@@ -204,12 +204,9 @@ void EnclaveManifest::AttachToEnclave(Enclave &in_ptr, mutex& heapmutex)
 		//EnclaveManifestRenderables = new EnclaveManifest::EnclaveManifestTuple[EnclavePtr->GetTotalTrianglesInEnclave()];				// FIX THIS!
 		//auto orgstart = std::chrono::high_resolution_clock::now();
 		heapmutex.lock();
-		//cout << "before new... " << (EnclavePtr.GetTotalTrianglesInEnclave()) * 9 << endl;
 		EnclaveGLPtr = new GLfloat[(EnclavePtr.GetTotalTrianglesInEnclave()) * 9];
 		VertexColorGLPtr = new GLfloat[(EnclavePtr.GetTotalTrianglesInEnclave()) * 9];
-		//cout << "mid-new..." << endl;
 		TextureGLPtr = new GLfloat[(EnclavePtr.GetTotalTrianglesInEnclave()) * 6];						// new array would be GetTotalTrianglesInEnclave*6 (a pair of UV coordinates per vertex)
-		//cout << "after new..." << EnclavePtr.GetTotalTrianglesInEnclave() * 6 << endl;
 		heapmutex.unlock();																								//auto orgend = std::chrono::high_resolution_clock::now();
 																										//std::chrono::duration<double> orgelapsed = orgend - orgstart;
 		EnclaveGLPtr[0] = 1;																				//std::cout << "Elapsed time (2x dynamic array allocation time): " << orgelapsed.count() << endl;

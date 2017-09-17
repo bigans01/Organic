@@ -573,7 +573,10 @@ EnclaveKeyDef::EnclaveKey Enclave::SingleToEnclaveKey(int input)
 
 void Enclave::UnveilMultipleAndNotifyNeighbors(EnclaveUnveilMeta metaArray, EnclaveCollectionBorderFlags* borderflagsref, ElevationMapRef mapRefVal, EnclaveCollection* collectionRefPtr, EnclaveCollectionNeighborList neighborList, int filldirection)
 {
-	//cout << "test: " << metaArray.numberOfBlocks;
+	/* Summary: this function calls GenerateNeighborMeta to determine which blueprints to look at, based on the Enclave's unique key. 
+	   It then uses the result of this to populate all faces for the enclave.
+	*/
+
 	std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveCollectionBlueprint, EnclaveKeyDef::KeyHasher>::iterator blueprintMapIterator;
 	EnclaveKeyDef::EnclaveKey tempKey;
 	EnclaveNeighborMeta neighborMeta = GenerateNeighborMeta(collectionRefPtr, neighborList);
@@ -730,7 +733,7 @@ void Enclave::UnveilMultipleAndNotifyNeighbors(EnclaveUnveilMeta metaArray, Encl
 							if (y == tempval)
 							{
 
-								fillflag = fillflag | 8;		// x = 2 is the top, so set the top face + 4 (the south face) this one time
+								fillflag = fillflag | 8;		// fillflag = 2 is the top, so set the fillflag + 8 (the east face) this one time
 							}
 							else
 							{
@@ -749,7 +752,41 @@ void Enclave::UnveilMultipleAndNotifyNeighbors(EnclaveUnveilMeta metaArray, Encl
 					}
 				}
 			}
-			
+
+			//************************************************************
+			// determine West faces for the chunk, if it's on the east border
+			//************************************************************
+			if (this->UniqueKey.x == 0)
+			{
+				if (tempBlockKey.x == 0)
+				{
+					int tempval = (tempBlockKey.y + 1);
+					for (int y = tempval; y > 0; y--)		// iterate from the top most block ( the top face) downward; upper most y = the top block
+					{
+						fillflag = 2;
+						if (borderflagsref->West == 1)		// check if east border flag is set; only render north faces if it is set
+						{
+							if (y == tempval)
+							{
+								fillflag = fillflag | 32;
+							}
+							else
+							{
+								fillflag = 32;
+							}
+							UnveilSinglePoly(tempBlockKey.x, y - 1, tempBlockKey.z, 0, 1, fillflag | (neighborMeta.NeighborBlockData[tempBlockKey.x][y - 1][tempBlockKey.z]), 0);
+						}
+
+						if (borderflagsref->West == 0)
+						{
+							if (y == tempval)
+							{
+								UnveilSinglePoly(tempBlockKey.x, y - 1, tempBlockKey.z, 0, 1, fillflag | (neighborMeta.NeighborBlockData[tempBlockKey.x][y - 1][tempBlockKey.z]), 0);
+							}
+						}
+					}
+				}
+			}
 
 
 			// do this for all non-border chunks
@@ -857,8 +894,6 @@ EnclaveNeighborMeta Enclave::GenerateNeighborMeta(EnclaveCollection* enclaveColl
 
 	}
 
-
-
 	return returnMeta;
 }
 
@@ -866,6 +901,5 @@ int Enclave::EnclaveCoordsToSingle(int in_x, int in_y, int in_z)
 {
 	int x = in_x * 16;
 	int y = in_y * 4;
-	//int z = InKey.z;
 	return x + y + in_z;
 }

@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------------------------------
 
---MaterializeCollectionListContainer.h (Last update 9/4/2017)
+--MaterializeCollectionListContainer.h (Last update 9/15/2017)
 
 Description: Header file for MaterializeCollectionListContainer data structure
 
@@ -21,7 +21,7 @@ so that it knows all collections it needs to materialize.
 class  MaterializeCollectionListContainer
 {
 public:
-	std::vector<MDListJobMaterializeCollection> MaterializeCollectionList;
+	std::vector<MDListJobMaterializeCollection> MaterializeCollectionList;	// the vector which contains the lists
 };
 
 #endif

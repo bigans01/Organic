@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------------------------------
 
---OrganicSystem.h		(Last update 8/16/2017)
+--OrganicSystem.h		(Last update 9/15/2017)
 
 Description: Header file for EnclaveCollectionBlueprint.cpp
 
@@ -54,20 +54,24 @@ public:
 
 	void SetSurfaceChunkData(ElevationMapRef surfaceData);										// will load the data for the surface chunk array
 	void SetSolidChunkData(ElevationMapRef solidData);											// will load the data for the solid chunk array
-	void SetCustomPaintableChunkData(ElevationMapRef paintableData);	
-	void AddNewPaintList(EnclaveKeyDef::EnclaveKey InKey, EnclavePainterList InPaintList);
-	int BPKeyToSingle(EnclaveKeyDef::EnclaveKey tempKey);
-	int BlockKeyToSingle(int in_x, int in_y, int in_z);
-	ElevationMapRef& GetSurfaceChunkData();
-	ElevationMapRef& GetSolidChunkData();
-	ElevationMapRef& GetCustomPaintableChunkData();
-	ElevationMapRef& GetStandardPaintableChunkData();
-	void CarveSlope();
-	void FlattenToElevation();
-	EnclaveUnveilMeta SetupCarvePlan(EnclaveKeyDef::EnclaveKey tempKey);
-	EnclaveUnveilMeta ReturnBorderChunkFacesToRender(int x, int y, int z, EnclaveCollectionBlueprint* originBlueprint, EnclaveCollectionBlueprint*  comparedBlueprint, int directionOfNeighbor);
-	void SetBorderBlockFlags(int direction, int slice, int slice_offset);
-	void DetermineBorderWall(int direction, int valuearray[32]);
+	void SetCustomPaintableChunkData(ElevationMapRef paintableData);							// will load the data for the custom chunk array
+	void AddNewPaintList(EnclaveKeyDef::EnclaveKey InKey, EnclavePainterList InPaintList);		// adds a new paint list to this blueprint 								
+	int BlockKeyToSingle(int in_x, int in_y, int in_z);											// transforms an x/y/z block key to its associated single value
+	ElevationMapRef& GetSurfaceChunkData();														// returns a reference to the surface chunk array
+	ElevationMapRef& GetSolidChunkData();														// returns a reference to the solid chunk array
+	ElevationMapRef& GetCustomPaintableChunkData();												// returns a reference to the custom chunk array
+	ElevationMapRef& GetStandardPaintableChunkData();											// returns a reference to the standard chunk array
+	void CarveSlope();																			// Blueprint modelling: sets a carved slope.
+	void FlattenToElevation();																	// Blueprint modelling: "flattens" the blueprint, so that it is aligned to be flat horizontally. (i.e., on the x and z axis)
+	EnclaveUnveilMeta SetupCarvePlan(EnclaveKeyDef::EnclaveKey tempKey);						// Blueprint modelling: sets up a 32 x 32 array that an Enclave may reference to find the y values to set itself at; this will be continually changed
+	EnclaveUnveilMeta ReturnBorderChunkFacesToRender(int x,		// used when there is a neighboring blueprint. It compares blueprint A to the border wall in blueprint B, to determine what to render.
+													 int y, 
+													 int z, 
+													 EnclaveCollectionBlueprint* originBlueprint, 
+													 EnclaveCollectionBlueprint* comparedBlueprint, 
+													 int directionOfNeighbor);
+	void SetBorderBlockFlags(int direction, int slice, int slice_offset);		// sets the border block flags, which are integers where each bit represents a single block on either the x, y, or z axis. 
+	void DetermineBorderWall(int direction, int valuearray[32]);				// sets up the border wall for any given direction.
 
 };
 

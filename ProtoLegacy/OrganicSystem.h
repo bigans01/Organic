@@ -60,7 +60,7 @@ public:
 	thread_pool *Cell1;															// pointer for Cell 1
 	thread_pool *Cell2;															// pointer for Cell 2
 
-	OrganicSystem(int numberOfFactories, int bufferCubeSize);																			// default constructor
+	OrganicSystem(int numberOfFactories, int bufferCubeSize);					// default constructor: number of factories, plus the size of the buffer cube
 
 
 	void InterlockBaseCollections();															// connects the 3 base collections together -- EnclaveCollections, ManifestCollections, RenderCollections.

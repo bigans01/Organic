@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------------------------------
 
---Enclave.h		(Last update 9/4/2017)
+--Enclave.h		(Last update 9/15/2017)
 
 Description: Header file for Enclave.cpp.
 
@@ -46,7 +46,7 @@ public:
 	struct EnclaveVertex {													// this struct stores "compressed" values of the xyz.
 		char x, y, z;														// for use in compressed data below...values will be multiplied by a matrix of floats, in order to produce appropriate values for OpenGL. This is to save data.
 	};
-	struct EnclavePolyArray {						/* ----Total size: 52 bytes---- */
+	struct EnclavePolyArray {							/* ----Total size: 52 bytes---- */
 		int readorder = 0;								// unused, reserverd for future use
 		int otherflags = 0;								// is block air, is block solid, is block set to render, etc
 		short blockid = 0;								// the type of block 
@@ -84,16 +84,21 @@ public:
 	void UnveilSinglePolyWithMtrl(int x, int y, int z, int in_readorder, int in_otherflags, short in_blockid, char in_t1, char in_t2);				// Reveals one block at xyz and sets its material, so that it may be rendered.
 	void UnveilSinglePoly(int x, int y, int z, int in_readorder, int in_otherflags, char in_t1, char in_t2);
 	void VeilSinglePoly(int x, int y, int z, int in_readorder, int in_otherflags, short in_blockid, char in_t1, char in_t2);	// Hides one block at xyz, so that it will no longer be rendered.
-	void ChangePolyMaterial(int x, int y, int z, int newmaterial);	// changes the material of a block at the x/y/z value within the chunk
-	void TestTopLayer();								// testing purpose only
-	void ViewOtherFlags();								// testing purpose only
-	void UnveilMultipleAndNotifyNeighbors(EnclaveUnveilMeta metaArray, EnclaveCollectionBorderFlags* borderflagsref, ElevationMapRef mapRefVal, EnclaveCollection* enclaveCollectionRef, EnclaveCollectionNeighborList neighborList, int filldirection);
-	EnclaveKeyDef::Enclave2DKey SingleTo2d(int input);
-	int	GetTotalTrianglesInBlock(char in_char);		// Gets that current number of trinagles at a block.
-	int GetTotalTrianglesInEnclave();					// Returns the total number of triangles that exist in the enclave. 
-	EnclaveKeyDef::EnclaveKey SingleToEnclaveKey(int input);
-	EnclaveNeighborMeta GenerateNeighborMeta(EnclaveCollection* enclaveCollectionRef, EnclaveCollectionNeighborList neighborList);
-	int EnclaveCoordsToSingle(int in_x, int in_y, int in_z);
+	void ChangePolyMaterial(int x, int y, int z, int newmaterial);																// changes the material of a block at the x/y/z value within the chunk
+	void TestTopLayer();																										// testing purpose only
+	void ViewOtherFlags();																										// testing purpose only
+	void UnveilMultipleAndNotifyNeighbors(EnclaveUnveilMeta metaArray,		// this function compares the Enclave to any neighboring Enclaves nearby, to determine what faces should be rendered.
+										  EnclaveCollectionBorderFlags* borderflagsref, 
+										  ElevationMapRef mapRefVal, 
+										  EnclaveCollection* enclaveCollectionRef, 
+		                                  EnclaveCollectionNeighborList neighborList, int filldirection);																																
+	EnclaveKeyDef::Enclave2DKey SingleTo2d(int input);																			// converts a single number to a corresponding 2d value
+	int	GetTotalTrianglesInBlock(char in_char);								// Gets that current number of trinagles at a block.
+	int GetTotalTrianglesInEnclave();										// Returns the total number of triangles that exist in the enclave. 
+	EnclaveKeyDef::EnclaveKey SingleToEnclaveKey(int input);				// converts a single number between 0 and 63 to a corresponding set of Enclave block coordinates (x/y/z)
+	EnclaveNeighborMeta GenerateNeighborMeta(EnclaveCollection* enclaveCollectionRef,		// compares the Enclave to neighboring Enclaves, to determine which of the Enclave's border blocks faces should be rendered.
+											 EnclaveCollectionNeighborList neighborList);
+	int EnclaveCoordsToSingle(int in_x, int in_y, int in_z);				// converts x/y/z Enclave coords to a single value.
 	
 };
 

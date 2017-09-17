@@ -1,6 +1,6 @@
 /*-----------------------------------------------------------------
 
---EnclaveCollectionNeighborList.h: header file for EnclaveCollectionNeighborList
+--EnclaveCollectionNeighborList.h: (Last update 9/15/2017)
 
 Summary: EnclaveCollectionNeighborList is an object that stores up to 6 pointers, with a flag that is to be set whenever the pointer is valid.
 
@@ -23,13 +23,13 @@ public:
 	int TopNeighborExists = 0;
 	int BottomNeighborExists = 0;
 
-	EnclaveCollectionBlueprint* originPtr;
-	EnclaveCollectionBlueprint* westPtr;
-	EnclaveCollectionBlueprint* northPtr;
-	EnclaveCollectionBlueprint* eastPtr;
-	EnclaveCollectionBlueprint* southPtr;
-	EnclaveCollectionBlueprint* topPtr;
-	EnclaveCollectionBlueprint* bottomPtr;
+	EnclaveCollectionBlueprint* originPtr;		// the origin blueprint
+	EnclaveCollectionBlueprint* westPtr;		// blueprint west of the origin 
+	EnclaveCollectionBlueprint* northPtr;		// blueprint north of the origin
+	EnclaveCollectionBlueprint* eastPtr;		// blueprint east of the origin
+	EnclaveCollectionBlueprint* southPtr;		// blueprint south of the origin
+	EnclaveCollectionBlueprint* topPtr;			// blueprint above the origin
+	EnclaveCollectionBlueprint* bottomPtr;		// blueprint below the origin
 
 
 };

@@ -207,11 +207,6 @@ void RenderCollection::CombineManifestArrays(mutex& mutexval)
 		RenderableManifestMeta.CollectionTriangleCount += RenderableManifestMeta.MetaArray[RenderableManifestMeta.EnclaveManifestCount].currentTriangleCount;
 		RenderableManifestMeta.EnclaveManifestCount++;
 
-		if (ManMatrixIter->second.UniqueKey.x == 3 && ManMatrixIter->second.UniqueKey.y == 1 && ManMatrixIter->second.UniqueKey.z == 0)
-		{
-			cout << "enclave found! (" << ManMatrixIter->second.TotalEnclaveTriangles << ")" << endl;
-			cout << "key of found enclave: " << ManMatrixIter->second.UniqueKey.x << ", " << ManMatrixIter->second.UniqueKey.y << ", " << ManMatrixIter->second.UniqueKey.z << endl;
-		}
 		//cout << "key of found enclave: " << ManMatrixIter->second.UniqueKey.x << ", " << ManMatrixIter->second.UniqueKey.y << ", " << ManMatrixIter->second.UniqueKey.z << endl;
 		totalenclavesfound++;
 	}
@@ -342,8 +337,6 @@ void RenderCollection::CombineManifestArraysFromT1Factory(EnclaveManifestFactory
 
 
 	// STEP 2: create the dynamic array, acquire heap lock while doing so
-
-
 	mutexval.lock();
 	if (IsGLFloatPtrLoaded == 1)		// delete old array if it was previously set
 	{
@@ -353,7 +346,6 @@ void RenderCollection::CombineManifestArraysFromT1Factory(EnclaveManifestFactory
 	IsGLFloatPtrLoaded = 1;									// indicate that the pointer was loaded with data
 	GLFloatPtr = new GLfloat[totalfloats];	// 9 floats per triangle
 	VertexColorArrayPtr = new GLfloat[totalfloats];
-											//cout << "totalfloats: " << totalfloats << endl;
 	mutexval.unlock();
 	//cout << "Render 2 entry:" << endl;
 
@@ -364,7 +356,7 @@ void RenderCollection::CombineManifestArraysFromT1Factory(EnclaveManifestFactory
 		int indexStart;
 		int totalTriangles;
 	};
-	enclaveDataFinder enclaveDataStart[512];					// THIS WAS THE CAUSE OF THE ERROR ON (9/2/2017)
+	enclaveDataFinder enclaveDataStart[512];					// THIS WAS THE CAUSE OF THE ERROR ON (9/2/2017) ---> 512 was incorrect value of around 64. This caused corruption.
 	int currentBegin = 0;
 	for (int x = 0; x < TotalEnclavesInFactory; x++)
 	{

@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------------------------------
 
---ECBOutwardFaceFlags.h		(Last update 9/10/2017)
+--ECBOutwardFaceFlags.h		(Last update 9/15/2017)
 
 Description: Header file for ECBOutwardFaceFlags.h
 
@@ -16,7 +16,7 @@ Summary: An ECBOutwardFaceFlags object contains 32 ints, one for each block that
 class ECBOutwardFaceFlags
 {
 public:
-	int faceflagarray[32] = { 0 };
+	int faceflagarray[32] = { 0 };		// the array of 32 ints, initialized for safety/best practice.
 };
 
 #endif

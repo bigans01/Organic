@@ -19,6 +19,7 @@ Dependents: a valid instance of ManifestCollectionMatrix
 #include "stdafx.h"
 #include <stdio.h>
 #include <iostream>
+#include <map>
 #include "Enclave.h"
 #include "EnclaveManifestFactoryT1Storage.h"
 #include "EnclaveCollection.h"
@@ -30,10 +31,10 @@ class EnclaveManifestFactoryT1
 {
 public:
 	EnclaveCollection *EnclaveCollectionPtr;												// pointer to a valid EnclaveCollection
+	std::map<int, EnclaveCollection> FactoryCollections;										// map that contains one or more personal, or "localized" EnclaveCollections designed for use specifically by the Factory.
 	Enclave::EnclavePolyArray *EnclavePolyArrayPtr;											// pointer to an EnclavePolyArray within previous EnclaveCollection
 	OrganicTextureDictionary *TextureDictionaryRef;											// pointer to a valid OrganicTextureDictionary contained within an OrganicSystem instance
 	OrganicVtxColorDictionary *VertexColorDictionaryRef;									// pointer to a valid OrganicVtxColorDictionary contained within an OrganicSystem instance
-
 	EnclaveManifestFactoryT1Storage StorageArray[512];										// an array of 512 storage units 
 	int CurrentStorage = 0;																	// a member variable that stores the current number of stored Enclaves
 	int StorageArrayCount = 0;																// ""
@@ -48,6 +49,7 @@ public:
 
 	void AttachManifestToEnclave(Enclave *in_ptr);											// attaches a manifest (contained within this Factory) to a valid Enclave
 	void SetEnclaveCollectionPtr(EnclaveCollection *InPtr);									// sets the pointer to a valid EnclaveCollection
+	void InsertEnclaveCollectionIntoFactory();
 	EnclaveManifestTuple SingleToMulti(int input);											// EnclaveManifestTuple
 };
 

@@ -308,6 +308,7 @@ int main()
 
 	// make north wall values same as west wall (temporary)
 	testBlueprint3.DetermineBorderWall(16, arrayToPass2);
+	testBlueprint3.SetBorderBlockFlags(16, 16, 25);
 
 	// set south as well
 	testBlueprint3.DetermineBorderWall(4, arrayToPass2);
@@ -392,9 +393,9 @@ int main()
 
 	flatKeyToAdd.x = 0;
 	flatKeyToAdd.y = 0;
-	flatKeyToAdd.z = -3;
-	//Organic.AddKeyToRenderList(flatKeyToAdd);
-	//Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, flatBlueprint);
+	flatKeyToAdd.z = 2;
+	Organic.AddKeyToRenderList(flatKeyToAdd);
+	Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, flatBlueprint);
 
 
 	auto collectionsSetupEND = std::chrono::high_resolution_clock::now();

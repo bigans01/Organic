@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------------------------------
 
---OGLMBufferManager.h		(Last update 9/7/2017)
+--OGLMBufferManager.h		(Last update 9/15/2017)
 
 Description: Header file for OGLMBufferManager.cpp
 
@@ -31,11 +31,11 @@ public:
 	OrganicGLManager* OGLMPtr;
 
 	//OGLMBufferManager();	
-	~OGLMBufferManager();
+	~OGLMBufferManager();				// deletes all dynamically allocated objects created using the "new" operator
 
-	void SetCubesize(int inCubesize);
-	void SetOGLMPointer(OrganicGLManager* in_OGLMptr);
-	void GenerateArrays();
+	void SetCubesize(int inCubesize);					// sets the buffer cube size, which is used to create the buffers
+	void SetOGLMPointer(OrganicGLManager* in_OGLMptr);	// sets the pointer to the instance of OrganicGLManager that this instance of OGLMBufferManager will be associated with
+	void GenerateArrays();								// generates a "cube" of arrays, based on the value of cubesize.
 	void ShiftMatricesForNW();
 	int translateXYZToSingle(int x, int y, int z);
 };

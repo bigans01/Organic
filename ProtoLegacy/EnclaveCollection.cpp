@@ -9,8 +9,6 @@ void EnclaveCollection::ActivateEnclaveForRendering(EnclaveKeyDef::EnclaveKey Ke
 	{
 		RenderableEnclaves[totalRenderableEnclaves] = Key;
 		totalRenderableEnclaves++;
-		//totalRenderableEnclaves = 1;
-		// cout << "ENTRY TEST (enclaves == 0) " << endl;
 	}
 	else if (totalRenderableEnclaves > 0)
 	{
@@ -24,12 +22,15 @@ void EnclaveCollection::ActivateEnclaveForRendering(EnclaveKeyDef::EnclaveKey Ke
 		}
 		if (duplicateFlag == 0)			// only perform the following operation if there were no duplicates found
 		{
-			//RenderableEnclaves[x + 1] = Key;		// if no duplicate is found, make the next index equal to key. 
-			//totalRenderableEnclaves++;
 			RenderableEnclaves[totalRenderableEnclaves] = Key;
 			totalRenderableEnclaves++;
 		}
 	}
+}
+
+void EnclaveCollection::ResetTotalRenderableEnclaves()
+{
+	totalRenderableEnclaves = 0;
 }
 
 Enclave& EnclaveCollection::GetEnclaveByKey(EnclaveKeyDef::EnclaveKey InKey)
@@ -86,16 +87,15 @@ void EnclaveCollection::SetWestBorder(ElevationMapRef elevationMapCopy,  Enclave
 
 void EnclaveCollection::SetWestBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2& activateListRef, EnclaveCollectionNeighborList* neighborListPtr)
 {
-	//cout << "Set west border called!" << endl;
-	EnclaveCollectionBlueprint* blueprintPtr = neighborListPtr->westPtr;
-	EnclaveCollectionBlueprint* originPtr = neighborListPtr->originPtr;
-	int bitmask1 = 1;
-	int actual_y = 0;
+	EnclaveCollectionBlueprint* blueprintPtr = neighborListPtr->westPtr;			// points to the western blueprint.
+	EnclaveCollectionBlueprint* originPtr = neighborListPtr->originPtr;				// points to the original blueprint that is being compared to 
+	int bitmask1 = 1;	// a variable for the bitmask. The bit is shifted to the left by one within the y-loop below
+	int actual_y = 0;	// the actual y-coordinate, ranging from 0 to 7
 	int iterationtest = 0;
 	for (int x = 0; x < 8; x++)
 	{
-		bitmask1 = 1;
-		actual_y = 0;
+		bitmask1 = 1;	// reset the bitmask at the beginning of each x-loop iteration
+		actual_y = 0;	// reset the actual y-coordinate too
 		for (int y = 0; y < 8; y++)
 		{
 				if
@@ -114,24 +114,23 @@ void EnclaveCollection::SetWestBorder(ElevationMapRef elevationMapCopy, EnclaveC
 				)
 				{
 					EnclaveUnveilMeta tempUnveilMeta = blueprintPtr->ReturnBorderChunkFacesToRender(0, actual_y, x, originPtr, blueprintPtr, 32); // 32 = the originPtr blueprint will be compared to blueprintPtr, which is to the West (32)
-					Enclave* enclavePtr = &EnclaveArray[0][actual_y][x];
-						for (int zz = 0; zz < 4; zz++)
+					Enclave* enclavePtr = &EnclaveArray[0][actual_y][x];	// get the enclave based on 0, actual_y, and x; (all western chunks are at x = 0)
+					for (int zz = 0; zz < 4; zz++)		// use two loops to iterate 16 times; 16 is the total number of possible blocks contained within tempUnveilMeta
+					{
+						for (int yy = 0; yy < 4; yy++)
 						{
-							for (int yy = 0; yy < 4; yy++)
+							if (tempUnveilMeta.UnveilFlag[zz][yy] == 1)		// if the block is meant to be unveiled, do the logic here
 							{
-								if (tempUnveilMeta.UnveilFlag[zz][yy] == 1)
-								{
-									EnclaveKeyDef::EnclaveKey tempKey = enclavePtr->SingleToEnclaveKey(tempUnveilMeta.EnclaveBlockLocation[zz][yy]);
-									enclavePtr->UnveilSinglePoly(tempKey.x, tempKey.y, tempKey.z, 0, 1, tempUnveilMeta.BlockFacesToRender[zz][yy], 0);
-								}
+								EnclaveKeyDef::EnclaveKey tempKey = enclavePtr->SingleToEnclaveKey(tempUnveilMeta.EnclaveBlockLocation[zz][yy]);	// get the actual value of the block's x/y/z coordinates by taking the single valued stored at [zz][yy] in the tempUnveilMeta
+								enclavePtr->UnveilSinglePoly(tempKey.x, tempKey.y, tempKey.z, 0, 1, tempUnveilMeta.BlockFacesToRender[zz][yy], 0);	// unveil the poly
 							}
 						}
-
-					activateListRef.flagArray[0][x] = activateListRef.flagArray[0][x] | bitmask1;
+					}
+					activateListRef.flagArray[0][x] = activateListRef.flagArray[0][x] | bitmask1;	// indicate that this enclave will need to be rendered, if it wasn't set to already.
 				}
 
 			bitmask1 <<= 1;			// shift to the left by one
-			actual_y++;
+			actual_y++;				// increment the actual_y value
 		}
 	}
 
@@ -192,18 +191,16 @@ void EnclaveCollection::SetNorthBorder(ElevationMapRef elevationMapCopy, Enclave
 
 void EnclaveCollection::SetNorthBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2& activateListRef, EnclaveCollectionNeighborList* neighborListPtr)
 {
-	EnclaveCollectionBlueprint* blueprintPtr = neighborListPtr->northPtr;
-	EnclaveCollectionBlueprint* originPtr = neighborListPtr->originPtr;
-	int bitmask1 = 1;
-	int actual_y = 0;
-	int iterationtest = 0;
+	EnclaveCollectionBlueprint* blueprintPtr = neighborListPtr->northPtr;			// points to the northern blueprint.
+	EnclaveCollectionBlueprint* originPtr = neighborListPtr->originPtr;				// points to the original blueprint that is being compared to 
+	int bitmask1 = 1;	// a variable for the bitmask. The bit is shifted to the left by one within the y-loop below
+	int actual_y = 0;	// the actual y-coordinate, ranging from 0 to 7
 	for (int x = 0; x < 8; x++)
 	{
-		bitmask1 = 1;
-		actual_y = 0;
+		bitmask1 = 1;	// reset the bitmask at the beginning of each x-loop iteration
+		actual_y = 0;	// reset the actual y-coordinate too
 		for (int y = 0; y < 8; y++)
 		{
-			
 				if 
 				(
 					(
@@ -221,45 +218,24 @@ void EnclaveCollection::SetNorthBorder(ElevationMapRef elevationMapCopy, Enclave
 				)
 
 				{
-					// if it isn't an airtight chunk, we need to do things.
-					//cout << "test within blueprint processing: (3) " << blueprintPtr->WestBorderBlocks.faceflagarray[1] << endl;
-
 
 					EnclaveUnveilMeta tempUnveilMeta = blueprintPtr->ReturnBorderChunkFacesToRender(x, actual_y, 0, originPtr, blueprintPtr, 16); // 16 = the originPtr blueprint will be compared to blueprintPtr, which is to the North (16)
-					Enclave* enclavePtr = &EnclaveArray[x][actual_y][0];
-					if (enclavePtr->UniqueKey.x == 3 && enclavePtr->UniqueKey.y == 1 && enclavePtr->UniqueKey.z == 0)
+					Enclave* enclavePtr = &EnclaveArray[x][actual_y][0];	// get the enclave based on x, actual_y, and 0; (all northern chunks are at z = 0)
+					for (int zz = 0; zz < 4; zz++)		// use two loops to iterate 16 times; 16 is the total number of possible blocks contained within tempUnveilMeta
 					{
-						cout << "border call..." << endl;
-						cout << "current triangles renderable: " << enclavePtr->GetTotalTrianglesInEnclave() << endl;
-						cout << "temp unveil meta number of blocks: " << tempUnveilMeta.numberOfBlocks << endl;
-					}
-
-						for (int zz = 0; zz < 4; zz++)
+						for (int yy = 0; yy < 4; yy++)
 						{
-							for (int yy = 0; yy < 4; yy++)
+							if (tempUnveilMeta.UnveilFlag[zz][yy] == 1)		// if the block is meant to be unveiled, do the logic here
 							{
-								if (tempUnveilMeta.UnveilFlag[zz][yy] == 1)
-								{
-									
-									EnclaveKeyDef::EnclaveKey tempKey = enclavePtr->SingleToEnclaveKey(tempUnveilMeta.EnclaveBlockLocation[zz][yy]);
-									enclavePtr->UnveilSinglePoly(tempKey.x, tempKey.y, tempKey.z, 0, 1, tempUnveilMeta.BlockFacesToRender[zz][yy], 0);
-								}
+								EnclaveKeyDef::EnclaveKey tempKey = enclavePtr->SingleToEnclaveKey(tempUnveilMeta.EnclaveBlockLocation[zz][yy]);	// get the actual value of the block's x/y/z coordinates by taking the single valued stored at [zz][yy] in the tempUnveilMeta
+								enclavePtr->UnveilSinglePoly(tempKey.x, tempKey.y, tempKey.z, 0, 1, tempUnveilMeta.BlockFacesToRender[zz][yy], 0);	// unveil the poly
 							}
 						}
-
-
-					if (enclavePtr->UniqueKey.x == 3 && enclavePtr->UniqueKey.y == 1 && enclavePtr->UniqueKey.z == 0)
-					{
-						//cout << "border call..." << endl;
-						cout << "current triangles renderable (post renderable): " << enclavePtr->GetTotalTrianglesInEnclave() << endl;
-						//cout << "temp unveil meta number of blocks: " << tempUnveilMeta.numberOfBlocks << endl;
 					}
-					activateListRef.flagArray[x][0] = activateListRef.flagArray[x][0] | bitmask1;
-
+					activateListRef.flagArray[x][0] = activateListRef.flagArray[x][0] | bitmask1;	// indicate that this enclave will need to be rendered, if it wasn't set to already.
 				}
-			
 			bitmask1 <<= 1;			// shift to the left by one
-			actual_y++;
+			actual_y++;				// increment the actual y value 
 		}
 	}
 }
@@ -307,15 +283,14 @@ void EnclaveCollection::SetEastBorder(ElevationMapRef elevationMapCopy,  Enclave
 
 void EnclaveCollection::SetEastBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2& activateListRef, EnclaveCollectionNeighborList* neighborListPtr)
 {
-	EnclaveCollectionBlueprint* blueprintPtr = neighborListPtr->eastPtr;	// get the blueprint to the east of this one
-	EnclaveCollectionBlueprint* originPtr = neighborListPtr->originPtr;
-	int bitmask1 = 1;
-	int actual_y = 0;
-
+	EnclaveCollectionBlueprint* blueprintPtr = neighborListPtr->eastPtr;	// points to the eastern blueprint
+	EnclaveCollectionBlueprint* originPtr = neighborListPtr->originPtr;		// points to the original blueprint that is being compared to
+	int bitmask1 = 1;	// a variable for the bitmask. The bit is shifted to the left by one within the y-loop below
+	int actual_y = 0;	// the actual y-coordinate, ranging from 0 to 7
 	for (int z = 0; z < 8; z++)
 	{
-		bitmask1 = 1;	
-		actual_y = 0;
+		bitmask1 = 1;	// reset the bitmask at the beginning of each x-loop iteration
+		actual_y = 0;	// reset the actual y-coordinate too
 		for (int y = 0; y < 8; y++)
 		{
 				if 
@@ -336,32 +311,22 @@ void EnclaveCollection::SetEastBorder(ElevationMapRef elevationMapCopy, EnclaveC
 				{
 
 					EnclaveUnveilMeta tempUnveilMeta = blueprintPtr->ReturnBorderChunkFacesToRender(7, actual_y, z, originPtr, blueprintPtr, 8); // 8 = the originPtr blueprint will be compared to blueprintPtr, which is to the East (8)
-					//cout << "flermp!" << endl;
-					Enclave* enclavePtr = &EnclaveArray[7][actual_y][z];
-			
-						//cout << "x: " << tempKey.x << " " << tempKey.y << " " << tempKey.z << endl;
-						for (int zz = 0; zz < 4; zz++)
+					Enclave* enclavePtr = &EnclaveArray[7][actual_y][z];	// get the enclave based on 7, actual_y, and z; (all eastern chunks are at x = 7)
+					for (int zz = 0; zz < 4; zz++)
+					{
+						for (int yy = 0; yy < 4; yy++)
 						{
-							for (int yy = 0; yy < 4; yy++)
+							if (tempUnveilMeta.UnveilFlag[zz][yy] == 1)
 							{
-								if (tempUnveilMeta.UnveilFlag[zz][yy] == 1)
-								{
-									
-									EnclaveKeyDef::EnclaveKey tempKey = enclavePtr->SingleToEnclaveKey(tempUnveilMeta.EnclaveBlockLocation[zz][yy]);
-									//cout << "tempKey results: " << tempKey.x << ", " << tempKey.y << ", " << tempKey.z << endl;
-									enclavePtr->UnveilSinglePoly(tempKey.x, tempKey.y, tempKey.z, 0, 1, tempUnveilMeta.BlockFacesToRender[zz][yy], 0);
-									//if (enclavePtr->UniqueKey.x == 7 && enclavePtr->UniqueKey.y == 7 && enclavePtr->UniqueKey.z == 0)
-									//{
-										//cout << "current number of renderables: " << enclavePtr->TotalRenderable << endl;
-									//}
-								}
+								EnclaveKeyDef::EnclaveKey tempKey = enclavePtr->SingleToEnclaveKey(tempUnveilMeta.EnclaveBlockLocation[zz][yy]);	// get the actual value of the block's x/y/z coordinates by taking the single valued stored at [zz][yy] in the tempUnveilMeta
+								enclavePtr->UnveilSinglePoly(tempKey.x, tempKey.y, tempKey.z, 0, 1, tempUnveilMeta.BlockFacesToRender[zz][yy], 0);	// unveil the poly
 							}
 						}
-					
-					activateListRef.flagArray[7][z] = activateListRef.flagArray[7][z] | bitmask1;
+					}		
+					activateListRef.flagArray[7][z] = activateListRef.flagArray[7][z] | bitmask1;	// indicate that this enclave will need to be rendered, if it wasn't set to already.
 				}
 			bitmask1 <<= 1;			// shift to the left by one
-			actual_y++;
+			actual_y++;				// increment the actual_y value
 		}
 	}
 }
@@ -409,7 +374,52 @@ void EnclaveCollection::SetSouthBorder(ElevationMapRef elevationMapCopy,  Enclav
 
 void EnclaveCollection::SetSouthBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2& activateListRef, EnclaveCollectionNeighborList* neighborListPtr)
 {
+	EnclaveCollectionBlueprint* blueprintPtr = neighborListPtr->southPtr;	// points to the southern blueprint
+	EnclaveCollectionBlueprint* originPtr = neighborListPtr->originPtr;		// points to the original blueprint that is being compared to
+	int bitmask1 = 1;	// a variable for the bitmask. The bit is shifted to the left by one within the y-loop below
+	int actual_y = 0;	// the actual y-coordinate, ranging from 0 to 7
+	for (int z = 0; z < 8; z++)
+	{
+		bitmask1 = 1;	// reset the bitmask at the beginning of each x-loop iteration
+		actual_y = 0;	// reset the actual y-coordinate too
+		for (int y = 0; y < 8; y++)
+		{
+				if
+				(
+					(
+						((blueprintPtr->AirtightChunks[z][0] & bitmask1) != bitmask1)			// if the neighboring chunk to check is not airtight...
+						&&																		// ...AND...
+						((originPtr->SolidChunks[z][7] & bitmask1) == bitmask1)					// the border chunk in the originating blueprint to compare to is solid...
+					)
+					||																			// **OR**
+					(
+						((blueprintPtr->AirtightChunks[z][0] & bitmask1) != bitmask1)				// if the neighboring chunk to check is not airtight...
+						&&																		// ...AND...
+						((originPtr->CustomPaintableChunks[z][7] & bitmask1) == bitmask1)		// the border chunk in the originating blueprint to compare is a custom...
+					)
+				)																				// then do the things below.
 
+				{
+
+					EnclaveUnveilMeta tempUnveilMeta = blueprintPtr->ReturnBorderChunkFacesToRender(z, actual_y, 7, originPtr, blueprintPtr, 4); // 4 = the originPtr blueprint will be compared to blueprintPtr, which is to the South (4)
+					Enclave* enclavePtr = &EnclaveArray[z][actual_y][7];
+					for (int zz = 0; zz < 4; zz++)
+					{
+						for (int yy = 0; yy < 4; yy++)
+						{
+							if (tempUnveilMeta.UnveilFlag[zz][yy] == 1)
+							{
+								EnclaveKeyDef::EnclaveKey tempKey = enclavePtr->SingleToEnclaveKey(tempUnveilMeta.EnclaveBlockLocation[zz][yy]);	// get the actual value of the block's x/y/z coordinates by taking the single valued stored at [zz][yy] in the tempUnveilMeta
+								enclavePtr->UnveilSinglePoly(tempKey.x, tempKey.y, tempKey.z, 0, 1, tempUnveilMeta.BlockFacesToRender[zz][yy], 0);	// unveil the poly
+							}
+						}
+					}
+					activateListRef.flagArray[z][7] = activateListRef.flagArray[z][7] | bitmask1;	// indicate that this enclave will need to be rendered, if it wasn't set to already.
+				}
+			bitmask1 <<= 1;			// shift to the left by one
+			actual_y++;				// increment the actual_y value
+		}
+	}
 }
 
 void EnclaveCollection::SetTopBorder(ElevationMapRef elevationMapCopy,  EnclaveCollectionActivateListT2 &activateListRef)

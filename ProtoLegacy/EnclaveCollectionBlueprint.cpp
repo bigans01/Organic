@@ -45,7 +45,6 @@ void EnclaveCollectionBlueprint::AddNewPaintList(EnclaveKeyDef::EnclaveKey InKey
 	PaintListMatrix.PainterListMatrix[InKey] = InPaintList;
 	//auto blueend = std::chrono::high_resolution_clock::now();
 	//auto bluestart = std::chrono::high_resolution_clock::now();
-	//int returnval = BPKeyToSingle(InKey);
 	//PaintListMatrix.PainterListMatrix2[returnval] = InPaintList;
 	//auto blueend = std::chrono::high_resolution_clock::now();
 	//std::chrono::duration<double> blueelapsed = blueend - bluestart;
@@ -75,17 +74,6 @@ ElevationMapRef& EnclaveCollectionBlueprint::GetStandardPaintableChunkData()
 	return StandardPaintableChunks;
 }
 
-int EnclaveCollectionBlueprint::BPKeyToSingle(EnclaveKeyDef::EnclaveKey tempKey)
-{
-	/* Summary: takes a single value between 0 to 63, and returns the x/y/z of the block within the chunk */
-
-	// int multi_to_single = (x * 16) + (y * 4) + z;				// convert from 3d array coords to single array
-
-	int x = tempKey.x * 64;
-	int y = tempKey.y * 16;
-	int z = tempKey.z;
-	return x + y + z;
-}
 
 void EnclaveCollectionBlueprint::CarveSlope()
 {
@@ -265,106 +253,101 @@ EnclaveUnveilMeta EnclaveCollectionBlueprint::SetupCarvePlan(EnclaveKeyDef::Encl
 
 EnclaveUnveilMeta EnclaveCollectionBlueprint::ReturnBorderChunkFacesToRender(int x, int y, int z, EnclaveCollectionBlueprint* originBlueprint, EnclaveCollectionBlueprint*  comparedBlueprint, int directionOfNeighbor)
 {
-	EnclaveUnveilMeta returnMeta;
+	EnclaveUnveilMeta returnMeta;	// an instance of EnclaveUnveilMeta that will be returned as a result of this function call
 	if (directionOfNeighbor == 32)	// neighbor is to the west
 	{
-		int begin_y = y * 4;
-		int begin_z = z * 4;
+		int begin_y = y * 4;					// begin_y determines the offset inside a slice to begin with. For instance, the chunk with a UniqueKey of 0, 1, 0 begins at bit 5 (4 bits per chunk).
+		int begin_z = z * 4;					// begin_z determines the current slice to use 
 		int unveil_y_location = 0;				// for location on the y axis inside the unveil meta return value
-		int unveil_z_location = 0;
+		int unveil_z_location = 0;				// for location on the z axis inside the unveil meta return value
 		int slice_1 = begin_z;
-		for (int aa = slice_1; aa < (slice_1 + 4); aa++)
+		for (int aa = slice_1; aa < (slice_1 + 4); aa++)	// loop for slice_1 increments
 		{
 			unveil_y_location = 0;
-			for (int bb = begin_y; bb < (begin_y + 4); bb++)
+			for (int bb = begin_y; bb < (begin_y + 4); bb++)	// loop for all 4 bits on the y-axis
 			{
-				int bitmaskshifter = 1;
+				int bitmaskshifter = 1;			// reset the bitmask
 				bitmaskshifter <<= bb;			// shifts it to the left, up to 31 times.
 				if (
-					((originBlueprint->WestBorderBlocks.faceflagarray[aa] & bitmaskshifter) == bitmaskshifter)		// check if the slice at aa (in this case, slices going along the z axis south) has a flag set that matches the bitmaskshifter
+					((originBlueprint->WestBorderBlocks.faceflagarray[aa] & bitmaskshifter) == bitmaskshifter)		// check if the slice at aa (in this case, slices going along the z axis, going south (+z)) 
+																													// has a flag set that matches the bitmaskshifter (which represents the y-bit, so bit 32 = 32nd block)
 					&&
 					((comparedBlueprint->EastBorderBlocks.faceflagarray[aa] & bitmaskshifter) != bitmaskshifter)	// ...now compare it to the east face of the neighboring blueprint at that same point. If it is not equal, than the block is not being rendered at the border, and we 
 																													// may now reveal the east face of the block at this location.			
 					)
 				{
-
-					//std::cout << "----hit! (" << bb << ") " << unveil_y_location << " " << unveil_z_location  << std::endl;
-					returnMeta.EnclaveBlockLocation[unveil_y_location][unveil_z_location] = BlockKeyToSingle(0, unveil_y_location, unveil_z_location);
-					returnMeta.BlockFacesToRender[unveil_y_location][unveil_z_location] = 32;
-					returnMeta.UnveilFlag[unveil_y_location][unveil_z_location] = 1;
-					returnMeta.numberOfBlocks++;
+					returnMeta.EnclaveBlockLocation[unveil_y_location][unveil_z_location] = BlockKeyToSingle(0, unveil_y_location, unveil_z_location);	// convert the location at y/z in the array, to a corresponding  single value
+					returnMeta.BlockFacesToRender[unveil_y_location][unveil_z_location] = 32;						// set west (32) block faces to render,  									
+					returnMeta.UnveilFlag[unveil_y_location][unveil_z_location] = 1;								// set the block for flagging
 				}
-				unveil_y_location++;
+				unveil_y_location++;	// loop increment
 			}
-			unveil_z_location++;
+			unveil_z_location++;	// loop increment
 		}
 	}
 
 	else if (directionOfNeighbor == 16) // neighbor is to the north
 	{
-		int begin_y = y * 4;
-		int begin_x = x * 4;
-		int unveil_y_location = 0;
-		int unveil_x_location = 0;
+		int begin_y = y * 4;					// begin_y determines the offset inside a slice to begin with. For instance, the chunk with a UniqueKey of 0, 1, 0 begins at bit 5 (4 bits per chunk). 
+		int begin_x = x * 4;					// begin_x determines the current slice to use 
+		int unveil_y_location = 0;				// for location on the y axis inside the unveil meta return value
+		int unveil_x_location = 0;				// for location on the z axis inside the unveil meta return value
 		int slice_1 = begin_x;
-		for (int aa = slice_1; aa < (slice_1 + 4); aa++)
+		for (int aa = slice_1; aa < (slice_1 + 4); aa++)	// loop for slice_1 increments
 		{
 			unveil_y_location = 0;
-			for (int bb = begin_y; bb < (begin_y + 4); bb++)
+			for (int bb = begin_y; bb < (begin_y + 4); bb++)	// loop for all 4 bits on the y-axis
 			{
-				int bitmaskshifter = 1;
-				bitmaskshifter <<= bb;
+				int bitmaskshifter = 1;			// reset the bitmask
+				bitmaskshifter <<= bb;			// shifts it to the left, up to 31 times.
 				if (
-					((originBlueprint->NorthBorderBlocks.faceflagarray[aa] & bitmaskshifter) == bitmaskshifter)
-					&&
-					((comparedBlueprint->SouthBorderBlocks.faceflagarray[aa] & bitmaskshifter) != bitmaskshifter)
-
+					((originBlueprint->NorthBorderBlocks.faceflagarray[aa] & bitmaskshifter) == bitmaskshifter)		// check if the slice at aa (in this case, slices going along the x axis, going east (+x)) 
+																													// has a flag set that matches the bitmaskshifter (which represents the y-bit, so bit 32 = 32nd block)
+					&&																								
+					((comparedBlueprint->SouthBorderBlocks.faceflagarray[aa] & bitmaskshifter) != bitmaskshifter)	// ...now compare it to the south face of the neighboring blueprint at that same point. If it is not equal, than the block is not being rendered at the border, and we
+																													// may now reveal the south face of the block at this location.			
 					)
 				{
-					returnMeta.EnclaveBlockLocation[unveil_y_location][unveil_x_location] = BlockKeyToSingle(unveil_x_location, unveil_y_location, 0);
-					returnMeta.BlockFacesToRender[unveil_y_location][unveil_x_location] = 16;
-					returnMeta.UnveilFlag[unveil_y_location][unveil_x_location] = 1;
-					returnMeta.numberOfBlocks++;
+					returnMeta.EnclaveBlockLocation[unveil_y_location][unveil_x_location] = BlockKeyToSingle(unveil_x_location, unveil_y_location, 0);	// convert the location at x/y in the array, to a corresponding  single value
+					returnMeta.BlockFacesToRender[unveil_y_location][unveil_x_location] = 16;						// set north (16) block faces to render,  
+					returnMeta.UnveilFlag[unveil_y_location][unveil_x_location] = 1;								// set the block for flagging
 				}
-				unveil_y_location++;
+				unveil_y_location++;	// loop increment
 			}
-			unveil_x_location++;
+			unveil_x_location++;	// loop increment
 		}
 	}
 
 	else if (directionOfNeighbor == 8) // neighbor is to the east
 	{
-		int begin_y = y * 4;
-		int begin_z = z * 4;
-		int unveil_y_location = 0;				// for location on the y axis inside the unveil meta return value
-		int unveil_z_location = 0;
-
+		int begin_y = y * 4;					// begin_y determines the offset inside a slice to begin with. For instance, the chunk with a UniqueKey of 0, 1, 0 begins at bit 5 (4 bits per chunk).
+		int begin_z = z * 4;					// begin_z determines the current slice to use 
+		int unveil_y_location = 0;				// for location on the y axis inside the unveil meta return value// for location on the y axis inside the unveil meta return value
+		int unveil_z_location = 0;				// for location on the z axis inside the unveil meta return value
 		int slice_1 = begin_z;
-		for (int aa = slice_1; aa < (slice_1 + 4); aa++)
+		for (int aa = slice_1; aa < (slice_1 + 4); aa++)	// loop for slice_1 increments
 		{
 			unveil_y_location = 0;
-			for (int bb = begin_y; bb < (begin_y + 4); bb++)
+			for (int bb = begin_y; bb < (begin_y + 4); bb++)	// loop for all 4 bits on the y-axis
 			{
-				int bitmaskshifter = 1;
+				int bitmaskshifter = 1;			// reset the bitmask
 				bitmaskshifter <<= bb;			// shifts it to the left, up to 31 times.
 				if (
-					((originBlueprint->EastBorderBlocks.faceflagarray[aa] & bitmaskshifter) == bitmaskshifter)		// check if the slice at aa (in this case, slices going along the z axis south) has a flag set that matches the bitmaskshifter
+					((originBlueprint->EastBorderBlocks.faceflagarray[aa] & bitmaskshifter) == bitmaskshifter)		// check if the slice at aa (in this case, slices going along the z axis, going south (+z)) 
+																													// has a flag set that matches the bitmaskshifter (which represents the y-bit, so bit 32 = 32nd block)
 					&&
 					((comparedBlueprint->WestBorderBlocks.faceflagarray[aa] & bitmaskshifter) != bitmaskshifter)	// ...now compare it to the west face of the neighboring blueprint at that same point. If it is not equal, than the block is not being rendered at the border, and we 
 																													// may now reveal the east face of the block at this location.			
 					)
 				{
-					
-					//std::cout << "----hit! (" << bb << ") " << unveil_y_location << " " << unveil_z_location  << std::endl;
-					returnMeta.EnclaveBlockLocation[unveil_y_location][unveil_z_location] = BlockKeyToSingle(3, unveil_y_location, unveil_z_location);
-					returnMeta.BlockFacesToRender[unveil_y_location][unveil_z_location] = 8;
-					returnMeta.UnveilFlag[unveil_y_location][unveil_z_location] = 1;
-					returnMeta.numberOfBlocks++;
+					returnMeta.EnclaveBlockLocation[unveil_y_location][unveil_z_location] = BlockKeyToSingle(3, unveil_y_location, unveil_z_location);	// convert the location at y/z in the array, to a corresponding  single value
+					returnMeta.BlockFacesToRender[unveil_y_location][unveil_z_location] = 8;						// set east (8) block faces to render,  		
+					returnMeta.UnveilFlag[unveil_y_location][unveil_z_location] = 1;								// set the block for flagging
 				}
-				unveil_y_location++;
+				unveil_y_location++;	// loop increment
 			}
-			unveil_z_location++;
-		}
+			unveil_z_location++;	// loop increment
+		}	
 
 
 
@@ -372,6 +355,34 @@ EnclaveUnveilMeta EnclaveCollectionBlueprint::ReturnBorderChunkFacesToRender(int
 
 	else if (directionOfNeighbor == 4)	// neighbor is to the south
 	{
+		int begin_y = y * 4;					// begin_y determines the offset inside a slice to begin with. For instance, the chunk with a UniqueKey of 0, 1, 0 begins at bit 5 (4 bits per chunk).
+		int begin_x = x * 4;					// begin_x determines the current slice to use 
+		int unveil_y_location = 0;				// for location on the y axis inside the unveil meta return value
+		int unveil_x_location = 0;				// for location on the z axis inside the unveil meta return value
+		int slice_1 = begin_x;
+		for (int aa = slice_1; aa < (slice_1 + 4); aa++)	// loop for slice_1 increments
+		{
+			unveil_y_location = 0;
+			for (int bb = begin_y; bb < (begin_y + 4); bb++)	// loop for all 4 bits on the y-axis
+			{
+				int bitmaskshifter = 1;
+				bitmaskshifter <<= bb;
+				if (
+					((originBlueprint->SouthBorderBlocks.faceflagarray[aa] & bitmaskshifter) == bitmaskshifter)		// check if the slice at aa (in this case, slices going along the x axis, going east (+x)) 
+					&&																								// has a flag set that matches the bitmaskshifter (which represents the y-bit, so bit 32 = 32nd block)
+
+					((comparedBlueprint->NorthBorderBlocks.faceflagarray[aa] & bitmaskshifter) != bitmaskshifter)	// ...now compare it to the south face of the neighboring blueprint at that same point. If it is not equal, than the block is not being rendered at the border, and we
+																													// may now reveal the south face of the block at this location.			
+					)																								
+				{
+					returnMeta.EnclaveBlockLocation[unveil_y_location][unveil_x_location] = BlockKeyToSingle(unveil_x_location, unveil_y_location, 3);	// convert the location at x/y in the array, to a corresponding  single value
+					returnMeta.BlockFacesToRender[unveil_y_location][unveil_x_location] = 4;						// set north (16) block faces to render,  
+					returnMeta.UnveilFlag[unveil_y_location][unveil_x_location] = 1;								// set the block for flagging
+				}
+				unveil_y_location++;	// loop increment
+			}
+			unveil_x_location++;	// loop increment
+		}
 
 	}
 
@@ -390,8 +401,10 @@ EnclaveUnveilMeta EnclaveCollectionBlueprint::ReturnBorderChunkFacesToRender(int
 
 void EnclaveCollectionBlueprint::SetBorderBlockFlags(int direction, int slice, int slice_offset)
 {
-	// do modifications for west
+	
 	int initial_offset = 1;
+
+	// do modifications for west
 	if (direction == 32)
 	{
 		initial_offset <<= slice_offset;
@@ -399,11 +412,25 @@ void EnclaveCollectionBlueprint::SetBorderBlockFlags(int direction, int slice, i
 		//std::cout << "west blocks set: " << WestBorderBlocks.faceflagarray[slice];
 	}
 
+	// do modifications for north
+	if (direction == 16)
+	{
+		initial_offset <<= slice_offset;
+		NorthBorderBlocks.faceflagarray[slice] = NorthBorderBlocks.faceflagarray[slice] | initial_offset;
+	}
+
 	// do modifications for east
 	if (direction == 8)
 	{
 		initial_offset <<= slice_offset;
 		EastBorderBlocks.faceflagarray[slice] = EastBorderBlocks.faceflagarray[slice] | initial_offset;
+	}
+
+	// do modifications for south
+	if (direction == 4)
+	{
+		initial_offset <<= slice_offset;
+		SouthBorderBlocks.faceflagarray[slice] = SouthBorderBlocks.faceflagarray[slice] | initial_offset;
 	}
 }
 

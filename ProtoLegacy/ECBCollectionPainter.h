@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------------------------------
 
---ECBCollectionPainter.h		(Last update 9/1/2017)
+--ECBCollectionPainter.h		(Last update 9/15/2017)
 
 Description: Header file for ECBCollectionPainter
 
@@ -16,8 +16,8 @@ Summary: An ECbCollectionPainter will paint all blocks in all marked Enclaves ex
 class ECBCollectionPainter
 {
 public:
-	int blockID = 0;
-	unsigned char chunksToPaint[8][8] = { 0 };
+	int blockID = 0;								// the ID of the block to be painted
+	unsigned char chunksToPaint[8][8] = { 0 };		// the chunks to paint; each bit in the byte array represents a point on the y-axis. first bit = y at 0, second bit is y at 1, etc.
 };
 
 #endif

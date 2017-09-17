@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------------------------------
 
---OrganicGLManager.h	(Last Update: 8/20/2017)
+--OrganicGLManager.h	(Last Update: 9/15/2017)
 
 Description: header file for OrganicGLManager.cpp
 
@@ -39,7 +39,7 @@ public:
 	GLuint OrganicGLVertexColorBufferID;										// OpenGL: pointer/handle to the vertex color buffer handler (single buffer)
 	GLuint OrganicGLVertexBufferArray[10];										// OpenGL: array of potential buffers
 	GLuint OrganicMVPHandle;													// OpenGL: pointer/handle to the MVP matrix result
-	OGLMBufferManager OrganicBufferManager;
+	OGLMBufferManager OrganicBufferManager;										// the instance of OGLMBufferManager that this OrganicGLManager object will use
 	GLfloat *OrganicGLarrayPTR;													// (temporary) OpenGL: used to point to a dynamic array containing vertex data
 	//const int CollectionBufferSize = 1024 * 1024;								// the size of the data buffer for each RenderCollection; 
 	const int CollectionBufferSize = 589824;										//alternate = 73728   , 147456, 294912, 589824, 1179648
@@ -64,16 +64,16 @@ public:
 
 	OrganicGLManager();
 
-	void SetupBufferManagerArrays(int in_cubesize);
+	void SetupBufferManagerArrays(int in_cubesize);								// sets up buffers based on the passed cube size
 	void InitializeOpenGL();													// prepares OpenGL for future use; set up OpenGL context, prepare buffers etc
-	void RenderReadyArrays();
-	void ShutdownOpenGL();
-	void computeMatricesFromInputs();
-	void sendRenderCollectionDataToBuffer(RenderCollection *renderCollPtr);
-	void sendRenderCollectionVCDataToBuffer(RenderCollection *renderCollPtr);
-	void SendPointerToBufferManager(OrganicGLManager* in_OGLMptr);
-	void PrepBuffersForMoveNW();
-	void selectShader();
+	void RenderReadyArrays();													// renders whatever render collections have been prepared for rendering, to the screen
+	void ShutdownOpenGL();														// unbind buffers, etc
+	void computeMatricesFromInputs();											// determines how to move the camera based on user input
+	void sendRenderCollectionDataToBuffer(RenderCollection *renderCollPtr);		// sends a prepared instance of RenderCollection which has vertex point data to OpenGL buffers
+	void sendRenderCollectionVCDataToBuffer(RenderCollection *renderCollPtr);	// sends a prepared instance of RenderCollection which has vertex color point data to OpenGL buffers
+	void SendPointerToBufferManager(OrganicGLManager* in_OGLMptr);				// sends this own object's pointer to the instance of OGLMBufferManager (OrganicBufferManager)
+	void PrepBuffersForMoveNW();												// reserved for later use (will "move" buffers around)
+	void selectShader();														// selects the appropriate shader program based on the render mode
 };
 
 #endif

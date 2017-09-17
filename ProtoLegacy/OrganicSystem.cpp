@@ -17,9 +17,9 @@ OrganicSystem::OrganicSystem(int numberOfFactories, int bufferCubeSize)
 	/* Summary: default constructor for the OrganicSystem */
 	InterlockBaseCollections();
 	AllocateFactories(numberOfFactories);			// setup the factories
-	OrganicGLManager* tempGLManagerPtr = &OGLM;
-	OGLM.SendPointerToBufferManager(tempGLManagerPtr);
-	OGLM.SetupBufferManagerArrays(bufferCubeSize);	// setup the buffer manager
+	OrganicGLManager* tempGLManagerPtr = &OGLM;			// get a pointer to the OrganicSystem's OGLM instance, and set the reference.
+	OGLM.SendPointerToBufferManager(tempGLManagerPtr);	// send the pointer to the buffer manager, so that it may use it to set up its buffer arrays
+	OGLM.SetupBufferManagerArrays(bufferCubeSize);		// setup the buffer manager's arrays
 }
 
 void OrganicSystem::InterlockBaseCollections()
@@ -1136,6 +1136,7 @@ void OrganicSystem::AllocateFactories(int noOfFactories)
 		//cout << "Factory: " << factory << endl;
 		//OrganicFactoryIndex.FactoryMap["Factory 1"].StorageArray[0].VertexArrayCount = 0;
 		OrganicFactoryIndex.FactoryMap[factory].StorageArray[0].VertexArrayCount = 0;
+		OrganicFactoryIndex.FactoryMap[factory].InsertEnclaveCollectionIntoFactory();
 	}
 	auto factoryend = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> factorytime = factoryend - factorystart;
@@ -1257,15 +1258,6 @@ void OrganicSystem::MaterializeRenderablesByMM()
 
 	std::mutex mutexval;
 
-	OrganicFactoryIndex.FactoryMap["Factory 1"].StorageArray[0].VertexArrayCount = 0;
-	EnclaveManifestFactoryT1 *FactoryPtr = &OrganicFactoryIndex.FactoryMap["Factory 1"];
-	FactoryPtr->TextureDictionaryRef = &TextureDictionary;
-	FactoryPtr->VertexColorDictionaryRef = &VertexColorDictionary;
-
-	OrganicFactoryIndex.FactoryMap["Factory 2"].StorageArray[0].VertexArrayCount = 0;
-	EnclaveManifestFactoryT1 *FactoryPtr2 = &OrganicFactoryIndex.FactoryMap["Factory 2"];
-	FactoryPtr2->TextureDictionaryRef = &TextureDictionary;
-	FactoryPtr2->VertexColorDictionaryRef = &VertexColorDictionary;
 
 	MDListJobMaterializeCollection* list1 = &MatCollList.MaterializeCollectionList.front();
 	MDListJobMaterializeCollection* list2 = &MatCollList.MaterializeCollectionList.back();

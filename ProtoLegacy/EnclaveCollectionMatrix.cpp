@@ -1018,7 +1018,8 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 	// Step Two: determine what borders of this blueprint must be rendered, by comparing to borders in neighboring blueprints
 	EnclaveCollectionBorderFlags borderFlags;											// contains west, north, east, south, top, bottom flags. 
 	EnclaveCollectionBorderFlags* borderFlagsRef = &borderFlags;						// get pointer to borderFlags
-	EnclaveCollectionNeighborList neighborList = blueprintmatrix->DetermineBlueprintBordersToRender(Key, blueprint, borderFlagsRef);	// check this blueprint's neighbors
+	EnclaveCollectionNeighborList neighborList = blueprintmatrix->DetermineBlueprintBordersToRender(Key, blueprint, borderFlagsRef);	// check this blueprint's neighbors; return a list that contains the appropriate pointers (so that we don't have to contantly 
+																																		// look up the results)
 
 
 
@@ -1051,8 +1052,6 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 	}
 
 	// Step Four: unveil all polys in border chunks	
-
-	
 	// a flag of one indicates that there is no bordering collection on that side (i.e., West = 1 means there is no collection to render that is West of this collection)
 	if (borderFlags.West == 1)
 	{
@@ -1138,12 +1137,6 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 			chunkbitmask <<= 1;
 		}
 	}
-	
-	//if (Key.x == 0 && Key.y == 0 && Key.z == 0)
-	//{
-		//Enclave testEnclavePtr = collectionRef.EnclaveArray[2][1][0];
-		//cout << "TEST3: (after border set 2)" << testEnclavePtr->GetTotalTrianglesInEnclave() << endl;
-	//}
 
 	auto finish = std::chrono::high_resolution_clock::now();
 

@@ -101,6 +101,11 @@ void EnclaveManifestFactoryT1::AttachManifestToEnclave(Enclave *in_ptr)
 	//cout << "VertexArrayCount: " << somedumbval << endl;
 }
 
+void EnclaveManifestFactoryT1::InsertEnclaveCollectionIntoFactory()
+{
+	FactoryCollections[1].totalRenderableEnclaves = 0;
+}
+
 void EnclaveManifestFactoryT1::SetEnclaveCollectionPtr(EnclaveCollection *InPtr)
 {
 

@@ -19,7 +19,7 @@ void OGLMBufferManager::SetCubesize(int inCubesize)
 
 void OGLMBufferManager::GenerateArrays()
 {
-	// all arrays must be initialized with one dimension	(change "bufferable element" to something more reasonable later (9/8/2017))
+	// all arrays must be initialized with one dimension	(change "bufferable element" term to something more reasonable later (9/8/2017))
 	BufferOffsetMatrixArray = new int[cubesize*cubesize*cubesize];		// stores the exact start position in the buffer for each bufferable element
 	RenderCollectionMatrixArray = new int[cubesize*cubesize*cubesize];	// stores the individual "locations" ("sub-bufffers") for each bufferable element
 	RenderableBufferList = new int[cubesize*cubesize*cubesize];			// a sorted list of renderable bufferable elements
@@ -33,7 +33,7 @@ void OGLMBufferManager::GenerateArrays()
 			{
 				int currentBufferElement = translateXYZToSingle(x, y, z);
 				RenderCollectionMatrixArray[currentBufferElement] = currentBufferElement;	
-				BufferOffsetMatrixArray[currentBufferElement] = (currentBufferElement*OGLMPtr->CollectionBufferSize);
+				BufferOffsetMatrixArray[currentBufferElement] = (currentBufferElement*OGLMPtr->CollectionBufferSize);		// buffer offset will be equal to the value of the OGLMPtr's collection buffer size
 				//std::cout << "test: " << RenderCollectionMatrixArray[currentBufferElement] << " : " << BufferOffsetMatrixArray[currentBufferElement] << std::endl;
 			}
 		}

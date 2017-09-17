@@ -16,7 +16,7 @@ Description: Contains 6 instances of OrganicFaceMeta; this all comes together as
 class OrganicBlockMeta
 {
 public:
-	OrganicFaceMeta FaceIndex[6];
+	OrganicFaceMeta FaceIndex[6];	// one face for each direction: west (32), north (16), east (8), south (4), top (2), bottom (1)
 };
 
 #endif
