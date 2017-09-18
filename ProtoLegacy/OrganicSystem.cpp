@@ -1007,6 +1007,17 @@ void OrganicSystem::JobMaterializeMultiCollectionFromFactory2(MDListJobMateriali
 	mutexval.unlock();
 }
 
+void OrganicSystem::JobCalibrateBlueprintBordersFromFactory(EnclaveKeyDef::EnclaveKey Key1, EnclaveManifestFactoryT1 *FactoryRef)
+{
+	EnclaveCollectionBlueprint* blueprintPtr = &BlueprintMatrix.BlueprintMap[Key1];						// set a pointer to the appropriate blueprint
+	EnclaveCollectionBlueprintMatrix* blueprintMatrixPtr = &BlueprintMatrix;
+	EnclaveCollection* collectionPtr = FactoryRef->EnclaveCollectionPtr;								// get the pointer to the appropriate collection in the factory
+
+	collectionPtr->SetupEnclaveDataFromSingleBlueprint(Key1, blueprintPtr, blueprintMatrixPtr);									// populate the enclave based on the blueprint
+	blueprintPtr->CalibrateBlueprintBorders(collectionPtr);
+
+}
+
 void OrganicSystem::DummyJob(int value, EnclaveManifestFactoryT1 *FactoryRef, mutex& mutexval)
 {
 	auto dummystart = std::chrono::high_resolution_clock::now();

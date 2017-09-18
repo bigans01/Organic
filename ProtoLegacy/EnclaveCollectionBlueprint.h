@@ -24,7 +24,7 @@ and has the ability to store EnclavePainters, which have the ability to change t
 #include <string>
 #include <vector>
 
-
+class EnclaveCollection;
 class EnclaveCollectionBlueprint {
 
 public:
@@ -70,6 +70,7 @@ public:
 													 EnclaveCollectionBlueprint* originBlueprint, 
 													 EnclaveCollectionBlueprint* comparedBlueprint, 
 													 int directionOfNeighbor);
+	void CalibrateBlueprintBorders(EnclaveCollection* collectionPtr);
 	void SetBorderBlockFlags(int direction, int slice, int slice_offset);		// sets the border block flags, which are integers where each bit represents a single block on either the x, y, or z axis. 
 	void DetermineBorderWall(int direction, int valuearray[32]);				// sets up the border wall for any given direction.
 

@@ -331,6 +331,7 @@ int main()
 	Organic.AddOrganicTextureMetaArray("base");					// set up the texture map; first ever map will be named "base"
 	Organic.AddOrganicVtxColorMetaArray("base");
 
+	
 	// add first 4 keys to render
 	
 	/*
@@ -402,6 +403,15 @@ int main()
 	std::chrono::duration<double> collectionsSetupELAPSED = collectionsSetupEND - collectionsSetupBEGIN;
 	//std::cout << "Elapsed time (Multiple collection instantiation): " << collectionsSetupELAPSED.count() << endl;
 	
+
+	EnclaveKeyDef::EnclaveKey calibrateKey;
+	calibrateKey.x = 0;
+	calibrateKey.y = 0;
+	calibrateKey.z = 0;
+	EnclaveManifestFactoryT1* factoryRef;
+	factoryRef = &Organic.OrganicFactoryIndex.FactoryMap["Factory 1"];
+	Organic.JobCalibrateBlueprintBordersFromFactory(calibrateKey, factoryRef);
+
 
 	/*
 	// vertical blueprints

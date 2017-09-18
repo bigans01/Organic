@@ -28,7 +28,7 @@ class EnclaveCollectionBlueprintMatrix
 		std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveCollectionBlueprint, EnclaveKeyDef::KeyHasher> BlueprintMap;
 		EnclaveCollectionNeighborList DetermineBlueprintBordersToRender(EnclaveKeyDef::EnclaveKey blueprintKey,				// this function determines which blueprints exist next to this one.
 																	    EnclaveCollectionBlueprint* originBlueprint, 
-																		EnclaveCollectionBorderFlags* borderFlagsPtr);
+																		EnclaveCollectionBorderFlags* borderFlagsPtr, int mode);
 };
 
 #endif

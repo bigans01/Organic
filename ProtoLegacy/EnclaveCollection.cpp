@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include <stdio.h>
 #include "EnclaveCollection.h"
+#include "EnclaveCollectionBlueprintMatrix.h"
 
 typedef unsigned char(&ElevationMapRef)[8][8];
 void EnclaveCollection::ActivateEnclaveForRendering(EnclaveKeyDef::EnclaveKey Key)
@@ -31,6 +32,90 @@ void EnclaveCollection::ActivateEnclaveForRendering(EnclaveKeyDef::EnclaveKey Ke
 void EnclaveCollection::ResetTotalRenderableEnclaves()
 {
 	totalRenderableEnclaves = 0;
+}
+
+void EnclaveCollection::SetupEnclaveDataFromSingleBlueprint(EnclaveKeyDef::EnclaveKey Key1, EnclaveCollectionBlueprint* blueprint, EnclaveCollectionBlueprintMatrix* BlueprintMatrixRef)
+{
+	int chunkbitmask = 1;																				// set initial value of bitmask to be 128 (which is the top chunk)
+	int stdchunkbitmask = 1;
+	int chunkindex = 7;
+	EnclaveCollectionActivateListT2 activateList;
+	typedef unsigned char(&ElevationMapRef)[8][8];
+	ElevationMapRef solidChunk = blueprint->GetSolidChunkData();							// ?? better optimized? unknown. compare to declaring outside of loop (7/18/2017)
+	ElevationMapRef customPaintableChunk = blueprint->GetCustomPaintableChunkData();		// custom chunk data
+	ElevationMapRef standardPaintableChunk = blueprint->GetStandardPaintableChunkData();	// standard chunk data
+
+	// Step One: perform collection-wide painting (required)
+	RunCollectionPainters(blueprint);
+
+	// Step Two: set up border meta data (data will not be compared to neighbors; only setting up data for isolated blueprint)
+	EnclaveCollectionBorderFlags borderFlags;		// border flags default to 1, no need to set to 1 for all sides
+
+	EnclaveCollectionBorderFlags* borderFlagsRef = &borderFlags;						// get pointer to borderFlags
+	EnclaveCollectionNeighborList neighborList = BlueprintMatrixRef->DetermineBlueprintBordersToRender(Key1, blueprint, borderFlagsRef, 1);	// check this blueprint's neighbors (using mode 1); return a list that contains the appropriate pointers (so that we don't have to contantly 
+																																			// look up the results)
+																																			// Step Three: prepare all solid chunks
+	for (int x = 0; x < 8; x++)
+	{
+		int actualmask = 0;
+		chunkbitmask = 1;
+		for (int y = 0; y < 8; y++)
+		{
+			for (int z = 0; z < 8; z++)
+			{
+				if ((solidChunk[x][z] & chunkbitmask) == chunkbitmask)
+				{
+					//cout << x << " " << z << " " << chunkbitmask  << " HIT 1" << endl;
+					Enclave stackEnclave(Key1, x, y, z);
+					EnclaveArray[x][y][z] = stackEnclave;
+					EnclaveArray[x][y][z].InitializeRenderArray(1);				// setup this solid enclave
+				}
+			}
+			chunkbitmask <<= 1;
+			actualmask++;
+		}
+	}
+
+	SetWestBorder(standardPaintableChunk, std::ref(activateList));		// set up west border -- using the standardPaintableChunk; 
+	cout << "ref test: " << int(standardPaintableChunk[0][0]) << endl;
+	cout << "---------test blueprint call---------" << endl;
+	cout << "triangle count test: (1)" << EnclaveArray[0][5][0].GetTotalTrianglesInEnclave() << endl;
+	SetNorthBorder(standardPaintableChunk, std::ref(activateList));		// set up north border -- using the standardPaintableChunk; 
+	cout << "triangle count test: (2)" << EnclaveArray[0][5][0].GetTotalTrianglesInEnclave() << endl;
+	//cout << "triangle count test: (2)" << EnclaveArray[0][5][0].TotalRenderable << endl;
+	SetEastBorder(standardPaintableChunk, std::ref(activateList));		// set up east border -- using the standardPaintableChunk; 
+	SetSouthBorder(standardPaintableChunk, std::ref(activateList));		// set up south border -- using the standardPaintableChunk; 
+
+	cout << "triangle count test: (3)" << EnclaveArray[0][6][0].TotalRenderable << endl;
+	for (int x = 0; x < 8; x++)
+	{
+		chunkbitmask = 1;
+		for (int y = 0; y < 8; y++)
+		{
+			for (int z = 0; z < 8; z++)
+			{
+				// Render customized chunks here
+				if ((customPaintableChunk[x][z] & chunkbitmask) == chunkbitmask)
+				{
+					EnclaveKeyDef::EnclaveKey currentKey;
+					currentKey.x = x;
+					currentKey.y = y;
+					currentKey.z = z;
+					//cout << "custom key value: " << currentKey.x << ", " << currentKey.y << ", " << currentKey.z << endl;
+					EnclaveUnveilMeta currentMeta = blueprint->SetupCarvePlan(currentKey);		// use the carve plan to determine the exact x/y/z chunk coords of each block to render
+					EnclaveArray[x][y][z].UnveilMultipleAndNotifyNeighbors(currentMeta, borderFlagsRef, customPaintableChunk, this, neighborList, 0); // 0 = go -y direction
+					//activateListRef.flagArray[x][z] = activateListRef.flagArray[x][z] | chunkbitmask;
+					
+				}
+			}
+			chunkbitmask <<= 1;
+		}
+	}
+
+	//cout << "---------test blueprint call---------" << endl;
+	//cout << "triangle count test: (4)" << EnclaveArray[0][6][0].TotalRenderable << endl;
+	cout << "triangle count test: (4)" << EnclaveArray[0][6][0].GetTotalTrianglesInEnclave() << endl;
+
 }
 
 Enclave& EnclaveCollection::GetEnclaveByKey(EnclaveKeyDef::EnclaveKey InKey)
@@ -149,6 +234,10 @@ void EnclaveCollection::SetNorthBorder(ElevationMapRef elevationMapCopy, Enclave
 
 			if ((elevationMapCopy[x][0] & stdchunkbitmask) == stdchunkbitmask)
 			{
+				//if (x == 0 && bitloop == 5)
+				//{
+					//cout << "hit test: " << x << endl;
+				//}
 				// cout << "valid enclave key: " << x << ", " << bitloop << ", " << 0 << endl;
 				// set 16 blocks to have their North face flagged (16)
 				//cout << "chunkbitmask: " << stdchunkbitmask << endl;

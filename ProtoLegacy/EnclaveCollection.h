@@ -22,6 +22,7 @@ Dependents: none.
 // activate guards
 #ifndef ENCLAVECOLLECTION_H
 #define ENCLAVECOLLECTION_H
+class EnclaveCollectionBlueprintMatrix;
 class EnclaveCollection {
 public:
 	Enclave EnclaveArray[8][8][8];																							// 8 x 8 x 8 chunks 
@@ -32,6 +33,7 @@ public:
 	void ActivateEnclaveForRendering(EnclaveKeyDef::EnclaveKey Key);														// activates an Enclave in this Collection for rendering, by putting the Enclave's unique key into RenderableEnclaves
 	Enclave& GetEnclaveByKey(EnclaveKeyDef::EnclaveKey InKey);																// returns a direct reference to an Enclave in this collection
 	void ResetTotalRenderableEnclaves();																					// resets the total number of renderable enclaves (designed for Factory usage)
+	void SetupEnclaveDataFromSingleBlueprint(EnclaveKeyDef::EnclaveKey Key1, EnclaveCollectionBlueprint* blueprint, EnclaveCollectionBlueprintMatrix* BlueprintMatrixRef);
 	void SetWestBorder(ElevationMapRef standardMapCopy,  EnclaveCollectionActivateListT2& activateListRef);														// sets all standard chunks on the west border, if there is no neighbor to the west.
 	void SetWestBorder(ElevationMapRef elevationMapCopy, EnclaveCollectionActivateListT2& activateListRef, EnclaveCollectionNeighborList* neighborListPtr);		// sets all standard chunks on the west border, if there is a neighbor to the west.
 	void SetNorthBorder(ElevationMapRef standardMapCopy, EnclaveCollectionActivateListT2& activateListRef);														// North (16)

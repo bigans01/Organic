@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include <stdio.h>
 #include <chrono>
+#include "EnclaveCollection.h"
 #include "EnclaveCollectionBlueprint.h"
 
 typedef unsigned char(&ElevationMapRef)[8][8];
@@ -529,4 +530,11 @@ void EnclaveCollectionBlueprint::FlattenToElevation()
 		}
 	}
 	XAxisCPVector.push_back(tempPlan);
+}
+
+void EnclaveCollectionBlueprint::CalibrateBlueprintBorders(EnclaveCollection* collectionPtr)
+{
+	// begin with west faces (32)
+	
+
 }

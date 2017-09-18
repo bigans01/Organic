@@ -1018,7 +1018,7 @@ void EnclaveCollectionMatrix::JobInstantiateAndPopulateEnclaveAlpha2(int beginRa
 	// Step Two: determine what borders of this blueprint must be rendered, by comparing to borders in neighboring blueprints
 	EnclaveCollectionBorderFlags borderFlags;											// contains west, north, east, south, top, bottom flags. 
 	EnclaveCollectionBorderFlags* borderFlagsRef = &borderFlags;						// get pointer to borderFlags
-	EnclaveCollectionNeighborList neighborList = blueprintmatrix->DetermineBlueprintBordersToRender(Key, blueprint, borderFlagsRef);	// check this blueprint's neighbors; return a list that contains the appropriate pointers (so that we don't have to contantly 
+	EnclaveCollectionNeighborList neighborList = blueprintmatrix->DetermineBlueprintBordersToRender(Key, blueprint, borderFlagsRef, 0);	// check this blueprint's neighbors; return a list that contains the appropriate pointers (so that we don't have to contantly 
 																																		// look up the results)
 
 

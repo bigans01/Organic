@@ -104,6 +104,7 @@ void EnclaveManifestFactoryT1::AttachManifestToEnclave(Enclave *in_ptr)
 void EnclaveManifestFactoryT1::InsertEnclaveCollectionIntoFactory()
 {
 	FactoryCollections[1].totalRenderableEnclaves = 0;
+	EnclaveCollectionPtr = &FactoryCollections[1];
 }
 
 void EnclaveManifestFactoryT1::SetEnclaveCollectionPtr(EnclaveCollection *InPtr)
