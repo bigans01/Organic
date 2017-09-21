@@ -101,6 +101,7 @@ public:
 																RenderCollectionMatrix *RenderCollectionRef, 
 																mutex& mutexval);		
 	void JobCalibrateBlueprintBordersFromFactory(EnclaveKeyDef::EnclaveKey Key1, EnclaveManifestFactoryT1 *FactoryRef);
+	void JobCalibrateBlueprintBordersFromFactory(EnclaveKeyDef::EnclaveKey Key1, EnclaveCollectionBlueprint* inBlueprintPtr, EnclaveManifestFactoryT1 *FactoryRef);
 	void DummyJob(int value, EnclaveManifestFactoryT1 *FactoryRef, mutex& mutexval);																							// dummy thread pool job, for testing only.
 	void SetRenderMode(int x);																																					// sets the RenderMode variable in the OGLM object
 	void RenderGLTerrain();																																						// renders everything in the Terrain buffer

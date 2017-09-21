@@ -271,9 +271,6 @@ void Enclave::UnveilSinglePolyWithMtrl(int x, int y, int z, int in_readorder, in
 						// loop for each bit of in_t1 here
 						total_triangles += GetTotalTrianglesInBlock(in_t1);
 						zeroindexcheck = 1;
-						//cout << "Chunk (" << this->UniqueKey.x << ", " << this->UniqueKey.y << ", " << this->UniqueKey.z << ") Total triangles in chunk so far: " << total_triangles << endl;
-
-
 						break;
 					}
 					else
@@ -283,7 +280,6 @@ void Enclave::UnveilSinglePolyWithMtrl(int x, int y, int z, int in_readorder, in
 						// loop for each bit of in_t1 here
 						total_triangles += GetTotalTrianglesInBlock(in_t1);
 						zeroindexcheck = 1;
-						//cout << "Chunk (" << this->UniqueKey.x << ", " << this->UniqueKey.y << ", " << this->UniqueKey.z << ") Total triangles in chunk so far: " << total_triangles << endl;
 					}
 				}
 				if (OldFlags >= 1)
@@ -297,11 +293,10 @@ void Enclave::UnveilSinglePolyWithMtrl(int x, int y, int z, int in_readorder, in
 						currentmask <<= bitmask;
 						if
 							(
-								(
-									((old_t1_flags & currentmask) != currentmask)
-									&&
-									((StorageArray[x][y][z].t1_flags & currentmask) == currentmask)
-								)
+								((old_t1_flags & currentmask) != currentmask)
+								&&
+								((StorageArray[x][y][z].t1_flags & currentmask) == currentmask)			//	if these conditions are true,it indicates that this polygon face was not previously being rendered, 
+																										//	even though the rest of the polygon may have been-- so increment the triangle count by 2					
 							)
 
 						{
@@ -395,9 +390,6 @@ void Enclave::UnveilSinglePoly(int x, int y, int z, int in_readorder, int in_oth
 						// loop for each bit of in_t1 here
 						total_triangles += GetTotalTrianglesInBlock(in_t1);
 						zeroindexcheck = 1;
-						//cout << "Chunk (" << this->UniqueKey.x << ", " << this->UniqueKey.y << ", " << this->UniqueKey.z << ") Total triangles in chunk so far: " << total_triangles << endl;
-
-
 						break;
 					}
 					else
@@ -407,7 +399,6 @@ void Enclave::UnveilSinglePoly(int x, int y, int z, int in_readorder, int in_oth
 						// loop for each bit of in_t1 here
 						total_triangles += GetTotalTrianglesInBlock(in_t1);
 						zeroindexcheck = 1;
-						//cout << "Chunk (" << this->UniqueKey.x << ", " << this->UniqueKey.y << ", " << this->UniqueKey.z << ") Total triangles in chunk so far: " << total_triangles << endl;
 					}
 				}
 				if (OldFlags >= 1)
@@ -421,11 +412,10 @@ void Enclave::UnveilSinglePoly(int x, int y, int z, int in_readorder, int in_oth
 						currentmask <<= bitmask;
 						if
 						(
-							//((OldFlags & currentmask & currentmask) != currentmask)
 							((old_t1_flags & currentmask) != currentmask)
 							&&
-							((StorageArray[x][y][z].t1_flags & currentmask) == currentmask)
-						)
+							((StorageArray[x][y][z].t1_flags & currentmask) == currentmask)				//	if these conditions are true,it indicates that this polygon face was not previously being rendered, 
+							)																			//	even though the rest of the polygon may have been-- so increment the triangle count by 2					
 						{
 							total_triangles += 2;
 						}

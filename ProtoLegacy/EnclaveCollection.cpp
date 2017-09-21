@@ -77,16 +77,16 @@ void EnclaveCollection::SetupEnclaveDataFromSingleBlueprint(EnclaveKeyDef::Encla
 	}
 
 	SetWestBorder(standardPaintableChunk, std::ref(activateList));		// set up west border -- using the standardPaintableChunk; 
-	cout << "ref test: " << int(standardPaintableChunk[0][0]) << endl;
-	cout << "---------test blueprint call---------" << endl;
-	cout << "triangle count test: (1)" << EnclaveArray[0][5][0].GetTotalTrianglesInEnclave() << endl;
+	//cout << "ref test: " << int(standardPaintableChunk[0][0]) << endl;
+	//cout << "---------test blueprint call---------" << endl;
+	//cout << "triangle count test: (1)" << EnclaveArray[0][5][0].GetTotalTrianglesInEnclave() << endl;
 	SetNorthBorder(standardPaintableChunk, std::ref(activateList));		// set up north border -- using the standardPaintableChunk; 
-	cout << "triangle count test: (2)" << EnclaveArray[0][5][0].GetTotalTrianglesInEnclave() << endl;
+	//cout << "triangle count test: (2)" << EnclaveArray[0][5][0].GetTotalTrianglesInEnclave() << endl;
 	//cout << "triangle count test: (2)" << EnclaveArray[0][5][0].TotalRenderable << endl;
 	SetEastBorder(standardPaintableChunk, std::ref(activateList));		// set up east border -- using the standardPaintableChunk; 
 	SetSouthBorder(standardPaintableChunk, std::ref(activateList));		// set up south border -- using the standardPaintableChunk; 
 
-	cout << "triangle count test: (3)" << EnclaveArray[0][6][0].TotalRenderable << endl;
+	//cout << "triangle count test: (3)" << EnclaveArray[0][6][0].TotalRenderable << endl;
 	for (int x = 0; x < 8; x++)
 	{
 		chunkbitmask = 1;
@@ -114,7 +114,7 @@ void EnclaveCollection::SetupEnclaveDataFromSingleBlueprint(EnclaveKeyDef::Encla
 
 	//cout << "---------test blueprint call---------" << endl;
 	//cout << "triangle count test: (4)" << EnclaveArray[0][6][0].TotalRenderable << endl;
-	cout << "triangle count test: (4)" << EnclaveArray[0][6][0].GetTotalTrianglesInEnclave() << endl;
+	//cout << "triangle count test: (4)" << EnclaveArray[0][6][0].GetTotalTrianglesInEnclave() << endl;
 
 }
 

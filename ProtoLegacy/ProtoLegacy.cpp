@@ -225,9 +225,8 @@ int main()
 	auto carvestart = std::chrono::high_resolution_clock::now();
 
 	// ------------------- flat blueprint settings ----------------------------
-
-	//setting the east wall
 	flatBlueprint.FlattenToElevation();
+	/*
 	int flatEastWall = 0;
 	int flatEastWallBitShift = 1;
 	for (int x = 3; x > 0; x--)
@@ -242,34 +241,11 @@ int main()
 	{
 		flatArrayToPass[x] = flatEastWall;
 	}
-	flatBlueprint.DetermineBorderWall(8, flatArrayToPass);			
-	flatBlueprint.DetermineBorderWall(4, flatArrayToPass);			// south wall
 
-
-
+	*/
 	// ------------------- sloped blueprint settings --------------------------
 	testBlueprint3.CarveSlope();
-	testBlueprint3.SetBorderBlockFlags(32, 0, 24);	// west direction, 1st slice, 24th "floor" (would be first block on y axis in the 7th chunk
-	testBlueprint3.SetBorderBlockFlags(8, 0, 24);  // east direction (8)
-	testBlueprint3.SetBorderBlockFlags(8, 0, 25);  // east direction (8)			// final parametr should be up to 31, no greater.
-	testBlueprint3.SetBorderBlockFlags(8, 0, 29);  // east direction (8)
-	//testBlueprint3.SetBorderBlockFlags(8, 0, 30);
-	//testBlueprint3.SetBorderBlockFlags(8, 0, 31);  // east direction (8)
-	//testBlueprint3.SetBorderBlockFlags(8, 0, 26);  // east direction (8)
-
-	testBlueprint3.SetBorderBlockFlags(32, 1, 24);	// west direction, 1st slice, 24th "floor" (would be first block on y axis in the 7th chunk
-	testBlueprint3.SetBorderBlockFlags(8, 1, 24);  // east direction (8)
-	testBlueprint3.SetBorderBlockFlags(8, 1, 25);  // east direction (8)
-	//testBlueprint3.SetBorderBlockFlags(8, 1, 26);  // east direction (8)
-	//testBlueprint3.SetBorderBlockFlags(8, 1, 27);  // east direction (8)
-	//testBlueprint3.SetBorderBlockFlags(8, 1, 28);  // east direction (8)
-
-
-	testBlueprint3.SetBorderBlockFlags(32, 4, 24);	// west direction, 1st slice, 24th "floor" (would be first block on y axis in the 7th chunk
-	testBlueprint3.SetBorderBlockFlags(8, 4, 24);  // east direction (8)
-	testBlueprint3.SetBorderBlockFlags(8, 4, 25);  // east direction (8)
-	testBlueprint3.SetBorderBlockFlags(8, 4, 26);  // east direction (8)
-
+	/*
 	//cout << "blueprint size: " << sizeof(testBlueprint3) << endl;
 	//auto carveend = std::chrono::high_resolution_clock::now();
 	int setEastWall = 0;
@@ -286,7 +262,8 @@ int main()
 	{
 		arrayToPass1[x] = setEastWall;
 	}
-	testBlueprint3.DetermineBorderWall(8, arrayToPass1);		// set this value for the east wall
+	
+	//testBlueprint3.DetermineBorderWall(8, arrayToPass1);		// set this value for the east wall
 
 	
 
@@ -304,16 +281,16 @@ int main()
 	{
 		arrayToPass2[x] = setWestWall;
 	}
-	testBlueprint3.DetermineBorderWall(32, arrayToPass2);		// set this value for the west wall
+	//testBlueprint3.DetermineBorderWall(32, arrayToPass2);		// set this value for the west wall
 
 	// make north wall values same as west wall (temporary)
-	testBlueprint3.DetermineBorderWall(16, arrayToPass2);
-	testBlueprint3.SetBorderBlockFlags(16, 16, 25);
+	//testBlueprint3.DetermineBorderWall(16, arrayToPass2);
+	//testBlueprint3.SetBorderBlockFlags(16, 16, 25);
 
 	// set south as well
-	testBlueprint3.DetermineBorderWall(4, arrayToPass2);
+	//testBlueprint3.DetermineBorderWall(4, arrayToPass2);
+	*/
 
-	//cout << "blueprint size: " << sizeof(testBlueprint3) << endl;
 	auto carveend = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> carveelapsed = carveend - carvestart;
 	std::cout << "Elapsed time (Carve time): " << carveelapsed.count() << endl;
@@ -331,7 +308,17 @@ int main()
 	Organic.AddOrganicTextureMetaArray("base");					// set up the texture map; first ever map will be named "base"
 	Organic.AddOrganicVtxColorMetaArray("base");
 
-	
+	EnclaveManifestFactoryT1* factoryRef;
+	factoryRef = &Organic.OrganicFactoryIndex.FactoryMap["Factory 1"];
+
+	EnclaveCollectionBlueprint* flatPtr = &flatBlueprint;
+	EnclaveCollectionBlueprint* testBPPtr = &testBlueprint3;
+	EnclaveKeyDef::EnclaveKey newCalibrateKey;
+	newCalibrateKey.x = 0;
+	newCalibrateKey.y = 0;
+	newCalibrateKey.z = 0;
+	Organic.JobCalibrateBlueprintBordersFromFactory(newCalibrateKey, flatPtr, factoryRef);			// single blueprint border calibrations
+	Organic.JobCalibrateBlueprintBordersFromFactory(newCalibrateKey, testBPPtr, factoryRef);
 	// add first 4 keys to render
 	
 	/*
@@ -408,10 +395,13 @@ int main()
 	calibrateKey.x = 0;
 	calibrateKey.y = 0;
 	calibrateKey.z = 0;
-	EnclaveManifestFactoryT1* factoryRef;
-	factoryRef = &Organic.OrganicFactoryIndex.FactoryMap["Factory 1"];
-	Organic.JobCalibrateBlueprintBordersFromFactory(calibrateKey, factoryRef);
 
+
+	auto calibrateBegin = std::chrono::high_resolution_clock::now();
+	//Organic.JobCalibrateBlueprintBordersFromFactory(calibrateKey, factoryRef);
+	auto calibrateEnd = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> calibrateELAPSED = calibrateEnd - calibrateBegin;
+	std::cout << "Elapsed time (Blueprint calibration): " << calibrateELAPSED.count() << endl;
 
 	/*
 	// vertical blueprints

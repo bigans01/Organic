@@ -2,8 +2,10 @@
 #include <stdio.h>
 #include <chrono>
 #include "EnclaveCollection.h"
+//#include "Enclave.h"
 #include "EnclaveCollectionBlueprint.h"
 
+//class Enclave;
 typedef unsigned char(&ElevationMapRef)[8][8];
 void EnclaveCollectionBlueprint::SetSurfaceChunkData(ElevationMapRef surfaceChunk)
 {
@@ -534,7 +536,194 @@ void EnclaveCollectionBlueprint::FlattenToElevation()
 
 void EnclaveCollectionBlueprint::CalibrateBlueprintBorders(EnclaveCollection* collectionPtr)
 {
-	// begin with west faces (32)
+	//cout << "calibrate call!" << endl;
+	//cout << "before any editing done: " << WestBorderBlocks.faceflagarray[0] << endl;
+	
+	int current_x_slice;
+	int current_z_slice;
+	int current_y_offset;
+
+	// begin with west faces (32)	-------------------------------------------------------------------------------------------------------------------
+	for (int z = 0; z < 8; z++)			// start with z 
+	{
+		for (int y = 0; y < 8; y++)		// iterate through y for each z
+		{
+			Enclave* enclavePtr = &collectionPtr->EnclaveArray[0][y][z];
+			current_z_slice = 4;					// always reset to 4
+			current_z_slice = current_z_slice * z;	// will be 4 * 0 (for slices for z = 0), 4 * 1 (for slices for z = 1), etc...
+
+			current_y_offset = 4;
+			current_y_offset = current_y_offset * y;
+			int beginbit = 1;
+			int bitshift = current_y_offset;
+			//for (int zz = 0; zz < 4; zz++)
+			//{
+			//	for (int yy = 0; yy < 4; yy++)
+			//	{
+
+				//}
+			//	current_z_slice++;
+			//}
+			int totalPolys = enclavePtr->TotalRenderable;
+			int testcount = 0;
+			if (enclavePtr->UniqueKey.x == 0 && enclavePtr->UniqueKey.y == 2 && enclavePtr->UniqueKey.z == 0)
+			{
+				//cout << "total polys: " << totalPolys << endl;
+			}
+			for (int aa = 0; aa < totalPolys; aa++)
+			{
+				EnclaveKeyDef::EnclaveKey resultKey = enclavePtr->SingleToEnclaveKey(enclavePtr->Sorted.PolyArrayIndex[aa]);
+				//if (enclavePtr->UniqueKey.x == 0 && enclavePtr->UniqueKey.y == 2 && enclavePtr->UniqueKey.z == 0)
+				//{
+					if (resultKey.x == 0)	// x == 0 means all blocks on the western face of the chunk
+					{
+						beginbit = 1;
+						bitshift = current_y_offset;					// reset bitshift value
+						bitshift = current_y_offset + resultKey.y;		// append y to bitshift value
+						beginbit <<= bitshift;							// shift beginbit to the left by bitshift times
+						//cout << "begin bit is: " << beginbit << endl;
+						WestBorderBlocks.faceflagarray[current_z_slice + resultKey.z] = WestBorderBlocks.faceflagarray[current_z_slice + resultKey.z] | beginbit;
+						//cout << "poly render: " << resultKey.x << ", " << resultKey.y << ", " << resultKey.z << "(shifted by " << bitshift << " || " << current_z_slice + resultKey.z << " || " << WestBorderBlocks.faceflagarray[current_z_slice + resultKey.z] <<" | " << bitshift << ")" << endl;
+
+					}
+				//}
+			}
+
+		}
+	}
+
+	// north faces (16)		---------------------------------------------------------------------------------------------------------------------------
+	
+	for (int x = 0; x < 8; x++)
+	{
+		for (int y = 0; y < 8; y++)
+		{
+			Enclave* enclavePtr = &collectionPtr->EnclaveArray[x][y][0];
+			current_x_slice = 4;					// always reset to 4
+			current_x_slice = current_x_slice * x;	// will be 4 * 0 (for slices for z = 0), 4 * 1 (for slices for z = 1), etc...
+
+			current_y_offset = 4;
+			current_y_offset = current_y_offset * y;
+
+			int beginbit = 1;
+			int bitshift = current_y_offset;
+
+			int totalPolys = enclavePtr->TotalRenderable;
+			int testcount = 0;
+
+			for (int aa = 0; aa < totalPolys; aa++)
+			{
+				EnclaveKeyDef::EnclaveKey resultKey = enclavePtr->SingleToEnclaveKey(enclavePtr->Sorted.PolyArrayIndex[aa]);
+				//if (enclavePtr->UniqueKey.x == 0 && enclavePtr->UniqueKey.y == 2 && enclavePtr->UniqueKey.z == 0)
+				//{
+					if (resultKey.z == 0)		// z == 0 means all blocks on the northern face of the chunk
+					{
+						beginbit = 1;
+						bitshift = current_y_offset;					// reset bitshift value
+						bitshift = current_y_offset + resultKey.y;		// append y to bitshift value
+						beginbit <<= bitshift;							// shift beginbit to the left by bitshift times
+																		//cout << "begin bit is: " << beginbit << endl;
+						NorthBorderBlocks.faceflagarray[current_x_slice + resultKey.x] = NorthBorderBlocks.faceflagarray[current_x_slice + resultKey.x] | beginbit;
+						//cout << "poly render: " << resultKey.x << ", " << resultKey.y << ", " << resultKey.z << "(shifted by " << bitshift << " || " << current_z_slice + resultKey.z << " || " << WestBorderBlocks.faceflagarray[current_z_slice + resultKey.z] <<" | " << bitshift << ")" << endl;
+
+					}
+				//}
+			}
+		}
+	}
+
+	//  east faces (8)		---------------------------------------------------------------------------------------------------------------------------
+	for (int z = 0; z < 8; z++)			// start with z 
+	{
+		for (int y = 0; y < 8; y++)		// iterate through y for each z
+		{
+			Enclave* enclavePtr = &collectionPtr->EnclaveArray[7][y][z];
+			current_z_slice = 4;					// always reset to 4
+			current_z_slice = current_z_slice * z;	// will be 4 * 0 (for slices for z = 0), 4 * 1 (for slices for z = 1), etc...
+
+			current_y_offset = 4;
+			current_y_offset = current_y_offset * y;
+			int beginbit = 1;
+			int bitshift = current_y_offset;
+			//for (int zz = 0; zz < 4; zz++)
+			//{
+			//	for (int yy = 0; yy < 4; yy++)
+			//	{
+
+			//}
+			//	current_z_slice++;
+			//}
+			int totalPolys = enclavePtr->TotalRenderable;
+			int testcount = 0;
+			if (enclavePtr->UniqueKey.x == 0 && enclavePtr->UniqueKey.y == 2 && enclavePtr->UniqueKey.z == 0)
+			{
+				//cout << "total polys: " << totalPolys << endl;
+			}
+			for (int aa = 0; aa < totalPolys; aa++)
+			{
+				EnclaveKeyDef::EnclaveKey resultKey = enclavePtr->SingleToEnclaveKey(enclavePtr->Sorted.PolyArrayIndex[aa]);
+				//if (enclavePtr->UniqueKey.x == 0 && enclavePtr->UniqueKey.y == 2 && enclavePtr->UniqueKey.z == 0)
+				//{
+				if (resultKey.x == 3)	// x == 3 means all blocks on the eastern face of the chunk
+				{
+					beginbit = 1;
+					bitshift = current_y_offset;					// reset bitshift value
+					bitshift = current_y_offset + resultKey.y;		// append y to bitshift value
+					beginbit <<= bitshift;							// shift beginbit to the left by bitshift times
+																	//cout << "begin bit is: " << beginbit << endl;
+					EastBorderBlocks.faceflagarray[current_z_slice + resultKey.z] = EastBorderBlocks.faceflagarray[current_z_slice + resultKey.z] | beginbit;
+					if (enclavePtr->UniqueKey.x == 0 && enclavePtr->UniqueKey.y == 6 && enclavePtr->UniqueKey.z == 0)
+					{
+						cout << "poly render: " << resultKey.x << ", " << resultKey.y << ", " << resultKey.z << "(shifted by " << bitshift << " || " << current_z_slice + resultKey.z << " || " << WestBorderBlocks.faceflagarray[current_z_slice + resultKey.z] <<" | " << bitshift << ")" << endl;
+					}
+				}
+				//}
+			}
+		}
+
+	}
+
+
+	//	south faces (4)		---------------------------------------------------------------------------------------------------------------------------
+	for (int x = 0; x < 8; x++)
+	{
+		for (int y = 0; y < 8; y++)
+		{
+			Enclave* enclavePtr = &collectionPtr->EnclaveArray[x][y][7];
+			current_x_slice = 4;					// always reset to 4
+			current_x_slice = current_x_slice * x;	// will be 4 * 0 (for slices for z = 0), 4 * 1 (for slices for z = 1), etc...
+
+			current_y_offset = 4;
+			current_y_offset = current_y_offset * y;
+
+			int beginbit = 1;
+			int bitshift = current_y_offset;
+
+			int totalPolys = enclavePtr->TotalRenderable;
+			int testcount = 0;
+
+			for (int aa = 0; aa < totalPolys; aa++)
+			{
+				EnclaveKeyDef::EnclaveKey resultKey = enclavePtr->SingleToEnclaveKey(enclavePtr->Sorted.PolyArrayIndex[aa]);
+				//if (enclavePtr->UniqueKey.x == 0 && enclavePtr->UniqueKey.y == 2 && enclavePtr->UniqueKey.z == 0)
+				//{
+				if (resultKey.z == 3)	// z == 0 means all blocks on the southern face of the chunk
+				{
+					beginbit = 1;
+					bitshift = current_y_offset;					// reset bitshift value
+					bitshift = current_y_offset + resultKey.y;		// append y to bitshift value
+					beginbit <<= bitshift;							// shift beginbit to the left by bitshift times
+																	//cout << "begin bit is: " << beginbit << endl;
+					SouthBorderBlocks.faceflagarray[current_x_slice + resultKey.x] = SouthBorderBlocks.faceflagarray[current_x_slice + resultKey.x] | beginbit;
+					//cout << "poly render: " << resultKey.x << ", " << resultKey.y << ", " << resultKey.z << "(shifted by " << bitshift << " || " << current_z_slice + resultKey.z << " || " << WestBorderBlocks.faceflagarray[current_z_slice + resultKey.z] <<" | " << bitshift << ")" << endl;
+
+				}
+				//}
+			}
+		}
+
+	}
+
 	
 
 }
