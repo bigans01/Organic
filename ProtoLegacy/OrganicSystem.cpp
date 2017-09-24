@@ -1095,6 +1095,437 @@ void OrganicSystem::RenderGLTerrain()
 	OGLM.RenderReadyArrays();
 }
 
+void OrganicSystem::DetermineMouseCursorTargets(glm::vec3* originVector, glm::vec3* directionVector, int length)
+{
+	
+
+	// step 1: calculate slope
+	glm::vec3 origin_point = *originVector;
+	glm::vec3 direction_point = *directionVector;
+	glm::vec3 rayDirection = direction_point - origin_point;
+
+	int block_traverse_x = 0;
+	int block_traverse_y = 0;
+	int block_traverse_z = 0;
+
+	//cout << "Slope: " << rayDirection.x << ", " << rayDirection.y << ", " << rayDirection.z << endl;
+
+	// step 2: calculate length of ray between the two points
+	
+	float x_pow = pow(rayDirection.x, 2.0);		// square difference in x, that is between two points
+	float y_pow = pow(rayDirection.y, 2.0);		// square difference in y, that is between two points
+	float z_pow = pow(rayDirection.z, 2.0);		// square difference in z, that is between two points
+	float rayLength = sqrt(x_pow + y_pow + z_pow);
+	//cout << "Ray Length: " << rayLength << endl;
+
+	// step 3: calculate the end point of the ray, by dividing the desired length (from input parameter) by the rayLength result above.
+	// we will multiply all points from rayLength by this value, to determine the coordinates of the point at the end of the ray.
+	float rayMultiplier = length / rayLength;
+
+	//cout << "Ray multiplier: " << rayMultiplier << endl;
+
+	// step 4: calculate the offset of x/y/z needed to get to the end of the ray; do this by multiplying rayDirection values by the rayMultiplier.
+	float x_offset = rayDirection.x * rayMultiplier;
+	float y_offset = rayDirection.y * rayMultiplier;
+	float z_offset = rayDirection.z * rayMultiplier;
+
+	float x_offset_pow = pow(x_offset, 2.0);
+	float y_offset_pow = pow(y_offset, 2.0);
+	float z_offset_pow = pow(z_offset, 2.0);
+	float newRayLength = sqrt(x_offset_pow + y_offset_pow + z_offset_pow);
+
+	//cout << "Final ray length test: " << newRayLength << endl;
+
+
+	// step 6: determine distances to traverse, assuming origin's x/y/z is less than 1.0. 
+	float tmax_x = 1.0 / rayDirection.x;	// x = 1
+	float tmax_y = 1.0 / rayDirection.y;	// y = 1
+	float tmax_z = 1.0 / rayDirection.z;	// z = 1 
+
+	// step 5: get distances for Deltas
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////// Determine distance to max's (that is, "first x", "first y", "first z")
+
+	// x delta
+	float xDelta_Begin_distance = 1.0f - origin_point.x;							// get the distance traveled between x = 1.0f and x  = 0.2f
+	float xDelta_multiplier = xDelta_Begin_distance * tmax_x;						// multiply the distance to traverse to get to x = 1.0 by  the multiplier for x (in this case, 5)	
+	float xDelta_x_coord = origin_point.x + (rayDirection.x * xDelta_multiplier);	// get the value of x where x = 1
+	float xDelta_y_coord = origin_point.y + (rayDirection.y * xDelta_multiplier);	// get the value of y where x = 1
+	float xDelta_z_coord = origin_point.z + (rayDirection.z * xDelta_multiplier);	// get the value of z where x = 1
+	float xDelta_x_pow = pow(xDelta_x_coord, 2.0);
+	float xDelta_y_pow = pow(xDelta_y_coord, 2.0);
+	float xDelta_z_pow = pow(xDelta_z_coord, 2.0);
+	float xInitialDeltaDistance = sqrt(xDelta_x_pow + xDelta_y_pow + xDelta_z_pow);
+
+	// y delta
+	float yDelta_Begin_distance = 1.0f - origin_point.y;
+	float yDelta_multiplier = yDelta_Begin_distance * tmax_y;
+	float yDelta_x_coord = origin_point.x + (rayDirection.x * yDelta_multiplier);
+	float yDelta_y_coord = origin_point.y + (rayDirection.y * yDelta_multiplier);
+	float yDelta_z_coord = origin_point.z + (rayDirection.z * yDelta_multiplier);
+	float yDelta_x_pow = pow(yDelta_x_coord, 2.0);
+	float yDelta_y_pow = pow(yDelta_y_coord, 2.0);
+	float yDelta_z_pow = pow(yDelta_z_coord, 2.0);
+	float yInitialDeltaDistance = sqrt(yDelta_x_pow + yDelta_y_pow + yDelta_z_pow);
+
+	// z delta
+	float zDelta_Begin_distance = 1.0f - origin_point.z;
+	float zDelta_multiplier = zDelta_Begin_distance * tmax_z;
+	float zDelta_x_coord = origin_point.x + (rayDirection.x * zDelta_multiplier);
+	float zDelta_y_coord = origin_point.y + (rayDirection.y * zDelta_multiplier);
+	float zDelta_z_coord = origin_point.z + (rayDirection.z * zDelta_multiplier);
+	float zDelta_x_pow = pow(zDelta_x_coord, 2.0);
+	float zDelta_y_pow = pow(zDelta_y_coord, 2.0);
+	float zDelta_z_pow = pow(zDelta_z_coord, 2.0);
+	float zInitialDeltaDistance = sqrt(zDelta_x_pow + zDelta_y_pow + zDelta_z_pow);
+
+	//cout << "Delta checks: " << endl;
+
+	//cout << "-------------checks for first x/y/z line cross --------------" << endl;
+	//cout << "Delta x, x: " << xDelta_x_coord << endl;
+	//cout << "Delta x, y: " << xDelta_y_coord << endl;
+	//cout << "Delta x, z: " << xDelta_z_coord << endl;
+	//cout << "Delta x distance to first point: " << xInitialDeltaDistance << endl;
+
+	//cout << "Delta y, x: " << yDelta_x_coord << endl;
+	//cout << "Delta y, y: " << yDelta_y_coord << endl;
+	//cout << "Delta y, z: " << yDelta_z_coord << endl;
+	//cout << "Delta y distance to first point: " << yInitialDeltaDistance << endl;
+
+	//cout << "Delta z, x: " << zDelta_x_coord << endl;
+	//cout << "Delta z, y: " << zDelta_y_coord << endl;
+	//cout << "Delta z, z: " << zDelta_z_coord << endl;
+	//cout << "Delta z distance to first point: " << zInitialDeltaDistance << endl;
+
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////// Determine delta's of all x, y, z
+
+	// x delta
+	 xDelta_Begin_distance = 1.0f;							// get the distance traveled between x = 1.0f and x  = 0.2f
+	 xDelta_multiplier = xDelta_Begin_distance * (1.0 / rayDirection.x);						// multiply the distance to traverse to get to x = 1.0 by  the multiplier for x (in this case, 5)	
+	 xDelta_x_coord =  (rayDirection.x * xDelta_multiplier);	// get the value of x where x = 1
+	 xDelta_y_coord =  (rayDirection.y * xDelta_multiplier);	// get the value of y where x = 1
+	 xDelta_z_coord =  (rayDirection.z * xDelta_multiplier);	// get the value of z where x = 1
+	 xDelta_x_pow = pow(xDelta_x_coord, 2.0);
+	 xDelta_y_pow = pow(xDelta_y_coord, 2.0);
+	 xDelta_z_pow = pow(xDelta_z_coord, 2.0);
+	 float xDeltaDistance = sqrt(xDelta_x_pow + xDelta_y_pow + xDelta_z_pow);
+
+	// y delta
+	 yDelta_Begin_distance = 1.0f;
+	 yDelta_multiplier = yDelta_Begin_distance * (1.0 / rayDirection.y);
+	 yDelta_x_coord =  (rayDirection.x * yDelta_multiplier);
+	 yDelta_y_coord =  (rayDirection.y * yDelta_multiplier);
+	 yDelta_z_coord =  (rayDirection.z * yDelta_multiplier);
+	 yDelta_x_pow = pow(yDelta_x_coord, 2.0);
+	 yDelta_y_pow = pow(yDelta_y_coord, 2.0);
+	 yDelta_z_pow = pow(yDelta_z_coord, 2.0);
+	 float yDeltaDistance = sqrt(yDelta_x_pow + yDelta_y_pow + yDelta_z_pow);
+
+	// z delta
+	 zDelta_Begin_distance = 1.0f;
+	 zDelta_multiplier = zDelta_Begin_distance * (1.0 / rayDirection.z);
+	 zDelta_x_coord =  (rayDirection.x * zDelta_multiplier);
+	 zDelta_y_coord =  (rayDirection.y * zDelta_multiplier);
+	 zDelta_z_coord =  (rayDirection.z * zDelta_multiplier);
+	 zDelta_x_pow = pow(zDelta_x_coord, 2.0);
+	 zDelta_y_pow = pow(zDelta_y_coord, 2.0);
+	 zDelta_z_pow = pow(zDelta_z_coord, 2.0);
+	 float zDeltaDistance = sqrt(zDelta_x_pow + zDelta_y_pow + zDelta_z_pow);
+
+
+
+	//cout << "-------------checks for true x/y/z line delta --------------" << endl;
+
+	//cout << "x delta traversal: " << xDeltaDistance << endl;
+	//cout << "y delta traversal: " << yDeltaDistance << endl;
+	//cout << "z delta traversal: " << zDeltaDistance << endl;
+
+
+
+
+
+
+
+
+
+	float xDelta_End = 2.0f;
+
+	//cout << "Traversal values: " << endl;
+	//cout << "x: " << tmax_x << endl;
+	//cout << "y: " << tmax_y << endl;
+	//cout << "z: " << tmax_z << endl;
+
+	// for later: calculate delta by taking the total time to traverse between x = 2.0 and x = 1.0. Use this continuously for rest of function, for x/y/z.
+	if (tmax_x < tmax_y)
+	{
+
+	}
+
+
+
+}
+
+void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::vec3* directionVector, int length)
+{
+
+
+
+
+	// step 1: calculate slope
+	glm::vec3 origin_point = *originVector;
+	glm::vec3 direction_point = *directionVector;
+	glm::vec3 rayDirection = direction_point - origin_point;
+
+	// second, set up current collection, chunk in collection, and block in chunk
+	CursorPathTraceContainer x_container, y_container, z_container;
+	x_container = EnclaveCollections.GetCursorCoordTrace(origin_point.x);
+	y_container = EnclaveCollections.GetCursorCoordTrace(origin_point.y);
+	z_container = EnclaveCollections.GetCursorCoordTrace(origin_point.z);
+
+	// set values for Camera keys
+	CameraCollectionKey.x = x_container.CollectionCoord;
+	CameraCollectionKey.y = y_container.CollectionCoord;
+	CameraCollectionKey.z = z_container.CollectionCoord;
+
+	CameraChunkKey.x = x_container.ChunkCoord;
+	CameraChunkKey.y = y_container.ChunkCoord;
+	CameraChunkKey.z = z_container.ChunkCoord;
+
+	CameraBlockKey.x = x_container.BlockCoord;
+	CameraBlockKey.y = y_container.BlockCoord;
+	CameraBlockKey.z = z_container.BlockCoord;
+
+	// determine if the distance to 1.0 for x is based on "distance_to_pos" or "distance_to_neg"
+	float x_border_distance;
+	if (rayDirection.x >= 0.0f)		// if the direction of rayDirection.x is positive, use the distance to positive.
+	{
+		x_border_distance = x_container.distance_to_pos;	// the value of x_border_distance will be based on distance_to_pos
+	}
+	else
+	{
+		x_border_distance = x_container.distance_to_neg;	// ...otherwise use the negative value
+	}
+
+
+
+	// determine if the distance to 1.0 for y is based on "distance_to_pos" or "distance_to_neg"
+	float y_border_distance;
+	if (rayDirection.y >= 0.0f)		// if the direction of rayDirection.y is positive, use the distance to positive.
+	{
+		y_border_distance = y_container.distance_to_pos;	// the value of y_border_distance will be based on distance_to_pos
+	}
+	else
+	{
+		y_border_distance = y_container.distance_to_neg;	// ...otherwise use the negative value
+	}
+
+
+
+	// determine if the distance to 1.0 for z is based on "distance_to_pos" or "distance_to_neg"
+	float z_border_distance;
+	if (rayDirection.z >= 0.0f)
+	{
+		z_border_distance = z_container.distance_to_pos;
+	}
+	else
+	{
+		z_border_distance = z_container.distance_to_neg;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+	int block_traverse_x = 0;
+	int block_traverse_y = 0;
+	int block_traverse_z = 0;
+
+	//cout << "Slope: " << rayDirection.x << ", " << rayDirection.y << ", " << rayDirection.z << endl;
+
+	// step 2: calculate length of ray between the two points
+
+	float x_pow = pow(rayDirection.x, 2.0);		// square difference in x, that is between two points
+	float y_pow = pow(rayDirection.y, 2.0);		// square difference in y, that is between two points
+	float z_pow = pow(rayDirection.z, 2.0);		// square difference in z, that is between two points
+	float rayLength = sqrt(x_pow + y_pow + z_pow);
+	//cout << "Ray Length: " << rayLength << endl;
+
+	// step 3: calculate the end point of the ray, by dividing the desired length (from input parameter) by the rayLength result above.
+	// we will multiply all points from rayLength by this value, to determine the coordinates of the point at the end of the ray.
+	float rayMultiplier = length / rayLength;
+
+	//cout << "Ray multiplier: " << rayMultiplier << endl;
+
+	// step 4: calculate the offset of x/y/z needed to get to the end of the ray; do this by multiplying rayDirection values by the rayMultiplier.
+	float x_offset = rayDirection.x * rayMultiplier;
+	float y_offset = rayDirection.y * rayMultiplier;
+	float z_offset = rayDirection.z * rayMultiplier;
+
+	float x_offset_pow = pow(x_offset, 2.0);
+	float y_offset_pow = pow(y_offset, 2.0);
+	float z_offset_pow = pow(z_offset, 2.0);
+	float newRayLength = sqrt(x_offset_pow + y_offset_pow + z_offset_pow);
+
+	//cout << "Final ray length test: " << newRayLength << endl;
+
+
+	// step 6: determine distances to traverse, assuming origin's x/y/z is less than 1.0. 
+	float tmax_x = 1.0 / rayDirection.x;	// x = 1
+	float tmax_y = 1.0 / rayDirection.y;	// y = 1
+	float tmax_z = 1.0 / rayDirection.z;	// z = 1 
+
+	// step 5: get distances for Deltas
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////// Determine distance to max's (that is, "first x", "first y", "first z")
+
+	// x delta
+	float xDelta_Begin_distance = 1.0f - origin_point.x;							// get the distance traveled between x = 1.0f and x  = 0.2f
+	float xDelta_multiplier = xDelta_Begin_distance * tmax_x;						// multiply the distance to traverse to get to x = 1.0 by  the multiplier for x (in this case, 5)	
+	float xDelta_x_coord = origin_point.x + (rayDirection.x * xDelta_multiplier);	// get the value of x where x = 1
+	float xDelta_y_coord = origin_point.y + (rayDirection.y * xDelta_multiplier);	// get the value of y where x = 1
+	float xDelta_z_coord = origin_point.z + (rayDirection.z * xDelta_multiplier);	// get the value of z where x = 1
+	float xDelta_x_pow = pow(xDelta_x_coord, 2.0);
+	float xDelta_y_pow = pow(xDelta_y_coord, 2.0);
+	float xDelta_z_pow = pow(xDelta_z_coord, 2.0);
+	float xInitialDeltaDistance = sqrt(xDelta_x_pow + xDelta_y_pow + xDelta_z_pow);
+
+	// y delta
+	float yDelta_Begin_distance = 1.0f - origin_point.y;
+	float yDelta_multiplier = yDelta_Begin_distance * tmax_y;
+	float yDelta_x_coord = origin_point.x + (rayDirection.x * yDelta_multiplier);
+	float yDelta_y_coord = origin_point.y + (rayDirection.y * yDelta_multiplier);
+	float yDelta_z_coord = origin_point.z + (rayDirection.z * yDelta_multiplier);
+	float yDelta_x_pow = pow(yDelta_x_coord, 2.0);
+	float yDelta_y_pow = pow(yDelta_y_coord, 2.0);
+	float yDelta_z_pow = pow(yDelta_z_coord, 2.0);
+	float yInitialDeltaDistance = sqrt(yDelta_x_pow + yDelta_y_pow + yDelta_z_pow);
+
+	// z delta
+	float zDelta_Begin_distance = 1.0f - origin_point.z;
+	float zDelta_multiplier = zDelta_Begin_distance * tmax_z;
+	float zDelta_x_coord = origin_point.x + (rayDirection.x * zDelta_multiplier);
+	float zDelta_y_coord = origin_point.y + (rayDirection.y * zDelta_multiplier);
+	float zDelta_z_coord = origin_point.z + (rayDirection.z * zDelta_multiplier);
+	float zDelta_x_pow = pow(zDelta_x_coord, 2.0);
+	float zDelta_y_pow = pow(zDelta_y_coord, 2.0);
+	float zDelta_z_pow = pow(zDelta_z_coord, 2.0);
+	float zInitialDeltaDistance = sqrt(zDelta_x_pow + zDelta_y_pow + zDelta_z_pow);
+
+	//cout << "Delta checks: " << endl;
+
+	//cout << "-------------checks for first x/y/z line cross --------------" << endl;
+	//cout << "Delta x, x: " << xDelta_x_coord << endl;
+	//cout << "Delta x, y: " << xDelta_y_coord << endl;
+	//cout << "Delta x, z: " << xDelta_z_coord << endl;
+	//cout << "Delta x distance to first point: " << xInitialDeltaDistance << endl;
+
+	//cout << "Delta y, x: " << yDelta_x_coord << endl;
+	//cout << "Delta y, y: " << yDelta_y_coord << endl;
+	//cout << "Delta y, z: " << yDelta_z_coord << endl;
+	//cout << "Delta y distance to first point: " << yInitialDeltaDistance << endl;
+
+	//cout << "Delta z, x: " << zDelta_x_coord << endl;
+	//cout << "Delta z, y: " << zDelta_y_coord << endl;
+	//cout << "Delta z, z: " << zDelta_z_coord << endl;
+	//cout << "Delta z distance to first point: " << zInitialDeltaDistance << endl;
+
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////// Determine delta's of all x, y, z
+
+	// x delta
+	xDelta_Begin_distance = 1.0f;							// get the distance traveled between x = 1.0f and x  = 0.2f
+	xDelta_multiplier = xDelta_Begin_distance * (1.0 / rayDirection.x);						// multiply the distance to traverse to get to x = 1.0 by  the multiplier for x (in this case, 5)	
+	xDelta_x_coord = (rayDirection.x * xDelta_multiplier);	// get the value of x where x = 1
+	xDelta_y_coord = (rayDirection.y * xDelta_multiplier);	// get the value of y where x = 1
+	xDelta_z_coord = (rayDirection.z * xDelta_multiplier);	// get the value of z where x = 1
+	xDelta_x_pow = pow(xDelta_x_coord, 2.0);
+	xDelta_y_pow = pow(xDelta_y_coord, 2.0);
+	xDelta_z_pow = pow(xDelta_z_coord, 2.0);
+	float xDeltaDistance = sqrt(xDelta_x_pow + xDelta_y_pow + xDelta_z_pow);
+
+	// y delta
+	yDelta_Begin_distance = 1.0f;
+	yDelta_multiplier = yDelta_Begin_distance * (1.0 / rayDirection.y);
+	yDelta_x_coord = (rayDirection.x * yDelta_multiplier);
+	yDelta_y_coord = (rayDirection.y * yDelta_multiplier);
+	yDelta_z_coord = (rayDirection.z * yDelta_multiplier);
+	yDelta_x_pow = pow(yDelta_x_coord, 2.0);
+	yDelta_y_pow = pow(yDelta_y_coord, 2.0);
+	yDelta_z_pow = pow(yDelta_z_coord, 2.0);
+	float yDeltaDistance = sqrt(yDelta_x_pow + yDelta_y_pow + yDelta_z_pow);
+
+	// z delta
+	zDelta_Begin_distance = 1.0f;
+	zDelta_multiplier = zDelta_Begin_distance * (1.0 / rayDirection.z);
+	zDelta_x_coord = (rayDirection.x * zDelta_multiplier);
+	zDelta_y_coord = (rayDirection.y * zDelta_multiplier);
+	zDelta_z_coord = (rayDirection.z * zDelta_multiplier);
+	zDelta_x_pow = pow(zDelta_x_coord, 2.0);
+	zDelta_y_pow = pow(zDelta_y_coord, 2.0);
+	zDelta_z_pow = pow(zDelta_z_coord, 2.0);
+	float zDeltaDistance = sqrt(zDelta_x_pow + zDelta_y_pow + zDelta_z_pow);
+
+
+
+	//cout << "-------------checks for true x/y/z line delta --------------" << endl;
+
+	//cout << "x delta traversal: " << xDeltaDistance << endl;
+	//cout << "y delta traversal: " << yDeltaDistance << endl;
+	//cout << "z delta traversal: " << zDeltaDistance << endl;
+
+}
+
+void OrganicSystem::SetupWorldArea(float x, float y, float z)
+{
+	// first, set up world camera
+	SetWorldCameraPosition(x, y, z);
+
+	// second, set up current collection, chunk in collection, and block in chunk
+	CursorPathTraceContainer x_container, y_container, z_container;
+	x_container = EnclaveCollections.GetCursorCoordTrace(x);
+	y_container = EnclaveCollections.GetCursorCoordTrace(y);
+	z_container = EnclaveCollections.GetCursorCoordTrace(z);
+
+	//cout << "Camera's current collection: " << x_container.CollectionCoord << ", " << y_container.CollectionCoord << ", " << z_container.CollectionCoord << endl;
+	//cout << "Camera's current chunk in collection: " << x_container.ChunkCoord << ", " << y_container.ChunkCoord << ", " << z_container.ChunkCoord << endl;
+	//cout << "Camera's current block in chunk: " << x_container.BlockCoord << ", " << y_container.BlockCoord << ", " << z_container.BlockCoord << endl;
+
+	// set values for Camera keys
+	CameraCollectionKey.x = x_container.CollectionCoord;
+	CameraCollectionKey.y = y_container.CollectionCoord;
+	CameraCollectionKey.z = z_container.CollectionCoord;
+
+	CameraChunkKey.x = x_container.ChunkCoord;
+	CameraChunkKey.y = y_container.ChunkCoord;
+	CameraChunkKey.z = z_container.ChunkCoord;
+
+	CameraBlockKey.x = x_container.BlockCoord;
+	CameraBlockKey.y = y_container.BlockCoord;
+	CameraBlockKey.z = z_container.BlockCoord;
+
+	// ***************NEED TO SET UP CHECKS FOR COLLECTION POINTERS HERE*******************
+
+}
+
+void OrganicSystem::SetWorldCameraPosition(float x, float y, float z)
+{
+	glm::vec3* tempVecPtr = OGLM.positionVecPtr;	// grab the OGLM's pointer to the position vector;
+	tempVecPtr->x = x;
+	tempVecPtr->y = y;
+	tempVecPtr->z = z;
+
+
+}
+
 void OrganicSystem::GLCleanup()
 {
 	OGLM.ShutdownOpenGL();

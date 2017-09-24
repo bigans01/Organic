@@ -28,8 +28,10 @@ OrganicSystem object contains all objects necessary to preserve information on t
 #include "MDListJobMaterializeCollection.h"
 #include "EnclaveManifestFactoryT1.h"
 #include "OrganicGLManager.h"
+#include "EnclaveKeyDef.h"
 #include "EnclaveManifestFactoryT1Index.h"
 #include "EnclaveKeyContainer.h"
+#include "CursorPathTraceContainer.h"
 #include "MaterializeCollectionListContainer.h"
 #include "TestList.h"
 #include <GL/glew.h>
@@ -59,6 +61,9 @@ public:
 	MaterializeCollectionListContainer MatCollList;
 	thread_pool *Cell1;															// pointer for Cell 1
 	thread_pool *Cell2;															// pointer for Cell 2
+	EnclaveKeyDef::EnclaveKey CameraCollectionKey;								
+	EnclaveKeyDef::EnclaveKey CameraChunkKey;
+	EnclaveKeyDef::EnclaveKey CameraBlockKey;
 
 	OrganicSystem(int numberOfFactories, int bufferCubeSize);					// default constructor: number of factories, plus the size of the buffer cube
 
@@ -100,15 +105,19 @@ public:
 																EnclaveManifestFactoryT1 *FactoryRef, 
 																RenderCollectionMatrix *RenderCollectionRef, 
 																mutex& mutexval);		
-	void JobCalibrateBlueprintBordersFromFactory(EnclaveKeyDef::EnclaveKey Key1, EnclaveManifestFactoryT1 *FactoryRef);
-	void JobCalibrateBlueprintBordersFromFactory(EnclaveKeyDef::EnclaveKey Key1, EnclaveCollectionBlueprint* inBlueprintPtr, EnclaveManifestFactoryT1 *FactoryRef);
+	void JobCalibrateBlueprintBordersFromFactory(EnclaveKeyDef::EnclaveKey Key1, EnclaveManifestFactoryT1 *FactoryRef);															// for a blueprint in the blueprint matrix
+	void JobCalibrateBlueprintBordersFromFactory(EnclaveKeyDef::EnclaveKey Key1, EnclaveCollectionBlueprint* inBlueprintPtr, EnclaveManifestFactoryT1 *FactoryRef);				// for a stand-alone blueprint that hasn't been added to a matrix
 	void DummyJob(int value, EnclaveManifestFactoryT1 *FactoryRef, mutex& mutexval);																							// dummy thread pool job, for testing only.
 	void SetRenderMode(int x);																																					// sets the RenderMode variable in the OGLM object
 	void RenderGLTerrain();																																						// renders everything in the Terrain buffer
+	void DetermineMouseCursorTargets(glm::vec3* originVector, glm::vec3* directionVector, int length);
+	void DetermineMouseCursorTargets2(glm::vec3* originVector, glm::vec3* directionVector, int length);
 	void GLCleanup();																																							// for deallocating and/or turning off OpenGL components
 	void ArrayTest();																																							// testing only
 	void SendRenderListToGLTerrainBuffer();																																		// will send all renderable enclaves listed in the renderCollectionList to the OpenGL buffer
 	void LoadNWChunks();																																						// currently for testing: "moves the world" by preparing buffers to load data for RenderCollections +1 chunk NW of current camera position
+	void SetupWorldArea(float x, float y, float z);
+	void SetWorldCameraPosition(float x, float y, float z);
 	thread_pool* getCell1();																																					// gets a pointer to worker thread (Cell) #1
 	thread_pool* getCell2();																																					// gets a pointer to worker thread (Cell) #2
 

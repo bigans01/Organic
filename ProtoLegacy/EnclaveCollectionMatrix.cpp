@@ -1266,6 +1266,96 @@ PathTraceContainer EnclaveCollectionMatrix::GetCoordTrace(int x)
 	return tempPathTrace;
 }
 
+CursorPathTraceContainer EnclaveCollectionMatrix::GetCursorCoordTrace(float x)
+{
+	CursorPathTraceContainer tempPathTrace;
+	float x_divide = (x / 32);							// here, 32 is the length of an entire collection (8 chunks = 32 blocks width)
+	int collection_x = 0;								// the coordinate of the collection that will be returned (x or y or z)
+	int chunk_x = 0;									// the coordinate of the chunk that will be returned (x or y or z)
+	int block_x = 0;									// the coordinate of the block that will be returned (x or y or z)
+	float dist_to_pos = 0;								// distance from the camera's point to the nearest positive axis block border
+	float dist_to_neg = 0;								// distance from the camera's point to the nearest negative axis block border
+
+	if (x < 0)											// operations to be performed when the input value is less than 0.
+	{
+		//cout << "----negative coordinate detected----" << endl;
+		//cout << "x_divide result: " << x_divide << endl;
+		collection_x = 0;
+		if ((x_divide < 0) && x >= -32)
+		{
+			//cout << "x_divide entry. " << endl;
+			if (fmod(x, 32) != 0)
+			{
+				collection_x = -1;  // collection_x = (x_divide - 1);
+			}
+			//else
+			//{
+				//collection_x = x_divide;
+			//}
+
+
+		}
+		else if ((x_divide < 0) && x < -32)
+		{
+			collection_x = int(x_divide) -1;
+		}
+
+		//cout << "collection_x: " << collection_x << endl;
+		//cout << "ABS: " << abs(int(fmod(x, 32) / 4)) << endl;
+		//cout << "ABS 2: " <<  floor(fmod(fmod(x, 32), 4)) << endl;
+		//cout << "ABS block: " << abs(fmod(ceil(fmod(x, 32)), 4)) << endl;
+		//cout << "Dist to pos a: " << fmod(fmod(x, 32), 4) << endl;
+		chunk_x = 7 - abs(int(fmod(x, 32) / 4));				// old:  chunk_x = ((x % 32) / 4);
+		//cout << "chunk_x: " << chunk_x << endl;
+		block_x = 3 - abs(fmod(ceil(fmod(x, 32)), 4));									//block_x = abs(fmod(fmod(x, 32), 4));				// old : block_x = ((x % 32) % 4);
+		//cout << "block_x: " << block_x << endl;
+
+		dist_to_pos = abs((fmod(fmod(x, 32), 4)) + abs(fmod(ceil(fmod(x, 32)), 4)));			// distance from the camera's point to the east border of the block 
+		dist_to_neg = abs(fmod(floor(fmod(x, 32)), 4)) - abs((fmod(fmod(x, 32), 4)));
+
+		//cout << "exact_pos_x: " << dist_to_pos << endl;
+		//cout << "exact_neg_x: " << dist_to_neg << endl;
+
+	}
+	else if (x > 0)										// operations t be performed when the input value is greater than/equal to 0
+	{
+		collection_x = 0;
+		if ((x_divide > 0) && x > 32)
+		{
+			if (fmod(x, 32) != 0)
+			{
+				collection_x = x_divide;  // collection_x = (x_divide + 1);
+			}
+			//else
+			//{
+				//collection_x = x_divide;
+			//}
+		}
+		//else if ((x_divide > 0) && x <= 32)
+		//{
+			//collection_x = 1;
+		//}
+		//cout << "collection_x: " << collection_x << endl;
+		chunk_x = (fmod(x, 32) / 4);					// old:  chunk_x = ((x % 32) / 4);
+		//cout << "chunk_x: " << chunk_x << endl;
+		block_x = (fmod(fmod(x, 32), 4));				// old : block_x = ((x % 32) % 4);
+		//cout << "block_x: " << block_x << endl;
+
+		dist_to_pos = ceil(fmod(fmod(x, 32), 4)) - (fmod(fmod(x, 32), 4));
+		dist_to_neg = (fmod(fmod(x, 32), 4)) - block_x;
+
+
+		//cout << "NoOfCollections passed: " << NoOfCollections << endl;
+	}
+	tempPathTrace.CollectionCoord = collection_x;		// set the return value for the Collection coordinate
+	tempPathTrace.ChunkCoord = chunk_x;					// set the return value for the Chunk coordinate
+	tempPathTrace.BlockCoord = block_x;					// set the return value for the block coordinate
+	tempPathTrace.distance_to_pos = dist_to_pos;
+	tempPathTrace.distance_to_neg = dist_to_neg;
+
+	return tempPathTrace;
+}
+
 ElevationMapRef& EnclaveCollectionMatrix::GetElevationMapFromCollection(EnclaveKeyDef::EnclaveKey InKey)
 {
 	/* Summary: returns a pointer to the ElevationMap for an associated EnclaveCollection having a value of InKey */

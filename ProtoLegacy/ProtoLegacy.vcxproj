@@ -152,6 +152,7 @@
   <ItemGroup>
     <ClInclude Include="BasicEntity.h" />
     <ClInclude Include="common\shader.hpp" />
+    <ClInclude Include="CursorPathTraceContainer.h" />
     <ClInclude Include="dummwrapper.h" />
     <ClInclude Include="ECBCollectionPainter.h" />
     <ClInclude Include="ECBOutwardFaceFlags.h" />

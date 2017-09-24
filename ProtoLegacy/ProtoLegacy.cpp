@@ -18,6 +18,7 @@
 #include "RenderCollectionMatrix.h"
 #include "OrganicSystem.h"
 #include "EnclaveCollectionBlueprint.h"
+#include "CursorPathTraceContainer.h"
 #include "EnclavePainter.h"
 #include "EnclavePainterList.h"
 #include "thread_pool.h"
@@ -27,6 +28,7 @@
 #include <GL/glew.h>
 //#define GLFW_DLL		// only used when linking to a DLL version of GLFW.
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
 
 //#include "shader.hpp"
 #include "common/shader.hpp"
@@ -307,6 +309,26 @@ int main()
 	Organic.SetOrganicCell2(mainthreadpoolref2);			// set the Organic instance's second worker thread
 	Organic.AddOrganicTextureMetaArray("base");					// set up the texture map; first ever map will be named "base"
 	Organic.AddOrganicVtxColorMetaArray("base");
+	auto worldsetupbegin = std::chrono::high_resolution_clock::now();
+	Organic.SetupWorldArea(5.0f, -50.0f, 34.0f);				// sets the exact point of the camera in the world, and initializes other world area meta data (current collection,  chunk, block, vectors for "picking", etc)
+	auto worldsetupend = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> worldsetupelapsed = worldsetupend - worldsetupbegin;
+	std::cout << "Elapsed time (World set up): " << worldsetupelapsed.count() << endl;
+
+	glm::vec3 originVec(.4,.3,.3);
+	glm::vec3 directionVec(.8,.4,.4);
+
+	//glm::vec3 originVec(.2, .2, .2);
+	//glm::vec3 directionVec(.6, .3, .3);
+	glm::vec3* originVecPtr = &originVec;
+	glm::vec3* directionVecPtr = &directionVec;
+
+	auto targetsbegin = std::chrono::high_resolution_clock::now();
+	Organic.DetermineMouseCursorTargets(originVecPtr, directionVecPtr, 10);
+	auto targetsend = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> targetselapsed = targetsend - targetsbegin;
+	std::cout << "Elapsed time (Terrain targeting): " << targetselapsed.count() << endl;
+
 
 	EnclaveManifestFactoryT1* factoryRef;
 	factoryRef = &Organic.OrganicFactoryIndex.FactoryMap["Factory 1"];
@@ -485,7 +507,7 @@ int main()
 	std::chrono::duration<double> blueelapsed = blueend - bluestart;
 	std::cout << "Elapsed time (Blueprint addition): " << blueelapsed.count() << endl;
 	*/
-	Organic.ArrayTest();
+	//Organic.ArrayTest();
 	Organic.MaterializeAllCollectionsInRenderList(0);			// 0 = use a set of Factories, 1 = use a ManifestMatrix style
 
 
@@ -619,7 +641,20 @@ int main()
 
 	int dummy = 1;
 	dummy <<= 0;
-	cout << "integer test:" << dummy << endl;
+	float dummyfloat = 11.36574;
+	int intnum = 43;
+
+	float resultfloat = fmod(dummyfloat, 4);
+	int resultfloat2 = intnum / 32;
+
+	CursorPathTraceContainer containerResult = Organic.EnclaveCollections.GetCursorCoordTrace(37.3);
+	cout << "collection: " << containerResult.CollectionCoord << endl;
+	cout << "chunk: " << containerResult.ChunkCoord << endl;
+	cout << "block: " << containerResult.BlockCoord << endl;
+	cout << "distance from point to nearest positive floor/ceiling: " << containerResult.distance_to_pos << endl;
+	cout << "distance from point to nearest negative floor/ceiling: " << containerResult.distance_to_neg << endl;
+
+	cout << "float test:" << resultfloat2 << endl;
 
 	// ------------------------------------END OPEN GL SET UP
 
@@ -629,7 +664,8 @@ int main()
 	do {
 
 		auto start3 = std::chrono::high_resolution_clock::now();
-		Organic.RenderGLTerrain();	// perform render frame work
+		Organic.RenderGLTerrain();	// Step 1 (?): perform render frame work
+
 		auto finish3 = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<double> elapsed3 = finish3 - start3;
 		//std::cout << "Frame render time: " << elapsed3.count() << endl;

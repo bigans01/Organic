@@ -6,7 +6,8 @@
 
 OrganicGLManager::OrganicGLManager()
 {
-
+	cout << "Organic GL Manager initialized." << endl;
+	positionVecPtr = &position;
 }
 
 void OrganicGLManager::InitializeOpenGL()
@@ -299,6 +300,7 @@ void OrganicGLManager::computeMatricesFromInputs()
 
 
 	lastTime = currentTime;
+	//cout << "VALUE TEST: " << position.x << ", " << position.y << ", " << position.z << endl;
 }
 
 
