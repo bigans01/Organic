@@ -1275,6 +1275,7 @@ CursorPathTraceContainer EnclaveCollectionMatrix::GetCursorCoordTrace(float x)
 	int block_x = 0;									// the coordinate of the block that will be returned (x or y or z)
 	float dist_to_pos = 0;								// distance from the camera's point to the nearest positive axis block border
 	float dist_to_neg = 0;								// distance from the camera's point to the nearest negative axis block border
+	float exact_xyz = 0;
 
 	if (x < 0)											// operations to be performed when the input value is less than 0.
 	{
@@ -1312,6 +1313,7 @@ CursorPathTraceContainer EnclaveCollectionMatrix::GetCursorCoordTrace(float x)
 
 		dist_to_pos = abs((fmod(fmod(x, 32), 4)) + abs(fmod(ceil(fmod(x, 32)), 4)));			// distance from the camera's point to the east border of the block 
 		dist_to_neg = abs(fmod(floor(fmod(x, 32)), 4)) - abs((fmod(fmod(x, 32), 4)));
+		exact_xyz = 0.0f + dist_to_neg;										// set the exact point in the block to be 0.0f + the distance from 0.0f
 
 		//cout << "exact_pos_x: " << dist_to_pos << endl;
 		//cout << "exact_neg_x: " << dist_to_neg << endl;
@@ -1343,6 +1345,7 @@ CursorPathTraceContainer EnclaveCollectionMatrix::GetCursorCoordTrace(float x)
 
 		dist_to_pos = ceil(fmod(fmod(x, 32), 4)) - (fmod(fmod(x, 32), 4));
 		dist_to_neg = (fmod(fmod(x, 32), 4)) - block_x;
+		exact_xyz = 1.0f - dist_to_pos;										// set the exact point in the block to be 1.0f - the distance to get to 1.0f.
 
 
 		//cout << "NoOfCollections passed: " << NoOfCollections << endl;
@@ -1352,6 +1355,8 @@ CursorPathTraceContainer EnclaveCollectionMatrix::GetCursorCoordTrace(float x)
 	tempPathTrace.BlockCoord = block_x;					// set the return value for the block coordinate
 	tempPathTrace.distance_to_pos = dist_to_pos;
 	tempPathTrace.distance_to_neg = dist_to_neg;
+	tempPathTrace.ExactBlockCoord = exact_xyz;				// the exact block coord
+	
 
 	return tempPathTrace;
 }

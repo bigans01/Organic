@@ -20,7 +20,7 @@ public:
 	float CollectionCoord;			// x, y, or z coordinate of the Collection of Enclaves
 	float ChunkCoord;				// x, y, or z coordinate of the chunk within the Collection
 	float BlockCoord;				// x, y, or z coordinate of the block within the chunk
-	float ExactCoord;				// any x/y/z remainder after block coord is calculated
+	float ExactBlockCoord;				// any x/y/z remainder after block coord is calculated
 	float distance_to_pos;		// distance of x from this point to the east border of the block
 	float distance_to_neg;		// distance of x from this point to the west border of the block
 };

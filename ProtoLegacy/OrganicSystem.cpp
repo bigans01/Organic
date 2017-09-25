@@ -1272,10 +1272,13 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 
 
 
-	// step 1: calculate slope
-	glm::vec3 origin_point = *originVector;
-	glm::vec3 direction_point = *directionVector;
-	glm::vec3 rayDirection = direction_point - origin_point;
+	// step 1: calculate direction and slope
+	glm::vec3 origin_point = *originVector;						// original point being checked
+	glm::vec3 direction_point = *directionVector;				// direction vector based on mouse input
+	
+	int block_traverse_x = 0;
+	int block_traverse_y = 0;
+	int block_traverse_z = 0;
 
 	// second, set up current collection, chunk in collection, and block in chunk
 	CursorPathTraceContainer x_container, y_container, z_container;
@@ -1296,63 +1299,173 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 	CameraBlockKey.y = y_container.BlockCoord;
 	CameraBlockKey.z = z_container.BlockCoord;
 
-	// determine if the distance to 1.0 for x is based on "distance_to_pos" or "distance_to_neg"
+	// get the temp origin. Temp_origin stores the exact x/y/z coordinates, being greater >= 0, and < 1 (?). This is used to compare to 1.0f values used below.
+	float block_x_precise = x_container.ExactBlockCoord;	// get the value for the exact x/y/z coordinates within a block
+	float block_y_precise = y_container.ExactBlockCoord;
+	float block_z_precise = z_container.ExactBlockCoord;
+	glm::vec3 temp_origin;									// set up a vector that represents the origin (will be used 3 times below)
+	temp_origin.x = block_x_precise;
+	temp_origin.y = block_y_precise;
+	temp_origin.z = block_z_precise;
+
+	glm::vec3 second_point = temp_origin + direction_point;		// add the direction to the temp_origin, store the result in second_point
+	glm::vec3 rayDirection = second_point - temp_origin;		// the difference between the second_point and the temp_origin will determine the rayDirection.
+
+
+	// --------------------------------------- PHASE 1 BEGIN: determine intial traversal time for x/y/z, determine deltas (distance traveled along ray) for initial x/y/z traversal
+
+	float time_to_complete_x_traversal;
+	float time_to_complete_y_traversal;
+	float time_to_complete_z_traversal;
+
+	float initial_tMax;
+	float initial_yMax;
+	float initial_zMax;
+
+
+
+	// determine if the distance to 1.0 or -1.0 for x is based on "distance_to_pos" or "distance_to_neg"
 	float x_border_distance;
 	if (rayDirection.x >= 0.0f)		// if the direction of rayDirection.x is positive, use the distance to positive.
 	{
-		x_border_distance = x_container.distance_to_pos;	// the value of x_border_distance will be based on distance_to_pos
+		x_border_distance = x_container.distance_to_pos;								// the value of x_border_distance will be based on distance_to_pos
+		float border_to_compare_x = 1.0f;												// because the direction of x is positive, compare it to 1.0.
+		float origin_to_border_x_diff = border_to_compare_x - temp_origin.x;			// subtract the origin from the value of 1.0f. For example, if origin is at x = 0.2f, result would be 0.8f.
+		time_to_complete_x_traversal = origin_to_border_x_diff / rayDirection.x;	// determine the multiplier needed to get to x = 1.0f, by using x's slope coming from the temp_origin.x value.
+
+		// next, determine length of ray between the origin_point and the point where x = 1.0f (pythagorean)
+		glm::vec3 border_point;
+		border_point.x = 1.0f;
+		border_point.y = temp_origin.y + (rayDirection.y*time_to_complete_x_traversal);				// add slope*time to temp_origin.y
+		border_point.z = temp_origin.z + (rayDirection.z*time_to_complete_x_traversal);				// add slope*time to temp_origin.z
+
+		glm::vec3 distance_between_points = border_point - temp_origin;			// get the difference between the border point and the origin point
+		float squared_x = pow(distance_between_points.x, 2.0);	
+		float squared_y = pow(distance_between_points.y, 2.0);
+		float squared_z = pow(distance_between_points.z, 2.0);
+		initial_tMax = sqrt(squared_x + squared_y + squared_z);			// get the length of the ray between the two points (using pythagorean theorem)
 	}
 	else
 	{
-		x_border_distance = x_container.distance_to_neg;	// ...otherwise use the negative value
+		x_border_distance = x_container.distance_to_neg;								// the value of x_border_distance will be based on distance_to_neg
+		float border_to_compare_x = 0.0f;												// because the direction of x is negative, compare it to 0.0
+		float origin_to_border_x_diff = border_to_compare_x + temp_origin.x;			// add the origin to the value of 0.0f. For example, if origin is at 0.2f, the result would be 0.2f.
+		time_to_complete_x_traversal = abs(origin_to_border_x_diff / rayDirection.x); // determine the multiplier needed to get to x = 0.0f, by using x's slope coming from the temp_origin.x value; use abs to get the absolute value (since we are going negative)
+
+		// next, determine length of ray between the origin_point and the point where x = 0.0f (pythagorean)
+		glm::vec3 border_point;
+		border_point.x = 0.0f;
+		border_point.y = temp_origin.y - (rayDirection.y*time_to_complete_x_traversal);
+		border_point.z = temp_origin.z - (rayDirection.z*time_to_complete_x_traversal);
+
+		glm::vec3 distance_between_points = border_point - temp_origin;			// get the difference between the border point and the origin point
+		float squared_x = pow(distance_between_points.x, 2.0);
+		float squared_y = pow(distance_between_points.y, 2.0);
+		float squared_z = pow(distance_between_points.z, 2.0);
+		initial_tMax = sqrt(squared_x + squared_y + squared_z);			// get the length of the ray between the two points (using pythagorean theorem)
 	}
 
 
 
-	// determine if the distance to 1.0 for y is based on "distance_to_pos" or "distance_to_neg"
+	// determine if the distance to 1.0 or -1.0 for y is based on "distance_to_pos" or "distance_to_neg"
 	float y_border_distance;
 	if (rayDirection.y >= 0.0f)		// if the direction of rayDirection.y is positive, use the distance to positive.
 	{
-		y_border_distance = y_container.distance_to_pos;	// the value of y_border_distance will be based on distance_to_pos
+		y_border_distance = y_container.distance_to_pos;								// the value of y_border_distance will be based on distance_to_pos
+		float border_to_compare_y = 1.0f;												// because the direction of y is positive, compare it to 1.0.
+		float origin_to_border_y_diff = border_to_compare_y - temp_origin.y;			// subtract the origin from the value of 1.0f. For example, if origin is at x = 0.2f, result would be 0.8f.
+		time_to_complete_y_traversal = origin_to_border_y_diff / rayDirection.y;	// determine the multiplier needed to get to y = 1.0f, by using y's slope coming from the temp_origin.y value.
+
+		// next, determine length of ray between the origin_point and the point where y = 1.0f (pythagorean)
+		glm::vec3 border_point;
+		border_point.x = temp_origin.x + (rayDirection.x*time_to_complete_y_traversal);
+		border_point.y = 1.0f;
+		border_point.z = temp_origin.z + (rayDirection.z*time_to_complete_y_traversal);
+
+		glm::vec3 distance_between_points = border_point - temp_origin;			// get the difference between the border point and the origin point
+		float squared_x = pow(distance_between_points.x, 2.0);
+		float squared_y = pow(distance_between_points.y, 2.0);
+		float squared_z = pow(distance_between_points.z, 2.0);
+		initial_yMax = sqrt(squared_x + squared_y + squared_z);			// get the length of the ray between the two points (using pythagorean theorem)
 	}
 	else
 	{
-		y_border_distance = y_container.distance_to_neg;	// ...otherwise use the negative value
+		//cout << "----negative y hit----" << endl;
+		y_border_distance = y_container.distance_to_neg;								// the value of y_border_distance will be based on distance_to_neg
+		float border_to_compare_y = 0.0f;												// because the direction of y is negative, compare it to 0.0f
+		float origin_to_border_y_diff = border_to_compare_y + temp_origin.y;			// add the origin to the value of 0.0f. For example, if origin is at 0.2f, the result would be 0.2f.
+		time_to_complete_y_traversal = abs(origin_to_border_y_diff / rayDirection.y);	// determine the multiplier needed to get to y = 0.0f, by using y's slope coming from the temp_origin.y value; use abs to get the absolute value (since we are going negative)
+
+		// next, determine length of ray between the origin_point and the point where y = 0.0f (pythagorean)
+		glm::vec3 border_point;
+		border_point.x = temp_origin.x - (rayDirection.x*time_to_complete_y_traversal);
+		border_point.y = 0.0f;
+		border_point.z = temp_origin.z - (rayDirection.z*time_to_complete_y_traversal);
+
+		glm::vec3 distance_between_points = border_point - temp_origin;			// get the difference between the border point and the origin point
+		float squared_x = pow(distance_between_points.x, 2.0);
+		float squared_y = pow(distance_between_points.y, 2.0);
+		float squared_z = pow(distance_between_points.z, 2.0);
+		initial_yMax = sqrt(squared_x + squared_y + squared_z);			// get the length of the ray between the two points (using pythagorean theorem)
+
+
 	}
 
 
 
-	// determine if the distance to 1.0 for z is based on "distance_to_pos" or "distance_to_neg"
+	// determine if the distance to 1.0 or -1.0 for z is based on "distance_to_pos" or "distance_to_neg"
 	float z_border_distance;
-	if (rayDirection.z >= 0.0f)
+	if (rayDirection.z >= 0.0f)		// if the direction of rayDirection.z is positive, use the distance to positive.
 	{
-		z_border_distance = z_container.distance_to_pos;
+		z_border_distance = z_container.distance_to_pos;	// the value of z_border_distance will be based on distance_to_pos
+		float border_to_compare_z = 1.0f;
+		float origin_to_border_z_diff = border_to_compare_z - temp_origin.z;
+		time_to_complete_z_traversal = origin_to_border_z_diff / rayDirection.z;
+
+		// next, determine length of ray between the origin_point and the point where z = 1.0f (pythagorean)
+		glm::vec3 border_point;
+		border_point.x = temp_origin.x + (rayDirection.x*time_to_complete_z_traversal);
+		border_point.y = temp_origin.y + (rayDirection.y*time_to_complete_z_traversal);
+		border_point.z = 1.0f;
+
+		glm::vec3 distance_between_points = border_point - temp_origin;			// get the difference between the border point and the origin point
+		float squared_x = pow(distance_between_points.x, 2.0);
+		float squared_y = pow(distance_between_points.y, 2.0);
+		float squared_z = pow(distance_between_points.z, 2.0);
+		initial_zMax = sqrt(squared_x + squared_y + squared_z);			// get the length of the ray between the two points (using pythagorean theorem)
 	}
 	else
 	{
-		z_border_distance = z_container.distance_to_neg;
+		z_border_distance = z_container.distance_to_neg;	// ...otherwise use the negative value
+		float border_to_compare_z = 0.0f;
+		float origin_to_border_z_diff = border_to_compare_z + temp_origin.z;
+		time_to_complete_z_traversal = origin_to_border_z_diff / rayDirection.z;
+
+		// next, determine length of ray between the origin_point and the point where z = 1.0f (pythagorean)
+		glm::vec3 border_point;
+		border_point.x = temp_origin.x - (rayDirection.x*time_to_complete_z_traversal);
+		border_point.y = temp_origin.y - (rayDirection.y*time_to_complete_z_traversal);
+		border_point.z = 1.0f;
+
+		glm::vec3 distance_between_points = border_point - temp_origin;			// get the difference between the border point and the origin point
+		float squared_x = pow(distance_between_points.x, 2.0);
+		float squared_y = pow(distance_between_points.y, 2.0);
+		float squared_z = pow(distance_between_points.z, 2.0);
+		initial_zMax = sqrt(squared_x + squared_y + squared_z);			// get the length of the ray between the two points (using pythagorean theorem)
+
+
 	}
 
+	cout << "Traversal time x: " << time_to_complete_x_traversal << endl;
+	cout << "Traversal time y: " << time_to_complete_y_traversal << endl;
+	cout << "Traversal time z: " << time_to_complete_z_traversal << endl;
 
 
 
-
-
-
-
-
-
-
-
-
-	int block_traverse_x = 0;
-	int block_traverse_y = 0;
-	int block_traverse_z = 0;
-
+	/*
 	//cout << "Slope: " << rayDirection.x << ", " << rayDirection.y << ", " << rayDirection.z << endl;
 
-	// step 2: calculate length of ray between the two points
-
+	// step 2: calculate length of ray between 0.0, 0.0, 0.0, and the x/y/z of the direction point
 	float x_pow = pow(rayDirection.x, 2.0);		// square difference in x, that is between two points
 	float y_pow = pow(rayDirection.y, 2.0);		// square difference in y, that is between two points
 	float z_pow = pow(rayDirection.z, 2.0);		// square difference in z, that is between two points
@@ -1373,22 +1486,22 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 	float x_offset_pow = pow(x_offset, 2.0);
 	float y_offset_pow = pow(y_offset, 2.0);
 	float z_offset_pow = pow(z_offset, 2.0);
-	float newRayLength = sqrt(x_offset_pow + y_offset_pow + z_offset_pow);
+	float newRayLength = sqrt(x_offset_pow + y_offset_pow + z_offset_pow);		// newRayLength should be equal to the value of the input parameter "length"
 
 	//cout << "Final ray length test: " << newRayLength << endl;
 
 
-	// step 6: determine distances to traverse, assuming origin's x/y/z is less than 1.0. 
-	float tmax_x = 1.0 / rayDirection.x;	// x = 1
-	float tmax_y = 1.0 / rayDirection.y;	// y = 1
-	float tmax_z = 1.0 / rayDirection.z;	// z = 1 
+	// step 6: determine distances to traverse, assuming origin's x/y/z is less than 1.0; convert to absolute distance in the event that rayDirection.x, y, or z is negative
+	float tmax_x = abs(1.0 / rayDirection.x);	// x = 1
+	float tmax_y = abs(1.0 / rayDirection.y);	// y = 1
+	float tmax_z = abs(1.0 / rayDirection.z);	// z = 1 
 
 	// step 5: get distances for Deltas
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////// Determine distance to max's (that is, "first x", "first y", "first z")
 
 	// x delta
-	float xDelta_Begin_distance = 1.0f - origin_point.x;							// get the distance traveled between x = 1.0f and x  = 0.2f
+	float xDelta_Begin_distance = x_border_distance;							// 
 	float xDelta_multiplier = xDelta_Begin_distance * tmax_x;						// multiply the distance to traverse to get to x = 1.0 by  the multiplier for x (in this case, 5)	
 	float xDelta_x_coord = origin_point.x + (rayDirection.x * xDelta_multiplier);	// get the value of x where x = 1
 	float xDelta_y_coord = origin_point.y + (rayDirection.y * xDelta_multiplier);	// get the value of y where x = 1
@@ -1399,7 +1512,7 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 	float xInitialDeltaDistance = sqrt(xDelta_x_pow + xDelta_y_pow + xDelta_z_pow);
 
 	// y delta
-	float yDelta_Begin_distance = 1.0f - origin_point.y;
+	float yDelta_Begin_distance = y_border_distance;
 	float yDelta_multiplier = yDelta_Begin_distance * tmax_y;
 	float yDelta_x_coord = origin_point.x + (rayDirection.x * yDelta_multiplier);
 	float yDelta_y_coord = origin_point.y + (rayDirection.y * yDelta_multiplier);
@@ -1410,7 +1523,7 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 	float yInitialDeltaDistance = sqrt(yDelta_x_pow + yDelta_y_pow + yDelta_z_pow);
 
 	// z delta
-	float zDelta_Begin_distance = 1.0f - origin_point.z;
+	float zDelta_Begin_distance = z_border_distance;
 	float zDelta_multiplier = zDelta_Begin_distance * tmax_z;
 	float zDelta_x_coord = origin_point.x + (rayDirection.x * zDelta_multiplier);
 	float zDelta_y_coord = origin_point.y + (rayDirection.y * zDelta_multiplier);
@@ -1481,7 +1594,7 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 	//cout << "x delta traversal: " << xDeltaDistance << endl;
 	//cout << "y delta traversal: " << yDeltaDistance << endl;
 	//cout << "z delta traversal: " << zDeltaDistance << endl;
-
+	*/
 }
 
 void OrganicSystem::SetupWorldArea(float x, float y, float z)

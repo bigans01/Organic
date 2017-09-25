@@ -170,7 +170,6 @@ void OrganicGLManager::RenderReadyArrays()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	//glUseProgram(OrganicGLprogramID);									// select the already compiled program	(::::SENT TO BE USED IN selectDefaultShader() ::::)
 	computeMatricesFromInputs();											// gather inputs from keyboard
-
 	// Send our transformation to the currently bound shader, 
 	// in the "MVP" uniform -- 
 	glUniformMatrix4fv(OrganicMVPHandle, 1, GL_FALSE, &MVP[0][0]);		// select the matrix to use.
@@ -197,6 +196,7 @@ void OrganicGLManager::RenderReadyArrays()
 
 	glfwSwapBuffers(GLwindow);											// ??
 	glfwPollEvents();													// listen for input to the current OpenGL context window
+
 }
 
 void OrganicGLManager::ShutdownOpenGL()
@@ -255,6 +255,8 @@ void OrganicGLManager::computeMatricesFromInputs()
 		sin(verticalAngle),
 		cos(verticalAngle) * cos(horizontalAngle)
 	);
+
+	//std::cout << "Direction vector: " << direction.x << ", " << direction.y << ", " << direction.z << endl;
 
 	// Right vector
 	glm::vec3 right = glm::vec3(

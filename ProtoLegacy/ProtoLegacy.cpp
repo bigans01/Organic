@@ -315,16 +315,21 @@ int main()
 	std::chrono::duration<double> worldsetupelapsed = worldsetupend - worldsetupbegin;
 	std::cout << "Elapsed time (World set up): " << worldsetupelapsed.count() << endl;
 
-	glm::vec3 originVec(.4,.3,.3);
-	glm::vec3 directionVec(.8,.4,.4);
+	//glm::vec3 originVec(.4,.3,.3);
+	//glm::vec3 directionVec(.8,.4,.4);
 
 	//glm::vec3 originVec(.2, .2, .2);
 	//glm::vec3 directionVec(.6, .3, .3);
+
+	glm::vec3 originVec(.5, .5, .5);
+	//glm::vec3 originVec(.4, .3, .3);
+	glm::vec3 directionVec(.0822, -.0568, .0006);
+
 	glm::vec3* originVecPtr = &originVec;
 	glm::vec3* directionVecPtr = &directionVec;
 
 	auto targetsbegin = std::chrono::high_resolution_clock::now();
-	Organic.DetermineMouseCursorTargets(originVecPtr, directionVecPtr, 10);
+	Organic.DetermineMouseCursorTargets2(originVecPtr, directionVecPtr, 10);
 	auto targetsend = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> targetselapsed = targetsend - targetsbegin;
 	std::cout << "Elapsed time (Terrain targeting): " << targetselapsed.count() << endl;
