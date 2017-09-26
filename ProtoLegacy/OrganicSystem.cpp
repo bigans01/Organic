@@ -1318,10 +1318,12 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 	float time_to_complete_y_traversal;
 	float time_to_complete_z_traversal;
 
-	float initial_tMax;
+	float initial_xMax;
 	float initial_yMax;
 	float initial_zMax;
-
+	glm::vec3 distance_between_points_x;
+	glm::vec3 distance_between_points_y;
+	glm::vec3 distance_between_points_z;
 
 
 	// determine if the distance to 1.0 or -1.0 for x is based on "distance_to_pos" or "distance_to_neg"
@@ -1339,11 +1341,11 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 		border_point.y = temp_origin.y + (rayDirection.y*time_to_complete_x_traversal);				// add slope*time to temp_origin.y
 		border_point.z = temp_origin.z + (rayDirection.z*time_to_complete_x_traversal);				// add slope*time to temp_origin.z
 
-		glm::vec3 distance_between_points = border_point - temp_origin;			// get the difference between the border point and the origin point
-		float squared_x = pow(distance_between_points.x, 2.0);	
-		float squared_y = pow(distance_between_points.y, 2.0);
-		float squared_z = pow(distance_between_points.z, 2.0);
-		initial_tMax = sqrt(squared_x + squared_y + squared_z);			// get the length of the ray between the two points (using pythagorean theorem)
+		distance_between_points_x = border_point - temp_origin;			// get the difference between the border point and the origin point
+		float squared_x = pow(distance_between_points_x.x, 2.0);	
+		float squared_y = pow(distance_between_points_x.y, 2.0);
+		float squared_z = pow(distance_between_points_x.z, 2.0);
+		initial_xMax = sqrt(squared_x + squared_y + squared_z);			// get the length of the ray between the two points (using pythagorean theorem)
 	}
 	else
 	{
@@ -1358,11 +1360,11 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 		border_point.y = temp_origin.y - (rayDirection.y*time_to_complete_x_traversal);
 		border_point.z = temp_origin.z - (rayDirection.z*time_to_complete_x_traversal);
 
-		glm::vec3 distance_between_points = border_point - temp_origin;			// get the difference between the border point and the origin point
-		float squared_x = pow(distance_between_points.x, 2.0);
-		float squared_y = pow(distance_between_points.y, 2.0);
-		float squared_z = pow(distance_between_points.z, 2.0);
-		initial_tMax = sqrt(squared_x + squared_y + squared_z);			// get the length of the ray between the two points (using pythagorean theorem)
+		distance_between_points_x = border_point - temp_origin;			// get the difference between the border point and the origin point
+		float squared_x = pow(distance_between_points_x.x, 2.0);
+		float squared_y = pow(distance_between_points_x.y, 2.0);
+		float squared_z = pow(distance_between_points_x.z, 2.0);
+		initial_xMax = sqrt(squared_x + squared_y + squared_z);			// get the length of the ray between the two points (using pythagorean theorem)
 	}
 
 
@@ -1382,10 +1384,10 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 		border_point.y = 1.0f;
 		border_point.z = temp_origin.z + (rayDirection.z*time_to_complete_y_traversal);
 
-		glm::vec3 distance_between_points = border_point - temp_origin;			// get the difference between the border point and the origin point
-		float squared_x = pow(distance_between_points.x, 2.0);
-		float squared_y = pow(distance_between_points.y, 2.0);
-		float squared_z = pow(distance_between_points.z, 2.0);
+		distance_between_points_y = border_point - temp_origin;			// get the difference between the border point and the origin point
+		float squared_x = pow(distance_between_points_y.x, 2.0);
+		float squared_y = pow(distance_between_points_y.y, 2.0);
+		float squared_z = pow(distance_between_points_y.z, 2.0);
 		initial_yMax = sqrt(squared_x + squared_y + squared_z);			// get the length of the ray between the two points (using pythagorean theorem)
 	}
 	else
@@ -1402,10 +1404,10 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 		border_point.y = 0.0f;
 		border_point.z = temp_origin.z - (rayDirection.z*time_to_complete_y_traversal);
 
-		glm::vec3 distance_between_points = border_point - temp_origin;			// get the difference between the border point and the origin point
-		float squared_x = pow(distance_between_points.x, 2.0);
-		float squared_y = pow(distance_between_points.y, 2.0);
-		float squared_z = pow(distance_between_points.z, 2.0);
+		distance_between_points_y = border_point - temp_origin;			// get the difference between the border point and the origin point
+		float squared_x = pow(distance_between_points_y.x, 2.0);
+		float squared_y = pow(distance_between_points_y.y, 2.0);
+		float squared_z = pow(distance_between_points_y.z, 2.0);
 		initial_yMax = sqrt(squared_x + squared_y + squared_z);			// get the length of the ray between the two points (using pythagorean theorem)
 
 
@@ -1428,10 +1430,10 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 		border_point.y = temp_origin.y + (rayDirection.y*time_to_complete_z_traversal);
 		border_point.z = 1.0f;
 
-		glm::vec3 distance_between_points = border_point - temp_origin;			// get the difference between the border point and the origin point
-		float squared_x = pow(distance_between_points.x, 2.0);
-		float squared_y = pow(distance_between_points.y, 2.0);
-		float squared_z = pow(distance_between_points.z, 2.0);
+		distance_between_points_z = border_point - temp_origin;			// get the difference between the border point and the origin point
+		float squared_x = pow(distance_between_points_z.x, 2.0);
+		float squared_y = pow(distance_between_points_z.y, 2.0);
+		float squared_z = pow(distance_between_points_z.z, 2.0);
 		initial_zMax = sqrt(squared_x + squared_y + squared_z);			// get the length of the ray between the two points (using pythagorean theorem)
 	}
 	else
@@ -1447,10 +1449,10 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 		border_point.y = temp_origin.y - (rayDirection.y*time_to_complete_z_traversal);
 		border_point.z = 1.0f;
 
-		glm::vec3 distance_between_points = border_point - temp_origin;			// get the difference between the border point and the origin point
-		float squared_x = pow(distance_between_points.x, 2.0);
-		float squared_y = pow(distance_between_points.y, 2.0);
-		float squared_z = pow(distance_between_points.z, 2.0);
+		distance_between_points_z = border_point - temp_origin;			// get the difference between the border point and the origin point
+		float squared_x = pow(distance_between_points_z.x, 2.0);
+		float squared_y = pow(distance_between_points_z.y, 2.0);
+		float squared_z = pow(distance_between_points_z.z, 2.0);
 		initial_zMax = sqrt(squared_x + squared_y + squared_z);			// get the length of the ray between the two points (using pythagorean theorem)
 
 
@@ -1460,141 +1462,118 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 	cout << "Traversal time y: " << time_to_complete_y_traversal << endl;
 	cout << "Traversal time z: " << time_to_complete_z_traversal << endl;
 
+	cout << "Initial x delta value: " << initial_xMax << endl;
+	cout << "Initial y delta value: " << initial_yMax << endl;
+	cout << "Initial z delta value: " << initial_zMax << endl;
+
+	float xDelta_multiplier = abs(1.0 / distance_between_points_x.x);			// value to multiply to get the Delta for x between point 0.0f and 1.0f
+	float yDelta_multiplier = abs(1.0 / distance_between_points_y.y);			// value to multiply to get the Delta for y between point 0.0f and 1.0f	
+	float zDelta_multiplier = abs(1.0 / distance_between_points_z.z);			// value to multiply to get the Delta for z between point 0.0f and 1.0f
+	float xDelta_final = initial_xMax * xDelta_multiplier;						// xDelta_final is the true delta distance to traverse for a start value of x = 0.0, and end value of 1.0 on this ray
+	float yDelta_final = initial_yMax * yDelta_multiplier;						// yDelta_final is the true delta distance to traverse for a start value of y = 0.0, and end value of 1.0 on this ray
+	float zDelta_final = initial_zMax * zDelta_multiplier;						// zDelta_final is the true delta distance to traverse for a start value of z = 0.0, and end value of 1.0 on this ray
 
 
-	/*
-	//cout << "Slope: " << rayDirection.x << ", " << rayDirection.y << ", " << rayDirection.z << endl;
-
-	// step 2: calculate length of ray between 0.0, 0.0, 0.0, and the x/y/z of the direction point
 	float x_pow = pow(rayDirection.x, 2.0);		// square difference in x, that is between two points
 	float y_pow = pow(rayDirection.y, 2.0);		// square difference in y, that is between two points
 	float z_pow = pow(rayDirection.z, 2.0);		// square difference in z, that is between two points
-	float rayLength = sqrt(x_pow + y_pow + z_pow);
+	float rayLength = sqrt(x_pow + y_pow + z_pow);		// use ray length to determine end of while loop
 	//cout << "Ray Length: " << rayLength << endl;
 
 	// step 3: calculate the end point of the ray, by dividing the desired length (from input parameter) by the rayLength result above.
 	// we will multiply all points from rayLength by this value, to determine the coordinates of the point at the end of the ray.
 	float rayMultiplier = length / rayLength;
 
-	//cout << "Ray multiplier: " << rayMultiplier << endl;
+	float distanceTraversed = 0.0f;		// the amount of distance traversed on the array; incremented with each loop
+	// calculate the least minimums, based on initial maxes
+	int initialFlagLoop = 0;			// indicates what to do after first iteration
 
-	// step 4: calculate the offset of x/y/z needed to get to the end of the ray; do this by multiplying rayDirection values by the rayMultiplier.
-	float x_offset = rayDirection.x * rayMultiplier;
-	float y_offset = rayDirection.y * rayMultiplier;
-	float z_offset = rayDirection.z * rayMultiplier;
+	while (distanceTraversed < length)
+	{
+		if (initial_xMax < initial_yMax)
+		{
+			if (initial_xMax < initial_zMax)
+			{
+				
+				if (initialFlagLoop == 0)
+				{
+					distanceTraversed = distanceTraversed + initial_xMax;
+				}
+				else if (initialFlagLoop == 1)
+				{
+					distanceTraversed = distanceTraversed + xDelta_final;
+				}
+				block_traverse_x += 1;
+				initial_xMax = initial_xMax + xDelta_final;
+				initialFlagLoop = 1;
+			}
+			else
+			{
+				if (initialFlagLoop == 0)
+				{
+					distanceTraversed = distanceTraversed + initial_zMax;
+				}
+				else if (initialFlagLoop == 1)
+				{
+					distanceTraversed = distanceTraversed + zDelta_final;
+				}
+				block_traverse_z += 1;
+				initial_zMax = initial_zMax + zDelta_final;
+				initialFlagLoop = 1;
+			}
+		}
+		else
+		{
+			if (initial_yMax < initial_zMax)
+			{
+				if (initialFlagLoop == 0)
+				{
+					distanceTraversed = distanceTraversed + initial_yMax;
+				}
+				else if (initialFlagLoop == 1)
+				{
+					distanceTraversed = distanceTraversed + yDelta_final;
+				}
+				block_traverse_y += 1;
+				initial_yMax = initial_yMax + yDelta_final;
+				initialFlagLoop = 1;
+			}
+			else
+			{
+				if (initialFlagLoop == 0)
+				{
+					distanceTraversed = distanceTraversed + initial_zMax;
+				}
+				else if (initialFlagLoop == 1)
+				{
+					distanceTraversed = distanceTraversed + zDelta_final;
+				}
+				block_traverse_z += 1;
+				initial_zMax = initial_zMax + zDelta_final;
+				initialFlagLoop = 1;
+			}
+		}
+		cout << "distance traversed: " << distanceTraversed << endl;
+		//cout << "ray length" << rayLength << endl;
+	}
 
-	float x_offset_pow = pow(x_offset, 2.0);
-	float y_offset_pow = pow(y_offset, 2.0);
-	float z_offset_pow = pow(z_offset, 2.0);
-	float newRayLength = sqrt(x_offset_pow + y_offset_pow + z_offset_pow);		// newRayLength should be equal to the value of the input parameter "length"
+	cout << "True x delta value: " << xDelta_final << endl;						// using xDelta_final is faster than square root below.
 
-	//cout << "Final ray length test: " << newRayLength << endl;
-
-
-	// step 6: determine distances to traverse, assuming origin's x/y/z is less than 1.0; convert to absolute distance in the event that rayDirection.x, y, or z is negative
-	float tmax_x = abs(1.0 / rayDirection.x);	// x = 1
-	float tmax_y = abs(1.0 / rayDirection.y);	// y = 1
-	float tmax_z = abs(1.0 / rayDirection.z);	// z = 1 
-
-	// step 5: get distances for Deltas
-
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////// Determine distance to max's (that is, "first x", "first y", "first z")
-
-	// x delta
-	float xDelta_Begin_distance = x_border_distance;							// 
-	float xDelta_multiplier = xDelta_Begin_distance * tmax_x;						// multiply the distance to traverse to get to x = 1.0 by  the multiplier for x (in this case, 5)	
-	float xDelta_x_coord = origin_point.x + (rayDirection.x * xDelta_multiplier);	// get the value of x where x = 1
-	float xDelta_y_coord = origin_point.y + (rayDirection.y * xDelta_multiplier);	// get the value of y where x = 1
-	float xDelta_z_coord = origin_point.z + (rayDirection.z * xDelta_multiplier);	// get the value of z where x = 1
-	float xDelta_x_pow = pow(xDelta_x_coord, 2.0);
-	float xDelta_y_pow = pow(xDelta_y_coord, 2.0);
-	float xDelta_z_pow = pow(xDelta_z_coord, 2.0);
-	float xInitialDeltaDistance = sqrt(xDelta_x_pow + xDelta_y_pow + xDelta_z_pow);
-
-	// y delta
-	float yDelta_Begin_distance = y_border_distance;
-	float yDelta_multiplier = yDelta_Begin_distance * tmax_y;
-	float yDelta_x_coord = origin_point.x + (rayDirection.x * yDelta_multiplier);
-	float yDelta_y_coord = origin_point.y + (rayDirection.y * yDelta_multiplier);
-	float yDelta_z_coord = origin_point.z + (rayDirection.z * yDelta_multiplier);
-	float yDelta_x_pow = pow(yDelta_x_coord, 2.0);
-	float yDelta_y_pow = pow(yDelta_y_coord, 2.0);
-	float yDelta_z_pow = pow(yDelta_z_coord, 2.0);
-	float yInitialDeltaDistance = sqrt(yDelta_x_pow + yDelta_y_pow + yDelta_z_pow);
-
-	// z delta
-	float zDelta_Begin_distance = z_border_distance;
-	float zDelta_multiplier = zDelta_Begin_distance * tmax_z;
-	float zDelta_x_coord = origin_point.x + (rayDirection.x * zDelta_multiplier);
-	float zDelta_y_coord = origin_point.y + (rayDirection.y * zDelta_multiplier);
-	float zDelta_z_coord = origin_point.z + (rayDirection.z * zDelta_multiplier);
-	float zDelta_x_pow = pow(zDelta_x_coord, 2.0);
-	float zDelta_y_pow = pow(zDelta_y_coord, 2.0);
-	float zDelta_z_pow = pow(zDelta_z_coord, 2.0);
-	float zInitialDeltaDistance = sqrt(zDelta_x_pow + zDelta_y_pow + zDelta_z_pow);
-
-	//cout << "Delta checks: " << endl;
-
-	//cout << "-------------checks for first x/y/z line cross --------------" << endl;
-	//cout << "Delta x, x: " << xDelta_x_coord << endl;
-	//cout << "Delta x, y: " << xDelta_y_coord << endl;
-	//cout << "Delta x, z: " << xDelta_z_coord << endl;
-	//cout << "Delta x distance to first point: " << xInitialDeltaDistance << endl;
-
-	//cout << "Delta y, x: " << yDelta_x_coord << endl;
-	//cout << "Delta y, y: " << yDelta_y_coord << endl;
-	//cout << "Delta y, z: " << yDelta_z_coord << endl;
-	//cout << "Delta y distance to first point: " << yInitialDeltaDistance << endl;
-
-	//cout << "Delta z, x: " << zDelta_x_coord << endl;
-	//cout << "Delta z, y: " << zDelta_y_coord << endl;
-	//cout << "Delta z, z: " << zDelta_z_coord << endl;
-	//cout << "Delta z distance to first point: " << zInitialDeltaDistance << endl;
-
-
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////// Determine delta's of all x, y, z
-
-	// x delta
-	xDelta_Begin_distance = 1.0f;							// get the distance traveled between x = 1.0f and x  = 0.2f
-	xDelta_multiplier = xDelta_Begin_distance * (1.0 / rayDirection.x);						// multiply the distance to traverse to get to x = 1.0 by  the multiplier for x (in this case, 5)	
-	xDelta_x_coord = (rayDirection.x * xDelta_multiplier);	// get the value of x where x = 1
-	xDelta_y_coord = (rayDirection.y * xDelta_multiplier);	// get the value of y where x = 1
-	xDelta_z_coord = (rayDirection.z * xDelta_multiplier);	// get the value of z where x = 1
-	xDelta_x_pow = pow(xDelta_x_coord, 2.0);
-	xDelta_y_pow = pow(xDelta_y_coord, 2.0);
-	xDelta_z_pow = pow(xDelta_z_coord, 2.0);
-	float xDeltaDistance = sqrt(xDelta_x_pow + xDelta_y_pow + xDelta_z_pow);
-
-	// y delta
-	yDelta_Begin_distance = 1.0f;
-	yDelta_multiplier = yDelta_Begin_distance * (1.0 / rayDirection.y);
-	yDelta_x_coord = (rayDirection.x * yDelta_multiplier);
-	yDelta_y_coord = (rayDirection.y * yDelta_multiplier);
-	yDelta_z_coord = (rayDirection.z * yDelta_multiplier);
-	yDelta_x_pow = pow(yDelta_x_coord, 2.0);
-	yDelta_y_pow = pow(yDelta_y_coord, 2.0);
-	yDelta_z_pow = pow(yDelta_z_coord, 2.0);
-	float yDeltaDistance = sqrt(yDelta_x_pow + yDelta_y_pow + yDelta_z_pow);
-
-	// z delta
-	zDelta_Begin_distance = 1.0f;
-	zDelta_multiplier = zDelta_Begin_distance * (1.0 / rayDirection.z);
-	zDelta_x_coord = (rayDirection.x * zDelta_multiplier);
-	zDelta_y_coord = (rayDirection.y * zDelta_multiplier);
-	zDelta_z_coord = (rayDirection.z * zDelta_multiplier);
-	zDelta_x_pow = pow(zDelta_x_coord, 2.0);
-	zDelta_y_pow = pow(zDelta_y_coord, 2.0);
-	zDelta_z_pow = pow(zDelta_z_coord, 2.0);
-	float zDeltaDistance = sqrt(zDelta_x_pow + zDelta_y_pow + zDelta_z_pow);
-
-
-
-	//cout << "-------------checks for true x/y/z line delta --------------" << endl;
-
-	//cout << "x delta traversal: " << xDeltaDistance << endl;
-	//cout << "y delta traversal: " << yDeltaDistance << endl;
-	//cout << "z delta traversal: " << zDeltaDistance << endl;
+	cout << "number of x traversals: " << block_traverse_x << endl;
+	cout << "number of y traversals: " << block_traverse_y << endl;
+	cout << "number of z traversals: " << block_traverse_z << endl;
+	//cout << "True y delta value: " << yDelta_final << endl;
+	//cout << "True z delta value: " << zDelta_final << endl;
+	
+	/*
+	cout << "Pythagoraen x delta value: " << sqrt(
+		pow(((distance_between_points_x.x*xDelta_multiplier)), 2.0) +
+		pow(((distance_between_points_x.y*xDelta_multiplier)), 2.0) +
+		pow(((distance_between_points_x.z*xDelta_multiplier)), 2.0)
+	) 
+		<< endl;
 	*/
+
 }
 
 void OrganicSystem::SetupWorldArea(float x, float y, float z)

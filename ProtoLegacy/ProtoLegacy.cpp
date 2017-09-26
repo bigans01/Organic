@@ -321,7 +321,7 @@ int main()
 	//glm::vec3 originVec(.2, .2, .2);
 	//glm::vec3 directionVec(.6, .3, .3);
 
-	glm::vec3 originVec(.5, .5, .5);
+	glm::vec3 originVec(.5, .3, .5);
 	//glm::vec3 originVec(.4, .3, .3);
 	glm::vec3 directionVec(.0822, -.0568, .0006);
 
