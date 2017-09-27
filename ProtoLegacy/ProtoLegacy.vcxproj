@@ -157,6 +157,7 @@
     <ClInclude Include="ECBCollectionPainter.h" />
     <ClInclude Include="ECBOutwardFaceFlags.h" />
     <ClInclude Include="ECBXAxisCarvePlan.h" />
+    <ClInclude Include="EnclaveBlockRayTracker.h" />
     <ClInclude Include="EnclaveCollection.h" />
     <ClInclude Include="EnclaveCollectionActivateList.h" />
     <ClInclude Include="EnclaveCollectionActivateListT2.h" />

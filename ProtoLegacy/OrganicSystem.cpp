@@ -1299,6 +1299,7 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 	CameraBlockKey.y = y_container.BlockCoord;
 	CameraBlockKey.z = z_container.BlockCoord;
 
+	cout << "Origin point z: " << origin_point.z <<"Collection: (" << CameraCollectionKey.x << ", " << CameraCollectionKey.y << ", " << CameraCollectionKey.z << ") || Enclave: (" << CameraChunkKey.x << ", " << CameraChunkKey.y << ", " << CameraChunkKey.z << " ) || Block: " << CameraBlockKey.x << ", " << CameraBlockKey.y << ", " << CameraBlockKey.z  << ")" << endl;
 	// get the temp origin. Temp_origin stores the exact x/y/z coordinates, being greater >= 0, and < 1 (?). This is used to compare to 1.0f values used below.
 	float block_x_precise = x_container.ExactBlockCoord;	// get the value for the exact x/y/z coordinates within a block
 	float block_y_precise = y_container.ExactBlockCoord;
@@ -1458,13 +1459,13 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 
 	}
 
-	cout << "Traversal time x: " << time_to_complete_x_traversal << endl;
-	cout << "Traversal time y: " << time_to_complete_y_traversal << endl;
-	cout << "Traversal time z: " << time_to_complete_z_traversal << endl;
+	//cout << "Traversal time x: " << time_to_complete_x_traversal << endl;
+	//cout << "Traversal time y: " << time_to_complete_y_traversal << endl;
+	//cout << "Traversal time z: " << time_to_complete_z_traversal << endl;
 
-	cout << "Initial x delta value: " << initial_xMax << endl;
-	cout << "Initial y delta value: " << initial_yMax << endl;
-	cout << "Initial z delta value: " << initial_zMax << endl;
+	//cout << "Initial x delta value: " << initial_xMax << endl;
+	//cout << "Initial y delta value: " << initial_yMax << endl;
+	//cout << "Initial z delta value: " << initial_zMax << endl;
 
 	float xDelta_multiplier = abs(1.0 / distance_between_points_x.x);			// value to multiply to get the Delta for x between point 0.0f and 1.0f
 	float yDelta_multiplier = abs(1.0 / distance_between_points_y.y);			// value to multiply to get the Delta for y between point 0.0f and 1.0f	
@@ -1503,7 +1504,16 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 				{
 					distanceTraversed = distanceTraversed + xDelta_final;
 				}
-				block_traverse_x += 1;
+
+
+				if (rayDirection.x >= 0.0f)			// if x was positive, traverse +1
+				{
+					block_traverse_x += 1;
+				}
+				else								// otherwise, traverse -1
+				{
+					block_traverse_x -= 1;
+				}
 				initial_xMax = initial_xMax + xDelta_final;
 				initialFlagLoop = 1;
 			}
@@ -1517,7 +1527,17 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 				{
 					distanceTraversed = distanceTraversed + zDelta_final;
 				}
-				block_traverse_z += 1;
+
+
+				if (rayDirection.z >= 0.0f)			// if z was positive, traverse +1
+				{
+					block_traverse_z += 1;
+				}
+				else								// otherwise, traverse -1
+				{
+					block_traverse_z -= 1;
+				}
+
 				initial_zMax = initial_zMax + zDelta_final;
 				initialFlagLoop = 1;
 			}
@@ -1534,7 +1554,16 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 				{
 					distanceTraversed = distanceTraversed + yDelta_final;
 				}
-				block_traverse_y += 1;
+
+
+				if (rayDirection.y >= 0.0f)			// if y was positive, traverse +1
+				{
+					block_traverse_y += 1;
+				}
+				else								// otherwise, traverse -1
+				{
+					block_traverse_y -= 1;
+				}
 				initial_yMax = initial_yMax + yDelta_final;
 				initialFlagLoop = 1;
 			}
@@ -1548,20 +1577,30 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 				{
 					distanceTraversed = distanceTraversed + zDelta_final;
 				}
-				block_traverse_z += 1;
+
+
+				if (rayDirection.z >= 0.0f)			// if z was positive, traverse +1
+				{
+					block_traverse_z += 1;
+				}
+				else								// otherwise, traverse -1
+				{
+					block_traverse_z -= 1;
+				}
+
 				initial_zMax = initial_zMax + zDelta_final;
 				initialFlagLoop = 1;
 			}
 		}
-		cout << "distance traversed: " << distanceTraversed << endl;
+		//cout << "distance traversed: " << distanceTraversed << endl;
 		//cout << "ray length" << rayLength << endl;
 	}
 
-	cout << "True x delta value: " << xDelta_final << endl;						// using xDelta_final is faster than square root below.
+	//cout << "True x delta value: " << xDelta_final << endl;						// using xDelta_final is faster than square root below.
 
-	cout << "number of x traversals: " << block_traverse_x << endl;
-	cout << "number of y traversals: " << block_traverse_y << endl;
-	cout << "number of z traversals: " << block_traverse_z << endl;
+	//cout << "number of x traversals: " << block_traverse_x << endl;
+	//cout << "number of y traversals: " << block_traverse_y << endl;
+	//cout << "number of z traversals: " << block_traverse_z << endl;
 	//cout << "True y delta value: " << yDelta_final << endl;
 	//cout << "True z delta value: " << zDelta_final << endl;
 	

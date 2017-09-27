@@ -49,6 +49,8 @@ public:
 	glm::mat4 Model;															// (temporary) OpenGL model matrix
 	glm::mat4 MVP;																// (temporary) will store the result of multiplying Projection * View * Model matrices.																			
 	glm::vec3 position = glm::vec3(30, 0, 5);									// Initial position of camera : on +30x, 0y, +5z
+	glm::vec3 direction;
+	glm::vec3* directionVecPtr;
 	glm::vec3* positionVecPtr;													// a pointer the position vector.
 	float horizontalAngle = 3.14f;												// Initial horizontal angle : toward -Z
 	float verticalAngle = 0.0f;													// Initial vertical angle : none

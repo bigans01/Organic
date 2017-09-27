@@ -666,10 +666,18 @@ int main()
 
 	// ------------------------------------MAIN WORLD LOOP			NOTE: use cout << fixed for exact timestamp values!
 	//Organic.SetRenderMode(0);
+	// set up pointers
+
+
 	do {
 
 		auto start3 = std::chrono::high_resolution_clock::now();
-		Organic.RenderGLTerrain();	// Step 1 (?): perform render frame work
+		// |||||||||||||||||||||| PHASE 1: Terrain changes
+
+
+		// |||||||||||||||||||||| PHASE 2: Render terrain and targeted blocks
+		Organic.RenderGLTerrain();																				// Step 1 (?): perform render frame work
+		Organic.DetermineMouseCursorTargets2(Organic.OGLM.positionVecPtr, Organic.OGLM.directionVecPtr, 10);	// Step 2: determine targetable blocks 
 
 		auto finish3 = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<double> elapsed3 = finish3 - start3;

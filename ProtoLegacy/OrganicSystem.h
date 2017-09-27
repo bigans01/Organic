@@ -33,6 +33,7 @@ OrganicSystem object contains all objects necessary to preserve information on t
 #include "EnclaveKeyContainer.h"
 #include "CursorPathTraceContainer.h"
 #include "MaterializeCollectionListContainer.h"
+#include "EnclaveBlockRayTracker.h"
 #include "TestList.h"
 #include <GL/glew.h>
 //#define GLFW_DLL		// only used when linking to a DLL version of GLFW.

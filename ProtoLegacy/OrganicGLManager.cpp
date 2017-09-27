@@ -8,6 +8,7 @@ OrganicGLManager::OrganicGLManager()
 {
 	cout << "Organic GL Manager initialized." << endl;
 	positionVecPtr = &position;
+	directionVecPtr = &direction;
 }
 
 void OrganicGLManager::InitializeOpenGL()
@@ -33,8 +34,8 @@ void OrganicGLManager::InitializeOpenGL()
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	// Open a window and create its OpenGL context
-	//GLwindow = glfwCreateWindow(1024, 768, "Organic Testing", NULL, NULL);
-	GLwindow = glfwCreateWindow(2560, 1440, "Organic Testing", NULL, NULL);
+	GLwindow = glfwCreateWindow(1024, 768, "Organic Testing", NULL, NULL);
+	//GLwindow = glfwCreateWindow(2560, 1440, "Organic Testing", NULL, NULL);
 	if (GLwindow == NULL) {
 		fprintf(stderr, "Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible. Try the 2.1 version of the tutorials.\n");
 		getchar();
@@ -250,7 +251,7 @@ void OrganicGLManager::computeMatricesFromInputs()
 	verticalAngle += mouseSpeed * float(768 / 2 - ypos);
 
 	// Direction : Spherical coordinates to Cartesian coordinates conversion
-	glm::vec3 direction(
+	direction = glm::vec3(
 		cos(verticalAngle) * sin(horizontalAngle),
 		sin(verticalAngle),
 		cos(verticalAngle) * cos(horizontalAngle)
