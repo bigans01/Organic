@@ -62,7 +62,7 @@ void Enclave::InitializeRenderArray()
 				Sorted.RenderArray[index]->blockid = 0;
 				Sorted.RenderArray[index]->structarray[0].x = 0;		// vertex 0
 				Sorted.RenderArray[index]->structarray[0].y = 2;
-				Sorted.RenderArray[index]->structarray[0].z = -2;
+				Sorted.RenderArray[index]->structarray[0].z = 2;		// old: -2
 
 				Sorted.RenderArray[index]->structarray[1].x = 0;		// vertex 1
 				Sorted.RenderArray[index]->structarray[1].y = 2;
@@ -70,7 +70,7 @@ void Enclave::InitializeRenderArray()
 
 				Sorted.RenderArray[index]->structarray[2].x = 0;		// vertex 2
 				Sorted.RenderArray[index]->structarray[2].y = 0;
-				Sorted.RenderArray[index]->structarray[2].z = -2;
+				Sorted.RenderArray[index]->structarray[2].z = 2;		// old -2 
 
 				Sorted.RenderArray[index]->structarray[3].x = 0;		// vertex 3 (true 0)
 				Sorted.RenderArray[index]->structarray[3].y = 0;
@@ -78,7 +78,7 @@ void Enclave::InitializeRenderArray()
 
 				Sorted.RenderArray[index]->structarray[4].x = 2;		// vertex 4
 				Sorted.RenderArray[index]->structarray[4].y = 2;
-				Sorted.RenderArray[index]->structarray[4].z = -2;
+				Sorted.RenderArray[index]->structarray[4].z = 2;		// old : -2
 
 				Sorted.RenderArray[index]->structarray[5].x = 2;		// vertex 5
 				Sorted.RenderArray[index]->structarray[5].y = 2;
@@ -86,7 +86,7 @@ void Enclave::InitializeRenderArray()
 
 				Sorted.RenderArray[index]->structarray[6].x = 2;		// vertex 6
 				Sorted.RenderArray[index]->structarray[6].y = 0;
-				Sorted.RenderArray[index]->structarray[6].z = -2;
+				Sorted.RenderArray[index]->structarray[6].z = 2;		// old: -2
 
 				Sorted.RenderArray[index]->structarray[7].x = 2;		// vertex 7
 				Sorted.RenderArray[index]->structarray[7].y = 0;
@@ -117,7 +117,7 @@ void Enclave::InitializeRenderArray(int blockid)
 				Sorted.RenderArray[index]->blockid = blockid;
 				Sorted.RenderArray[index]->structarray[0].x = 0;		// vertex 0
 				Sorted.RenderArray[index]->structarray[0].y = 2;
-				Sorted.RenderArray[index]->structarray[0].z = -2;
+				Sorted.RenderArray[index]->structarray[0].z = 2;		// old: -2
 
 				Sorted.RenderArray[index]->structarray[1].x = 0;		// vertex 1
 				Sorted.RenderArray[index]->structarray[1].y = 2;
@@ -125,7 +125,7 @@ void Enclave::InitializeRenderArray(int blockid)
 
 				Sorted.RenderArray[index]->structarray[2].x = 0;		// vertex 2
 				Sorted.RenderArray[index]->structarray[2].y = 0;
-				Sorted.RenderArray[index]->structarray[2].z = -2;
+				Sorted.RenderArray[index]->structarray[2].z = 2;		// old -2 
 
 				Sorted.RenderArray[index]->structarray[3].x = 0;		// vertex 3 (true 0)
 				Sorted.RenderArray[index]->structarray[3].y = 0;
@@ -133,7 +133,7 @@ void Enclave::InitializeRenderArray(int blockid)
 
 				Sorted.RenderArray[index]->structarray[4].x = 2;		// vertex 4
 				Sorted.RenderArray[index]->structarray[4].y = 2;
-				Sorted.RenderArray[index]->structarray[4].z = -2;
+				Sorted.RenderArray[index]->structarray[4].z = 2;		// old : -2
 
 				Sorted.RenderArray[index]->structarray[5].x = 2;		// vertex 5
 				Sorted.RenderArray[index]->structarray[5].y = 2;
@@ -141,7 +141,7 @@ void Enclave::InitializeRenderArray(int blockid)
 
 				Sorted.RenderArray[index]->structarray[6].x = 2;		// vertex 6
 				Sorted.RenderArray[index]->structarray[6].y = 0;
-				Sorted.RenderArray[index]->structarray[6].z = -2;
+				Sorted.RenderArray[index]->structarray[6].z = 2;		// old: -2
 
 				Sorted.RenderArray[index]->structarray[7].x = 2;		// vertex 7
 				Sorted.RenderArray[index]->structarray[7].y = 0;
