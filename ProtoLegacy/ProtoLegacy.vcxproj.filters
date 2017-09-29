@@ -234,6 +234,12 @@
     <ClInclude Include="EnclaveBlockRayTracker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="EnclaveCollectionState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EnclaveCollectionStateArray.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -324,6 +330,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="OGLMBufferManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EnclaveBlockRayTracker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EnclaveCollectionStateArray.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EnclaveCollectionState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

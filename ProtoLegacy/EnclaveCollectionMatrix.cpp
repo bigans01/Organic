@@ -1345,8 +1345,12 @@ CursorPathTraceContainer EnclaveCollectionMatrix::GetCursorCoordTrace(float x)
 
 		dist_to_pos = ceil(fmod(fmod(x, 32), 4)) - (fmod(fmod(x, 32), 4));
 		dist_to_neg = (fmod(fmod(x, 32), 4)) - block_x;
-		exact_xyz = 1.0f - dist_to_pos;										// set the exact point in the block to be 1.0f - the distance to get to 1.0f.
-
+		exact_xyz = 0.0f + fmod(fmod(fmod(x, 32), 4), 1);									// set the exact point in the block to be 1.0f - the distance to get to 1.0f. // OLD: exact_xyz = 1.0f - dist_to_pos;
+		cout << "ceil of fmod x2: " << ceil(fmod(fmod(x, 32), 4)) << endl;
+		cout << "without ceil: " << fmod(fmod(x, 32), 4) << endl;
+		cout << "fmod test 1: " << fmod(x, 32) << endl;
+		cout << "fmod test 2: " << fmod(fmod(x, 32), 4) << endl;
+		cout << " exact_xyz mid-calc: " << exact_xyz << endl;
 
 		//cout << "NoOfCollections passed: " << NoOfCollections << endl;
 	}

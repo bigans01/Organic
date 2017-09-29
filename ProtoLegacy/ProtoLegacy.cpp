@@ -309,30 +309,7 @@ int main()
 	Organic.SetOrganicCell2(mainthreadpoolref2);			// set the Organic instance's second worker thread
 	Organic.AddOrganicTextureMetaArray("base");					// set up the texture map; first ever map will be named "base"
 	Organic.AddOrganicVtxColorMetaArray("base");
-	auto worldsetupbegin = std::chrono::high_resolution_clock::now();
-	Organic.SetupWorldArea(5.0f, -50.0f, 34.0f);				// sets the exact point of the camera in the world, and initializes other world area meta data (current collection,  chunk, block, vectors for "picking", etc)
-	auto worldsetupend = std::chrono::high_resolution_clock::now();
-	std::chrono::duration<double> worldsetupelapsed = worldsetupend - worldsetupbegin;
-	std::cout << "Elapsed time (World set up): " << worldsetupelapsed.count() << endl;
-
-	//glm::vec3 originVec(.4,.3,.3);
-	//glm::vec3 directionVec(.8,.4,.4);
-
-	//glm::vec3 originVec(.2, .2, .2);
-	//glm::vec3 directionVec(.6, .3, .3);
-
-	glm::vec3 originVec(.5, .3, .5);
-	//glm::vec3 originVec(.4, .3, .3);
-	glm::vec3 directionVec(.0822, -.0568, .0006);
-
-	glm::vec3* originVecPtr = &originVec;
-	glm::vec3* directionVecPtr = &directionVec;
-
-	auto targetsbegin = std::chrono::high_resolution_clock::now();
-	Organic.DetermineMouseCursorTargets2(originVecPtr, directionVecPtr, 10);
-	auto targetsend = std::chrono::high_resolution_clock::now();
-	std::chrono::duration<double> targetselapsed = targetsend - targetsbegin;
-	std::cout << "Elapsed time (Terrain targeting): " << targetselapsed.count() << endl;
+	
 
 
 	EnclaveManifestFactoryT1* factoryRef;
@@ -667,17 +644,44 @@ int main()
 	// ------------------------------------MAIN WORLD LOOP			NOTE: use cout << fixed for exact timestamp values!
 	//Organic.SetRenderMode(0);
 	// set up pointers
+	auto worldsetupbegin = std::chrono::high_resolution_clock::now();
+	Organic.SetupWorldArea(5.7f, 27.0f, 10.0f);				// sets the exact point of the camera in the world, and initializes other world area meta data (current collection,  chunk, block, vectors for "picking", etc)
+	
+	auto worldsetupend = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> worldsetupelapsed = worldsetupend - worldsetupbegin;
+	std::cout << "Elapsed time (World set up): " << worldsetupelapsed.count() << endl;
 
+	//glm::vec3 originVec(.4,.3,.3);
+	//glm::vec3 directionVec(.8,.4,.4);
+
+	//glm::vec3 originVec(.2, .2, .2);
+	//glm::vec3 directionVec(.6, .3, .3);
+
+	glm::vec3 originVec(5.7f, 27.0f, 10.0f);
+	//glm::vec3 originVec(.4, .3, .3);
+	glm::vec3 directionVec(.0822, -.0568, .060);
+
+	glm::vec3* originVecPtr = &originVec;
+	glm::vec3* directionVecPtr = &directionVec;
+	cout << "-----------------------------------cursor target testing..." << endl;
+	Organic.DetermineMouseCursorTargets2(Organic.OGLM.positionVecPtr, directionVecPtr, 10);	// Step 3: determine targetable blocks 
+
+	auto targetsbegin = std::chrono::high_resolution_clock::now();
+	//Organic.DetermineMouseCursorTargets2(originVecPtr, directionVecPtr, 10);
+	auto targetsend = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> targetselapsed = targetsend - targetsbegin;
+	//std::cout << "Elapsed time (Terrain targeting): " << targetselapsed.count() << endl;
 
 	do {
 
 		auto start3 = std::chrono::high_resolution_clock::now();
-		// |||||||||||||||||||||| PHASE 1: Terrain changes
+		// |||||||||||||||||||||| PHASE 1: Terrain. collection pointer changes
 
 
 		// |||||||||||||||||||||| PHASE 2: Render terrain and targeted blocks
 		Organic.RenderGLTerrain();																				// Step 1 (?): perform render frame work
-		Organic.DetermineMouseCursorTargets2(Organic.OGLM.positionVecPtr, Organic.OGLM.directionVecPtr, 10);	// Step 2: determine targetable blocks 
+		// Step 2: check if camera has moved to another collection; if so shift the OrganicCollectionPointerMatrix(?)
+		//Organic.DetermineMouseCursorTargets2(Organic.OGLM.positionVecPtr, Organic.OGLM.directionVecPtr, 10);	// Step 3: determine targetable blocks 
 
 		auto finish3 = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<double> elapsed3 = finish3 - start3;

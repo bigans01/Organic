@@ -161,6 +161,8 @@
     <ClInclude Include="EnclaveCollection.h" />
     <ClInclude Include="EnclaveCollectionActivateList.h" />
     <ClInclude Include="EnclaveCollectionActivateListT2.h" />
+    <ClInclude Include="EnclaveCollectionState.h" />
+    <ClInclude Include="EnclaveCollectionStateArray.h" />
     <ClInclude Include="EnclaveCollectionBlueprint.h" />
     <ClInclude Include="EnclaveCollectionBlueprintMatrix.h" />
     <ClInclude Include="EnclaveCollectionBorderFlags.h" />
@@ -220,11 +222,14 @@
     <ClInclude Include="VertexReadingOrder.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="EnclaveBlockRayTracker.cpp" />
     <ClCompile Include="EnclaveCollection.cpp" />
     <ClCompile Include="EnclaveCollectionBlueprint.cpp" />
     <ClCompile Include="EnclaveCollectionBlueprintMatrix.cpp" />
     <ClCompile Include="EnclaveCollectionMatrix.cpp" />
     <ClCompile Include="Enclave.cpp" />
+    <ClCompile Include="EnclaveCollectionState.cpp" />
+    <ClCompile Include="EnclaveCollectionStateArray.cpp" />
     <ClCompile Include="EnclaveManifest.cpp" />
     <ClCompile Include="EnclaveManifestFactoryT1.cpp" />
     <ClCompile Include="EnclaveMatrix.cpp" />

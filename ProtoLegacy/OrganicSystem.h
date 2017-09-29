@@ -35,6 +35,7 @@ OrganicSystem object contains all objects necessary to preserve information on t
 #include "MaterializeCollectionListContainer.h"
 #include "EnclaveBlockRayTracker.h"
 #include "TestList.h"
+#include "EnclaveCollectionStateArray.h"
 #include <GL/glew.h>
 //#define GLFW_DLL		// only used when linking to a DLL version of GLFW.
 #include <GLFW/glfw3.h>
@@ -62,9 +63,11 @@ public:
 	MaterializeCollectionListContainer MatCollList;
 	thread_pool *Cell1;															// pointer for Cell 1
 	thread_pool *Cell2;															// pointer for Cell 2
+	EnclaveKeyDef::EnclaveKey PreviousCCKey;									// will store the previous Camera Collection key from the previous frame here
 	EnclaveKeyDef::EnclaveKey CameraCollectionKey;								
 	EnclaveKeyDef::EnclaveKey CameraChunkKey;
 	EnclaveKeyDef::EnclaveKey CameraBlockKey;
+	EnclaveCollectionStateArray CollectionStateArray;
 
 	OrganicSystem(int numberOfFactories, int bufferCubeSize);					// default constructor: number of factories, plus the size of the buffer cube
 
