@@ -1275,9 +1275,10 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 	// step 1: calculate direction and slope
 	glm::vec3 origin_point = *originVector;						// original point being checked
 	glm::vec3 direction_point = *directionVector;				// direction vector based on mouse input
+	//cout << "Original vector (" << originVector->x << ", " << originVector->y << ", " << originVector->z << ") " << endl;
 
-	cout << "Origin point: (" << origin_point.x << ", " << origin_point.y << ", " << origin_point.z << ") " << endl;
-	cout << "Direction: (" << direction_point.x << ", " << direction_point.y << ", " << direction_point.z << ") " << endl;
+	//cout << "Origin point: (" << origin_point.x << ", " << origin_point.y << ", " << origin_point.z << ") " << endl;
+	//cout << ">>>>>Direction: (" << direction_point.x << ", " << direction_point.y << ", " << direction_point.z << ") " << endl;
 
 	
 	int block_traverse_x = 0;
@@ -1286,11 +1287,11 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 
 	// second, set up current collection, chunk in collection, and block in chunk
 	CursorPathTraceContainer x_container, y_container, z_container;
-	cout << "Retrieving x container... " << endl;
+	//cout << "Retrieving x container... " << endl;
 	x_container = EnclaveCollections.GetCursorCoordTrace(origin_point.x);
-	cout << "Retrieving y container... " << endl;
+	//cout << "Retrieving y container... " << endl;
 	y_container = EnclaveCollections.GetCursorCoordTrace(origin_point.y);
-	cout << "Retrieving z container... " << endl;
+	//cout << "Retrieving z container... " << endl;
 	z_container = EnclaveCollections.GetCursorCoordTrace(origin_point.z);
 
 	// set values for Camera keys
@@ -1335,17 +1336,29 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 	// cout << "Origin point z: " << origin_point.z <<"Collection: (" << CameraCollectionKey.x << ", " << CameraCollectionKey.y << ", " << CameraCollectionKey.z << ") || Enclave: (" << CameraChunkKey.x << ", " << CameraChunkKey.y << ", " << CameraChunkKey.z << " ) || Block: " << CameraBlockKey.x << ", " << CameraBlockKey.y << ", " << CameraBlockKey.z  << ")" << endl;
 	// get the temp origin. Temp_origin stores the exact x/y/z coordinates, being greater >= 0, and < 1 (?). This is used to compare to 1.0f values used below.
 	float block_x_precise = x_container.ExactBlockCoord;	// get the value for the exact x/y/z coordinates within a block
-	cout << "block_x_precise: " << block_x_precise << endl;
+	//cout << "block_x_precise: " << block_x_precise << endl;
 	float block_y_precise = y_container.ExactBlockCoord;
-	cout << "block_y_precise: " << block_y_precise << endl;
+	//cout << "block_y_precise: " << block_y_precise << endl;
 	float block_z_precise = z_container.ExactBlockCoord;
-	glm::vec3 temp_origin;									// set up a vector that represents the origin (will be used 3 times below)
+	glm::vec3 temp_origin;									// set up a vector that represents the origin (will be used 3 times below); temp origin is the exact block coordinates 
 	temp_origin.x = block_x_precise;
 	temp_origin.y = block_y_precise;
 	temp_origin.z = block_z_precise;
+	
+
+
 
 	glm::vec3 second_point = temp_origin + direction_point;		// add the direction to the temp_origin, store the result in second_point
 	glm::vec3 rayDirection = second_point - temp_origin;		// the difference between the second_point and the temp_origin will determine the rayDirection.
+
+	cout << "----BEGIN ANALYSIS (begin point) ----" << endl;
+	cout << "Origin Point: (" << origin_point.x << ", " << origin_point.y << ", " << origin_point.z << ") " << endl;
+	cout << "Collection: (" << CameraCollectionKey.x << ", " << CameraCollectionKey.y << ", " << CameraCollectionKey.x << ") " << endl;
+	cout << "Chunk: (" << CameraChunkKey.x << ", " << CameraChunkKey.y << ", " << CameraChunkKey.z << ") " << endl;
+	cout << "Block: (" << CameraBlockKey.x << ", " << CameraBlockKey.y << ", " << CameraBlockKey.z << ") " << endl;
+	cout << "Exact Block: (" << block_x_precise << ", " << block_y_precise << ", " << block_z_precise << ") " << endl;
+	cout << "Direction: (" << direction_point.x << ", " << direction_point.y << ", " << direction_point.z << ") " << endl;
+	//cout << "Slope: (" << rayDirection.x << ", " << rayDirection.y << ", " << rayDirection.z << ") " << endl;
 
 	// cout << "|| test of y ray direction: " << rayDirection.y << endl;
 	// --------------------------------------- PHASE 1 BEGIN: determine intial traversal time for x/y/z, determine deltas (distance traveled along ray) for initial x/y/z traversal
@@ -1357,6 +1370,19 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 	float initial_xMax;
 	float initial_yMax;
 	float initial_zMax;
+
+	float normal_xMax;		// the standard time it takes to get from 0.0f to 1.0f
+	float normal_yMax;
+	float normal_zMax;
+
+	float debug_xMax;
+	float debug_yMax;
+	float debug_zMax;
+
+	float initial_xLength;
+	float initial_yLength;
+	float initial_zLength;
+
 	glm::vec3 distance_between_points_x;
 	glm::vec3 distance_between_points_y;
 	glm::vec3 distance_between_points_z;
@@ -1382,7 +1408,13 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 		float squared_x = pow(distance_between_points_x.x, 2.0);	
 		float squared_y = pow(distance_between_points_x.y, 2.0);
 		float squared_z = pow(distance_between_points_x.z, 2.0);
-		initial_xMax = sqrt(squared_x + squared_y + squared_z);			// get the length of the ray between the two points (using pythagorean theorem)
+		//initial_xMax = sqrt(squared_x + squared_y + squared_z);			// get the length of the ray between the two points (using pythagorean theorem)
+		initial_xMax = (1.0f - temp_origin.x) / rayDirection.x;		// get the time it takes to get to 1.0f
+		initial_xLength = sqrt(squared_x + squared_y + squared_z);
+		//debug_xMax = (1.0f - temp_origin.x) / rayDirection.x;			
+		normal_xMax = (1.0f / rayDirection.x);
+
+
 		//cout << "border point x: " << border_point.x << endl;
 		//cout << "temp origin x: " << temp_origin.x << endl;
 		//cout << "distance between points x: " << distance_between_points_x.x << endl;
@@ -1410,7 +1442,13 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 		float squared_x = pow(distance_between_points_x.x, 2.0);
 		float squared_y = pow(distance_between_points_x.y, 2.0);
 		float squared_z = pow(distance_between_points_x.z, 2.0);
-		initial_xMax = sqrt(squared_x + squared_y + squared_z);			// get the length of the ray between the two points (using pythagorean theorem)
+		//initial_xMax = sqrt(squared_x + squared_y + squared_z);			// get the length of the ray between the two points (using pythagorean theorem)
+		initial_xMax = abs((origin_to_border_x_diff) / rayDirection.x);
+		initial_xLength = sqrt(squared_x + squared_y + squared_z);
+		//debug_xMax = abs((origin_to_border_x_diff) / rayDirection.x);	// get the time it takes to get to 1.0f
+		normal_xMax = abs(1.0f / rayDirection.x);
+
+
 	}
 
 
@@ -1434,7 +1472,11 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 		float squared_x = pow(distance_between_points_y.x, 2.0);
 		float squared_y = pow(distance_between_points_y.y, 2.0);
 		float squared_z = pow(distance_between_points_y.z, 2.0);
-		initial_yMax = sqrt(squared_x + squared_y + squared_z);			// get the length of the ray between the two points (using pythagorean theorem)
+		//initial_yMax = sqrt(squared_x + squared_y + squared_z);			// get the length of the ray between the two points (using pythagorean theorem)
+		initial_yMax = (1.0f - temp_origin.y) / rayDirection.y;
+		initial_yLength = sqrt(squared_x + squared_y + squared_z);
+		//debug_yMax = (1.0f - temp_origin.y) / rayDirection.y;			// get the time it takes to get to 1.0f
+		normal_yMax = 1.0f / rayDirection.y;
 	}
 	else
 	{
@@ -1448,9 +1490,9 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 			origin_to_border_y_diff = 1.0f;
 		}
 		time_to_complete_y_traversal = abs(origin_to_border_y_diff / rayDirection.y);	// determine the multiplier needed to get to y = 0.0f, by using y's slope coming from the temp_origin.y value; use abs to get the absolute value (since we are going negative)
-		cout << "|| test of y ray direction: " << rayDirection.y << endl;
+		//cout << "|| test of y ray direction: " << rayDirection.y << endl;
 		//cout << "|| test of abs: " << abs(origin_to_border_y_diff / rayDirection.y) << endl;
-		cout << "|| test of abs: " << origin_to_border_y_diff << endl;
+		//cout << "|| test of abs: " << origin_to_border_y_diff << endl;
 
 		// next, determine length of ray between the origin_point and the point where y = 0.0f (pythagorean)
 		glm::vec3 border_point;
@@ -1459,14 +1501,17 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 		border_point.z = temp_origin.z + abs(rayDirection.z*time_to_complete_y_traversal);
 
 		distance_between_points_y = border_point - temp_origin;			// get the difference between the border point and the origin point
-		cout << "|| test of points between y, y: " <<  distance_between_points_y.y << endl;
+		//cout << "|| test of points between y, y: " <<  distance_between_points_y.y << endl;
 		float squared_x = pow(distance_between_points_y.x, 2.0);
 		float squared_y = pow(distance_between_points_y.y, 2.0);
 		float squared_z = pow(distance_between_points_y.z, 2.0);
 		
-		initial_yMax = sqrt(squared_x + squared_y + squared_z);			// get the length of the ray between the two points (using pythagorean theorem)
-		cout << "|| test of initial y max " << initial_yMax << endl;
-
+		//initial_yMax = sqrt(squared_x + squared_y + squared_z);			// get the length of the ray between the two points (using pythagorean theorem)
+		//cout << "|| test of initial y max " << initial_yMax << endl;
+		initial_yMax = abs((origin_to_border_y_diff) / rayDirection.y);
+		initial_yLength = sqrt(squared_x + squared_y + squared_z);
+		//debug_yMax = abs((origin_to_border_y_diff) / rayDirection.y);	// get the time it takes to get to 1.0f
+		normal_yMax = abs(1.0f / rayDirection.y);
 
 	}
 
@@ -1476,12 +1521,12 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 	float z_border_distance;
 	if (rayDirection.z >= 0.0f)		// if the direction of rayDirection.z is positive, use the distance to positive.
 	{
-		cout << "z border checks..." << endl;
+		//cout << "z border checks..." << endl;
 		z_border_distance = z_container.distance_to_pos;	// the value of z_border_distance will be based on distance_to_pos
 		float border_to_compare_z = 1.0f;
 		float origin_to_border_z_diff = border_to_compare_z - temp_origin.z;
-		cout << "temp origin z" << temp_origin.z << endl;
-		cout << "origin_to_broder_z_diff: " << origin_to_border_z_diff << endl;
+		//cout << "temp origin z" << temp_origin.z << endl;
+		//cout << "origin_to_broder_z_diff: " << origin_to_border_z_diff << endl;
 		time_to_complete_z_traversal = origin_to_border_z_diff / rayDirection.z;
 
 		// next, determine length of ray between the origin_point and the point where z = 1.0f (pythagorean)
@@ -1494,7 +1539,11 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 		float squared_x = pow(distance_between_points_z.x, 2.0);
 		float squared_y = pow(distance_between_points_z.y, 2.0);
 		float squared_z = pow(distance_between_points_z.z, 2.0);
-		initial_zMax = sqrt(squared_x + squared_y + squared_z);			// get the length of the ray between the two points (using pythagorean theorem)
+		//initial_zMax = sqrt(squared_x + squared_y + squared_z);			// get the length of the ray between the two points (using pythagorean theorem)
+		initial_zMax = (1.0f - temp_origin.z) / rayDirection.z;			// get the time it takes to get to 1.0f
+		initial_zLength = sqrt(squared_x + squared_y + squared_z);
+		//debug_zMax = (1.0f - temp_origin.z) / rayDirection.z;
+		normal_zMax = 1.0f / rayDirection.z;
 	}
 	else
 	{
@@ -1518,7 +1567,11 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 		float squared_x = pow(distance_between_points_z.x, 2.0);
 		float squared_y = pow(distance_between_points_z.y, 2.0);
 		float squared_z = pow(distance_between_points_z.z, 2.0);
-		initial_zMax = sqrt(squared_x + squared_y + squared_z);			// get the length of the ray between the two points (using pythagorean theorem)
+		//initial_zMax = sqrt(squared_x + squared_y + squared_z);			// get the length of the ray between the two points (using pythagorean theorem)
+		initial_zMax = abs((origin_to_border_z_diff) / rayDirection.z);	// get the time it takes to get to 1.0f
+		initial_zLength = sqrt(squared_x + squared_y + squared_z);
+		//debug_zMax = abs((origin_to_border_z_diff) / rayDirection.z);
+		normal_zMax = abs(1.0f / rayDirection.z);
 
 
 	}
@@ -1527,13 +1580,21 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 	cout << "Traversal time y: " << time_to_complete_y_traversal << endl;
 	cout << "Traversal time z: " << time_to_complete_z_traversal << endl;
 
-	cout << "Initial x delta value: " << initial_xMax << endl;
-	cout << "Initial y delta value: " << initial_yMax << endl;
-	cout << "Initial z delta value: " << initial_zMax << endl;
+	cout << "Initial x delta time traverse value: " << initial_xMax << endl;
+	cout << "Initial y delta time traverse value: " << initial_yMax << endl;
+	cout << "Initial z delta time traverse value: " << initial_zMax << endl;
+
+	cout << "Initial x length " << initial_xLength << endl;
+	cout << "Initial y length " << initial_yLength << endl;
+	cout << "Initial z length " << initial_zLength << endl;
+
+	cout << "Standard 0 to 1.0f x traverse time value: " << normal_xMax << endl;
+	cout << "Standard 0 to 1.0f y traverse time value: " << normal_yMax << endl;
+	cout << "Standard 0 to 1.0f z traverse time value: " << normal_zMax << endl;
 
 	
 
-	cout << "|| pre y-multiplier, distance between points: " << distance_between_points_y.y << endl;
+	//cout << "|| pre y-multiplier, distance between points: " << distance_between_points_y.y << endl;
 	float xDelta_multiplier = abs(1.0 / distance_between_points_x.x);			// value to multiply to get the Delta for x between point 0.0f and 1.0f
 	float yDelta_multiplier = abs(1.0 / distance_between_points_y.y);			// value to multiply to get the Delta for y between point 0.0f and 1.0f	
 	float zDelta_multiplier = abs(1.0 / distance_between_points_z.z);			// value to multiply to get the Delta for z between point 0.0f and 1.0f
@@ -1564,9 +1625,11 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 	// create an instance of EnclaveBlockRayTracker for traversal; pass in x/y/z containers and a pointer to the EnclaveCollection located at the center of the array in EnclaveCollectionStateArray.StateMatrix
 	int trackResult = 0;
 	EnclaveBlockRayTracker rayTracker(x_container, y_container, z_container, CollectionStateArray.StateMatrix[1][1][1].collectionPtr);
+	int maxTravelAttempts = length;		// set travel (traversal) attempts to 10
+	int travelAttempts = 0;				// set counter to 0
 
-
-	while ((distanceTraversed < length) && trackResult == 0)
+	//while ((distanceTraversed < length) && trackResult == 0)
+	while ((travelAttempts < maxTravelAttempts) && trackResult == 0)
 	{
 		if (initial_xMax < initial_yMax)
 		{
@@ -1598,6 +1661,7 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 					cout << "move west" << endl;
 				}
 				initial_xMax = initial_xMax + xDelta_final;
+				initial_xMax = initial_xMax + normal_xMax;
 				initialFlagLoop = 1;
 			}
 			else
@@ -1626,6 +1690,7 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 				}
 
 				initial_zMax = initial_zMax + zDelta_final;
+				initial_zMax = initial_zMax + normal_zMax;
 				initialFlagLoop = 1;
 			}
 		}
@@ -1656,6 +1721,7 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 					cout << "move below" << endl;
 				}
 				initial_yMax = initial_yMax + yDelta_final;
+				initial_yMax = initial_yMax + normal_yMax;
 				initialFlagLoop = 1;
 			}
 			else
@@ -1684,6 +1750,7 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 				}
 
 				initial_zMax = initial_zMax + zDelta_final;
+				initial_zMax = initial_zMax + normal_zMax;
 				initialFlagLoop = 1;
 			}
 		}
@@ -1692,6 +1759,16 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 		if (trackResult == 1)
 		{
 			cout << "Unveil block found: Enclave (" << rayTracker.enclaveKey.x << ", " << rayTracker.enclaveKey.y << ", " << rayTracker.enclaveKey.z << ") | Block: (" << rayTracker.blockKey.x << ", " << rayTracker.blockKey.y << ", " << rayTracker.blockKey.z << ") " <<  endl;
+		}
+		//if (distanceTraversed >= length)
+		//{
+			//cout << "distance limit exceeded. " << endl;
+		//}
+
+		travelAttempts++;
+		if (travelAttempts == 10)
+		{
+			cout << "attempt limit reached." << endl;
 		}
 	}
 

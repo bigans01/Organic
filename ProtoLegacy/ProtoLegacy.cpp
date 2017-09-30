@@ -657,14 +657,14 @@ int main()
 	//glm::vec3 originVec(.2, .2, .2);
 	//glm::vec3 directionVec(.6, .3, .3);
 
-	glm::vec3 originVec(5.7f, 27.0f, 10.0f);
+	glm::vec3 originVec(4.57875, 27.7045, 7.50482);
 	//glm::vec3 originVec(.4, .3, .3);
-	glm::vec3 directionVec(.0822, -.0568, .060);
+	glm::vec3 directionVec(-0.0117544, -.0235933, -0.971698);
 
 	glm::vec3* originVecPtr = &originVec;
 	glm::vec3* directionVecPtr = &directionVec;
 	cout << "-----------------------------------cursor target testing..." << endl;
-	Organic.DetermineMouseCursorTargets2(Organic.OGLM.positionVecPtr, directionVecPtr, 10);	// Step 3: determine targetable blocks 
+	//Organic.DetermineMouseCursorTargets2(originVecPtr, directionVecPtr, 10);	// Step 3: determine targetable blocks 
 
 	auto targetsbegin = std::chrono::high_resolution_clock::now();
 	//Organic.DetermineMouseCursorTargets2(originVecPtr, directionVecPtr, 10);
@@ -681,7 +681,7 @@ int main()
 		// |||||||||||||||||||||| PHASE 2: Render terrain and targeted blocks
 		Organic.RenderGLTerrain();																				// Step 1 (?): perform render frame work
 		// Step 2: check if camera has moved to another collection; if so shift the OrganicCollectionPointerMatrix(?)
-		//Organic.DetermineMouseCursorTargets2(Organic.OGLM.positionVecPtr, Organic.OGLM.directionVecPtr, 10);	// Step 3: determine targetable blocks 
+		Organic.DetermineMouseCursorTargets2(Organic.OGLM.positionVecPtr, Organic.OGLM.directionVecPtr, 10);	// Step 3: determine targetable blocks 
 
 		auto finish3 = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<double> elapsed3 = finish3 - start3;
