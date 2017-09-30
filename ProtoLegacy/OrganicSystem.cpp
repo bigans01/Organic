@@ -1351,6 +1351,7 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 	glm::vec3 second_point = temp_origin + direction_point;		// add the direction to the temp_origin, store the result in second_point
 	glm::vec3 rayDirection = second_point - temp_origin;		// the difference between the second_point and the temp_origin will determine the rayDirection.
 
+	/*
 	cout << "----BEGIN ANALYSIS (begin point) ----" << endl;
 	cout << "Origin Point: (" << origin_point.x << ", " << origin_point.y << ", " << origin_point.z << ") " << endl;
 	cout << "Collection: (" << CameraCollectionKey.x << ", " << CameraCollectionKey.y << ", " << CameraCollectionKey.x << ") " << endl;
@@ -1358,6 +1359,8 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 	cout << "Block: (" << CameraBlockKey.x << ", " << CameraBlockKey.y << ", " << CameraBlockKey.z << ") " << endl;
 	cout << "Exact Block: (" << block_x_precise << ", " << block_y_precise << ", " << block_z_precise << ") " << endl;
 	cout << "Direction: (" << direction_point.x << ", " << direction_point.y << ", " << direction_point.z << ") " << endl;
+	*/
+
 	//cout << "Slope: (" << rayDirection.x << ", " << rayDirection.y << ", " << rayDirection.z << ") " << endl;
 
 	// cout << "|| test of y ray direction: " << rayDirection.y << endl;
@@ -1576,6 +1579,7 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 
 	}
 
+	/*
 	cout << "Traversal time x: " << time_to_complete_x_traversal << endl;
 	cout << "Traversal time y: " << time_to_complete_y_traversal << endl;
 	cout << "Traversal time z: " << time_to_complete_z_traversal << endl;
@@ -1591,7 +1595,7 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 	cout << "Standard 0 to 1.0f x traverse time value: " << normal_xMax << endl;
 	cout << "Standard 0 to 1.0f y traverse time value: " << normal_yMax << endl;
 	cout << "Standard 0 to 1.0f z traverse time value: " << normal_zMax << endl;
-
+	*/
 	
 
 	//cout << "|| pre y-multiplier, distance between points: " << distance_between_points_y.y << endl;
@@ -1652,15 +1656,17 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 				{
 					block_traverse_x += 1;
 					trackResult = rayTracker.MoveEast();			// move one block east
-					cout << "move east" << endl;
+					//cout << "move east" << endl;
+					//cout << "current pass: " << travelAttempts << endl;
 				}
 				else								// otherwise, traverse -1
 				{
 					block_traverse_x -= 1;
 					trackResult = rayTracker.MoveWest();			// move one block west
-					cout << "move west" << endl;
+					//cout << "move west" << endl;
+					//cout << "current pass: " << travelAttempts << endl;
 				}
-				initial_xMax = initial_xMax + xDelta_final;
+				//initial_xMax = initial_xMax + xDelta_final;
 				initial_xMax = initial_xMax + normal_xMax;
 				initialFlagLoop = 1;
 			}
@@ -1680,16 +1686,18 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 				{
 					block_traverse_z += 1;
 					trackResult = rayTracker.MoveSouth();			// move one block south
-					cout << "move south" << endl;
+					//cout << "move south" << endl;
+					//cout << "current pass: (SOUTH 1)" << travelAttempts << endl;
 				}
 				else								// otherwise, traverse -1
 				{
 					block_traverse_z -= 1;
 					trackResult = rayTracker.MoveNorth();			// move one block north
-					cout << "move north" << endl;
+					//cout << "move north" << endl;
+					//cout << "current pass: (NORTH 1)" << travelAttempts << endl;
 				}
 
-				initial_zMax = initial_zMax + zDelta_final;
+				//initial_zMax = initial_zMax + zDelta_final;
 				initial_zMax = initial_zMax + normal_zMax;
 				initialFlagLoop = 1;
 			}
@@ -1712,15 +1720,17 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 				{
 					block_traverse_y += 1;			
 					trackResult = rayTracker.MoveAbove();			// move one block above
-					cout << "move above" << endl;
+					//cout << "move above" << endl;
+					//cout << "current pass: " << travelAttempts << endl;
 				}
 				else								// otherwise, traverse -1
 				{
 					block_traverse_y -= 1;
 					trackResult = rayTracker.MoveBelow();			// move one block below
-					cout << "move below" << endl;
+					//cout << "move below" << endl;
+					//cout << "current pass: " << travelAttempts << endl;
 				}
-				initial_yMax = initial_yMax + yDelta_final;
+				//initial_yMax = initial_yMax + yDelta_final;
 				initial_yMax = initial_yMax + normal_yMax;
 				initialFlagLoop = 1;
 			}
@@ -1740,16 +1750,18 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 				{
 					block_traverse_z += 1;
 					trackResult = rayTracker.MoveSouth();			// move one block south
-					cout << "move south" << endl;
+					//cout << "move south" << endl;
+					//cout << "current pass: (SOUTH 2)" << travelAttempts << endl;
 				}
 				else								// otherwise, traverse -1
 				{
 					block_traverse_z -= 1;
 					trackResult = rayTracker.MoveNorth();			// move one block north
-					cout << "move north" << endl;
+					// cout << "move north" << endl;
+					//cout << "current pass: (NORTH 2)" << travelAttempts << endl;
 				}
 
-				initial_zMax = initial_zMax + zDelta_final;
+				//initial_zMax = initial_zMax + zDelta_final;
 				initial_zMax = initial_zMax + normal_zMax;
 				initialFlagLoop = 1;
 			}
