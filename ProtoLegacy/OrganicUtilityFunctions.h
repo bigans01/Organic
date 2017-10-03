@@ -1,0 +1,8 @@
+#pragma once
+
+#ifndef ORGANICUTILITYFUNCTIONS_H
+#define ORGANICUTILITYFUNCTIONS_H
+
+
+
+#endif

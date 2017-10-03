@@ -240,6 +240,9 @@
     <ClInclude Include="EnclaveCollectionStateArray.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="OrganicUtilityFunctions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

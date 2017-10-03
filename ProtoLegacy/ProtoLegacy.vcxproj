@@ -203,6 +203,7 @@
     <ClInclude Include="OrganicTextureDictionary.h" />
     <ClInclude Include="OrganicTextureMeta.h" />
     <ClInclude Include="OrganicTextureMetaArray.h" />
+    <ClInclude Include="OrganicUtilityFunctions.h" />
     <ClInclude Include="OrganicVtxColorBlockMeta.h" />
     <ClInclude Include="OrganicVtxColorFaceMeta.h" />
     <ClInclude Include="OrganicVtxColorMeta.h" />
