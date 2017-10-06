@@ -1593,12 +1593,14 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 	/**In this loop, traverse along the ray until a block is found. Call EnclaveBlockRayTracker.search() until it returns an appropriate value. **/
 	// create an instance of EnclaveBlockRayTracker for traversal; pass in x/y/z containers and a pointer to the EnclaveCollection located at the center of the array in EnclaveCollectionStateArray.StateMatrix
 	int trackResult = 0;				
-	EnclaveBlockRayTracker rayTracker(x_container, y_container, z_container, CollectionStateArray.StateMatrix[1][1][1].collectionPtr);
+	//EnclaveBlockRayTracker rayTracker(x_container, y_container, z_container, CollectionStateArray.StateMatrix[1][1][1].collectionPtr);
 	int indexval = CollectionStateArray.translateXYZToSingle(CollectionStateArray.centerCollectionStateOffset, CollectionStateArray.centerCollectionStateOffset, CollectionStateArray.centerCollectionStateOffset);	// get the center of the dynamic array
-	//EnclaveBlockRayTracker rayTracker(x_container, y_container, z_container, CollectionStateArray.StateMatrixPtr[indexval].collectionPtr);
+	EnclaveBlockRayTracker rayTracker(x_container, y_container, z_container, CollectionStateArray.StateMatrixPtr, indexval);
+	//cout << "traverse pass" << endl;
 	int maxTravelAttempts = length;		// set travel (traversal) attempts to 10
 	int travelAttempts = 0;				// set counter to 0
 
+	//cout << "pre-while loop" << endl;
 	while ((travelAttempts < maxTravelAttempts) && trackResult == 0)
 	{
 		if (initial_xMax < initial_yMax)
@@ -1651,6 +1653,7 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 				{
 					block_traverse_y -= 1;
 					trackResult = rayTracker.MoveBelow();			// move one block below
+					//cout << "moved below..." << endl;
 				}
 				initial_yMax = initial_yMax + normal_yMax;
 				initialFlagLoop = 1;
