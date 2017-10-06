@@ -25,8 +25,13 @@ EnclaveBlockRayTracker::EnclaveBlockRayTracker(CursorPathTraceContainer xContain
 	blockKey.z = zContainer.BlockCoord;
 
 	// pointer to collection
-	currentCollectionPtr = collectionStatePtr[centerIndex].collectionPtr;
-	enclavePtr = &currentCollectionPtr->EnclaveArray[enclaveKey.x][enclaveKey.y][enclaveKey.z];
+	currentCollectionState = &collectionStatePtr[centerIndex];			// get the state at the center
+	if (currentCollectionState->isActive == 1)							// check if its active
+	{
+		currentCollectionPtr = currentCollectionState->collectionPtr;	// if it is active, set the pointer
+		enclavePtr = &currentCollectionPtr->EnclaveArray[enclaveKey.x][enclaveKey.y][enclaveKey.z];
+		isCurrentCollectionActive = 1;
+	}
 
 	//cout << "Chunk: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ") " << endl;
 	//cout << "Chunk unique key: (" << enclavePtr->UniqueKey.x << ", " << enclavePtr->UniqueKey.y << ", " << enclavePtr->UniqueKey.z << ")" << endl;
@@ -41,25 +46,8 @@ int EnclaveBlockRayTracker::MoveEast()
 		// << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << 
 		//cout << "east move (1)" << endl;
 		blockKey.x += 1;
-		int numBlocks = enclavePtr->TotalRenderable;
-		int blockSingularValue = enclavePtr->EnclaveCoordsToSingle(blockKey.x, blockKey.y, blockKey.z);
-		//cout << "Moved EAST: current location; Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
-		for (int xx = 0; xx < numBlocks; xx++)
+		if (isCurrentCollectionActive == 1)
 		{
-			if (enclavePtr->Sorted.PolyArrayIndex[xx] == blockSingularValue)
-			{
-				return 1;
-			}
-		}
-	}
-	else if (blockKey.x == 3)
-	{
-		//cout << "east move (2)" << endl;
-		if (enclaveKey.x <= 6)		// move over one enclave to the east, as long as we aren't at the Enclave where x = 7
-		{
-			enclaveKey.x += 1;		// increment the key by 1
-			enclavePtr = &currentCollectionPtr->EnclaveArray[enclaveKey.x][enclaveKey.y][enclaveKey.z]; // set enclavePtr to the new value
-			blockKey.x = 0;
 			int numBlocks = enclavePtr->TotalRenderable;
 			int blockSingularValue = enclavePtr->EnclaveCoordsToSingle(blockKey.x, blockKey.y, blockKey.z);
 			//cout << "Moved EAST: current location; Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
@@ -69,6 +57,37 @@ int EnclaveBlockRayTracker::MoveEast()
 				{
 					return 1;
 				}
+			}
+		}
+		else
+		{
+			return 0;
+		}
+	}
+	else if (blockKey.x == 3)
+	{
+		//cout << "east move (2)" << endl;
+		if (enclaveKey.x <= 6)		// move over one enclave to the east, as long as we aren't at the Enclave where x = 7
+		{
+			enclaveKey.x += 1;		// increment the key by 1
+			if (isCurrentCollectionActive == 1)
+			{
+				enclavePtr = &currentCollectionPtr->EnclaveArray[enclaveKey.x][enclaveKey.y][enclaveKey.z]; // set enclavePtr to the new value
+				blockKey.x = 0;
+				int numBlocks = enclavePtr->TotalRenderable;
+				int blockSingularValue = enclavePtr->EnclaveCoordsToSingle(blockKey.x, blockKey.y, blockKey.z);
+				//cout << "Moved EAST: current location; Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
+				for (int xx = 0; xx < numBlocks; xx++)
+				{
+					if (enclavePtr->Sorted.PolyArrayIndex[xx] == blockSingularValue)
+					{
+						return 1;
+					}
+				}
+			}
+			else
+			{
+				return 0;
 			}
 		}
 	}
@@ -81,24 +100,8 @@ int EnclaveBlockRayTracker::MoveWest()
 	if (blockKey.x > 0)
 	{
 		blockKey.x -= 1;
-		int numBlocks = enclavePtr->TotalRenderable;
-		int blockSingularValue = enclavePtr->EnclaveCoordsToSingle(blockKey.x, blockKey.y, blockKey.z);
-		//cout << "Moved WEST: current location; Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
-		for (int xx = 0; xx < numBlocks; xx++)
+		if (isCurrentCollectionActive == 1)
 		{
-			if (enclavePtr->Sorted.PolyArrayIndex[xx] == blockSingularValue)
-			{
-				return 1;
-			}
-		}
-	}
-	else if (blockKey.x == 0)
-	{
-		if (enclaveKey.x >= 1)
-		{
-			enclaveKey.x -= 1;
-			enclavePtr = &currentCollectionPtr->EnclaveArray[enclaveKey.x][enclaveKey.y][enclaveKey.z];
-			blockKey.x = 3;
 			int numBlocks = enclavePtr->TotalRenderable;
 			int blockSingularValue = enclavePtr->EnclaveCoordsToSingle(blockKey.x, blockKey.y, blockKey.z);
 			//cout << "Moved WEST: current location; Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
@@ -108,6 +111,36 @@ int EnclaveBlockRayTracker::MoveWest()
 				{
 					return 1;
 				}
+			}
+		}
+		else
+		{
+			return 0;
+		}
+	}
+	else if (blockKey.x == 0)
+	{
+		if (enclaveKey.x >= 1)
+		{
+			enclaveKey.x -= 1;
+			if (isCurrentCollectionActive == 1)
+			{
+				enclavePtr = &currentCollectionPtr->EnclaveArray[enclaveKey.x][enclaveKey.y][enclaveKey.z];
+				blockKey.x = 3;
+				int numBlocks = enclavePtr->TotalRenderable;
+				int blockSingularValue = enclavePtr->EnclaveCoordsToSingle(blockKey.x, blockKey.y, blockKey.z);
+				//cout << "Moved WEST: current location; Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
+				for (int xx = 0; xx < numBlocks; xx++)
+				{
+					if (enclavePtr->Sorted.PolyArrayIndex[xx] == blockSingularValue)
+					{
+						return 1;
+					}
+				}
+			}
+			else
+			{
+				return 0;
 			}
 		}
 	}
@@ -121,24 +154,8 @@ int EnclaveBlockRayTracker::MoveNorth()
 	if (blockKey.z > 0)
 	{
 		blockKey.z -= 1;
-		int numBlocks = enclavePtr->TotalRenderable;
-		int blockSingularValue = enclavePtr->EnclaveCoordsToSingle(blockKey.x, blockKey.y, blockKey.z);
-		//cout << "Moved NORTH: current location; Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
-		for (int xx = 0; xx < numBlocks; xx++)
+		if (isCurrentCollectionActive == 1)
 		{
-			if (enclavePtr->Sorted.PolyArrayIndex[xx] == blockSingularValue)
-			{
-				return 1;
-			}
-		}
-	}
-	else if (blockKey.z == 0)
-	{
-		if (enclaveKey.z >= 1)
-		{
-			enclaveKey.z -= 1;
-			enclavePtr = &currentCollectionPtr->EnclaveArray[enclaveKey.x][enclaveKey.y][enclaveKey.z];
-			blockKey.z = 3;
 			int numBlocks = enclavePtr->TotalRenderable;
 			int blockSingularValue = enclavePtr->EnclaveCoordsToSingle(blockKey.x, blockKey.y, blockKey.z);
 			//cout << "Moved NORTH: current location; Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
@@ -148,6 +165,36 @@ int EnclaveBlockRayTracker::MoveNorth()
 				{
 					return 1;
 				}
+			}
+		}
+		else
+		{
+			return 0;
+		}
+	}
+	else if (blockKey.z == 0)
+	{
+		if (enclaveKey.z >= 1)
+		{
+			enclaveKey.z -= 1;
+			if (isCurrentCollectionActive == 1)
+			{
+				enclavePtr = &currentCollectionPtr->EnclaveArray[enclaveKey.x][enclaveKey.y][enclaveKey.z];
+				blockKey.z = 3;
+				int numBlocks = enclavePtr->TotalRenderable;
+				int blockSingularValue = enclavePtr->EnclaveCoordsToSingle(blockKey.x, blockKey.y, blockKey.z);
+				//cout << "Moved NORTH: current location; Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
+				for (int xx = 0; xx < numBlocks; xx++)
+				{
+					if (enclavePtr->Sorted.PolyArrayIndex[xx] == blockSingularValue)
+					{
+						return 1;
+					}
+				}
+			}
+			else
+			{
+				return 0;
 			}
 		}
 	}
@@ -160,24 +207,8 @@ int EnclaveBlockRayTracker::MoveSouth()
 	if (blockKey.z < 3)
 	{
 		blockKey.z += 1;
-		int numBlocks = enclavePtr->TotalRenderable;
-		int blockSingularValue = enclavePtr->EnclaveCoordsToSingle(blockKey.x, blockKey.y, blockKey.z);
-		//cout << "Moved SOUTH: current location; Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
-		for (int xx = 0; xx < numBlocks; xx++)
+		if (isCurrentCollectionActive == 1)
 		{
-			if (enclavePtr->Sorted.PolyArrayIndex[xx] == blockSingularValue)
-			{
-				return 1;
-			}
-		}
-	}
-	else if (blockKey.z == 3)
-	{
-		if (enclaveKey.z <= 6)		// move over one enclave to the east, as long as we aren't at the Enclave where x = 7
-		{
-			enclaveKey.z += 1;		// increment the key by 1
-			enclavePtr = &currentCollectionPtr->EnclaveArray[enclaveKey.x][enclaveKey.y][enclaveKey.z]; // set enclavePtr to the new value
-			blockKey.z = 0;
 			int numBlocks = enclavePtr->TotalRenderable;
 			int blockSingularValue = enclavePtr->EnclaveCoordsToSingle(blockKey.x, blockKey.y, blockKey.z);
 			//cout << "Moved SOUTH: current location; Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
@@ -187,6 +218,36 @@ int EnclaveBlockRayTracker::MoveSouth()
 				{
 					return 1;
 				}
+			}
+		}
+		else
+		{
+			return 0;
+		}
+	}
+	else if (blockKey.z == 3)
+	{
+		if (enclaveKey.z <= 6)		// move over one enclave to the east, as long as we aren't at the Enclave where x = 7
+		{
+			enclaveKey.z += 1;		// increment the key by 1
+			if (isCurrentCollectionActive == 1)
+			{
+				enclavePtr = &currentCollectionPtr->EnclaveArray[enclaveKey.x][enclaveKey.y][enclaveKey.z]; // set enclavePtr to the new value
+				blockKey.z = 0;
+				int numBlocks = enclavePtr->TotalRenderable;
+				int blockSingularValue = enclavePtr->EnclaveCoordsToSingle(blockKey.x, blockKey.y, blockKey.z);
+				//cout << "Moved SOUTH: current location; Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
+				for (int xx = 0; xx < numBlocks; xx++)
+				{
+					if (enclavePtr->Sorted.PolyArrayIndex[xx] == blockSingularValue)
+					{
+						return 1;
+					}
+				}
+			}
+			else
+			{
+				return 0;
 			}
 		}
 	}
@@ -200,16 +261,23 @@ int EnclaveBlockRayTracker::MoveAbove()
 	{
 		
 		blockKey.y += 1;
-		int numBlocks = enclavePtr->TotalRenderable;
-		int blockSingularValue = enclavePtr->EnclaveCoordsToSingle(blockKey.x, blockKey.y, blockKey.z);
-		//cout << "Moved ABOVE: current location; Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
-		//cout << "pre Move-above" << endl;
-		for (int xx = 0; xx < numBlocks; xx++)
+		if (isCurrentCollectionActive == 1)
 		{
-			if (enclavePtr->Sorted.PolyArrayIndex[xx] == blockSingularValue)
+			int numBlocks = enclavePtr->TotalRenderable;
+			int blockSingularValue = enclavePtr->EnclaveCoordsToSingle(blockKey.x, blockKey.y, blockKey.z);
+			//cout << "Moved ABOVE: current location; Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
+			//cout << "pre Move-above" << endl;
+			for (int xx = 0; xx < numBlocks; xx++)
 			{
-				return 1;
+				if (enclavePtr->Sorted.PolyArrayIndex[xx] == blockSingularValue)
+				{
+					return 1;
+				}
 			}
+		}
+		else
+		{
+			return 0;
 		}
 		//cout << "post Move-Above" << endl;
 	}
@@ -218,17 +286,24 @@ int EnclaveBlockRayTracker::MoveAbove()
 		if (enclaveKey.y <= 6)		// move over one enclave to the east, as long as we aren't at the Enclave where x = 7
 		{
 			enclaveKey.y += 1;		// increment the key by 1
-			enclavePtr = &currentCollectionPtr->EnclaveArray[enclaveKey.x][enclaveKey.y][enclaveKey.z]; // set enclavePtr to the new value
-			blockKey.y = 0;
-			int numBlocks = enclavePtr->TotalRenderable;
-			int blockSingularValue = enclavePtr->EnclaveCoordsToSingle(blockKey.x, blockKey.y, blockKey.z);
-			//cout << "Moved ABOVE (2): current location; Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
-			for (int xx = 0; xx < numBlocks; xx++)
+			if (isCurrentCollectionActive == 1)
 			{
-				if (enclavePtr->Sorted.PolyArrayIndex[xx] == blockSingularValue)
+				enclavePtr = &currentCollectionPtr->EnclaveArray[enclaveKey.x][enclaveKey.y][enclaveKey.z]; // set enclavePtr to the new value
+				blockKey.y = 0;
+				int numBlocks = enclavePtr->TotalRenderable;
+				int blockSingularValue = enclavePtr->EnclaveCoordsToSingle(blockKey.x, blockKey.y, blockKey.z);
+				//cout << "Moved ABOVE (2): current location; Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
+				for (int xx = 0; xx < numBlocks; xx++)
 				{
-					return 1;
+					if (enclavePtr->Sorted.PolyArrayIndex[xx] == blockSingularValue)
+					{
+						return 1;
+					}
 				}
+			}
+			else
+			{
+				return 0;
 			}
 		}
 	}
@@ -241,24 +316,8 @@ int EnclaveBlockRayTracker::MoveBelow()
 	if (blockKey.y > 0)
 	{
 		blockKey.y -= 1;
-		int numBlocks = enclavePtr->TotalRenderable;
-		int blockSingularValue = enclavePtr->EnclaveCoordsToSingle(blockKey.x, blockKey.y, blockKey.z);
-		//cout << "Moved BELOW: current location; Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
-		for (int xx = 0; xx < numBlocks; xx++)
+		if (isCurrentCollectionActive == 1)
 		{
-			if (enclavePtr->Sorted.PolyArrayIndex[xx] == blockSingularValue)
-			{
-				return 1;
-			}
-		}
-	}
-	else if (blockKey.y == 0)
-	{
-		if (enclaveKey.y >= 1)
-		{
-			enclaveKey.y -= 1;
-			enclavePtr = &currentCollectionPtr->EnclaveArray[enclaveKey.x][enclaveKey.y][enclaveKey.z];
-			blockKey.y = 3;
 			int numBlocks = enclavePtr->TotalRenderable;
 			int blockSingularValue = enclavePtr->EnclaveCoordsToSingle(blockKey.x, blockKey.y, blockKey.z);
 			//cout << "Moved BELOW: current location; Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
@@ -268,6 +327,36 @@ int EnclaveBlockRayTracker::MoveBelow()
 				{
 					return 1;
 				}
+			}
+		}
+		else
+		{
+			return 0;
+		}
+	}
+	else if (blockKey.y == 0)
+	{
+		if (enclaveKey.y >= 1)
+		{
+			enclaveKey.y -= 1;
+			if (isCurrentCollectionActive == 1)
+			{
+				enclavePtr = &currentCollectionPtr->EnclaveArray[enclaveKey.x][enclaveKey.y][enclaveKey.z];
+				blockKey.y = 3;
+				int numBlocks = enclavePtr->TotalRenderable;
+				int blockSingularValue = enclavePtr->EnclaveCoordsToSingle(blockKey.x, blockKey.y, blockKey.z);
+				//cout << "Moved BELOW: current location; Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
+				for (int xx = 0; xx < numBlocks; xx++)
+				{
+					if (enclavePtr->Sorted.PolyArrayIndex[xx] == blockSingularValue)
+					{
+						return 1;
+					}
+				}
+			}
+			else
+			{
+				return 0;
 			}
 		}
 	}
