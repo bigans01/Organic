@@ -19,6 +19,7 @@ Summary: An EnclaveBlockRayTracker keeps track of a ray as it traverses throguh 
 #include "EnclaveKeyDef.h"
 #include "CursorPathTraceContainer.h"
 #include "EnclaveCollectionState.h"
+#include "EnclaveCollectionStateArray.h"
 
 class EnclaveBlockRayTracker
 {
@@ -26,12 +27,13 @@ public:
 	EnclaveCollection* currentCollectionPtr;	// pointer to the current collection that the ray is traversing across; the ray can potentially traverse across multiple collections
 	Enclave* enclavePtr;
 	EnclaveCollectionState* currentCollectionState;
+	EnclaveCollectionStateArray* currentCollectionStateArray;
 	int isCurrentCollectionActive = 0;
 	EnclaveKeyDef::EnclaveKey collectionKey;	// actual key of the current collection being traversed by the ray
 	EnclaveKeyDef::EnclaveKey enclaveKey;		// the current enclave the ray is traversing
 	EnclaveKeyDef::EnclaveKey blockKey;			// the current block the ray is traversing
 
-	EnclaveBlockRayTracker(CursorPathTraceContainer xContainer, CursorPathTraceContainer yContainer, CursorPathTraceContainer zContainer, EnclaveCollectionState* collectionStatePtr, int centerIndex);
+	EnclaveBlockRayTracker(CursorPathTraceContainer xContainer, CursorPathTraceContainer yContainer, CursorPathTraceContainer zContainer, EnclaveCollectionState* collectionStatePtr, EnclaveCollectionStateArray* collectionStateArrayPtr, int centerIndex);
 
 	int MoveEast();			// moves the tracker one block to the east
 	int MoveWest();			// moves the tracker one block to the west

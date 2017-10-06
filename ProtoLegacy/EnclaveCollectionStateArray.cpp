@@ -311,10 +311,87 @@ void EnclaveCollectionStateArray::ShiftCenterCollection(EnclaveKeyDef::EnclaveKe
 	{
 		if (currentKey.z > previousKey.z)		// positive shift (south)
 		{
+			// begin shift logic, begin with lowest layer at y = 0
+			for (int y = 0; y < cubesize; y++)
+			{
+				for (int x = 0; x < cubesize; x++)
+				{
+					// for each x, iterate along z
+					EnclaveCollectionState stateToReplace = StateMatrixPtr[translateXYZToSingle(x, y, 0)];					// copy whatever values are at x = 0; this will replace whatever x is at the end of this axis (for instance, with a cubesize of 7 this would be 6)
+					EnclaveCollectionState lastStateInLine = StateMatrixPtr[translateXYZToSingle(x, y, cubesize - 1)];		// copy whatever is at cubesize - 1
+					for (int z = 1; z < cubesize; z++)				// begin at x = 1; go until cubesize; for every iteration, replace x - 1 with the value at x 
+					{
+						StateMatrixPtr[translateXYZToSingle(x, y, z - 1)] = StateMatrixPtr[translateXYZToSingle(x, y, z)];
+					}
+					std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveCollection, EnclaveKeyDef::KeyHasher>::iterator collectionIterator;
+					EnclaveKeyDef::EnclaveKey tempFindKey; //= lastStateInLine.ActualCollectionKey.x + 1, lastStateInLine.ActualCollectionKey.y, lastStateInLine.ActualCollectionKey.z
+					tempFindKey.x = lastStateInLine.ActualCollectionKey.x;		// going towards positive x, by +1
+					tempFindKey.y = lastStateInLine.ActualCollectionKey.y;
+					tempFindKey.z = lastStateInLine.ActualCollectionKey.z + 1;
+					collectionIterator = collectionMatrixPtr->EnclaveCollectionMap.find(tempFindKey);
+					if (collectionIterator != collectionMatrixPtr->EnclaveCollectionMap.end())
+					{
+						EnclaveCollectionState newState;			// the brand new state value, that will replace the end of the row (the index at cubesize - 1)
+						newState.ActualCollectionKey = tempFindKey;
+						newState.isActive = 1;
+						newState.collectionPtr = &collectionIterator->second;
+						StateMatrixPtr[translateXYZToSingle(x, y, cubesize - 1)] = newState;					// replace the end of the x row with stateToReplace; stateToReplace is x = 0, which is the part of the matrix that has been "recycled"
+					}
+					else
+					{
+						EnclaveCollectionState newState;
+						newState.ActualCollectionKey = tempFindKey;
+						//cout << "cube coord: (" << cubesize - 1 << ", " << y << ", " << z << ") | " << " tempFindKey is: " << tempFindKey.x << ", " << tempFindKey.y << ", " << tempFindKey.z << endl;
+						newState.isActive = 0;
+						StateMatrixPtr[translateXYZToSingle(x, y, cubesize - 1)] = newState;					// replace the end of the x row with stateToReplace; stateToReplace is x = 0, which is the part of the matrix that has been "recycled"
+					}
+
+				}
+			}
+			EnclaveKeyDef::EnclaveKey outputKey = StateMatrixPtr[translateXYZToSingle(centerCollectionStateOffset, centerCollectionStateOffset, centerCollectionStateOffset)].ActualCollectionKey;
+			cout << "New collection center (south) is: " << outputKey.x << ", " << outputKey.y << ", " << outputKey.z << endl;
 
 		}
 		else if (currentKey.z < previousKey.z)	// negative shift (north)
 		{
+			for (int y = 0; y < cubesize; y++)
+			{
+				for (int x = 0; x < cubesize; x++)
+				{
+					// for each z, iterate along x
+					EnclaveCollectionState stateToReplace = StateMatrixPtr[translateXYZToSingle(x, y, cubesize - 1)];	// copy whatever values are at x = cubesize - 1; this will replace whatever x is at the end of this axis (for instance, with a cubesize of 7 this would be 6)
+					EnclaveCollectionState firstStateInLine = StateMatrixPtr[translateXYZToSingle(x, y, 0)];
+					for (int z = cubesize - 1; z > 1; z--)
+					{
+						StateMatrixPtr[translateXYZToSingle(x, y, z)] = StateMatrixPtr[translateXYZToSingle(x, y, z - 1)];
+					}
+					std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveCollection, EnclaveKeyDef::KeyHasher>::iterator collectionIterator;
+					EnclaveKeyDef::EnclaveKey tempFindKey;
+					tempFindKey.x = firstStateInLine.ActualCollectionKey.x;		// going towards negative x, by -1
+					tempFindKey.y = firstStateInLine.ActualCollectionKey.y;
+					tempFindKey.z = firstStateInLine.ActualCollectionKey.z - 1;
+					collectionIterator = collectionMatrixPtr->EnclaveCollectionMap.find(tempFindKey);
+					if (collectionIterator != collectionMatrixPtr->EnclaveCollectionMap.end())
+					{
+						EnclaveCollectionState newState;			// the brand new state value, that will replace the end of the row (the index at cubesize - 1)
+						newState.ActualCollectionKey = tempFindKey;
+						newState.isActive = 1;
+						newState.collectionPtr = &collectionIterator->second;
+						StateMatrixPtr[translateXYZToSingle(x, y, 0)] = newState;					// replace the end of the x row with stateToReplace; stateToReplace is x = 0, which is the part of the matrix that has been "recycled"
+					}
+					else
+					{
+						EnclaveCollectionState newState;
+						newState.ActualCollectionKey = tempFindKey;
+						newState.isActive = 0;
+						StateMatrixPtr[translateXYZToSingle(x, y, 0)] = newState;
+
+					}
+
+				}
+			}
+			EnclaveKeyDef::EnclaveKey outputKey = StateMatrixPtr[translateXYZToSingle(centerCollectionStateOffset, centerCollectionStateOffset, centerCollectionStateOffset)].ActualCollectionKey;
+			cout << "New collection center (north) is: " << outputKey.x << ", " << outputKey.y << ", " << outputKey.z << endl;
 
 		}
 	}

@@ -1595,7 +1595,8 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 	int trackResult = 0;				
 	//EnclaveBlockRayTracker rayTracker(x_container, y_container, z_container, CollectionStateArray.StateMatrix[1][1][1].collectionPtr);
 	int indexval = CollectionStateArray.translateXYZToSingle(CollectionStateArray.centerCollectionStateOffset, CollectionStateArray.centerCollectionStateOffset, CollectionStateArray.centerCollectionStateOffset);	// get the center of the dynamic array
-	EnclaveBlockRayTracker rayTracker(x_container, y_container, z_container, CollectionStateArray.StateMatrixPtr, indexval);
+	EnclaveCollectionStateArray* stateArrayPtr = &CollectionStateArray;
+	EnclaveBlockRayTracker rayTracker(x_container, y_container, z_container, CollectionStateArray.StateMatrixPtr, stateArrayPtr, indexval);
 	//cout << "traverse pass" << endl;
 	int maxTravelAttempts = length;		// set travel (traversal) attempts to 10
 	int travelAttempts = 0;				// set counter to 0
@@ -1677,13 +1678,13 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 		}
 		if (trackResult == 1)
 		{
-			//cout << "Unveil block found: Enclave (" << rayTracker.enclaveKey.x << ", " << rayTracker.enclaveKey.y << ", " << rayTracker.enclaveKey.z << ") | Block: (" << rayTracker.blockKey.x << ", " << rayTracker.blockKey.y << ", " << rayTracker.blockKey.z << ") " <<  endl;
+			cout << "Unveil block found: Enclave (" << rayTracker.enclaveKey.x << ", " << rayTracker.enclaveKey.y << ", " << rayTracker.enclaveKey.z << ") | Block: (" << rayTracker.blockKey.x << ", " << rayTracker.blockKey.y << ", " << rayTracker.blockKey.z << ") " <<  endl;
 		}
 
 		travelAttempts++;
 		if (travelAttempts == 10)
 		{
-			//cout << "attempt limit reached." << endl;
+			cout << "attempt limit reached." << endl;
 		}
 	}
 
