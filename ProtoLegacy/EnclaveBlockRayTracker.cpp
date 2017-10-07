@@ -27,6 +27,11 @@ EnclaveBlockRayTracker::EnclaveBlockRayTracker(CursorPathTraceContainer xContain
 	blockKey.y = yContainer.BlockCoord;
 	blockKey.z = zContainer.BlockCoord;
 
+	// array key; set the initial values of arrayKey to be the center
+	arrayKey.x = currentCollectionStateArray->centerCollectionStateOffset;
+	arrayKey.y = currentCollectionStateArray->centerCollectionStateOffset;
+	arrayKey.z = currentCollectionStateArray->centerCollectionStateOffset;
+
 	// pointer to collection
 	currentCollectionState = &collectionStatePtr[centerIndex];			// get the state at the center
 	//	currentCollectionState = &collectionStatePtr[collectionStatePtr->]
@@ -97,7 +102,9 @@ int EnclaveBlockRayTracker::MoveEast()
 		else      // do this if x = 7
 		{
 			// enclave key's x is equal to 7
-			int tempIndexVal = currentCollectionStateArray->translateXYZToSingle(currentCollectionStateArray->centerCollectionStateOffset + 1, currentCollectionStateArray->centerCollectionStateOffset, currentCollectionStateArray->centerCollectionStateOffset); // determine value for x + 1
+			//int tempIndexVal = currentCollectionStateArray->translateXYZToSingle(currentCollectionStateArray->centerCollectionStateOffset + 1, currentCollectionStateArray->centerCollectionStateOffset, currentCollectionStateArray->centerCollectionStateOffset); // determine value for x + 1
+			arrayKey.x += 1;
+			int tempIndexVal = currentCollectionStateArray->translateXYZToSingle(arrayKey.x, arrayKey.y, arrayKey.z);
 			currentCollectionState = &currentCollectionStateArray->StateMatrixPtr[tempIndexVal];																																									// get the state at x + 1
 			if (currentCollectionState->isActive == 1)													// check if its active
 			{
@@ -182,7 +189,9 @@ int EnclaveBlockRayTracker::MoveWest()
 		else
 		{
 			// enclave key's x is equal to 0
-			int tempIndexVal = currentCollectionStateArray->translateXYZToSingle(currentCollectionStateArray->centerCollectionStateOffset - 1, currentCollectionStateArray->centerCollectionStateOffset, currentCollectionStateArray->centerCollectionStateOffset); // determine value for x - 1
+			//int tempIndexVal = currentCollectionStateArray->translateXYZToSingle(currentCollectionStateArray->centerCollectionStateOffset - 1, currentCollectionStateArray->centerCollectionStateOffset, currentCollectionStateArray->centerCollectionStateOffset); // determine value for x - 1
+			arrayKey.x -= 1;
+			int tempIndexVal = currentCollectionStateArray->translateXYZToSingle(arrayKey.x, arrayKey.y, arrayKey.z);
 			currentCollectionState = &currentCollectionStateArray->StateMatrixPtr[tempIndexVal];
 			if (currentCollectionState->isActive == 1)															// check if its active
 			{
@@ -270,7 +279,9 @@ int EnclaveBlockRayTracker::MoveNorth()
 		else
 		{
 			// enclave key's y is equal to 0
-			int tempIndexVal = currentCollectionStateArray->translateXYZToSingle(currentCollectionStateArray->centerCollectionStateOffset, currentCollectionStateArray->centerCollectionStateOffset, currentCollectionStateArray->centerCollectionStateOffset - 1); // determine value for z - 1
+			//int tempIndexVal = currentCollectionStateArray->translateXYZToSingle(currentCollectionStateArray->centerCollectionStateOffset, currentCollectionStateArray->centerCollectionStateOffset, currentCollectionStateArray->centerCollectionStateOffset - 1); // determine value for z - 1
+			arrayKey.z -= 1;
+			int tempIndexVal = currentCollectionStateArray->translateXYZToSingle(arrayKey.x, arrayKey.y, arrayKey.z);
 			currentCollectionState = &currentCollectionStateArray->StateMatrixPtr[tempIndexVal];
 			if (currentCollectionState->isActive == 1)															// check if its active
 			{
@@ -357,7 +368,9 @@ int EnclaveBlockRayTracker::MoveSouth()
 		}
 		else
 		{
-			int tempIndexVal = currentCollectionStateArray->translateXYZToSingle(currentCollectionStateArray->centerCollectionStateOffset, currentCollectionStateArray->centerCollectionStateOffset, currentCollectionStateArray->centerCollectionStateOffset + 1); // determine value for z + 1
+			//int tempIndexVal = currentCollectionStateArray->translateXYZToSingle(currentCollectionStateArray->centerCollectionStateOffset, currentCollectionStateArray->centerCollectionStateOffset, currentCollectionStateArray->centerCollectionStateOffset + 1); // determine value for z + 1
+			arrayKey.z += 1;
+			int tempIndexVal = currentCollectionStateArray->translateXYZToSingle(arrayKey.x, arrayKey.y, arrayKey.z);
 			currentCollectionState = &currentCollectionStateArray->StateMatrixPtr[tempIndexVal];
 			if (currentCollectionState->isActive == 1)													// check if its active
 			{
@@ -444,7 +457,9 @@ int EnclaveBlockRayTracker::MoveAbove()
 		}
 		else
 		{
-			int tempIndexVal = currentCollectionStateArray->translateXYZToSingle(currentCollectionStateArray->centerCollectionStateOffset, currentCollectionStateArray->centerCollectionStateOffset + 1, currentCollectionStateArray->centerCollectionStateOffset); // determine value for y + 1
+			//int tempIndexVal = currentCollectionStateArray->translateXYZToSingle(currentCollectionStateArray->centerCollectionStateOffset, currentCollectionStateArray->centerCollectionStateOffset + 1, currentCollectionStateArray->centerCollectionStateOffset); // determine value for y + 1
+			arrayKey.y += 1;
+			int tempIndexVal = currentCollectionStateArray->translateXYZToSingle(arrayKey.x, arrayKey.y, arrayKey.z);
 			currentCollectionState = &currentCollectionStateArray->StateMatrixPtr[tempIndexVal];
 			if (currentCollectionState->isActive == 1)													// check if its active
 			{
@@ -529,7 +544,9 @@ int EnclaveBlockRayTracker::MoveBelow()
 		}
 		else
 		{
-			int tempIndexVal = currentCollectionStateArray->translateXYZToSingle(currentCollectionStateArray->centerCollectionStateOffset, currentCollectionStateArray->centerCollectionStateOffset - 1, currentCollectionStateArray->centerCollectionStateOffset); // determine value for y - 1
+			//int tempIndexVal = currentCollectionStateArray->translateXYZToSingle(currentCollectionStateArray->centerCollectionStateOffset, currentCollectionStateArray->centerCollectionStateOffset - 1, currentCollectionStateArray->centerCollectionStateOffset); // determine value for y - 1
+			arrayKey.y -= 1;
+			int tempIndexVal = currentCollectionStateArray->translateXYZToSingle(arrayKey.x, arrayKey.y, arrayKey.z);
 			currentCollectionState = &currentCollectionStateArray->StateMatrixPtr[tempIndexVal];
 			if (currentCollectionState->isActive == 1)													// check if its active
 			{

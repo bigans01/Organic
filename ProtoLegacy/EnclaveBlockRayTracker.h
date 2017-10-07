@@ -32,6 +32,7 @@ public:
 	EnclaveKeyDef::EnclaveKey collectionKey;	// actual key of the current collection being traversed by the ray
 	EnclaveKeyDef::EnclaveKey enclaveKey;		// the current enclave the ray is traversing
 	EnclaveKeyDef::EnclaveKey blockKey;			// the current block the ray is traversing
+	EnclaveKeyDef::EnclaveKey arrayKey;
 
 	EnclaveBlockRayTracker(CursorPathTraceContainer xContainer, CursorPathTraceContainer yContainer, CursorPathTraceContainer zContainer, EnclaveCollectionState* collectionStatePtr, EnclaveCollectionStateArray* collectionStateArrayPtr, int centerIndex);
 
