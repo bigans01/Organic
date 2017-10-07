@@ -300,6 +300,37 @@ void EnclaveCollectionStateArray::ShiftCenterCollection(EnclaveKeyDef::EnclaveKe
 			{
 				for (int z = 0; z < cubesize; z++)
 				{
+					// for each z, iterate along x
+					EnclaveCollectionState stateToReplace = StateMatrixPtr[translateXYZToSingle(x, cubesize - 1, z)];	// copy whatever values are at x = cubesize - 1; this will replace whatever x is at the end of this axis (for instance, with a cubesize of 7 this would be 6)
+					EnclaveCollectionState firstStateInLine = StateMatrixPtr[translateXYZToSingle(x, 0, z)];
+					for (int y = cubesize - 1; y > 1; y--)
+					{
+						StateMatrixPtr[translateXYZToSingle(x, y, z)] = StateMatrixPtr[translateXYZToSingle(x, y - 1, z)];
+					}
+					//cout << "pre-iter" << endl;
+					std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveCollection, EnclaveKeyDef::KeyHasher>::iterator collectionIterator;
+					//cout << "post-iter" << endl;
+					EnclaveKeyDef::EnclaveKey tempFindKey; //= lastStateInLine.ActualCollectionKey.x + 1, lastStateInLine.ActualCollectionKey.y, lastStateInLine.ActualCollectionKey.z
+					tempFindKey.x = firstStateInLine.ActualCollectionKey.x;
+					tempFindKey.y = firstStateInLine.ActualCollectionKey.y - 1;		// going towards positive y, by +1
+					tempFindKey.z = firstStateInLine.ActualCollectionKey.z;
+					collectionIterator = collectionMatrixPtr->EnclaveCollectionMap.find(tempFindKey);
+					if (collectionIterator != collectionMatrixPtr->EnclaveCollectionMap.end())
+					{
+						EnclaveCollectionState newState;			// the brand new state value, that will replace the end of the row (the index at cubesize - 1)
+						newState.ActualCollectionKey = tempFindKey;
+						newState.isActive = 1;
+						newState.collectionPtr = &collectionIterator->second;
+						StateMatrixPtr[translateXYZToSingle(x, 0, z)] = newState;					// replace the end of the x row with stateToReplace; stateToReplace is x = 0, which is the part of the matrix that has been "recycled"
+					}
+					else
+					{
+						EnclaveCollectionState newState;
+						newState.ActualCollectionKey = tempFindKey;
+						newState.isActive = 0;
+						StateMatrixPtr[translateXYZToSingle(x, 0, z)] = newState;
+
+					}
 
 				}
 			}
