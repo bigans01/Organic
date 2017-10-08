@@ -27,6 +27,7 @@ Dependents: a valid instance of Enclave
 #include "EnclaveCollectionMatrix.h"
 #include "OrganicTextureDictionary.h"
 #include "OrganicVtxColorDictionary.h"
+#include "FloatTupleXYZ.h"
 //#include "RenderCollection.h"
 
 class RenderCollection;																		// why did this work? (7/2/2017) (forward declaration solved compiler issue) 
@@ -52,13 +53,7 @@ public:
 
 	EnclaveKeyDef::EnclaveKey UniqueKey;													// the unique EnclaveKey of this manifest
 
-	struct EnclaveManifestTuple {															// 3 floats per vertex, up to 16 possible points per "block", 64 blocks
-		GLfloat x = 0.0f;																	// instantiate
-		GLfloat y = 0.0f;
-		GLfloat z = 0.0f;
-	};
-
-	EnclaveManifest::EnclaveManifestTuple EnclaveManifestOffset, TempTuple;	// EnclaveManifestOffset: a tuple of x/y/z values that determines the block's offset from the beginning of the Enclave's 0,0 point.
+	FloatTupleXYZ EnclaveManifestOffset, TempTuple;	// EnclaveManifestOffset: a tuple of x/y/z values that determines the block's offset from the beginning of the Enclave's 0,0 point.
 
 
 	EnclaveManifest(int x, int y, int z);													// constructor which sets the value of the EnclaveManifest's UniqueKey
@@ -69,7 +64,7 @@ public:
 	void AttachToEnclave(Enclave &in_ptr);									// "Attaches" the enclave manifest to an appropriate instance of Enclave; this action generates the 3d data that will be stored in the EnclaveManifest.
 	void AttachToEnclave(Enclave &in_ptr, mutex& heapmutex);				// Same as AttachToEnclave(Enclave &in_ptr), but passes in a mutex for finer-grained control and release of the mutex.
 	int ReturnEnclaveTriangles();											// returns the total number of triangles rendered in this manifest. This will be used by a RenderCollection.
-	EnclaveManifestTuple SingleToMulti(int input);							// takes in a single value, from 0 to 63, and returns a chunk-level x/y/z offset or coordinate
+	FloatTupleXYZ SingleToMulti(int input);							// takes in a single value, from 0 to 63, and returns a chunk-level x/y/z offset or coordinate
 	EnclaveManifest::~EnclaveManifest();									// required destructor for memory management
 };
 

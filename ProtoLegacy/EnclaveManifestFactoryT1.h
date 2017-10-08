@@ -26,6 +26,7 @@ Dependents: a valid instance of ManifestCollectionMatrix
 #include "EnclaveManifest.h"
 #include "OrganicTextureDictionary.h"
 #include "OrganicVtxColorDictionary.h"
+#include "FloatTupleXYZ.h"
 
 class EnclaveManifestFactoryT1
 {
@@ -39,18 +40,13 @@ public:
 	int CurrentStorage = 0;																	// a member variable that stores the current number of stored Enclaves
 	int StorageArrayCount = 0;																// ""
 	int polyfacebitmask = 32;																// polyfacebitmask that is used as storage units are instantiated
-	
-	struct EnclaveManifestTuple {															// 3 floats per vertex, up to 16 possible points per "block", 64 blocks
-		GLfloat x = 0.0f;																	// instantiate
-		GLfloat y = 0.0f;
-		GLfloat z = 0.0f;
-	};
-	EnclaveManifestFactoryT1::EnclaveManifestTuple EnclaveManifestOffset, TempTuple;		// two EnclaveManifestTuples that are used during the iteration through the Factory's storage units
+
+	FloatTupleXYZ EnclaveManifestOffset, TempTuple;		// two EnclaveManifestTuples that are used during the iteration through the Factory's storage units
 
 	void AttachManifestToEnclave(Enclave *in_ptr);											// attaches a manifest (contained within this Factory) to a valid Enclave
 	void SetEnclaveCollectionPtr(EnclaveCollection *InPtr);									// sets the pointer to a valid EnclaveCollection
 	void InsertEnclaveCollectionIntoFactory();
-	EnclaveManifestTuple SingleToMulti(int input);											// EnclaveManifestTuple
+	FloatTupleXYZ SingleToMulti(int input);											// EnclaveManifestTuple
 };
 
 #endif

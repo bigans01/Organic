@@ -20,6 +20,8 @@ Summary: An EnclaveBlockRayTracker keeps track of a ray as it traverses throguh 
 #include "CursorPathTraceContainer.h"
 #include "EnclaveCollectionState.h"
 #include "EnclaveCollectionStateArray.h"
+#include "OrganicBlockTarget.h"
+#include "FloatTupleXYZ.h"
 
 class EnclaveBlockRayTracker
 {
@@ -28,11 +30,14 @@ public:
 	Enclave* enclavePtr;
 	EnclaveCollectionState* currentCollectionState;
 	EnclaveCollectionStateArray* currentCollectionStateArray;
+	OrganicBlockTarget targetVertexData;
 	int isCurrentCollectionActive = 0;
 	EnclaveKeyDef::EnclaveKey collectionKey;	// actual key of the current collection being traversed by the ray
 	EnclaveKeyDef::EnclaveKey enclaveKey;		// the current enclave the ray is traversing
 	EnclaveKeyDef::EnclaveKey blockKey;			// the current block the ray is traversing
 	EnclaveKeyDef::EnclaveKey arrayKey;
+
+	FloatTupleXYZ EnclaveXYZOffset;	// EnclaveXYZOffset: a tuple of x/y/z values that determines the block's offset from the beginning of the Enclave's 0,0 point.
 
 	EnclaveBlockRayTracker(CursorPathTraceContainer xContainer, CursorPathTraceContainer yContainer, CursorPathTraceContainer zContainer, EnclaveCollectionState* collectionStatePtr, EnclaveCollectionStateArray* collectionStateArrayPtr, int centerIndex);
 
@@ -42,6 +47,8 @@ public:
 	int MoveSouth();		// moves the tracker one block to the south
 	int MoveAbove();		// moves the tracker one block above
 	int MoveBelow();		// moves the tracker one block below
+	void fillBlockTargetVertexData(int indexValue);
+	FloatTupleXYZ SingleToMulti(int input);
 
 };
 

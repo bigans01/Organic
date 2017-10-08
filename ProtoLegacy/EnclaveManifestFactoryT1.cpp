@@ -112,9 +112,9 @@ void EnclaveManifestFactoryT1::SetEnclaveCollectionPtr(EnclaveCollection *InPtr)
 
 }
 
-EnclaveManifestFactoryT1::EnclaveManifestTuple EnclaveManifestFactoryT1::SingleToMulti(int input) //EnclaveManifest::EnclaveManifestTuple
+FloatTupleXYZ EnclaveManifestFactoryT1::SingleToMulti(int input) //EnclaveManifest::EnclaveManifestTuple
 {
-	EnclaveManifestFactoryT1::EnclaveManifestTuple ReturnTuple;
+	FloatTupleXYZ ReturnTuple;
 
 	int x = input / 16;
 	int remainder_x = input % 16;

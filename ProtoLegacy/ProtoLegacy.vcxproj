@@ -184,6 +184,7 @@
     <ClInclude Include="EnclavePainterList.h" />
     <ClInclude Include="EnclavePainterListMatrix.h" />
     <ClInclude Include="EnclaveUnveilMeta.h" />
+    <ClInclude Include="FloatTupleXYZ.h" />
     <ClInclude Include="GoalMoveToLocation.h" />
     <ClInclude Include="join_threads.h" />
     <ClInclude Include="ManifestCollectionMatrix.h" />
@@ -195,6 +196,7 @@
     <ClInclude Include="function_wrapper.h" />
     <ClInclude Include="OGLMBufferManager.h" />
     <ClInclude Include="OrganicBlockMeta.h" />
+    <ClInclude Include="OrganicBlockTarget.h" />
     <ClInclude Include="OrganicFaceMeta.h" />
     <ClInclude Include="OrganicGLManager.h" />
     <ClInclude Include="OrganicGLRenderCollectionMeta.h" />

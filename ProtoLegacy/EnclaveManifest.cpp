@@ -218,13 +218,13 @@ void EnclaveManifest::AttachToEnclave(Enclave &in_ptr, mutex& heapmutex)
 																				//polyfacebitmask = 32;															// set bitmask to 32 initially.
 																				//cout << "out test initial " << polyfacebitmask << "; renderable poly count = " << RenderablePolyCount << endl;							// testing
 
-		char testval[36] = { 0, 1, 2, 1, 2, 3,								// negative x			(WEST)		(32)	// this array could be constant?	
-			4, 0, 6, 0, 6, 2,								// negative z			(NORTH)		(16)	// OLD:  1, 5, 3, 5, 3, 7,
+		char testval[36] = { 0, 1, 2, 1, 2, 3,								// negative x			(WEST)		(32)	// this array could be constant?		
+			1, 5, 3, 5, 3, 7,								// negative z			(NORTH)		(16)	// OLD:  1, 5, 3, 5, 3, 7,
 			5, 4, 7, 4, 7, 6,								// positive x			(EAST)		(8)
-			1, 5, 3, 5, 3, 7,								// positive z			(SOUTH)		(4)		// OLD: 0, 4, 6, 0, 6, 2,
+			4, 0, 6, 0, 6, 2,								// positive z			(SOUTH)		(4)		// OLD: 0, 4, 6, 0, 6, 2,
 			1, 5, 0, 5, 0, 4,								// positive y			(TOP)		(2)
 			3, 7, 2, 7, 2, 6								// negative y			(BOTTOM)	(1)
-		};												// also for testing
+		};										// also for testing
 		GLfloat GL_x = 0.5f;		// instantiate within stack frame
 		GLfloat GL_y = 0.5f;
 		GLfloat GL_z = 0.5f;
@@ -329,12 +329,12 @@ void EnclaveManifest::AttachToEnclave(Enclave &in_ptr, mutex& heapmutex)
 	}
 }
 
-EnclaveManifest::EnclaveManifestTuple EnclaveManifest::SingleToMulti(int input)
+FloatTupleXYZ EnclaveManifest::SingleToMulti(int input)
 {
 	/* Summary: takes a single value between 0 to 63, and returns the x/y/z of the block within the chunk */
 
 	// int multi_to_single = (x * 16) + (y * 4) + z;				// convert from 3d array coords to single array
-	EnclaveManifest::EnclaveManifestTuple ReturnTuple;
+	FloatTupleXYZ ReturnTuple;
 
 	int x = input / 16;
 	int remainder_x = input % 16;

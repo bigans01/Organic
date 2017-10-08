@@ -579,3 +579,64 @@ int EnclaveBlockRayTracker::MoveBelow()
 	}
 	return 0;
 }
+
+void EnclaveBlockRayTracker::fillBlockTargetVertexData(int indexValue)
+{
+	char testval[36] =    { 0, 1, 2, 1, 2, 3,								// negative x			(WEST)		(32)	// this array could be constant?	
+							1, 5, 3, 5, 3, 7,								// negative z			(NORTH)		(16)	// OLD:  1, 5, 3, 5, 3, 7,
+							5, 4, 7, 4, 7, 6,								// positive x			(EAST)		(8)
+							4, 0, 6, 0, 6, 2,								// positive z			(SOUTH)		(4)		// OLD: 0, 4, 6, 0, 6, 2,
+							1, 5, 0, 5, 0, 4,								// positive y			(TOP)		(2)
+							3, 7, 2, 7, 2, 6								// negative y			(BOTTOM)	(1)
+						   };												// also for testing
+	
+	int arrayindex = 0;	 // set arrayindex to 0; will be incremented 107 times (to get to 108th index)
+	//int iteratorval;	 
+
+	GLfloat GL_x = 0.5f;		// instantiate within stack frame
+	GLfloat GL_y = 0.5f;
+	GLfloat GL_z = 0.5f;
+
+	// begin block face loop
+	EnclaveXYZOffset = SingleToMulti(enclavePtr->Sorted.PolyArrayIndex[indexValue]);
+	for (int xx = 0; xx < 6; xx++)
+	{
+
+		// begin vertex loop (6 vertices per face)
+		for (int yy = 0; yy < 6; yy++)
+		{
+			GL_x = 0.5f;
+			GL_y = 0.5f;
+			GL_z = 0.5f;
+			// below 3 lines: GL_x = (x of vertex at structarray) + (enclave's unique x * 4) + (x offset)
+			GL_x = GL_x * (enclavePtr->Sorted.RenderArray[indexValue]->structarray[testval[(xx * 6) + yy]].x) + ((enclavePtr->UniqueKey.x) * 4) + ((enclavePtr->CollectionKey.x) * 32) + EnclaveXYZOffset.x;			// multiply by x coord of vertex at structarray[...]	array index of: [(j*6) + some int] 
+			GL_y = GL_y * (enclavePtr->Sorted.RenderArray[indexValue]->structarray[testval[(xx * 6) + yy]].y) + ((enclavePtr->UniqueKey.y) * 4) + ((enclavePtr->CollectionKey.y) * 32) + EnclaveXYZOffset.y;			// multiply by y coord of vertex at structarray[...]	array index of: [(j*6) + some int]
+			GL_z = GL_z * (enclavePtr->Sorted.RenderArray[indexValue]->structarray[testval[(xx * 6) + yy]].z) + ((enclavePtr->UniqueKey.z) * 4) + ((enclavePtr->CollectionKey.z) * 32) + EnclaveXYZOffset.z;			// multiply by z coord of vertex at structarray[...]	array index of: [(j*6) + some int]
+			arrayindex++;	// increment array index at the end
+		}
+	}
+}
+
+FloatTupleXYZ EnclaveBlockRayTracker::SingleToMulti(int input)
+{
+	/* Summary: takes a single value between 0 to 63, and returns the x/y/z of the block within the chunk */
+
+	// int multi_to_single = (x * 16) + (y * 4) + z;				// convert from 3d array coords to single array
+	FloatTupleXYZ ReturnTuple;
+
+	int x = input / 16;
+	int remainder_x = input % 16;
+
+	int y = remainder_x / 4;
+	int remainder_y = remainder_x % 4;
+
+	int z = remainder_y;
+
+	//cout << x << " " << y << " " << z << " " << endl;
+
+	ReturnTuple.x = x;
+	ReturnTuple.y = y;
+	ReturnTuple.z = z;
+
+	return ReturnTuple;
+}
