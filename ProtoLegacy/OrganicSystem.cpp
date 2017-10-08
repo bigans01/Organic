@@ -1594,6 +1594,11 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 	// create an instance of EnclaveBlockRayTracker for traversal; pass in x/y/z containers and a pointer to the EnclaveCollection located at the center of the array in EnclaveCollectionStateArray.StateMatrix
 	int trackResult = 0;				
 	//EnclaveBlockRayTracker rayTracker(x_container, y_container, z_container, CollectionStateArray.StateMatrix[1][1][1].collectionPtr);
+	cout << "----Ray tracker begin point----" << endl;
+	cout << "Collection: (" << CameraCollectionKey.x << ", " << CameraCollectionKey.y << ", " << CameraCollectionKey.x << ") " << endl;
+	cout << "Chunk: (" << CameraChunkKey.x << ", " << CameraChunkKey.y << ", " << CameraChunkKey.z << ") Block: (" << CameraBlockKey.x << ", " << CameraBlockKey.y << ", " << CameraBlockKey.z << ") " << endl;
+	// cout << "Block: (" << CameraBlockKey.x << ", " << CameraBlockKey.y << ", " << CameraBlockKey.z << ") " << endl;
+
 	int indexval = CollectionStateArray.translateXYZToSingle(CollectionStateArray.centerCollectionStateOffset, CollectionStateArray.centerCollectionStateOffset, CollectionStateArray.centerCollectionStateOffset);	// get the center of the dynamic array
 	EnclaveCollectionStateArray* stateArrayPtr = &CollectionStateArray;
 	EnclaveBlockRayTracker rayTracker(x_container, y_container, z_container, CollectionStateArray.StateMatrixPtr, stateArrayPtr, indexval);
