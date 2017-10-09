@@ -645,7 +645,8 @@ int main()
 	//Organic.SetRenderMode(0);
 	// set up pointers
 	auto worldsetupbegin = std::chrono::high_resolution_clock::now();
-	Organic.SetupWorldArea(-3.1f, 30.32f, -1.123f);				// sets the exact point of the camera in the world, and initializes other world area meta data (current collection,  chunk, block, vectors for "picking", etc)
+	//Organic.SetupWorldArea(-3.2f, 30.2f, -1.2f);				// sets the exact point of the camera in the world, and initializes other world area meta data (current collection,  chunk, block, vectors for "picking", etc)
+	Organic.SetupWorldArea(-3.0f, 30.0f, -1.0f);				// sets the exact point of the camera in the world, and initializes other world area meta data (current collection,  chunk, block, vectors for "picking", etc)
 	
 	auto worldsetupend = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> worldsetupelapsed = worldsetupend - worldsetupbegin;
@@ -682,7 +683,7 @@ int main()
 		// |||||||||||||||||||||| PHASE 2: Render terrain and targeted blocks
 		Organic.RenderGLTerrain();																				// Step 1 (?): perform render frame work
 		// Step 2: check if camera has moved to another collection; if so shift the OrganicCollectionPointerMatrix(?)
-		Organic.DetermineMouseCursorTargets2(Organic.OGLM.positionVecPtr, Organic.OGLM.directionVecPtr, 13);	// Step 3: determine targetable blocks 
+		Organic.DetermineMouseCursorTargets2(Organic.OGLM.positionVecPtr, Organic.OGLM.directionVecPtr, 14);	// Step 3: determine targetable blocks 
 
 		auto finish3 = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<double> elapsed3 = finish3 - start3;
