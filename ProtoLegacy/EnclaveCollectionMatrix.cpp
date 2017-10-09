@@ -1310,11 +1310,22 @@ CursorPathTraceContainer EnclaveCollectionMatrix::GetCursorCoordTrace(float x)
 		//cout << "chunk_x: " << chunk_x << endl;
 		block_x = 3 - abs(fmod(ceil(fmod(x, 32)), 4));									//block_x = abs(fmod(fmod(x, 32), 4));				// old : block_x = ((x % 32) % 4);
 		//cout << "block_x: " << block_x << endl;
+		float enclaveBorderCoord = abs(fmod(floor(fmod(x, 32)), 4));
+
 
 		dist_to_pos = abs((fmod(fmod(x, 32), 4)) + abs(fmod(ceil(fmod(x, 32)), 4)));			// distance from the camera's point to the east border of the block 
-		dist_to_neg = abs(fmod(floor(fmod(x, 32)), 4)) - abs((fmod(fmod(x, 32), 4)));
+		if (enclaveBorderCoord == 0)
+		{
+			dist_to_neg = 4.0f - abs((fmod(fmod(x, 32), 4)));
+		}
+		else
+		{
+			dist_to_neg = abs(fmod(floor(fmod(x, 32)), 4)) - abs((fmod(fmod(x, 32), 4)));
+		}
+		//cout << "abs value 1: " << abs(fmod(floor(fmod(x, 32)), 4)) << endl;
+		//cout << "abs value 2: " << abs((fmod(fmod(x, 32), 4))) << endl;
 		exact_xyz = 0.0f + dist_to_neg;										// set the exact point in the block to be 0.0f + the distance from 0.0f
-
+		//cout << "exact_xyz: " << exact_xyz << endl;
 		//cout << "exact_pos_x: " << dist_to_pos << endl;
 		//cout << "exact_neg_x: " << dist_to_neg << endl;
 
@@ -1350,7 +1361,7 @@ CursorPathTraceContainer EnclaveCollectionMatrix::GetCursorCoordTrace(float x)
 		//cout << "without ceil: " << fmod(fmod(x, 32), 4) << endl;
 		//cout << "fmod test 1: " << fmod(x, 32) << endl;
 		//cout << "fmod test 2: " << fmod(fmod(x, 32), 4) << endl;
-		//cout << " exact_xyz mid-calc: " << exact_xyz << endl;
+		//cout << " exact_xyz (pos): " << exact_xyz << endl;
 
 		//cout << "NoOfCollections passed: " << NoOfCollections << endl;
 	}

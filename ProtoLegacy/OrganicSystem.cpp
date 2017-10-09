@@ -1275,6 +1275,124 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 	// step 1: calculate direction and slope
 	glm::vec3 origin_point = *originVector;						// original point being checked
 	glm::vec3 direction_point = *directionVector;				// direction vector based on mouse input
+	glm::vec3 center_point = origin_point;
+	cout << "Pre-standardization of points: " << origin_point.x << ", " << origin_point.y << ", " << origin_point.z << endl;
+
+	// perform centering of x coordinates
+	if (center_point.x <= 0)
+	{
+		// if the the floor of center_point.x is equal to the origin_point (meaning the point was for example at 3.0f), subtract 5
+		if (floor(center_point.x) == origin_point.x)
+		{
+			cout << "(NEG X) |||| x points are a .0f" << endl;
+			origin_point.x -= 0.2f;
+			direction_point.x -= 0.2f;
+		}
+		/*
+		else if (floor(center_point.x) < origin_point.x)
+		{
+			cout << "(NEG X) |||| x points are NOT a .0f" << endl;
+			origin_point.x = floor(center_point.x) + 0.5f;
+			cout << "New centered origin point is: " << origin_point.x << endl;
+		}
+		*/
+	}
+	else if (center_point.x > 0)
+	{
+		if (ceil(center_point.x) == origin_point.x)
+		{
+			cout << "(POS X) |||| x points are a .0f" << endl;
+			origin_point.x += 0.2f;
+			direction_point.x += 0.2f;
+		}
+		/*
+		else if (ceil(center_point.x) > origin_point.x)
+		{
+			cout << "(POS X) |||| x points are NOT a .0f" << endl;
+			origin_point.x = ceil(center_point.x) - 0.5f;
+		}
+		*/
+	}
+
+
+
+
+	// perform centering of y coordinates
+	if (center_point.y <= 0)
+	{
+		// if the the floor of center_point.y is equal to the origin_point (meaning the point was for example at 3.0f), subtract 5
+		if (floor(center_point.y) == origin_point.y)
+		{
+			cout << "(NEG Y) |||| y points are a .0f" << endl;
+			origin_point.y -= 0.2f;
+			direction_point.y -= 0.2f;
+		}
+		/*
+		else if (floor(center_point.y) < origin_point.y)
+		{
+			cout << "(NEG Y) |||| y points are NOT a .0f" << endl;
+			origin_point.y = floor(center_point.y) + 0.5f;
+			cout << "New centered origin point is: " << origin_point.y << endl;
+		}
+		*/
+	}
+	else if (center_point.y > 0)
+	{
+		if (ceil(center_point.y) == origin_point.y)
+		{
+			cout << "(POS Y) |||| y points are a .0f" << endl;
+			origin_point.y += 0.2f;
+			direction_point.y += 0.2f;
+		}
+		/*
+		else if (ceil(center_point.y) > origin_point.y)
+		{
+			cout << "(POS Y) |||| y points are NOT a .0f" << endl;
+			origin_point.y = ceil(center_point.y) - 0.5f;
+		}
+		*/
+	}
+
+
+
+	// perform centering of z coordinates
+	if (center_point.z <= 0)
+	{
+		// if the the floor of center_point.y is equal to the origin_point (meaning the point was for example at 3.0f), subtract 5
+		if (floor(center_point.z) == origin_point.z)
+		{
+			cout << "(NEG Z) |||| z points are a .0f" << endl;
+			origin_point.z -= 0.2f;
+			direction_point.z -= 0.2f;
+		}
+		/*
+		else if (floor(center_point.z) < origin_point.z)
+		{
+			cout << "(NEG Z) |||| z points are NOT a .0f" << endl;
+			origin_point.z = floor(center_point.z) + 0.5f;
+			cout << "New centered origin point is: " << origin_point.z << endl;
+		}
+		*/
+	}
+	else if (center_point.z > 0)
+	{
+		if (ceil(center_point.z) == origin_point.z)
+		{
+			cout << "(POS Z) |||| z points are a .0f" << endl;
+			origin_point.z += 0.2f;
+			direction_point.z += 0.2f;
+		}
+		/*
+		else if (ceil(center_point.z) > origin_point.z)
+		{
+			cout << "(POS Z) |||| z points are NOT a .0f" << endl;
+			origin_point.z = ceil(center_point.z) - 0.5f;
+		}
+		*/
+	}
+
+
+	//glm::vec3 direction_point = *directionVector;				// direction vector based on mouse input
 	//cout << "Original vector (" << originVector->x << ", " << originVector->y << ", " << originVector->z << ") " << endl;
 
 	//cout << "Origin point: (" << origin_point.x << ", " << origin_point.y << ", " << origin_point.z << ") " << endl;
@@ -1349,7 +1467,7 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 	glm::vec3 rayDirection = second_point - temp_origin;		// the difference between the second_point and the temp_origin will determine the rayDirection.
 	cout << ">>>>>RayDirection: (" << rayDirection.x << ", " << rayDirection.y << ", " << rayDirection.z << ") " << endl;
 
-	/*
+	
 	cout << "----BEGIN ANALYSIS (begin point) ----" << endl;
 	cout << "Origin Point: (" << origin_point.x << ", " << origin_point.y << ", " << origin_point.z << ") " << endl;
 	cout << "Collection: (" << CameraCollectionKey.x << ", " << CameraCollectionKey.y << ", " << CameraCollectionKey.x << ") " << endl;
@@ -1357,7 +1475,7 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 	cout << "Block: (" << CameraBlockKey.x << ", " << CameraBlockKey.y << ", " << CameraBlockKey.z << ") " << endl;
 	cout << "Exact Block: (" << block_x_precise << ", " << block_y_precise << ", " << block_z_precise << ") " << endl;
 	cout << "Direction: (" << direction_point.x << ", " << direction_point.y << ", " << direction_point.z << ") " << endl;
-	*/
+	
 
 	//cout << "Slope: (" << rayDirection.x << ", " << rayDirection.y << ", " << rayDirection.z << ") " << endl;
 
@@ -1405,6 +1523,8 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 		float squared_x = pow(distance_between_points_x.x, 2.0);		// calculate squared values for x/y/z
 		float squared_y = pow(distance_between_points_x.y, 2.0);
 		float squared_z = pow(distance_between_points_x.z, 2.0);
+		//cout << "temp_origin.x: " << temp_origin.x << endl;
+		//cout << "rayDirection.x: " << rayDirection.x << endl;
 		initial_xMax = (1.0f - temp_origin.x) / rayDirection.x;			// get the time it takes to get to 1.0f from the origin
 		initial_xLength = sqrt(squared_x + squared_y + squared_z);		// calculate the initial length
 		normal_xMax = (1.0f / rayDirection.x);							// the normal amount of time it takes to traverse a distance of exactly 1.0f
@@ -1513,6 +1633,9 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 		float squared_x = pow(distance_between_points_z.x, 2.0);
 		float squared_y = pow(distance_between_points_z.y, 2.0);
 		float squared_z = pow(distance_between_points_z.z, 2.0);
+
+		//cout << "temp_origin.z: " << temp_origin.z << endl;
+		//cout << "rayDirection.z: " << rayDirection.z << endl;
 		initial_zMax = (1.0f - temp_origin.z) / rayDirection.z;			// get the time it takes to get to 1.0f
 		initial_zLength = sqrt(squared_x + squared_y + squared_z);
 		normal_zMax = 1.0f / rayDirection.z;
@@ -1595,9 +1718,9 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 	// create an instance of EnclaveBlockRayTracker for traversal; pass in x/y/z containers and a pointer to the EnclaveCollection located at the center of the array in EnclaveCollectionStateArray.StateMatrix
 	int trackResult = 0;				
 	//EnclaveBlockRayTracker rayTracker(x_container, y_container, z_container, CollectionStateArray.StateMatrix[1][1][1].collectionPtr);
-	cout << "----Ray tracker begin point----" << endl;
-	cout << "Collection: (" << CameraCollectionKey.x << ", " << CameraCollectionKey.y << ", " << CameraCollectionKey.x << ") " << endl;
-	cout << "Chunk: (" << CameraChunkKey.x << ", " << CameraChunkKey.y << ", " << CameraChunkKey.z << ") Block: (" << CameraBlockKey.x << ", " << CameraBlockKey.y << ", " << CameraBlockKey.z << ") " << endl;
+	//cout << "----Ray tracker begin point----" << endl;
+	//cout << "Collection: (" << CameraCollectionKey.x << ", " << CameraCollectionKey.y << ", " << CameraCollectionKey.x << ") " << endl;
+	//cout << "Chunk: (" << CameraChunkKey.x << ", " << CameraChunkKey.y << ", " << CameraChunkKey.z << ") Block: (" << CameraBlockKey.x << ", " << CameraBlockKey.y << ", " << CameraBlockKey.z << ") " << endl;
 	// cout << "Block: (" << CameraBlockKey.x << ", " << CameraBlockKey.y << ", " << CameraBlockKey.z << ") " << endl;
 
 	int indexval = CollectionStateArray.translateXYZToSingle(CollectionStateArray.centerCollectionStateOffset, CollectionStateArray.centerCollectionStateOffset, CollectionStateArray.centerCollectionStateOffset);	// get the center of the dynamic array
@@ -1607,13 +1730,13 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 	int maxTravelAttempts = length;		// set travel (traversal) attempts to 10
 	int travelAttempts = 0;				// set counter to 0
 
-	cout << "initial x: " << initial_xMax << endl;
-	cout << "initial y: " << initial_yMax << endl;
-	cout << "initial z: " << initial_zMax << endl;
+	//cout << "initial x: " << initial_xMax << endl;
+	//cout << "initial y: " << initial_yMax << endl;
+	//cout << "initial z: " << initial_zMax << endl;
 
-	cout << "Normal x time: " << normal_xMax << endl;
-	cout << "Normal y time: " << normal_yMax << endl;
-	cout << "Normal z time: " << normal_zMax << endl;
+	//cout << "Normal x time: " << normal_xMax << endl;
+	//cout << "Normal y time: " << normal_yMax << endl;
+	//cout << "Normal z time: " << normal_zMax << endl;
 
 	//cout << "pre-while loop" << endl;
 	while ((travelAttempts < maxTravelAttempts) && trackResult == 0)
