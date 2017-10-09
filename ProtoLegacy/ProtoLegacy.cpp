@@ -645,7 +645,7 @@ int main()
 	//Organic.SetRenderMode(0);
 	// set up pointers
 	auto worldsetupbegin = std::chrono::high_resolution_clock::now();
-	Organic.SetupWorldArea(5.7f, 27.0f, 10.0f);				// sets the exact point of the camera in the world, and initializes other world area meta data (current collection,  chunk, block, vectors for "picking", etc)
+	Organic.SetupWorldArea(-3.5f, 30.5f, -1.5f);				// sets the exact point of the camera in the world, and initializes other world area meta data (current collection,  chunk, block, vectors for "picking", etc)
 	
 	auto worldsetupend = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> worldsetupelapsed = worldsetupend - worldsetupbegin;

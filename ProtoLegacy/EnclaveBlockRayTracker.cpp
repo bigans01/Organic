@@ -124,12 +124,14 @@ int EnclaveBlockRayTracker::MoveEast()
 				{
 					if (enclavePtr->Sorted.PolyArrayIndex[xx] == blockSingularValue)
 					{
+						cout << "Return from east entry..." << endl;
 						return 1;
 					}
 				}
 			}
 			else
 			{
+				cout << "RayTracker has entered a new collection (east, from an empty collection)" << endl;
 				collectionKey.x += 1;																	// increment collectionKey value by 1
 				enclaveKey.x = 0;																		// set the x of the enclaveKey value to 0
 				blockKey.x = 0;				// set block key's x value to also be 0 (since it entered a new Enclave by going east)
@@ -221,6 +223,7 @@ int EnclaveBlockRayTracker::MoveWest()
 			}
 			else
 			{
+				cout << "RayTracker has entered a new collection (west, from an empty collection)" << endl;
 				collectionKey.x -= 1;																	// decrement collectionKey value by 1
 				enclaveKey.x = 7;
 				blockKey.x = 3;
@@ -311,7 +314,7 @@ int EnclaveBlockRayTracker::MoveNorth()
 			}
 			else
 			{
-				cout << "new collection not found as active.." << endl;
+				cout << "RayTracker has entered a new collection (north, from an empty collection)" << endl;
 				collectionKey.z -= 1;																	// decrement collectionKey value by 1
 				enclaveKey.z = 7;
 				blockKey.z = 3;
@@ -396,12 +399,14 @@ int EnclaveBlockRayTracker::MoveSouth()
 				{
 					if (enclavePtr->Sorted.PolyArrayIndex[xx] == blockSingularValue)
 					{
+						cout << "Return from south entry..." << endl;
 						return 1;
 					}
 				}
 			}
 			else
 			{
+				cout << "RayTracker has entered a new collection (south, from an empty collection)" << endl;
 				collectionKey.z += 1;																	// increment collectionKey.z value by 1
 				enclaveKey.z = 0;																		// set the z of the enclaveKey value to 0
 				blockKey.z = 0;				// set block key's z value to also be 0 (since it entered a new Enclave by going east)
@@ -493,6 +498,7 @@ int EnclaveBlockRayTracker::MoveAbove()
 			}
 			else
 			{
+				cout << "RayTracker has entered a new collection (above, from an empty collection)" << endl;
 				collectionKey.y += 1;																	// increment collectionKey.y value by 1
 				enclaveKey.y = 0;																		// set the y of the enclaveKey value to 0
 				blockKey.y = 0;																			// set block key's y value to also be 0 (since it entered a new Enclave by going above)
@@ -584,6 +590,7 @@ int EnclaveBlockRayTracker::MoveBelow()
 			}
 			else
 			{
+				cout << "RayTracker has entered a new collection (below, from an empty collection)" << endl;
 				collectionKey.y -= 1;																	// decrement collectionKey.y value by 1
 				enclaveKey.y = 7;																		// set the y of the enclaveKey value to 7
 				blockKey.y = 3;																			// set block key's y value to also be 3 (since it entered a new Enclave by going below)

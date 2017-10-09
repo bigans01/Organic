@@ -1347,6 +1347,7 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 
 	glm::vec3 second_point = temp_origin + direction_point;		// add the direction to the temp_origin, store the result in second_point
 	glm::vec3 rayDirection = second_point - temp_origin;		// the difference between the second_point and the temp_origin will determine the rayDirection.
+	cout << ">>>>>RayDirection: (" << rayDirection.x << ", " << rayDirection.y << ", " << rayDirection.z << ") " << endl;
 
 	/*
 	cout << "----BEGIN ANALYSIS (begin point) ----" << endl;
@@ -1606,6 +1607,14 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 	int maxTravelAttempts = length;		// set travel (traversal) attempts to 10
 	int travelAttempts = 0;				// set counter to 0
 
+	cout << "initial x: " << initial_xMax << endl;
+	cout << "initial y: " << initial_yMax << endl;
+	cout << "initial z: " << initial_zMax << endl;
+
+	cout << "Normal x time: " << normal_xMax << endl;
+	cout << "Normal y time: " << normal_yMax << endl;
+	cout << "Normal z time: " << normal_zMax << endl;
+
 	//cout << "pre-while loop" << endl;
 	while ((travelAttempts < maxTravelAttempts) && trackResult == 0)
 	{
@@ -1696,6 +1705,8 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 	//cout << "number of x traversals: " << block_traverse_x << endl;
 	//cout << "number of y traversals: " << block_traverse_y << endl;
 	//cout << "number of z traversals: " << block_traverse_z << endl;
+
+
 
 
 }
