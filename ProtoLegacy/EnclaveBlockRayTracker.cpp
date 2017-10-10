@@ -59,7 +59,7 @@ int EnclaveBlockRayTracker::MoveEast()
 		{
 			int numBlocks = enclavePtr->TotalRenderable;
 			int blockSingularValue = enclavePtr->EnclaveCoordsToSingle(blockKey.x, blockKey.y, blockKey.z);
-			cout << "Moved EAST: current location; Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
+			//cout << "Moved EAST: current location; Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
 			for (int xx = 0; xx < numBlocks; xx++)
 			{
 				if (enclavePtr->Sorted.PolyArrayIndex[xx] == blockSingularValue)
@@ -70,7 +70,7 @@ int EnclaveBlockRayTracker::MoveEast()
 		}
 		else
 		{
-			cout << "Moved EAST: current location; Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
+			//cout << "Moved EAST: current location; Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
 			return 0;
 		}
 	}// --------------------------------------------------
@@ -86,7 +86,7 @@ int EnclaveBlockRayTracker::MoveEast()
 				blockKey.x = 0;
 				int numBlocks = enclavePtr->TotalRenderable;
 				int blockSingularValue = enclavePtr->EnclaveCoordsToSingle(blockKey.x, blockKey.y, blockKey.z);
-				cout << "Moved EAST: current location; Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
+				//cout << "Moved EAST: current location; Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
 				for (int xx = 0; xx < numBlocks; xx++)
 				{
 					if (enclavePtr->Sorted.PolyArrayIndex[xx] == blockSingularValue)
@@ -119,7 +119,7 @@ int EnclaveBlockRayTracker::MoveEast()
 				isCurrentCollectionActive = 1;
 				int numBlocks = enclavePtr->TotalRenderable;											// check the newly entered enclave, for the TotalRenderable
 				int blockSingularValue = enclavePtr->EnclaveCoordsToSingle(blockKey.x, blockKey.y, blockKey.z);	// get the singular value
-				cout << "RayTracker has entered a new collection (east); (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
+				//cout << "RayTracker has entered a new collection (east); (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
 				for (int xx = 0; xx < numBlocks; xx++)			// check if the enclave contains any blocks
 				{
 					if (enclavePtr->Sorted.PolyArrayIndex[xx] == blockSingularValue)
@@ -131,7 +131,7 @@ int EnclaveBlockRayTracker::MoveEast()
 			}
 			else
 			{
-				cout << "RayTracker has entered a new collection (east, from an empty collection)" << endl;
+				//cout << "RayTracker has entered a new collection (east, from an empty collection)" << endl;
 				collectionKey.x += 1;																	// increment collectionKey value by 1
 				enclaveKey.x = 0;																		// set the x of the enclaveKey value to 0
 				blockKey.x = 0;				// set block key's x value to also be 0 (since it entered a new Enclave by going east)
@@ -152,7 +152,7 @@ int EnclaveBlockRayTracker::MoveWest()
 		{
 			int numBlocks = enclavePtr->TotalRenderable;
 			int blockSingularValue = enclavePtr->EnclaveCoordsToSingle(blockKey.x, blockKey.y, blockKey.z);
-			cout << "Moved WEST: current location (0); Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
+			//cout << "Moved WEST: current location (0); Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
 			for (int xx = 0; xx < numBlocks; xx++)
 			{
 				if (enclavePtr->Sorted.PolyArrayIndex[xx] == blockSingularValue)
@@ -178,7 +178,7 @@ int EnclaveBlockRayTracker::MoveWest()
 				blockKey.x = 3;
 				int numBlocks = enclavePtr->TotalRenderable;
 				int blockSingularValue = enclavePtr->EnclaveCoordsToSingle(blockKey.x, blockKey.y, blockKey.z);
-				cout << "Moved WEST: current location (1); Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
+				//cout << "Moved WEST: current location (1); Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
 				for (int xx = 0; xx < numBlocks; xx++)
 				{
 					if (enclavePtr->Sorted.PolyArrayIndex[xx] == blockSingularValue)
@@ -210,7 +210,7 @@ int EnclaveBlockRayTracker::MoveWest()
 				isCurrentCollectionActive = 1;
 				int numBlocks = enclavePtr->TotalRenderable;													// check the newly entered enclave, for the TotalRenderable
 				int blockSingularValue = enclavePtr->EnclaveCoordsToSingle(blockKey.x, blockKey.y, blockKey.z);	// get the singular value
-				cout << "Moved WEST: current location (2); Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
+				//cout << "Moved WEST: current location (2); Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
 				//cout << "RayTracker has entered a new collection (west)" << endl;
 				for (int xx = 0; xx < numBlocks; xx++)			// check if the enclave contains any blocks
 				{
@@ -223,7 +223,7 @@ int EnclaveBlockRayTracker::MoveWest()
 			}
 			else
 			{
-				cout << "RayTracker has entered a new collection (west, from an empty collection)" << endl;
+				//cout << "RayTracker has entered a new collection (west, from an empty collection)" << endl;
 				collectionKey.x -= 1;																	// decrement collectionKey value by 1
 				enclaveKey.x = 7;
 				blockKey.x = 3;
@@ -245,7 +245,7 @@ int EnclaveBlockRayTracker::MoveNorth()
 		{
 			int numBlocks = enclavePtr->TotalRenderable;
 			int blockSingularValue = enclavePtr->EnclaveCoordsToSingle(blockKey.x, blockKey.y, blockKey.z);
-			cout << "Moved NORTH (0): current location; Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
+			//cout << "Moved NORTH (0): current location; Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
 			for (int xx = 0; xx < numBlocks; xx++)
 			{
 				if (enclavePtr->Sorted.PolyArrayIndex[xx] == blockSingularValue)
@@ -270,7 +270,7 @@ int EnclaveBlockRayTracker::MoveNorth()
 				blockKey.z = 3;
 				int numBlocks = enclavePtr->TotalRenderable;
 				int blockSingularValue = enclavePtr->EnclaveCoordsToSingle(blockKey.x, blockKey.y, blockKey.z);
-				cout << "Moved NORTH (1): current location; Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
+				//cout << "Moved NORTH (1): current location; Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
 				for (int xx = 0; xx < numBlocks; xx++)
 				{
 					if (enclavePtr->Sorted.PolyArrayIndex[xx] == blockSingularValue)
@@ -302,7 +302,7 @@ int EnclaveBlockRayTracker::MoveNorth()
 				isCurrentCollectionActive = 1;
 				int numBlocks = enclavePtr->TotalRenderable;													// check the newly entered enclave, for the TotalRenderable
 				int blockSingularValue = enclavePtr->EnclaveCoordsToSingle(blockKey.x, blockKey.y, blockKey.z);	// get the singular value
-				cout << "Moved NORTH (new collection entry): current location; Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
+				//cout << "Moved NORTH (new collection entry): current location; Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
 				for (int xx = 0; xx < numBlocks; xx++)			// check if the enclave contains any blocks
 				{
 					if (enclavePtr->Sorted.PolyArrayIndex[xx] == blockSingularValue)
@@ -336,7 +336,7 @@ int EnclaveBlockRayTracker::MoveSouth()
 		{
 			int numBlocks = enclavePtr->TotalRenderable;
 			int blockSingularValue = enclavePtr->EnclaveCoordsToSingle(blockKey.x, blockKey.y, blockKey.z);
-			cout << "Moved SOUTH: current location; Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
+			//cout << "Moved SOUTH: current location; Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
 			for (int xx = 0; xx < numBlocks; xx++)
 			{
 				if (enclavePtr->Sorted.PolyArrayIndex[xx] == blockSingularValue)
@@ -347,7 +347,7 @@ int EnclaveBlockRayTracker::MoveSouth()
 		}
 		else
 		{
-			cout << "Moved SOUTH: current location; Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
+			//cout << "Moved SOUTH: current location; Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
 			return 0;
 		} // --------------------------------------------------
 	}
@@ -374,7 +374,7 @@ int EnclaveBlockRayTracker::MoveSouth()
 			else
 			{	
 				blockKey.z = 0;
-				cout << "Moved SOUTH: current location; Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
+				//cout << "Moved SOUTH: current location; Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
 				return 0;
 			}
 		}
@@ -394,7 +394,7 @@ int EnclaveBlockRayTracker::MoveSouth()
 				isCurrentCollectionActive = 1;
 				int numBlocks = enclavePtr->TotalRenderable;													// check the newly entered enclave, for the TotalRenderable
 				int blockSingularValue = enclavePtr->EnclaveCoordsToSingle(blockKey.x, blockKey.y, blockKey.z);	// get the singular value
-				cout << "RayTracker has entered a new collection (south); (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
+				//cout << "RayTracker has entered a new collection (south); (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
 				for (int xx = 0; xx < numBlocks; xx++)			// check if the enclave contains any blocks
 				{
 					if (enclavePtr->Sorted.PolyArrayIndex[xx] == blockSingularValue)
@@ -406,7 +406,7 @@ int EnclaveBlockRayTracker::MoveSouth()
 			}
 			else
 			{
-				cout << "RayTracker has entered a new collection (south, from an empty collection)" << endl;
+				//cout << "RayTracker has entered a new collection (south, from an empty collection)" << endl;
 				collectionKey.z += 1;																	// increment collectionKey.z value by 1
 				enclaveKey.z = 0;																		// set the z of the enclaveKey value to 0
 				blockKey.z = 0;				// set block key's z value to also be 0 (since it entered a new Enclave by going east)
@@ -428,7 +428,7 @@ int EnclaveBlockRayTracker::MoveAbove()
 		{
 			int numBlocks = enclavePtr->TotalRenderable;
 			int blockSingularValue = enclavePtr->EnclaveCoordsToSingle(blockKey.x, blockKey.y, blockKey.z);
-			cout << "Moved ABOVE: current location; Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
+			//cout << "Moved ABOVE: current location; Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
 			//cout << "pre Move-above" << endl;
 			for (int xx = 0; xx < numBlocks; xx++)
 			{
@@ -456,7 +456,7 @@ int EnclaveBlockRayTracker::MoveAbove()
 				blockKey.y = 0;
 				int numBlocks = enclavePtr->TotalRenderable;
 				int blockSingularValue = enclavePtr->EnclaveCoordsToSingle(blockKey.x, blockKey.y, blockKey.z);
-				cout << "Moved ABOVE (2): current location; Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
+				//cout << "Moved ABOVE (2): current location; Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
 				for (int xx = 0; xx < numBlocks; xx++)
 				{
 					if (enclavePtr->Sorted.PolyArrayIndex[xx] == blockSingularValue)
@@ -487,7 +487,7 @@ int EnclaveBlockRayTracker::MoveAbove()
 				isCurrentCollectionActive = 1;
 				int numBlocks = enclavePtr->TotalRenderable;
 				int blockSingularValue = enclavePtr->EnclaveCoordsToSingle(blockKey.x, blockKey.y, blockKey.z);	// get the singular value
-				cout << "RayTracker has entered a new collection (above)" << endl;
+				//cout << "RayTracker has entered a new collection (above)" << endl;
 				for (int xx = 0; xx < numBlocks; xx++)			// check if the enclave contains any blocks
 				{
 					if (enclavePtr->Sorted.PolyArrayIndex[xx] == blockSingularValue)
@@ -498,7 +498,7 @@ int EnclaveBlockRayTracker::MoveAbove()
 			}
 			else
 			{
-				cout << "RayTracker has entered a new collection (above, from an empty collection)" << endl;
+				//cout << "RayTracker has entered a new collection (above, from an empty collection)" << endl;
 				collectionKey.y += 1;																	// increment collectionKey.y value by 1
 				enclaveKey.y = 0;																		// set the y of the enclaveKey value to 0
 				blockKey.y = 0;																			// set block key's y value to also be 0 (since it entered a new Enclave by going above)
@@ -520,7 +520,7 @@ int EnclaveBlockRayTracker::MoveBelow()
 		{
 			int numBlocks = enclavePtr->TotalRenderable;
 			int blockSingularValue = enclavePtr->EnclaveCoordsToSingle(blockKey.x, blockKey.y, blockKey.z);
-			cout << "Moved BELOW: current location; Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
+			//cout << "Moved BELOW: current location; Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
 			for (int xx = 0; xx < numBlocks; xx++)
 			{
 				if (enclavePtr->Sorted.PolyArrayIndex[xx] == blockSingularValue)
@@ -531,7 +531,7 @@ int EnclaveBlockRayTracker::MoveBelow()
 		}
 		else
 		{
-			cout << "Moved BELOW: current location; Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
+			//cout << "Moved BELOW: current location; Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
 			return 0;
 		}
 	} // --------------------------------------------------
@@ -546,7 +546,7 @@ int EnclaveBlockRayTracker::MoveBelow()
 				blockKey.y = 3;
 				int numBlocks = enclavePtr->TotalRenderable;
 				int blockSingularValue = enclavePtr->EnclaveCoordsToSingle(blockKey.x, blockKey.y, blockKey.z);
-				cout << "Moved BELOW (y was 0): current location; Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
+				//cout << "Moved BELOW (y was 0): current location; Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
 				for (int xx = 0; xx < numBlocks; xx++)
 				{
 					if (enclavePtr->Sorted.PolyArrayIndex[xx] == blockSingularValue)
@@ -558,7 +558,7 @@ int EnclaveBlockRayTracker::MoveBelow()
 			else
 			{
 				blockKey.y = 3;
-				cout << "Moved BELOW: current location; Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
+				//cout << "Moved BELOW: current location; Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
 				return 0;
 			}
 		}
@@ -578,7 +578,7 @@ int EnclaveBlockRayTracker::MoveBelow()
 				isCurrentCollectionActive = 1;
 				int numBlocks = enclavePtr->TotalRenderable;
 				int blockSingularValue = enclavePtr->EnclaveCoordsToSingle(blockKey.x, blockKey.y, blockKey.z);	// get the singular value
-				cout << "RayTracker has entered a new collection (below)" << endl;
+				//cout << "RayTracker has entered a new collection (below)" << endl;
 				for (int xx = 0; xx < numBlocks; xx++)			// check if the enclave contains any blocks
 				{
 					if (enclavePtr->Sorted.PolyArrayIndex[xx] == blockSingularValue)
@@ -590,7 +590,7 @@ int EnclaveBlockRayTracker::MoveBelow()
 			}
 			else
 			{
-				cout << "RayTracker has entered a new collection (below, from an empty collection)" << endl;
+				//cout << "RayTracker has entered a new collection (below, from an empty collection)" << endl;
 				collectionKey.y -= 1;																	// decrement collectionKey.y value by 1
 				enclaveKey.y = 7;																		// set the y of the enclaveKey value to 7
 				blockKey.y = 3;																			// set block key's y value to also be 3 (since it entered a new Enclave by going below)
