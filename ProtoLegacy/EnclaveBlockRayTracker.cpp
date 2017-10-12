@@ -647,10 +647,10 @@ void EnclaveBlockRayTracker::fillBlockTargetVertexData(int indexValue)
 			GL_y = GL_y * (enclavePtr->Sorted.RenderArray[indexValue]->structarray[testval[(xx * 6) + yy]].y) + ((enclavePtr->UniqueKey.y) * 4) + ((enclavePtr->CollectionKey.y) * 32) + EnclaveXYZOffset.y;			// multiply by y coord of vertex at structarray[...]	array index of: [(j*6) + some int]
 			GL_z = GL_z * (enclavePtr->Sorted.RenderArray[indexValue]->structarray[testval[(xx * 6) + yy]].z) + ((enclavePtr->UniqueKey.z) * 4) + ((enclavePtr->CollectionKey.z) * 32) + EnclaveXYZOffset.z;			// multiply by z coord of vertex at structarray[...]	array index of: [(j*6) + some int]
 
-			targetVertexData->targetVertexesXYZ[testval[(xx * 6) + yy]].x = GL_x - targetVertexData->vertexOffsets[testval[(xx * 6) + yy]].x;
-			targetVertexData->targetVertexesXYZ[testval[(xx * 6) + yy]].y = GL_y - targetVertexData->vertexOffsets[testval[(xx * 6) + yy]].y;
-			targetVertexData->targetVertexesXYZ[testval[(xx * 6) + yy]].z = GL_z - targetVertexData->vertexOffsets[testval[(xx * 6) + yy]].z;
-
+			targetVertexData->targetVertexesXYZ[arrayindex].x = GL_x - targetVertexData->vertexOffsets[testval[(xx * 6) + yy]].x;		// set the +/- difference for the target cube outline for x 
+			targetVertexData->targetVertexesXYZ[arrayindex].y = GL_y - targetVertexData->vertexOffsets[testval[(xx * 6) + yy]].y;		// set the +/- difference for the target cube outline for y
+			targetVertexData->targetVertexesXYZ[arrayindex].z = GL_z - targetVertexData->vertexOffsets[testval[(xx * 6) + yy]].z;		// set the +/- difference for the target cube outline for z
+			//cout << "array index is: " << arrayindex << endl;
 			arrayindex++;	// increment array index at the end
 		}
 	}
