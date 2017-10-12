@@ -244,6 +244,7 @@
     <ClCompile Include="ManifestCollection.cpp" />
     <ClCompile Include="MDJobMaterializeCollection.cpp" />
     <ClCompile Include="OGLMBufferManager.cpp" />
+    <ClCompile Include="OrganicBlockTarget.cpp" />
     <ClCompile Include="OrganicGLManager.cpp" />
     <ClCompile Include="OrganicSystem.cpp" />
     <ClCompile Include="OrganicTextureDictionary.cpp" />

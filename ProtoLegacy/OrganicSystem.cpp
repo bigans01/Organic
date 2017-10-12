@@ -20,6 +20,7 @@ OrganicSystem::OrganicSystem(int numberOfFactories, int bufferCubeSize)
 	OrganicGLManager* tempGLManagerPtr = &OGLM;			// get a pointer to the OrganicSystem's OGLM instance, and set the reference.
 	OGLM.SendPointerToBufferManager(tempGLManagerPtr);	// send the pointer to the buffer manager, so that it may use it to set up its buffer arrays
 	OGLM.SetupBufferManagerArrays(bufferCubeSize);		// setup the buffer manager's arrays
+	blockTargetMeta.setVertexOffsets();					// set up vertex offsets
 }
 
 void OrganicSystem::InterlockBaseCollections()
@@ -643,7 +644,7 @@ void OrganicSystem::AddOrganicVtxColorMetaArray(string mapname)
 	tempColorMetaRef->BlockData.FaceIndex[4].FaceMeta[2].blue = 0.04f;
 										  
 	tempColorMetaRef->BlockData.FaceIndex[4].FaceMeta[3].red = 0.183f;
-	tempColorMetaRef->BlockData.FaceIndex[4].FaceMeta[3].green = 0.771f;
+	tempColorMetaRef->BlockData.FaceIndex[4].FaceMeta[3].green = 0.471f;
 	tempColorMetaRef->BlockData.FaceIndex[4].FaceMeta[3].blue = 0.014f;
 
 	tempColorMetaRef->BlockData.FaceIndex[4].FaceMeta[4].red = 0.171f;
@@ -1268,7 +1269,7 @@ void OrganicSystem::DetermineMouseCursorTargets(glm::vec3* originVector, glm::ve
 
 void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::vec3* directionVector, int length)
 {
-
+	blockTargetMeta.hasAcquiredTarget = 0;			// reset blockTargetMeta's acquisition flag to 0
 
 
 	//cout << endl;
@@ -1287,7 +1288,7 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 		if (floor(center_point.x) == origin_point.x)
 		{
 			//cout << "(NEG X) |||| x points are a .0f" << endl;
-			origin_point.x -= 0.2f;
+			origin_point.x -= 0.0005f;
 		}
 
 	}
@@ -1296,7 +1297,7 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 		if (ceil(center_point.x) == origin_point.x)
 		{
 			//cout << "(POS X) |||| x points are a .0f" << endl;
-			origin_point.x += 0.2f;
+			origin_point.x += 0.0005f;
 		}
 
 	}
@@ -1311,7 +1312,7 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 		if (floor(center_point.y) == origin_point.y)
 		{
 			//cout << "(NEG Y) |||| y points are a .0f" << endl;
-			origin_point.y -= 0.2f;
+			origin_point.y -= 0.0005f;
 		}
 
 	}
@@ -1320,7 +1321,7 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 		if (ceil(center_point.y) == origin_point.y)
 		{
 			//cout << "(POS Y) |||| y points are a .0f" << endl;
-			origin_point.y += 0.2f;
+			origin_point.y += 0.0005f;
 		}
 
 	}
@@ -1334,7 +1335,7 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 		if (floor(center_point.z) == origin_point.z)
 		{
 			//cout << "(NEG Z) |||| z points are a .0f" << endl;
-			origin_point.z -= 0.2f;
+			origin_point.z -= 0.0005f;
 		}
 
 	}
@@ -1343,7 +1344,7 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 		if (ceil(center_point.z) == origin_point.z)
 		{
 			//cout << "(POS Z) |||| z points are a .0f" << endl;
-			origin_point.z += 0.2f;
+			origin_point.z += 0.0005f;
 			
 		}
 
@@ -1683,7 +1684,8 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 
 	int indexval = CollectionStateArray.translateXYZToSingle(CollectionStateArray.centerCollectionStateOffset, CollectionStateArray.centerCollectionStateOffset, CollectionStateArray.centerCollectionStateOffset);	// get the center of the dynamic array
 	EnclaveCollectionStateArray* stateArrayPtr = &CollectionStateArray;
-	EnclaveBlockRayTracker rayTracker(x_container, y_container, z_container, CollectionStateArray.StateMatrixPtr, stateArrayPtr, indexval);
+	OrganicBlockTarget* blockTargetPtr = &blockTargetMeta;
+	EnclaveBlockRayTracker rayTracker(x_container, y_container, z_container, CollectionStateArray.StateMatrixPtr, stateArrayPtr, indexval, blockTargetPtr);
 	//cout << "traverse pass" << endl;
 	int maxTravelAttempts = length;		// set travel (traversal) attempts to 10
 	int travelAttempts = 0;				// set counter to 0
@@ -1773,13 +1775,14 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 		}
 		if (trackResult == 1)
 		{
-			cout << "Unveil block found: Enclave (" << rayTracker.enclaveKey.x << ", " << rayTracker.enclaveKey.y << ", " << rayTracker.enclaveKey.z << ") | Block: (" << rayTracker.blockKey.x << ", " << rayTracker.blockKey.y << ", " << rayTracker.blockKey.z << ") " <<  endl;
+			//cout << "Unveil block found: Enclave (" << rayTracker.enclaveKey.x << ", " << rayTracker.enclaveKey.y << ", " << rayTracker.enclaveKey.z << ") | Block: (" << rayTracker.blockKey.x << ", " << rayTracker.blockKey.y << ", " << rayTracker.blockKey.z << ") " <<  endl;
+
 		}
 
 		travelAttempts++;
 		if (travelAttempts == length)
 		{
-			cout << "attempt limit reached." << endl;
+			//cout << "attempt limit reached." << endl;
 		}
 	}
 

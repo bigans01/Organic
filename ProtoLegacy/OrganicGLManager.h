@@ -33,10 +33,13 @@ public:
 	GLFWwindow  *GLwindow;														// OpenGL: pointer/handle to the OpenGL window (context?)
 	GLuint OrganicGLprogramID;													// OpenGL: pointer/handle to the program used for shading	
 	GLuint OrganicGLVCprogramID;
+
 	GLuint OrganicGLVertexArrayID;												// OpenGL: pointer/handle to the vertex array handler
 	GLuint OrganicGLVertexBufferID;												// OpenGL: pointer/handle to the vertex buffer handler (single buffer)
 
 	GLuint OrganicGLVertexColorBufferID;										// OpenGL: pointer/handle to the vertex color buffer handler (single buffer)
+	GLuint OrganicGLLightingBufferID;											// OpenGL: third potential single buffer; currently in testing only. (not being generated as of (10/11/2017))
+	GLuint OrganicGLLightingBufferID2;											// OpenGL: third potential single buffer; currently in testing only. (not being generated as of (10/11/2017))
 	GLuint OrganicGLVertexBufferArray[10];										// OpenGL: array of potential buffers
 	GLuint OrganicMVPHandle;													// OpenGL: pointer/handle to the MVP matrix result
 	OGLMBufferManager OrganicBufferManager;										// the instance of OGLMBufferManager that this OrganicGLManager object will use

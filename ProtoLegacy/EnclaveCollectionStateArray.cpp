@@ -123,7 +123,7 @@ void EnclaveCollectionStateArray::SetCenterCollectionDynamic(EnclaveKeyDef::Encl
 					
 					EnclaveCollectionState* centerState = &StateMatrixPtr[translateXYZToSingle(xx, yy, zz)];
 					centerState->ActualCollectionKey = currentSearchKey;
-					cout << "array location = (" << xx << ", " << yy << ", " << zz << ") this key is: (" << centerState->ActualCollectionKey.x << ", " << centerState->ActualCollectionKey.y << ", " << centerState->ActualCollectionKey.z << ") " << endl;
+					//cout << "array location = (" << xx << ", " << yy << ", " << zz << ") this key is: (" << centerState->ActualCollectionKey.x << ", " << centerState->ActualCollectionKey.y << ", " << centerState->ActualCollectionKey.z << ") " << endl;
 					centerState->isActive = 0;
 				}
 			}
@@ -193,7 +193,7 @@ void EnclaveCollectionStateArray::ShiftCenterCollection(EnclaveKeyDef::EnclaveKe
 					{
 						EnclaveCollectionState newState;
 						newState.ActualCollectionKey = tempFindKey;
-						cout << "cube coord: (" << cubesize - 1 << ", " << y << ", " << z << ") | " << " tempFindKey is: " << tempFindKey.x << ", " << tempFindKey.y << ", " << tempFindKey.z << endl;
+						//cout << "cube coord: (" << cubesize - 1 << ", " << y << ", " << z << ") | " << " tempFindKey is: " << tempFindKey.x << ", " << tempFindKey.y << ", " << tempFindKey.z << endl;
 						newState.isActive = 0;
 						StateMatrixPtr[translateXYZToSingle(cubesize - 1, y, z)] = newState;					// replace the end of the x row with stateToReplace; stateToReplace is x = 0, which is the part of the matrix that has been "recycled"
 					}

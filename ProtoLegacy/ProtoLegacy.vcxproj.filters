@@ -350,6 +350,9 @@
     <ClCompile Include="EnclaveCollectionState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="OrganicBlockTarget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\x64\Debug\SimpleFragmentShader.fragmentshader">

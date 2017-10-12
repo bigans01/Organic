@@ -303,7 +303,7 @@ int main()
 	
 	//OrganicSystem Organic;
 	auto STARTUPbegin = std::chrono::high_resolution_clock::now();
-	OrganicSystem Organic(2, 8);					// number of factories, buffer size
+	OrganicSystem Organic(2, 13);					// number of factories, buffer size
 	//Organic.LoadNWChunks();
 	Organic.SetOrganicCell1(mainthreadpoolref);				// set the Organic instance's first worker thread
 	Organic.SetOrganicCell2(mainthreadpoolref2);			// set the Organic instance's second worker thread

@@ -126,6 +126,10 @@ void OrganicGLManager::InitializeOpenGL()
 	glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexBufferID);					// binds the previously created buffer to be a GL_ARRAY_BUFFER
 
 	//glBufferData(GL_ARRAY_BUFFER, 1024, OrganicGLarrayPTR, GL_DYNAMIC_DRAW);		// Old method; no longer utilized.
+	// 3000000000
+	unsigned long int bufferSize = CollectionBufferSize * numberOfBuffers;
+	//cout << "Total buffer size: " << CollectionBufferSize * numberOfBuffers << endl;
+	//cout << "Total buffer size: " << bufferSize << endl;
 	glBufferStorage(GL_ARRAY_BUFFER, CollectionBufferSize * numberOfBuffers, NULL, GL_DYNAMIC_STORAGE_BIT);	/* REQUIRED: pre-allocates memory for the buffer, to any desired amount; this is so
 																					   that the buffer doesn't need to be resized in the future.
 																					
@@ -183,6 +187,7 @@ void OrganicGLManager::RenderReadyArrays()
 			// second argument: vertex offset, so if byte begins at 73728, offset is 6144. (One vertex = 12 bytes)
 			// last argument of glDrawArrays = number of vertices; 6144 for an entire collection face
 			//glUniformMatrix4fv(OrganicMVPHandle, 1, GL_FALSE, &MVP[0][0]);		// select the matrix to use.
+			//cout << "array size: " << RMContainer.RenderMetaArray[x].ArraySize << endl;
 			glDrawArrays(GL_TRIANGLES, x*(CollectionBufferSize / 12), ((RMContainer.RenderMetaArray[x].ArraySize) / 12));
 
 		}
@@ -390,7 +395,9 @@ void OrganicGLManager::SetupBufferManagerArrays(int in_cubesize)
 	OrganicBufferManager.SetCubesize(in_cubesize);					// sets the cubesize in the buffer manager
 	OrganicBufferManager.GenerateArrays();							// generates the arrays in the buffer manager
 	numberOfBuffers = (in_cubesize*in_cubesize*in_cubesize);		// set the OrganicGLManager's total buffer value 
+	cout << "OpenGL buffer data: --------------" << endl;
 	cout << "number of Buffers" << numberOfBuffers << endl;
+	cout << "buffer size: " << (numberOfBuffers * CollectionBufferSize) / 1024 / 1024 << " Megabytes " << endl;
 }
 
 void OrganicGLManager::SendPointerToBufferManager(OrganicGLManager* in_OGLMptr)

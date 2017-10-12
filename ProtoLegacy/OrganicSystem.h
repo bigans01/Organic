@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------------------------------
 
---OrganicSystem.h		(Last update 8/14/2017)
+--OrganicSystem.h		(Last update 10/10/2017)
 
 Description: Header file for OrganicSystem.cpp
 
@@ -58,6 +58,7 @@ public:
 	OrganicTextureDictionary TextureDictionary;									// an instance for an OrganicTextureDictionary
 	OrganicVtxColorDictionary VertexColorDictionary;							// an instance for an OrganicVtxColorDictionary
 	OrganicGLManager OGLM;														// an instance of the OrganicGLManager; will be used to manage OpenGL buffer data and other similiar operations
+	OrganicBlockTarget blockTargetMeta;											// meta data about the currently targeted block
 	EnclaveManifestFactoryT1Index OrganicFactoryIndex;							// FactoryIndex for this OrganicSystem
 	EnclaveKeyContainer renderCollectionList;									// contains a a list of Keys that determine which EnclaveCollections to render and/or process	
 	MaterializeCollectionListContainer MatCollList;

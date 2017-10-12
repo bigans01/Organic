@@ -5,10 +5,13 @@
 #include "EnclaveBlockRayTracker.h"
 
 
-EnclaveBlockRayTracker::EnclaveBlockRayTracker(CursorPathTraceContainer xContainer, CursorPathTraceContainer yContainer, CursorPathTraceContainer zContainer, EnclaveCollectionState* collectionStatePtr, EnclaveCollectionStateArray* collectionStateArrayPtr, int centerIndex)
+EnclaveBlockRayTracker::EnclaveBlockRayTracker(CursorPathTraceContainer xContainer, CursorPathTraceContainer yContainer, CursorPathTraceContainer zContainer, EnclaveCollectionState* collectionStatePtr, EnclaveCollectionStateArray* collectionStateArrayPtr, int centerIndex, OrganicBlockTarget* inTargetPtr)
 {
 	// set state array
 	currentCollectionStateArray = collectionStateArrayPtr;
+
+	// set OrganicBlockTarget pointer
+	targetVertexData = inTargetPtr;
 
 	// set up coordinates
 
@@ -57,6 +60,7 @@ int EnclaveBlockRayTracker::MoveEast()
 		blockKey.x += 1;
 		if (isCurrentCollectionActive == 1)
 		{
+			// cout << "east move inner" << endl;
 			int numBlocks = enclavePtr->TotalRenderable;
 			int blockSingularValue = enclavePtr->EnclaveCoordsToSingle(blockKey.x, blockKey.y, blockKey.z);
 			//cout << "Moved EAST: current location; Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
@@ -64,6 +68,9 @@ int EnclaveBlockRayTracker::MoveEast()
 			{
 				if (enclavePtr->Sorted.PolyArrayIndex[xx] == blockSingularValue)
 				{
+					targetVertexData->hasAcquiredTarget = 1;
+					fillBlockTargetVertexData(blockSingularValue);
+					//cout << "fill block found!" << endl;
 					return 1;
 				}
 			}
@@ -91,6 +98,9 @@ int EnclaveBlockRayTracker::MoveEast()
 				{
 					if (enclavePtr->Sorted.PolyArrayIndex[xx] == blockSingularValue)
 					{
+						//cout << "fill block found! (1) " << endl;
+						targetVertexData->hasAcquiredTarget = 1;
+						fillBlockTargetVertexData(blockSingularValue);
 						return 1;
 					}
 				}
@@ -124,7 +134,10 @@ int EnclaveBlockRayTracker::MoveEast()
 				{
 					if (enclavePtr->Sorted.PolyArrayIndex[xx] == blockSingularValue)
 					{
-						cout << "Return from east entry..." << endl;
+						//cout << "Return from east entry..." << endl;
+						targetVertexData->hasAcquiredTarget = 1;
+						fillBlockTargetVertexData(blockSingularValue);
+						//cout << "fill block found! (2) " << endl;
 						return 1;
 					}
 				}
@@ -633,6 +646,11 @@ void EnclaveBlockRayTracker::fillBlockTargetVertexData(int indexValue)
 			GL_x = GL_x * (enclavePtr->Sorted.RenderArray[indexValue]->structarray[testval[(xx * 6) + yy]].x) + ((enclavePtr->UniqueKey.x) * 4) + ((enclavePtr->CollectionKey.x) * 32) + EnclaveXYZOffset.x;			// multiply by x coord of vertex at structarray[...]	array index of: [(j*6) + some int] 
 			GL_y = GL_y * (enclavePtr->Sorted.RenderArray[indexValue]->structarray[testval[(xx * 6) + yy]].y) + ((enclavePtr->UniqueKey.y) * 4) + ((enclavePtr->CollectionKey.y) * 32) + EnclaveXYZOffset.y;			// multiply by y coord of vertex at structarray[...]	array index of: [(j*6) + some int]
 			GL_z = GL_z * (enclavePtr->Sorted.RenderArray[indexValue]->structarray[testval[(xx * 6) + yy]].z) + ((enclavePtr->UniqueKey.z) * 4) + ((enclavePtr->CollectionKey.z) * 32) + EnclaveXYZOffset.z;			// multiply by z coord of vertex at structarray[...]	array index of: [(j*6) + some int]
+
+			targetVertexData->targetVertexesXYZ[testval[(xx * 6) + yy]].x = GL_x - targetVertexData->vertexOffsets[testval[(xx * 6) + yy]].x;
+			targetVertexData->targetVertexesXYZ[testval[(xx * 6) + yy]].y = GL_y - targetVertexData->vertexOffsets[testval[(xx * 6) + yy]].y;
+			targetVertexData->targetVertexesXYZ[testval[(xx * 6) + yy]].z = GL_z - targetVertexData->vertexOffsets[testval[(xx * 6) + yy]].z;
+
 			arrayindex++;	// increment array index at the end
 		}
 	}
