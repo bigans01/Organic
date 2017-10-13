@@ -312,6 +312,8 @@ int main()
 	Organic.SetOrganicCell2(mainthreadpoolref2);			// set the Organic instance's second worker thread
 	Organic.AddOrganicTextureMetaArray("base");					// set up the texture map; first ever map will be named "base"
 	Organic.AddOrganicVtxColorMetaArray("base");
+	Organic.SetWorldCoordinates(-3.0f, 30.0f, -1.0f);
+	//Organic.SetupWorldArea(-3.0f, 30.0f, -1.0f);
 	
 
 

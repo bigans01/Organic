@@ -11,6 +11,21 @@ OrganicGLManager::OrganicGLManager()
 	directionVecPtr = &direction;
 }
 
+OrganicGLManager::~OrganicGLManager()
+{
+	//if (isRenderableCollectionListSet == 1)
+	//{
+	//	delete[] renderableCollectionList;
+	//}
+}
+
+void OrganicGLManager::createRenderableCollectionList(int in_cubesize)
+{
+	//renderableCollectionList = new OGLMDrawCallMeta[in_cubesize*in_cubesize*in_cubesize];
+	renderableCollectionList.setGLintDynamicArrays(in_cubesize);
+	//isRenderableCollectionListSet = 1;
+}
+
 void OrganicGLManager::InitializeOpenGL()
 {
 
@@ -316,7 +331,7 @@ void OrganicGLManager::sendRenderCollectionDataToBuffer(RenderCollection *render
 {
 	EnclaveKeyDef::EnclaveKey firstRenderableEnclaveKey = renderCollPtr->EnclaveCollectionPtr->RenderableEnclaves[0];		// use for the below
 	EnclaveKeyDef::EnclaveKey collectionKey = renderCollPtr->EnclaveCollectionPtr->EnclaveArray[firstRenderableEnclaveKey.x][firstRenderableEnclaveKey.y][firstRenderableEnclaveKey.z].CollectionKey;
-	cout << "Test; originating collection key:  " << collectionKey.x << ", " << collectionKey.y << ", " << collectionKey.z << endl;
+	// cout << "(Vertex data) Test; originating collection key:  " << collectionKey.x << ", " << collectionKey.y << ", " << collectionKey.z << endl;
 	glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexBufferID);				// OrganicGLVertexBufferArray[0], OrganicGLVertexBufferID
 	glBufferSubData(GL_ARRAY_BUFFER, RMContainer.CurrentIndex*CollectionBufferSize, renderCollPtr->RenderCollectionArraySize, renderCollPtr->GLFloatPtr);
 	RMContainer.RenderMetaArray[RMContainer.CurrentIndex].MetaIndex = RMContainer.CurrentIndex;
@@ -341,8 +356,41 @@ void OrganicGLManager::sendRenderCollectionDataToBufferOnGameLoad(RenderCollecti
 {
 	EnclaveKeyDef::EnclaveKey firstRenderableEnclaveKey = renderCollPtr->EnclaveCollectionPtr->RenderableEnclaves[0];																					// use for the below line
 	EnclaveKeyDef::EnclaveKey collectionKey = renderCollPtr->EnclaveCollectionPtr->EnclaveArray[firstRenderableEnclaveKey.x][firstRenderableEnclaveKey.y][firstRenderableEnclaveKey.z].CollectionKey;	// get the collection key from the first renderable enclave
+	int subBufferIndex = OrganicBufferManager.determineRenderDataSubBufferKey(collectionKey);					// use this collection key to determine which sub-buffer the data will go to
+	// new glBufferSubData would go here...
+	OrganicBufferManager.OGLMRMC.renderMetaContainerArray[subBufferIndex].ElementRenderCollectionMeta.ArraySize = renderCollPtr->RenderCollectionArraySize;		// set the array size of this collection (in bytes; need to divide by 12 later on), in the appropriate element in OGLMRMC's dynamic array (renderMetaContainerArray)
+	OrganicBufferManager.OGLMRMC.renderMetaContainerArray[subBufferIndex].ElementSingularXYZValue = subBufferIndex;		// set the initial sub buffer index for this element (needed for when this sub buffer needs to be recycled during a morph)
+	addToRenderableCollectionList(collectionKey, subBufferIndex, renderCollPtr->RenderCollectionArraySize);
 	cout << "Test; originating collection key:  " << collectionKey.x << ", " << collectionKey.y << ", " << collectionKey.z << endl;
 
+}
+
+void OrganicGLManager::addToRenderableCollectionList(EnclaveKeyDef::EnclaveKey in_key, int in_subBufferIndex, int in_vertexArrayByteSize)
+{
+	// search for an element in the list
+	int doesElementExist = 0;
+	for (int x = 0; x < renderableCollectionList.numberOfRenderableCollections; x++)
+	{
+
+	}
+	if (doesElementExist == 0)
+	{
+		/*
+		OGLMDrawCallMeta tempDCMeta;												// create a temporary value
+		tempDCMeta.DCCollectionKey = in_key;										// set the collection key
+		tempDCMeta.DCSubBufferLocation = in_subBufferIndex;							// set the sub buffer location
+		tempDCMeta.DCBufferOffset = (in_subBufferIndex * CollectionBufferSize);		// set the sub buffer offset
+		tempDCMeta.DCVertexArraySize = in_vertexArrayByteSize;						// set the sub buffer's vertex array byte size
+		renderableCollectionList[renderableCollectionCount] = tempDCMeta;			// add to the dynamic array
+		renderableCollectionCount++;							// increment renderableCollectionCount
+		*/
+		renderableCollectionList.DCM_CollectionKeys[renderableCollectionList.numberOfRenderableCollections] = in_key;														// set the key, in the corresponding current element of dynamic array
+		renderableCollectionList.DCM_SubBufferLocation[renderableCollectionList.numberOfRenderableCollections] = in_subBufferIndex;											// set the location, in the corresponding current element of dynamic array
+		renderableCollectionList.DCM_GL_BufferOffset[renderableCollectionList.numberOfRenderableCollections] = in_subBufferIndex * (CollectionBufferSize / 12);				// set the vertex offset of the beginning of the sub buffer, in the corresponding current element of dynamic array
+		renderableCollectionList.DCM_GL_VertexArraySize[renderableCollectionList.numberOfRenderableCollections] = in_vertexArrayByteSize * (CollectionBufferSize / 12);		// set the number of vertexes in the sub buffer, in the corresponding current element of dynamic array
+		renderableCollectionList.numberOfRenderableCollections++;		// increment the number of renderable collections
+		cout << "current number of renderable collections: " << renderableCollectionList.numberOfRenderableCollections << endl;
+	}
 }
 
 void OrganicGLManager::selectShader()

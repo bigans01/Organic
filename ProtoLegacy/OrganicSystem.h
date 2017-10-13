@@ -124,6 +124,7 @@ public:
 	void SetupWorldArea(float x, float y, float z);
 	void SetWorldCameraPosition(float x, float y, float z);
 	void CheckForMorphing();
+	void SetWorldCoordinates(float x, float y, float z);
 	thread_pool* getCell1();																																					// gets a pointer to worker thread (Cell) #1
 	thread_pool* getCell2();																																					// gets a pointer to worker thread (Cell) #2
 

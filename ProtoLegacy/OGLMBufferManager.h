@@ -49,6 +49,7 @@ public:
 
 	void setShiftedCollectionKeys(EnclaveKeyDef::EnclaveKey oldKey, EnclaveKeyDef::EnclaveKey newKey);
 	void determineMorphDirections();
+	int determineRenderDataSubBufferKey(EnclaveKeyDef::EnclaveKey renderCollectionKey);
 };
 
 #endif

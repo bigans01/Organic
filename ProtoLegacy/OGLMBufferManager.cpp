@@ -45,6 +45,7 @@ void OGLMBufferManager::PopulateOGLMRMCArrays(EnclaveKeyDef::EnclaveKey centerCo
 {
 	cout << "OGLMRMC key is: " << centerCollectionKey.x << ", " << centerCollectionKey.y << ", " << centerCollectionKey.z << endl;
 	int centerCollectionOffset = cubesize / 2;				// if cubesize is 13, this would be equal to 6; element location 6 on any x/y/z access would be the center
+	currentCenterCollectionKey = centerCollectionKey;
 	EnclaveKeyDef::EnclaveKey lowerNWCornerKey = centerCollectionKey;				// the key of the collection that would be in the lower most corner; it is initiually set to the input value
 	lowerNWCornerKey.x -= centerCollectionOffset;			// subtract the key's x value by the offset
 	lowerNWCornerKey.y -= centerCollectionOffset;			// subtract the key's y value by the offset
@@ -163,4 +164,43 @@ void OGLMBufferManager::setShiftedCollectionKeys(EnclaveKeyDef::EnclaveKey oldKe
 void OGLMBufferManager::determineMorphDirections()
 {
 
+}
+
+int OGLMBufferManager::determineRenderDataSubBufferKey(EnclaveKeyDef::EnclaveKey renderCollectionKey)
+{
+	/*Summary:
+	  compares the input value to the currentCenterCollectionKey
+	*/
+
+	// set the initial offsets to be equal to the center
+	int x_offset = (cubesize / 2);
+	int y_offset = (cubesize / 2);
+	int z_offset = (cubesize / 2);
+	// if the call is mode 1, (on world load) do this
+	EnclaveKeyDef::EnclaveKey keyToCompareTo = currentCenterCollectionKey;
+	cout << "test keyToCompareTo: (" << keyToCompareTo.x << ", " << keyToCompareTo.y << ", " << keyToCompareTo.z << ") || input collection key: (" << renderCollectionKey.x << ", " << renderCollectionKey.y << ", " << renderCollectionKey.z << ") " << endl;
+
+	// determine x offset 
+	if (renderCollectionKey.x != keyToCompareTo.x)
+	{
+		int offset_value = renderCollectionKey.x - keyToCompareTo.x;	// determine the difference in x, between the renderCollectionKey and the currently compared to key
+		x_offset += offset_value;
+	}
+
+	// determine y offset
+	if (renderCollectionKey.y != keyToCompareTo.y)
+	{
+		int offset_value = renderCollectionKey.y - keyToCompareTo.y;
+		y_offset += offset_value;
+	}
+
+	// determine z offset
+	if (renderCollectionKey.z != keyToCompareTo.z)
+	{
+		int offset_value = renderCollectionKey.z - keyToCompareTo.z;
+		z_offset += offset_value;
+	}
+	int XYZtoSingleResult = translateXYZToSingle(x_offset, y_offset, z_offset);
+	cout << "XYZ to single: " << translateXYZToSingle(x_offset, y_offset, z_offset) << endl;
+	return XYZtoSingleResult;
 }

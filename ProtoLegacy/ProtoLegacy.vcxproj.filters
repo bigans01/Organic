@@ -255,6 +255,9 @@
     <ClInclude Include="OGLMRenderMetaContainer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="OGLMDrawCallMeta.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -360,6 +363,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="OGLMRenderMetaContainer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OGLMDrawCallMeta.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

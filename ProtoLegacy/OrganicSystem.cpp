@@ -22,7 +22,7 @@ OrganicSystem::OrganicSystem(int numberOfFactories, int bufferCubeSize, int wind
 	OGLM.SetupBufferManagerArrays(bufferCubeSize);		// setup the buffer manager's arrays
 	OGLM.setWindowSize(windowWidth, windowHeight);		// set OpenGL window size
 	OGLM.OrganicBufferManager.OGLMRMC.createContainerArray(bufferCubeSize);	// create the dynamic array in the OGLMRMC 
-	//OGLM.OrganicBufferManager.PopulateOGLMRMCArrays();	// now, populate the previously created arrays with default data
+	OGLM.createRenderableCollectionList(bufferCubeSize);	// create the dynamic array that stores a list of renderable collections; the max number of renderable collections is equal to bufferCubeSize cubed.
 	blockTargetMeta.setVertexOffsets();					// set up vertex offsets
 }
 
@@ -1786,7 +1786,7 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 		travelAttempts++;
 		if (travelAttempts == length)
 		{
-			//cout << "attempt limit reached." << endl;
+			// cout << "attempt limit reached." << endl;
 		}
 	}
 
@@ -1839,7 +1839,7 @@ void OrganicSystem::SetupWorldArea(float x, float y, float z)
 	CollectionStateArray.SetCenterCollection(CameraCollectionKey, matrixPtr);
 
 	// OGLM.OrganicBufferManager.PopulateOGLMRMCArrays();	// now, populate the previously created arrays with default data
-	OGLM.OrganicBufferManager.PopulateOGLMRMCArrays(CameraCollectionKey);	// now, populate the previously created arrays with default data
+	//OGLM.OrganicBufferManager.PopulateOGLMRMCArrays(CameraCollectionKey);	// now, populate the previously created arrays with default data
 
 }
 
@@ -1873,6 +1873,7 @@ RenderCollection* OrganicSystem::GetRenderCollectionPtr(int x, int y, int z)
 void OrganicSystem::SendDataFromRenderPtrToGLBuffer(RenderCollection* renderCollectionPtr)
 {
 	OGLM.sendRenderCollectionDataToBuffer(renderCollectionPtr);
+	OGLM.sendRenderCollectionDataToBufferOnGameLoad(renderCollectionPtr);
 }
 
 void OrganicSystem::LoadVCDataToGLBuffer(RenderCollection* renderCollectionPtr)
@@ -2160,4 +2161,17 @@ void OrganicSystem::CheckForMorphing()
 		cout << ">>>>MORPH required. " << endl;
 		OGLM.OrganicBufferManager.shiftFlag = 0;
 	}
+}
+
+void OrganicSystem::SetWorldCoordinates(float x, float y, float z)
+{
+	EnclaveKeyDef::EnclaveKey CollectionKey;
+	PathTraceContainer XPathTrace = EnclaveCollections.GetCoordTrace(x);	// get x coords for collection/chunk/block
+	PathTraceContainer YPathTrace = EnclaveCollections.GetCoordTrace(y);	// get y coords	for collection/chunk/block
+	PathTraceContainer ZPathTrace = EnclaveCollections.GetCoordTrace(z);	// get z coords for collection/chunk/block
+	CollectionKey.x = XPathTrace.CollectionCoord;					// set coords for the Enclave Collection
+	CollectionKey.y = YPathTrace.CollectionCoord;
+	CollectionKey.z = ZPathTrace.CollectionCoord;
+	OGLM.OrganicBufferManager.currentCenterCollectionKey = CollectionKey;	// send the key to the OGLM's buffer manager, so it has a center collection key on initial world load
+	OGLM.OrganicBufferManager.PopulateOGLMRMCArrays(OGLM.OrganicBufferManager.currentCenterCollectionKey);
 }

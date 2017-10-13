@@ -25,6 +25,7 @@ Summary: An instance of OrganicGLManager is responsible for managing all OpenGL 
 #include "RenderCollection.h"
 #include "OrganicGLRenderCollectionMeta.h"
 #include "OGLMBufferManager.h"
+#include "OGLMDrawCallMeta.h"
 #include "EnclaveKeyDef.h"
 
 class OrganicGLManager
@@ -50,6 +51,9 @@ public:
 	int numberOfBuffers = 0;													// initial value is 0, but will be reset
 	int window_width = 0;														// width in pixels of the OpenGL window
 	int window_height = 0;														// height in pixels of the OpenGL window
+	OGLMDrawCallMeta renderableCollectionList;									// pointer to a dynamic array that contains a list of OGLMDrawCallMeta
+	//int isRenderableCollectionListSet = 0;										// determines whether or not the dynamic array above was created
+	//int renderableCollectionCount = 0;											// determines the number of renderable collections in renderableCollectionList
 	glm::mat4 Projection;														// (temporary) OpenGL projection matrix
 	glm::mat4 View;																// (temporary) OpenGL view matrix
 	glm::mat4 Model;															// (temporary) OpenGL model matrix
@@ -72,6 +76,7 @@ public:
 	RenderMetaContainer RMContainer;
 
 	OrganicGLManager();
+	~OrganicGLManager();
 
 	void SetupBufferManagerArrays(int in_cubesize);								// sets up buffers based on the passed cube size
 	void InitializeOpenGL();													// prepares OpenGL for future use; set up OpenGL context, prepare buffers etc
@@ -85,6 +90,8 @@ public:
 	void PrepBuffersForMoveNW();												// reserved for later use (will "move" buffers around)
 	void selectShader();														// selects the appropriate shader program based on the render mode
 	void setWindowSize(int length, int height);
+	void createRenderableCollectionList(int in_cubesize);
+	void addToRenderableCollectionList(EnclaveKeyDef::EnclaveKey in_key, int in_subBufferIndex, int in_vertexArrayByteSize);
 };
 
 #endif
