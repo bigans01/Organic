@@ -34,7 +34,7 @@ void OrganicGLManager::InitializeOpenGL()
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	// Open a window and create its OpenGL context
-	GLwindow = glfwCreateWindow(1024, 768, "Organic Testing", NULL, NULL);
+	GLwindow = glfwCreateWindow(window_width, window_height, "Organic Testing", NULL, NULL);
 	//GLwindow = glfwCreateWindow(2560, 1440, "Organic Testing", NULL, NULL);
 	if (GLwindow == NULL) {
 		fprintf(stderr, "Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible. Try the 2.1 version of the tutorials.\n");
@@ -249,11 +249,11 @@ void OrganicGLManager::computeMatricesFromInputs()
 	glfwGetCursorPos(GLwindow, &xpos, &ypos);
 
 	// Reset mouse position for next frame
-	glfwSetCursorPos(GLwindow, 1024 / 2, 768 / 2);
+	glfwSetCursorPos(GLwindow, window_width / 2, window_height / 2);
 
 	// Compute new orientation
-	horizontalAngle += mouseSpeed * float(1024 / 2 - xpos);
-	verticalAngle += mouseSpeed * float(768 / 2 - ypos);
+	horizontalAngle += mouseSpeed * float(window_width / 2 - xpos);
+	verticalAngle += mouseSpeed * float(window_height / 2 - ypos);
 
 	// Direction : Spherical coordinates to Cartesian coordinates conversion
 	direction = glm::vec3(
@@ -314,7 +314,9 @@ void OrganicGLManager::computeMatricesFromInputs()
 
 void OrganicGLManager::sendRenderCollectionDataToBuffer(RenderCollection *renderCollPtr)
 {
-	//cout << "Test; array size: " << renderCollPtr->RenderCollectionArraySize <<endl;
+	EnclaveKeyDef::EnclaveKey firstRenderableEnclaveKey = renderCollPtr->EnclaveCollectionPtr->RenderableEnclaves[0];		// use for the below
+	EnclaveKeyDef::EnclaveKey collectionKey = renderCollPtr->EnclaveCollectionPtr->EnclaveArray[firstRenderableEnclaveKey.x][firstRenderableEnclaveKey.y][firstRenderableEnclaveKey.z].CollectionKey;
+	cout << "Test; originating collection key:  " << collectionKey.x << ", " << collectionKey.y << ", " << collectionKey.z << endl;
 	glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexBufferID);				// OrganicGLVertexBufferArray[0], OrganicGLVertexBufferID
 	glBufferSubData(GL_ARRAY_BUFFER, RMContainer.CurrentIndex*CollectionBufferSize, renderCollPtr->RenderCollectionArraySize, renderCollPtr->GLFloatPtr);
 	RMContainer.RenderMetaArray[RMContainer.CurrentIndex].MetaIndex = RMContainer.CurrentIndex;
@@ -333,6 +335,14 @@ void OrganicGLManager::sendRenderCollectionVCDataToBuffer(RenderCollection *rend
 	RMContainer.RenderMetaArray[RMContainer.CurrentIndex].ArraySize = renderCollPtr->RenderCollectionArraySize;
 	RMContainer.CurrentIndex++;
 	RMContainer.TotalRenderable++;
+}
+
+void OrganicGLManager::sendRenderCollectionDataToBufferOnGameLoad(RenderCollection *renderCollPtr)
+{
+	EnclaveKeyDef::EnclaveKey firstRenderableEnclaveKey = renderCollPtr->EnclaveCollectionPtr->RenderableEnclaves[0];																					// use for the below line
+	EnclaveKeyDef::EnclaveKey collectionKey = renderCollPtr->EnclaveCollectionPtr->EnclaveArray[firstRenderableEnclaveKey.x][firstRenderableEnclaveKey.y][firstRenderableEnclaveKey.z].CollectionKey;	// get the collection key from the first renderable enclave
+	cout << "Test; originating collection key:  " << collectionKey.x << ", " << collectionKey.y << ", " << collectionKey.z << endl;
+
 }
 
 void OrganicGLManager::selectShader()
@@ -408,4 +418,10 @@ void OrganicGLManager::SendPointerToBufferManager(OrganicGLManager* in_OGLMptr)
 void OrganicGLManager::PrepBuffersForMoveNW()
 {
 	OrganicBufferManager.ShiftMatricesForNW();
+}
+
+void OrganicGLManager::setWindowSize(int width, int height)	// set size of OpenGL window
+{
+	window_width = width;
+	window_height = height;
 }

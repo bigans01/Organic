@@ -20,6 +20,9 @@ Notes:	this will very likely be modified continuously throughout development.
 #ifndef OGLMBUFFERMANAGER_H
 #define OGLMBUFFERMANAGER_H
 
+#include "EnclaveKeyDef.h"
+#include "OGLMRenderMetaContainer.h"
+
 class OrganicGLManager;					// required forward declaration
 class OGLMBufferManager {
 public:
@@ -29,6 +32,10 @@ public:
 	int cubesize = 0;					// determines the x, y, and z lengths of the cube. 
 	int arraysSet = 0;
 	OrganicGLManager* OGLMPtr;
+	OGLMRenderMetaContainer OGLMRMC;		// RMC = render meta container
+	EnclaveKeyDef::EnclaveKey oldCenterCollectionKey;							// sets the key before the array morph
+	EnclaveKeyDef::EnclaveKey currentCenterCollectionKey;						// sets the current key after morph
+	int shiftFlag = 0;															// determines if a morph needs to occur; 0 = false, 1 = true
 
 	//OGLMBufferManager();	
 	~OGLMBufferManager();				// deletes all dynamically allocated objects created using the "new" operator
@@ -36,8 +43,12 @@ public:
 	void SetCubesize(int inCubesize);					// sets the buffer cube size, which is used to create the buffers
 	void SetOGLMPointer(OrganicGLManager* in_OGLMptr);	// sets the pointer to the instance of OrganicGLManager that this instance of OGLMBufferManager will be associated with
 	void GenerateArrays();								// generates a "cube" of arrays, based on the value of cubesize.
+	void PopulateOGLMRMCArrays(EnclaveKeyDef::EnclaveKey centerCollectionKey);
 	void ShiftMatricesForNW();
 	int translateXYZToSingle(int x, int y, int z);
+
+	void setShiftedCollectionKeys(EnclaveKeyDef::EnclaveKey oldKey, EnclaveKeyDef::EnclaveKey newKey);
+	void determineMorphDirections();
 };
 
 #endif

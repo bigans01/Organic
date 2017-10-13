@@ -12,14 +12,17 @@
 #include <mutex>
 #include <string>
 
-OrganicSystem::OrganicSystem(int numberOfFactories, int bufferCubeSize)
+OrganicSystem::OrganicSystem(int numberOfFactories, int bufferCubeSize, int windowWidth, int windowHeight)
 {
 	/* Summary: default constructor for the OrganicSystem */
 	InterlockBaseCollections();
-	AllocateFactories(numberOfFactories);			// setup the factories
+	AllocateFactories(numberOfFactories);				// setup the factories
 	OrganicGLManager* tempGLManagerPtr = &OGLM;			// get a pointer to the OrganicSystem's OGLM instance, and set the reference.
 	OGLM.SendPointerToBufferManager(tempGLManagerPtr);	// send the pointer to the buffer manager, so that it may use it to set up its buffer arrays
 	OGLM.SetupBufferManagerArrays(bufferCubeSize);		// setup the buffer manager's arrays
+	OGLM.setWindowSize(windowWidth, windowHeight);		// set OpenGL window size
+	OGLM.OrganicBufferManager.OGLMRMC.createContainerArray(bufferCubeSize);	// create the dynamic array in the OGLMRMC 
+	//OGLM.OrganicBufferManager.PopulateOGLMRMCArrays();	// now, populate the previously created arrays with default data
 	blockTargetMeta.setVertexOffsets();					// set up vertex offsets
 }
 
@@ -1400,7 +1403,8 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 	{
 		// shift of matrix collection pointers will be here (9/28/2017); this needs to be done before EnclaveBlockRayTracker (aka rayTracker) does its calculations (see below)
 		// CollectionStateArray.? (? == placeholder for function name)
-		CollectionStateArray.ShiftCenterCollection(PreviousCCKey, CameraCollectionKey, ECMPointer);
+		CollectionStateArray.ShiftCenterCollection(PreviousCCKey, CameraCollectionKey, ECMPointer);			// shift the collection state array
+		OGLM.OrganicBufferManager.setShiftedCollectionKeys(lastCollectionKey, newCollectionKey);									// send the shifted keys to the OGLM
 		cout << "collection has changed! Old: (" << lastCollectionKey.x << ", " << lastCollectionKey.y << " , " << lastCollectionKey.z << ") " << endl;
 	}
 
@@ -1834,6 +1838,9 @@ void OrganicSystem::SetupWorldArea(float x, float y, float z)
 	CollectionStateArray.SetCenterCollectionDynamic(CameraCollectionKey, matrixPtr);
 	CollectionStateArray.SetCenterCollection(CameraCollectionKey, matrixPtr);
 
+	// OGLM.OrganicBufferManager.PopulateOGLMRMCArrays();	// now, populate the previously created arrays with default data
+	OGLM.OrganicBufferManager.PopulateOGLMRMCArrays(CameraCollectionKey);	// now, populate the previously created arrays with default data
+
 }
 
 void OrganicSystem::SetWorldCameraPosition(float x, float y, float z)
@@ -2143,4 +2150,14 @@ void OrganicSystem::MaterializeRenderablesByFactory()
 void OrganicSystem::LoadNWChunks()
 {
 	OGLM.PrepBuffersForMoveNW();
+}
+
+void OrganicSystem::CheckForMorphing()
+{
+	if (OGLM.OrganicBufferManager.shiftFlag == 1)
+	{
+		// do stuff
+		cout << ">>>>MORPH required. " << endl;
+		OGLM.OrganicBufferManager.shiftFlag = 0;
+	}
 }

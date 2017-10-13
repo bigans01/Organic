@@ -41,6 +41,33 @@ void OGLMBufferManager::GenerateArrays()
 	arraysSet = 1;
 }
 
+void OGLMBufferManager::PopulateOGLMRMCArrays(EnclaveKeyDef::EnclaveKey centerCollectionKey)
+{
+	cout << "OGLMRMC key is: " << centerCollectionKey.x << ", " << centerCollectionKey.y << ", " << centerCollectionKey.z << endl;
+	int centerCollectionOffset = cubesize / 2;				// if cubesize is 13, this would be equal to 6; element location 6 on any x/y/z access would be the center
+	EnclaveKeyDef::EnclaveKey lowerNWCornerKey = centerCollectionKey;				// the key of the collection that would be in the lower most corner; it is initiually set to the input value
+	lowerNWCornerKey.x -= centerCollectionOffset;			// subtract the key's x value by the offset
+	lowerNWCornerKey.y -= centerCollectionOffset;			// subtract the key's y value by the offset
+	lowerNWCornerKey.z -= centerCollectionOffset;			// subtract the key's z value by the offset
+	for (int x = 0; x < cubesize; x++)	// x axis
+	{
+		for (int y = 0; y < cubesize; y++)
+		{
+			for (int z = 0; z < cubesize; z++)
+			{
+				int currentBufferElement = translateXYZToSingle(x, y, z);
+				EnclaveKeyDef::EnclaveKey elementCollectionKey = lowerNWCornerKey;
+				elementCollectionKey.x += x;
+				elementCollectionKey.y += y;
+				elementCollectionKey.z += z;
+				OGLMRMC.renderMetaContainerArray[currentBufferElement].ElementCollectionKey = elementCollectionKey;
+			}
+		}
+	}
+	EnclaveKeyDef::EnclaveKey testKey = OGLMRMC.renderMetaContainerArray[translateXYZToSingle(centerCollectionOffset, centerCollectionOffset, centerCollectionOffset)].ElementCollectionKey;
+	cout << "center key after work is: " << testKey.x << ", " << testKey.y << ", " << testKey.z << endl;
+}
+
 OGLMBufferManager::~OGLMBufferManager()
 {
 	if (arraysSet == 1)
@@ -124,5 +151,16 @@ void OGLMBufferManager::ShiftMatricesForNW()
 	std::cout << "Elapsed time: (matrix shift for NW, all lines (" << cubesize*cubesize << "): " << carveelapsed.count() << endl;
 	//std::cout << "Element before move: " << coutFirst << endl;
 	//std::cout << "Element after move: " << coutSecond << endl;
+
+}
+
+void OGLMBufferManager::setShiftedCollectionKeys(EnclaveKeyDef::EnclaveKey oldKey, EnclaveKeyDef::EnclaveKey newKey)
+{
+	oldCenterCollectionKey = oldKey;
+	currentCenterCollectionKey = newKey;
+	shiftFlag = 1;		// set the shift flag indicator
+}
+void OGLMBufferManager::determineMorphDirections()
+{
 
 }

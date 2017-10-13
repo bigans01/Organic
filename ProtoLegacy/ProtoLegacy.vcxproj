@@ -195,10 +195,12 @@
     <ClInclude Include="Movegoal.h" />
     <ClInclude Include="function_wrapper.h" />
     <ClInclude Include="OGLMBufferManager.h" />
+    <ClInclude Include="OGLMRenderMetaContainerElement.h" />
     <ClInclude Include="OrganicBlockMeta.h" />
     <ClInclude Include="OrganicBlockTarget.h" />
     <ClInclude Include="OrganicFaceMeta.h" />
     <ClInclude Include="OrganicGLManager.h" />
+    <ClInclude Include="OGLMRenderMetaContainer.h" />
     <ClInclude Include="OrganicGLRenderCollectionMeta.h" />
     <ClInclude Include="OrganicSystem.h" />
     <ClInclude Include="OrganicTextureCoords.h" />
@@ -244,6 +246,7 @@
     <ClCompile Include="ManifestCollection.cpp" />
     <ClCompile Include="MDJobMaterializeCollection.cpp" />
     <ClCompile Include="OGLMBufferManager.cpp" />
+    <ClCompile Include="OGLMRenderMetaContainer.cpp" />
     <ClCompile Include="OrganicBlockTarget.cpp" />
     <ClCompile Include="OrganicGLManager.cpp" />
     <ClCompile Include="OrganicSystem.cpp" />

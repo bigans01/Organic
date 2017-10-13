@@ -70,7 +70,7 @@ public:
 	EnclaveKeyDef::EnclaveKey CameraBlockKey;
 	EnclaveCollectionStateArray CollectionStateArray;
 
-	OrganicSystem(int numberOfFactories, int bufferCubeSize);					// default constructor: number of factories, plus the size of the buffer cube
+	OrganicSystem(int numberOfFactories, int bufferCubeSize, int windowWidth, int windowHeight);					// default constructor: number of factories, plus the size of the buffer cube
 
 
 	void InterlockBaseCollections();															// connects the 3 base collections together -- EnclaveCollections, ManifestCollections, RenderCollections.
@@ -123,6 +123,7 @@ public:
 	void LoadNWChunks();																																						// currently for testing: "moves the world" by preparing buffers to load data for RenderCollections +1 chunk NW of current camera position
 	void SetupWorldArea(float x, float y, float z);
 	void SetWorldCameraPosition(float x, float y, float z);
+	void CheckForMorphing();
 	thread_pool* getCell1();																																					// gets a pointer to worker thread (Cell) #1
 	thread_pool* getCell2();																																					// gets a pointer to worker thread (Cell) #2
 

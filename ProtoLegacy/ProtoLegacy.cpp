@@ -303,7 +303,10 @@ int main()
 	
 	//OrganicSystem Organic;
 	auto STARTUPbegin = std::chrono::high_resolution_clock::now();
-	OrganicSystem Organic(2, 13);					// number of factories, buffer size
+	//1024, 768, 
+	 //2560, 1440,
+	//OrganicSystem Organic(2, 13, 2560, 1440);
+	OrganicSystem Organic(2, 13, 1024, 768);					// number of factories, buffer size, pixel width, pixel height
 	//Organic.LoadNWChunks();
 	Organic.SetOrganicCell1(mainthreadpoolref);				// set the Organic instance's first worker thread
 	Organic.SetOrganicCell2(mainthreadpoolref2);			// set the Organic instance's second worker thread
@@ -666,7 +669,7 @@ int main()
 	glm::vec3* originVecPtr = &originVec;
 	glm::vec3* directionVecPtr = &directionVec;
 	cout << "-----------------------------------cursor target testing..." << endl;
-	Organic.DetermineMouseCursorTargets2(originVecPtr, directionVecPtr, 10);	// Step 3: determine targetable blocks 
+	//Organic.DetermineMouseCursorTargets2(originVecPtr, directionVecPtr, 10);	// Step 3: determine targetable blocks 
 
 	auto targetsbegin = std::chrono::high_resolution_clock::now();
 	//Organic.DetermineMouseCursorTargets2(originVecPtr, directionVecPtr, 10);
@@ -677,8 +680,8 @@ int main()
 	do {
 
 		auto start3 = std::chrono::high_resolution_clock::now();
-		// |||||||||||||||||||||| PHASE 1: Terrain. collection pointer changes
-
+		// |||||||||||||||||||||| PHASE 1: Terrain. collection pointer changes; detect any OGLMBufferManager morphing
+		Organic.CheckForMorphing();			// determine if there were any OGLM buffer shifts that needed to be done.
 
 		// |||||||||||||||||||||| PHASE 2: Render terrain and targeted blocks
 		Organic.RenderGLTerrain();																				// Step 1 (?): perform render frame work
