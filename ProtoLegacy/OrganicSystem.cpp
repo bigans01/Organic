@@ -1872,13 +1872,14 @@ RenderCollection* OrganicSystem::GetRenderCollectionPtr(int x, int y, int z)
 
 void OrganicSystem::SendDataFromRenderPtrToGLBuffer(RenderCollection* renderCollectionPtr)
 {
-	OGLM.sendRenderCollectionDataToBuffer(renderCollectionPtr);
+	//OGLM.sendRenderCollectionDataToBuffer(renderCollectionPtr);
 	OGLM.sendRenderCollectionDataToBufferOnGameLoad(renderCollectionPtr);
 }
 
 void OrganicSystem::LoadVCDataToGLBuffer(RenderCollection* renderCollectionPtr)
 {
-	OGLM.sendRenderCollectionVCDataToBuffer(renderCollectionPtr);
+	//OGLM.sendRenderCollectionVCDataToBuffer(renderCollectionPtr);
+	OGLM.sendRenderCollectionVCDataTOBufferOnGameLoad(renderCollectionPtr);
 }
 
 void OrganicSystem::AnalyzeRenderArray(int x, int y, int z, int xyz)
