@@ -49,6 +49,7 @@ public:
 	int MoveAbove();		// moves the tracker one block above
 	int MoveBelow();		// moves the tracker one block below
 	void fillBlockTargetVertexData(int indexValue);
+	void printOutTargetBlockHighlightData();			// testing only, used to output the x/y/z points of the highlight block
 	FloatTupleXYZ SingleToMulti(int input);
 
 };

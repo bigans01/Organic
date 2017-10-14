@@ -1780,13 +1780,13 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 		if (trackResult == 1)
 		{
 			//cout << "Unveil block found: Enclave (" << rayTracker.enclaveKey.x << ", " << rayTracker.enclaveKey.y << ", " << rayTracker.enclaveKey.z << ") | Block: (" << rayTracker.blockKey.x << ", " << rayTracker.blockKey.y << ", " << rayTracker.blockKey.z << ") " <<  endl;
-
+			//rayTracker.printOutTargetBlockHighlightData();
 		}
 
 		travelAttempts++;
 		if (travelAttempts == length)
 		{
-			// cout << "attempt limit reached." << endl;
+			//cout << "attempt limit reached." << endl;
 		}
 	}
 
@@ -2173,6 +2173,7 @@ void OrganicSystem::SetWorldCoordinates(float x, float y, float z)
 	CollectionKey.x = XPathTrace.CollectionCoord;					// set coords for the Enclave Collection
 	CollectionKey.y = YPathTrace.CollectionCoord;
 	CollectionKey.z = ZPathTrace.CollectionCoord;
-	OGLM.OrganicBufferManager.currentCenterCollectionKey = CollectionKey;	// send the key to the OGLM's buffer manager, so it has a center collection key on initial world load
+	OGLM.OrganicBufferManager.currentCenterCollectionKey = CollectionKey;			// send the key to the OGLM's buffer manager, so it has a center collection key on initial world load
+	OGLM.renderableCollectionList.setInitialDynamicArrayData(CollectionKey);		// the renderableCollectionList's dynamic array must be set up with initial values, before any sorting is done
 	OGLM.OrganicBufferManager.PopulateOGLMRMCArrays(OGLM.OrganicBufferManager.currentCenterCollectionKey);
 }

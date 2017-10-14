@@ -170,6 +170,8 @@ int EnclaveBlockRayTracker::MoveWest()
 			{
 				if (enclavePtr->Sorted.PolyArrayIndex[xx] == blockSingularValue)
 				{
+					targetVertexData->hasAcquiredTarget = 1;
+					fillBlockTargetVertexData(blockSingularValue);
 					return 1;
 				}
 			}
@@ -196,6 +198,8 @@ int EnclaveBlockRayTracker::MoveWest()
 				{
 					if (enclavePtr->Sorted.PolyArrayIndex[xx] == blockSingularValue)
 					{
+						targetVertexData->hasAcquiredTarget = 1;
+						fillBlockTargetVertexData(blockSingularValue);
 						return 1;
 					}
 				}
@@ -229,6 +233,8 @@ int EnclaveBlockRayTracker::MoveWest()
 				{
 					if (enclavePtr->Sorted.PolyArrayIndex[xx] == blockSingularValue)
 					{
+						targetVertexData->hasAcquiredTarget = 1;
+						fillBlockTargetVertexData(blockSingularValue);
 						return 1;
 					}
 				}
@@ -263,6 +269,8 @@ int EnclaveBlockRayTracker::MoveNorth()
 			{
 				if (enclavePtr->Sorted.PolyArrayIndex[xx] == blockSingularValue)
 				{
+					targetVertexData->hasAcquiredTarget = 1;
+					fillBlockTargetVertexData(blockSingularValue);
 					return 1;
 				}
 			}
@@ -288,6 +296,8 @@ int EnclaveBlockRayTracker::MoveNorth()
 				{
 					if (enclavePtr->Sorted.PolyArrayIndex[xx] == blockSingularValue)
 					{
+						targetVertexData->hasAcquiredTarget = 1;
+						fillBlockTargetVertexData(blockSingularValue);
 						return 1;
 					}
 				}
@@ -320,6 +330,8 @@ int EnclaveBlockRayTracker::MoveNorth()
 				{
 					if (enclavePtr->Sorted.PolyArrayIndex[xx] == blockSingularValue)
 					{
+						targetVertexData->hasAcquiredTarget = 1;
+						fillBlockTargetVertexData(blockSingularValue);
 						return 1;
 					}
 				}
@@ -354,6 +366,8 @@ int EnclaveBlockRayTracker::MoveSouth()
 			{
 				if (enclavePtr->Sorted.PolyArrayIndex[xx] == blockSingularValue)
 				{
+					targetVertexData->hasAcquiredTarget = 1;
+					fillBlockTargetVertexData(blockSingularValue);
 					return 1;
 				}
 			}
@@ -380,6 +394,8 @@ int EnclaveBlockRayTracker::MoveSouth()
 				{
 					if (enclavePtr->Sorted.PolyArrayIndex[xx] == blockSingularValue)
 					{
+						targetVertexData->hasAcquiredTarget = 1;
+						fillBlockTargetVertexData(blockSingularValue);
 						return 1;
 					}
 				}
@@ -413,6 +429,8 @@ int EnclaveBlockRayTracker::MoveSouth()
 					if (enclavePtr->Sorted.PolyArrayIndex[xx] == blockSingularValue)
 					{
 						//cout << "Return from south entry..." << endl;
+						targetVertexData->hasAcquiredTarget = 1;
+						fillBlockTargetVertexData(blockSingularValue);
 						return 1;
 					}
 				}
@@ -447,6 +465,8 @@ int EnclaveBlockRayTracker::MoveAbove()
 			{
 				if (enclavePtr->Sorted.PolyArrayIndex[xx] == blockSingularValue)
 				{
+					targetVertexData->hasAcquiredTarget = 1;
+					fillBlockTargetVertexData(blockSingularValue);
 					return 1;
 				}
 			}
@@ -474,6 +494,8 @@ int EnclaveBlockRayTracker::MoveAbove()
 				{
 					if (enclavePtr->Sorted.PolyArrayIndex[xx] == blockSingularValue)
 					{
+						targetVertexData->hasAcquiredTarget = 1;
+						fillBlockTargetVertexData(blockSingularValue);
 						return 1;
 					}
 				}
@@ -505,6 +527,8 @@ int EnclaveBlockRayTracker::MoveAbove()
 				{
 					if (enclavePtr->Sorted.PolyArrayIndex[xx] == blockSingularValue)
 					{
+						targetVertexData->hasAcquiredTarget = 1;
+						fillBlockTargetVertexData(blockSingularValue);
 						return 1;
 					}
 				}
@@ -538,6 +562,8 @@ int EnclaveBlockRayTracker::MoveBelow()
 			{
 				if (enclavePtr->Sorted.PolyArrayIndex[xx] == blockSingularValue)
 				{
+					targetVertexData->hasAcquiredTarget = 1;
+					fillBlockTargetVertexData(blockSingularValue);
 					return 1;
 				}
 			}
@@ -564,6 +590,8 @@ int EnclaveBlockRayTracker::MoveBelow()
 				{
 					if (enclavePtr->Sorted.PolyArrayIndex[xx] == blockSingularValue)
 					{
+						targetVertexData->hasAcquiredTarget = 1;
+						fillBlockTargetVertexData(blockSingularValue);
 						return 1;
 					}
 				}
@@ -596,6 +624,8 @@ int EnclaveBlockRayTracker::MoveBelow()
 				{
 					if (enclavePtr->Sorted.PolyArrayIndex[xx] == blockSingularValue)
 					{
+						targetVertexData->hasAcquiredTarget = 1;
+						fillBlockTargetVertexData(blockSingularValue);
 						return 1;
 					}
 				}
@@ -647,9 +677,9 @@ void EnclaveBlockRayTracker::fillBlockTargetVertexData(int indexValue)
 			GL_y = GL_y * (enclavePtr->Sorted.RenderArray[indexValue]->structarray[testval[(xx * 6) + yy]].y) + ((enclavePtr->UniqueKey.y) * 4) + ((enclavePtr->CollectionKey.y) * 32) + EnclaveXYZOffset.y;			// multiply by y coord of vertex at structarray[...]	array index of: [(j*6) + some int]
 			GL_z = GL_z * (enclavePtr->Sorted.RenderArray[indexValue]->structarray[testval[(xx * 6) + yy]].z) + ((enclavePtr->UniqueKey.z) * 4) + ((enclavePtr->CollectionKey.z) * 32) + EnclaveXYZOffset.z;			// multiply by z coord of vertex at structarray[...]	array index of: [(j*6) + some int]
 
-			targetVertexData->targetVertexesXYZ[arrayindex].x = GL_x - targetVertexData->vertexOffsets[testval[(xx * 6) + yy]].x;		// set the +/- difference for the target cube outline for x 
-			targetVertexData->targetVertexesXYZ[arrayindex].y = GL_y - targetVertexData->vertexOffsets[testval[(xx * 6) + yy]].y;		// set the +/- difference for the target cube outline for y
-			targetVertexData->targetVertexesXYZ[arrayindex].z = GL_z - targetVertexData->vertexOffsets[testval[(xx * 6) + yy]].z;		// set the +/- difference for the target cube outline for z
+			targetVertexData->targetVertexesXYZ[arrayindex].x = GL_x + targetVertexData->vertexOffsets[testval[(xx * 6) + yy]].x;		// set the +/- difference for the target cube outline for x 
+			targetVertexData->targetVertexesXYZ[arrayindex].y = GL_y + targetVertexData->vertexOffsets[testval[(xx * 6) + yy]].y;		// set the +/- difference for the target cube outline for y
+			targetVertexData->targetVertexesXYZ[arrayindex].z = GL_z + targetVertexData->vertexOffsets[testval[(xx * 6) + yy]].z;		// set the +/- difference for the target cube outline for z
 			//cout << "array index is: " << arrayindex << endl;
 			arrayindex++;	// increment array index at the end
 		}
@@ -678,4 +708,17 @@ FloatTupleXYZ EnclaveBlockRayTracker::SingleToMulti(int input)
 	ReturnTuple.z = z;
 
 	return ReturnTuple;
+}
+
+void EnclaveBlockRayTracker::printOutTargetBlockHighlightData()
+{
+	cout << "-----------------------------highlight block data---------------------------" << endl;
+	cout << "Upper SOUTHWEST (0): " << targetVertexData->targetVertexesXYZ[0].x << ", " << targetVertexData->targetVertexesXYZ[0].y << ", " << targetVertexData->targetVertexesXYZ[0].z << endl;
+	cout << "Upper NORTHWEST (1): " << targetVertexData->targetVertexesXYZ[1].x << ", " << targetVertexData->targetVertexesXYZ[1].y << ", " << targetVertexData->targetVertexesXYZ[1].z << endl;
+	cout << "Lower SOUTHWEST (2): " << targetVertexData->targetVertexesXYZ[2].x << ", " << targetVertexData->targetVertexesXYZ[2].y << ", " << targetVertexData->targetVertexesXYZ[2].z << endl;
+	cout << "Lower NORTHWEST (3): " << targetVertexData->targetVertexesXYZ[5].x << ", " << targetVertexData->targetVertexesXYZ[5].y << ", " << targetVertexData->targetVertexesXYZ[5].z << endl;
+	cout << "Upper SOUTHEAST (4): " << targetVertexData->targetVertexesXYZ[13].x << ", " << targetVertexData->targetVertexesXYZ[13].y << ", " << targetVertexData->targetVertexesXYZ[13].z << endl;
+	cout << "Upper NORTHEAST (5): " << targetVertexData->targetVertexesXYZ[7].x << ", " << targetVertexData->targetVertexesXYZ[7].y << ", " << targetVertexData->targetVertexesXYZ[7].z << endl;
+	cout << "Lower SOUTHEAST (6): " << targetVertexData->targetVertexesXYZ[17].x << ", " << targetVertexData->targetVertexesXYZ[17].y << ", " << targetVertexData->targetVertexesXYZ[17].z << endl;
+	cout << "Lower NORTHEAST (7): " << targetVertexData->targetVertexesXYZ[11].x << ", " << targetVertexData->targetVertexesXYZ[11].y << ", " << targetVertexData->targetVertexesXYZ[11].z << endl;
 }

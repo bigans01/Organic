@@ -92,7 +92,7 @@ public:
 	void selectShader();														// selects the appropriate shader program based on the render mode
 	void setWindowSize(int length, int height);
 	void createRenderableCollectionList(int in_cubesize);
-	void addToRenderableCollectionList(EnclaveKeyDef::EnclaveKey in_key, int in_subBufferIndex, int in_vertexArrayByteSize);
+	//void addToRenderableCollectionList(EnclaveKeyDef::EnclaveKey in_key, int in_subBufferIndex, int in_vertexArrayByteSize);
 };
 
 #endif
