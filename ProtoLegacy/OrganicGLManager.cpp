@@ -216,7 +216,7 @@ void OrganicGLManager::RenderReadyArrays()
 	*/
 	//}
 	
-	glMultiDrawArrays(GL_TRIANGLES, renderableCollectionList.DCM_GL_BufferOffset, renderableCollectionList.DCM_GL_VertexArraySize, renderableCollectionList.numberOfRenderableCollections);
+	glMultiDrawArrays(GL_TRIANGLES, renderableCollectionList.TT1_GL_BufferOffset, renderableCollectionList.TT1_GL_VertexArraySize, renderableCollectionList.numberOfRenderableCollections);
 
 
 	auto GLend = std::chrono::high_resolution_clock::now();	// optional performance testing values
@@ -362,7 +362,7 @@ void OrganicGLManager::sendRenderCollectionDataToBufferOnGameLoad(RenderCollecti
 	glBufferSubData(GL_ARRAY_BUFFER, subBufferIndex*CollectionBufferSize, renderCollPtr->RenderCollectionArraySize, renderCollPtr->GLFloatPtr);
 	OrganicBufferManager.OGLMRMC.renderMetaContainerArray[subBufferIndex].ElementRenderCollectionMeta.ArraySize = renderCollPtr->RenderCollectionArraySize;		// set the array size of this collection (in bytes; need to divide by 12 later on), in the appropriate element in OGLMRMC's dynamic array (renderMetaContainerArray)
 	OrganicBufferManager.OGLMRMC.renderMetaContainerArray[subBufferIndex].ElementSingularXYZValue = subBufferIndex;		// set the initial sub buffer index for this element (needed for when this sub buffer needs to be recycled during a morph)
-	renderableCollectionList.addToListAndSort(collectionKey, subBufferIndex, renderCollPtr->RenderCollectionArraySize, CollectionBufferSize);	// add this to the renderable collection list
+	renderableCollectionList.sendTerrainT1RequestToDelegator(collectionKey, subBufferIndex, renderCollPtr->RenderCollectionArraySize, CollectionBufferSize);	// add this to the renderable collection list
 	cout << "Test; originating collection key:  " << collectionKey.x << ", " << collectionKey.y << ", " << collectionKey.z << endl;
 
 }

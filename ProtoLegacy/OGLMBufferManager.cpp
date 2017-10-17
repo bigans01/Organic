@@ -1,8 +1,8 @@
 /*------------------------------------------------------------------------------------------
 
---Enclave.cpp		(Last Update: 7/5/2017)
+--OGLMBufferManager.cpp		(Last Update: 10/15/2017)
 
-Description: Enclave.cpp contains the definitions for the declarations found in Enclave.h.
+Description: OGLMBufferManager.cpp contains the definitions for the declarations found in OGLMBufferManager.h.
 
 ------------------------------------------------------------------------------------------*/
 #include "stdafx.h"
@@ -162,6 +162,11 @@ void OGLMBufferManager::setShiftedCollectionKeys(EnclaveKeyDef::EnclaveKey oldKe
 	shiftFlag = 1;		// set the shift flag indicator
 }
 void OGLMBufferManager::determineMorphDirections()
+{
+
+}
+
+void OGLMBufferManager::MorphTerrainBuffers()
 {
 
 }

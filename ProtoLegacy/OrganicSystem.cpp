@@ -23,6 +23,7 @@ OrganicSystem::OrganicSystem(int numberOfFactories, int bufferCubeSize, int wind
 	OGLM.setWindowSize(windowWidth, windowHeight);		// set OpenGL window size
 	OGLM.OrganicBufferManager.OGLMRMC.createContainerArray(bufferCubeSize);	// create the dynamic array in the OGLMRMC 
 	OGLM.createRenderableCollectionList(bufferCubeSize);	// create the dynamic array that stores a list of renderable collections; the max number of renderable collections is equal to bufferCubeSize cubed.
+	OGLM.OrganicBufferManager.DCMPtr = &OGLM.renderableCollectionList;	// set the OrganicBufferManager's DCMPtr (a pointer to an instance of OGLMDrawCallMeta)
 	blockTargetMeta.setVertexOffsets();					// set up vertex offsets
 }
 
@@ -2160,6 +2161,7 @@ void OrganicSystem::CheckForMorphing()
 	{
 		// do stuff
 		cout << ">>>>MORPH required. " << endl;
+		OGLM.OrganicBufferManager.MorphTerrainBuffers();
 		OGLM.OrganicBufferManager.shiftFlag = 0;
 	}
 }

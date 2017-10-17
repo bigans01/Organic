@@ -22,7 +22,13 @@ EnclaveCollectionNeighborList EnclaveCollectionBlueprintMatrix::DetermineBluepri
 		// Check West (negative x)
 		tempKey.x -= 1;										// subtract 1 to get the blueprint at -1 x 
 		//std::cout << "Looking for blueprint with key: " << tempKey.x << ", " << tempKey.y << ", " << tempKey.z << std::endl;
+		//auto targetsbegin = std::chrono::high_resolution_clock::now();
 		blueprintMapIterator = BlueprintMap.find(tempKey);  // find the blueprint, check if it exists
+															//Organic.DetermineMouseCursorTargets2(originVecPtr, directionVecPtr, 10);
+		//auto targetsend = std::chrono::high_resolution_clock::now();
+		//std::chrono::duration<double> targetselapsed = targetsend - targetsbegin;
+		//std::cout << "Blueprint find time: " << targetselapsed.count() << std::endl;
+
 		if (blueprintMapIterator != BlueprintMap.end())		// if this is true, a neighboring blueprint was found
 		{
 			//std::cout << "neighboring collection discovered." << std::endl;
