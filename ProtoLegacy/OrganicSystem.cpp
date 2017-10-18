@@ -24,6 +24,7 @@ OrganicSystem::OrganicSystem(int numberOfFactories, int bufferCubeSize, int wind
 	OGLM.OrganicBufferManager.OGLMRMC.createContainerArray(bufferCubeSize);	// create the dynamic array in the OGLMRMC 
 	OGLM.createRenderableCollectionList(bufferCubeSize);	// create the dynamic array that stores a list of renderable collections; the max number of renderable collections is equal to bufferCubeSize cubed.
 	OGLM.OrganicBufferManager.DCMPtr = &OGLM.renderableCollectionList;	// set the OrganicBufferManager's DCMPtr (a pointer to an instance of OGLMDrawCallMeta)
+	OGLM.OrganicBufferManager.blueprintMatrixPtr = &BlueprintMatrix;	// set the OrganicBufferManager's blueprint matrix pointer
 	blockTargetMeta.setVertexOffsets();					// set up vertex offsets
 }
 

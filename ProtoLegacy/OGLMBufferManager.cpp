@@ -61,7 +61,8 @@ void OGLMBufferManager::PopulateOGLMRMCArrays(EnclaveKeyDef::EnclaveKey centerCo
 				elementCollectionKey.x += x;
 				elementCollectionKey.y += y;
 				elementCollectionKey.z += z;
-				OGLMRMC.renderMetaContainerArray[currentBufferElement].ElementCollectionKey = elementCollectionKey;
+				OGLMRMC.renderMetaContainerArray[currentBufferElement].ElementCollectionKey = elementCollectionKey;			// set the collection key
+				OGLMRMC.renderMetaContainerArray[currentBufferElement].ElementSingularXYZValue = currentBufferElement;		// set the singular value
 			}
 		}
 	}
@@ -168,7 +169,49 @@ void OGLMBufferManager::determineMorphDirections()
 
 void OGLMBufferManager::MorphTerrainBuffers()
 {
+	// check negative x and positive x, respectively
+	auto carvestart = std::chrono::high_resolution_clock::now();
+	if (currentCenterCollectionKey.x < oldCenterCollectionKey.x)
+	{
+		std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveCollectionBlueprint, EnclaveKeyDef::KeyHasher>::iterator blueprintMapIterator;
+		//cout << "less than x morph!" << endl;
+		for (int y = 0; y < cubesize; y++)
+		{
+			for (int z = 0; z < cubesize; z++)
+			{
+				EnclaveKeyDef::EnclaveKey currentFirstKeyInRow = OGLMRMC.renderMetaContainerArray[translateXYZToSingle(0, y, z)].ElementCollectionKey;		// get the enclave collection key of the first element in the row
+				int currentLastSingularXYZValueInRow = OGLMRMC.renderMetaContainerArray[translateXYZToSingle(cubesize - 1, y, z)].ElementSingularXYZValue;	// get the last singular XYZ value in the row, to be shifted to the front as the last step of sorting in this row
+				for (int x = cubesize - 1; x > 0; x--)
+				{
+					EnclaveKeyDef::EnclaveKey keyToShift = OGLMRMC.renderMetaContainerArray[translateXYZToSingle(x - 1, y, z)].ElementCollectionKey;	// get the value of the collection key at x,y,z
+					OGLMRMC.renderMetaContainerArray[translateXYZToSingle(x, y, z)].ElementCollectionKey = keyToShift;							// replace element at x + 1 with this collection key
 
+					int valueToShift = OGLMRMC.renderMetaContainerArray[translateXYZToSingle(x - 1, y, z)].ElementSingularXYZValue;
+					OGLMRMC.renderMetaContainerArray[translateXYZToSingle(x, y, z)].ElementSingularXYZValue = valueToShift;
+				}
+				EnclaveKeyDef::EnclaveKey originalCurrentFirstKey = currentFirstKeyInRow;		// store the value of currentFirstKeyInRow
+				currentFirstKeyInRow.x -= 1;																					// subtract 1 from the currentFirstKeyInRow
+				OGLMRMC.renderMetaContainerArray[translateXYZToSingle(0, y, z)].ElementCollectionKey = currentFirstKeyInRow;	// put new value of currentFirstKeyInRow into the new element that is the first key in the row (the new element was previously the last element in this row, prior to the shift)
+				OGLMRMC.renderMetaContainerArray[translateXYZToSingle(0, y, z)].ElementSingularXYZValue = currentLastSingularXYZValueInRow;	// store the new singular XYZ value in the new first element
+
+				blueprintMapIterator = blueprintMatrixPtr->BlueprintMap.find(currentFirstKeyInRow);		// attempt to find the blueprint
+				if (blueprintMapIterator != blueprintMatrixPtr->BlueprintMap.end())					// if it isn't equal to end, it was found.
+				{
+
+				}
+				else
+				{
+					//cout << "blueprint not found in OrganicSystem!" << endl;
+				}
+				//cout << "new key value for -x shift is: " << currentFirstKeyInRow.x << ", " << currentFirstKeyInRow.y << ", " << currentFirstKeyInRow.z << endl;
+
+			}
+		}
+		
+	}
+	auto carveend = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> carveelapsed = carveend - carvestart;
+	std::cout << "Elapsed time: (matrix shift + blueprint search (" << cubesize*cubesize << "): " << carveelapsed.count() << endl;
 }
 
 int OGLMBufferManager::determineRenderDataSubBufferKey(EnclaveKeyDef::EnclaveKey renderCollectionKey)

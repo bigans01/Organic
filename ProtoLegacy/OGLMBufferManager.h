@@ -23,6 +23,7 @@ Notes:	this will very likely be modified continuously throughout development.
 #include "EnclaveKeyDef.h"
 #include "OGLMDrawCallMeta.h"
 #include "OGLMRenderMetaContainer.h"
+#include "EnclaveCollectionBlueprintMatrix.h"
 
 class OrganicGLManager;					// required forward declaration
 class OGLMBufferManager {
@@ -35,6 +36,7 @@ public:
 	OrganicGLManager* OGLMPtr;
 	OGLMRenderMetaContainer OGLMRMC;		// RMC = render meta container
 	OGLMDrawCallMeta* DCMPtr;
+	EnclaveCollectionBlueprintMatrix* blueprintMatrixPtr;						// pointer to the OrganicSystem's blueprint matrix
 	EnclaveKeyDef::EnclaveKey oldCenterCollectionKey;							// sets the key before the array morph
 	EnclaveKeyDef::EnclaveKey currentCenterCollectionKey;						// sets the current key after morph
 	int shiftFlag = 0;															// determines if a morph needs to occur; 0 = false, 1 = true
