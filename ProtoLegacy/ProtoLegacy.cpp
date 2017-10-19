@@ -339,7 +339,7 @@ int main()
 	*/
 	EnclaveKeyDef::EnclaveKey flatKeyToAdd;
 
-	auto collectionsSetupBEGIN = std::chrono::high_resolution_clock::now();
+	//auto collectionsSetupBEGIN = std::chrono::high_resolution_clock::now();
 	
 	int cmultiplier = 1;
 	for (int x = 0; x < 4*cmultiplier; x++)						
@@ -388,16 +388,24 @@ int main()
 	//Organic.AddKeyToRenderList(flatKeyToAdd);
 	//Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, flatBlueprint);
 
+	
+
 	flatKeyToAdd.x = 0;
 	flatKeyToAdd.y = 0;
 	flatKeyToAdd.z = 2;
 	Organic.AddKeyToRenderList(flatKeyToAdd);
+	auto collectionsSetupBEGIN = std::chrono::high_resolution_clock::now();
 	Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, flatBlueprint);
 
-
+	// add blueprint for morph testing
+	flatKeyToAdd.x = -7;
+	flatKeyToAdd.y = 0;
+	flatKeyToAdd.z = 0;
+	Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, flatBlueprint);
+	
 	auto collectionsSetupEND = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> collectionsSetupELAPSED = collectionsSetupEND - collectionsSetupBEGIN;
-	//std::cout << "Elapsed time (Multiple collection instantiation): " << collectionsSetupELAPSED.count() << endl;
+	std::cout << "Elapsed time (Multiple collection instantiation): " << collectionsSetupELAPSED.count() << endl;
 	
 
 	EnclaveKeyDef::EnclaveKey calibrateKey;
@@ -684,7 +692,8 @@ int main()
 		auto start3 = std::chrono::high_resolution_clock::now();
 		// |||||||||||||||||||||| PHASE 1: Terrain. collection pointer changes; detect any OGLMBufferManager morphing
 		Organic.CheckForMorphing();			// determine if there were any OGLM buffer shifts that needed to be done.
-
+		Organic.CheckProcessingQueue();
+		// check for any available collections to process here
 		// |||||||||||||||||||||| PHASE 2: Render terrain and targeted blocks
 		Organic.RenderGLTerrain();																				// Step 1 (?): perform render frame work
 		// Step 2: check if camera has moved to another collection; if so shift the OrganicCollectionPointerMatrix(?)

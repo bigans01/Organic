@@ -37,6 +37,7 @@ OrganicSystem object contains all objects necessary to preserve information on t
 #include "TestList.h"
 #include "EnclaveCollectionStateArray.h"
 #include <GL/glew.h>
+#include <queue>
 //#define GLFW_DLL		// only used when linking to a DLL version of GLFW.
 #include <GLFW/glfw3.h>
 // Include GLM
@@ -65,10 +66,13 @@ public:
 	thread_pool *Cell1;															// pointer for Cell 1
 	thread_pool *Cell2;															// pointer for Cell 2
 	EnclaveKeyDef::EnclaveKey PreviousCCKey;									// will store the previous Camera Collection key from the previous frame here
-	EnclaveKeyDef::EnclaveKey CameraCollectionKey;								
-	EnclaveKeyDef::EnclaveKey CameraChunkKey;
-	EnclaveKeyDef::EnclaveKey CameraBlockKey;
+	EnclaveKeyDef::EnclaveKey CameraCollectionKey;								// the current collection that the camera is in
+	EnclaveKeyDef::EnclaveKey CameraChunkKey;									// the curent chunk of the collection the camera is in
+	EnclaveKeyDef::EnclaveKey CameraBlockKey;									// the current block in the chunk the camera is in
 	EnclaveCollectionStateArray CollectionStateArray;
+	std::queue<EnclaveKeyDef::EnclaveKey> CollectionProcessingQueue;			// a queue that stores collection keys that need to be processed
+	std::mutex heapmutex;														// global mutexval
+	int numberOfCells = 2;														// the number of worker threads in this OrganicSystem
 
 	OrganicSystem(int numberOfFactories, int bufferCubeSize, int windowWidth, int windowHeight);					// default constructor: number of factories, plus the size of the buffer cube
 
@@ -105,6 +109,7 @@ public:
 	void JobMaterializeMultiCollectionFromMM(MDListJobMaterializeCollection* mdjob, mutex& mutexval, int ThreadID);																// materializes multiple collections from the ground up, utilizing a manifest matrix.
 	void JobMaterializeMultiCollectionFromFactory(MDListJobMaterializeCollection mdjob, mutex& mutexval, EnclaveManifestFactoryT1 *FactoryRef, int ThreadID);					// materializes multiple collections from the ground up, utilizing a factory.
 	void JobMaterializeMultiCollectionFromFactory2(MDListJobMaterializeCollection* mdjob, mutex& mutexval, EnclaveManifestFactoryT1 *FactoryRef, int ThreadID);					// materializes multiple collections from the ground up, utilizing a factory. (testing only, may be erased)
+	void JobMaterializeCollectionFromFactoryViaMorph(MDJobMaterializeCollection* mdjob, mutex& mutexval, EnclaveManifestFactoryT1 *FactoryRef);
 	void JobRematerializeSingleExistingCollectionFromFactory(	EnclaveKeyDef::EnclaveKey Key1,																					// rematerializes a single collection on a currently loaded EnclaveCollection, from a Factory
 																EnclaveCollection *CollectionRef, 
 																EnclaveManifestFactoryT1 *FactoryRef, 
@@ -123,7 +128,8 @@ public:
 	void LoadNWChunks();																																						// currently for testing: "moves the world" by preparing buffers to load data for RenderCollections +1 chunk NW of current camera position
 	void SetupWorldArea(float x, float y, float z);
 	void SetWorldCameraPosition(float x, float y, float z);
-	void CheckForMorphing();
+	void CheckForMorphing();																																					// checks to see if there is any buffer morphing to be done
+	void CheckProcessingQueue();																																				// checks to see if there are any collections to process
 	void SetWorldCoordinates(float x, float y, float z);
 	thread_pool* getCell1();																																					// gets a pointer to worker thread (Cell) #1
 	thread_pool* getCell2();																																					// gets a pointer to worker thread (Cell) #2

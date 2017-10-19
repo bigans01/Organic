@@ -25,6 +25,7 @@ OrganicSystem::OrganicSystem(int numberOfFactories, int bufferCubeSize, int wind
 	OGLM.createRenderableCollectionList(bufferCubeSize);	// create the dynamic array that stores a list of renderable collections; the max number of renderable collections is equal to bufferCubeSize cubed.
 	OGLM.OrganicBufferManager.DCMPtr = &OGLM.renderableCollectionList;	// set the OrganicBufferManager's DCMPtr (a pointer to an instance of OGLMDrawCallMeta)
 	OGLM.OrganicBufferManager.blueprintMatrixPtr = &BlueprintMatrix;	// set the OrganicBufferManager's blueprint matrix pointer
+	OGLM.OrganicBufferManager.organicSystemPtr = this;	// set the pointer to the processing queue in OGLM's buffer manager
 	blockTargetMeta.setVertexOffsets();					// set up vertex offsets
 }
 
@@ -287,7 +288,7 @@ void OrganicSystem::MaterializeCollection(EnclaveKeyDef::EnclaveKey Key1, Enclav
 	// END NEW JOB STYLE TASKS
 
 
-	std::mutex mutexval;
+	//std::mutex mutexval;
 
 	////////////////////////////////////////////////////////////////////////////// BEGIN HIGH MEMORY EFFICIENCY TEST
 
@@ -337,7 +338,7 @@ void OrganicSystem::MaterializeCollection(EnclaveKeyDef::EnclaveKey Key1, Enclav
 	auto rematstart = std::chrono::high_resolution_clock::now();
 	EnclaveCollection *CollectionPtr = &EnclaveCollections.EnclaveCollectionMap[key3];
 	RenderCollectionMatrix *RenderCollectionsPtr = &RenderCollections;
-	std::future<void> remat_1 = tpref->submit5(&OrganicSystem::JobRematerializeSingleExistingCollectionFromFactory, this, key3, std::ref(CollectionPtr), std::ref(FactoryPtr), std::ref(RenderCollectionsPtr), std::ref(mutexval));
+	std::future<void> remat_1 = tpref->submit5(&OrganicSystem::JobRematerializeSingleExistingCollectionFromFactory, this, key3, std::ref(CollectionPtr), std::ref(FactoryPtr), std::ref(RenderCollectionsPtr), std::ref(heapmutex));
 	remat_1.wait();
 	auto rematend = std::chrono::high_resolution_clock::now();
 
@@ -352,7 +353,7 @@ void OrganicSystem::MaterializeCollection(EnclaveKeyDef::EnclaveKey Key1, Enclav
 	//// DUMMY JOB TEST
 
 	auto dummystart = std::chrono::high_resolution_clock::now();
-	std::future<void> dummyjob_1 = tpref->submit5(&OrganicSystem::DummyJob, this, 5, std::ref(FactoryPtr2), std::ref(mutexval));
+	std::future<void> dummyjob_1 = tpref->submit5(&OrganicSystem::DummyJob, this, 5, std::ref(FactoryPtr2), std::ref(heapmutex));
 	dummyjob_1.wait();
 	auto dummyend = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> dummytotal = dummyend - dummystart;
@@ -474,14 +475,14 @@ void OrganicSystem::ChangeSingleBlockMaterialAtXYZ(int x, int y, int z, int newm
 	
 	
 	
-	std::mutex mutexval;
+	//std::mutex mutexval;
 	thread_pool *tpref = getCell1();
 	//OrganicFactoryIndex.FactoryMap["Factory 1"].StorageArray[0].VertexArrayCount = 0;
 	EnclaveManifestFactoryT1 *FactoryPtr = &OrganicFactoryIndex.FactoryMap["Factory 1"];
 	FactoryPtr->TextureDictionaryRef = &TextureDictionary;
 	EnclaveCollection *CollectionPtr = &EnclaveCollections.EnclaveCollectionMap[CollectionKey];
 	RenderCollectionMatrix *RenderCollectionsPtr = &RenderCollections;
-	std::future<void> remat_1 = tpref->submit5(&OrganicSystem::JobRematerializeSingleExistingCollectionFromFactory, this, CollectionKey, std::ref(CollectionPtr), std::ref(FactoryPtr), std::ref(RenderCollectionsPtr), std::ref(mutexval));
+	std::future<void> remat_1 = tpref->submit5(&OrganicSystem::JobRematerializeSingleExistingCollectionFromFactory, this, CollectionKey, std::ref(CollectionPtr), std::ref(FactoryPtr), std::ref(RenderCollectionsPtr), std::ref(heapmutex));
 	remat_1.wait();
 	
 }
@@ -1011,6 +1012,82 @@ void OrganicSystem::JobMaterializeMultiCollectionFromFactory2(MDListJobMateriali
 
 	cout << "Total time, " << totalProcessed << "collections: (" << ThreadID << ") " << trueelapsed.count() << endl;
 	mutexval.unlock();
+}
+
+void OrganicSystem::JobMaterializeCollectionFromFactoryViaMorph(MDJobMaterializeCollection* mdjob, mutex& mutexval, EnclaveManifestFactoryT1 *FactoryRef)
+{
+	// firstly, clean out / initialize the Factory collection
+	Enclave tempEnclave;
+	FactoryRef->FactoryCollections[0].EnclaveArray[0][0][0] = tempEnclave;
+
+	// get a pointer to above collection
+	EnclaveCollection* CollectionRef = &FactoryRef->FactoryCollections[0];
+
+	// set up pointers
+	
+	EnclaveCollectionBlueprintMatrix *BlueprintMatrixRef = mdjob->MDBlueprintMatrixRef;			// set Blueprint matrix ref
+	EnclaveCollectionMatrix *EnclaveCollectionsRef = mdjob->MDEnclaveCollectionsRef;			// set a ref to the EnclaveCollection matrix		
+	RenderCollectionMatrix *RenderCollectionsRef = mdjob->MDRenderCollectionsRef;				// set a ref to the RenderCollection matrix
+	EnclaveCollectionActivateListT2 listT2_1;													// set up a activate list
+	EnclaveCollectionBlueprint *blueprintptr = &BlueprintMatrixRef->BlueprintMap[mdjob->MDKey];			// the blueprint to use
+
+	////////////// BEGIN PROCESSING
+	EnclaveCollectionsRef->JobInstantiateAndPopulateEnclaveAlpha2(0, 7 + 1, std::ref(*CollectionRef), mdjob->MDKey, std::ref(blueprintptr), std::ref(BlueprintMatrixRef), std::ref(listT2_1), std::ref(mutexval));	// run the instantiation job on this thread (all 512 enclaves) //EnclaveCollectionMap[Key]
+	int chunkbitmask = 1;	// set the chunk bit mask used below
+	int bitmaskval = 0;		// ""
+	int renderablecount = 0;
+
+
+	// Phase 1: EnclaveCollection instantiation
+
+	for (int x = 0; x < 8; x++)
+	{
+		chunkbitmask = 1;
+		bitmaskval = 0;
+		for (int y = 0; y < 8; y++)
+		{
+			for (int z = 0; z < 8; z++)
+			{
+				if ((listT2_1.flagArray[x][z] & chunkbitmask) == chunkbitmask)
+				{
+					EnclaveKeyDef::EnclaveKey tempKey;						// create a tempKey for this iteration
+					tempKey.x = x;
+					tempKey.y = bitmaskval;									// set the y to be equivalent to the current value of bitmask val (i.e, 1, 2, 4, 8 , 16, 32, 64, 128)
+					tempKey.z = z;
+					renderablecount++;
+					CollectionRef->ActivateEnclaveForRendering(tempKey);	// activate the enclave for rendering
+				}
+
+			}
+			chunkbitmask <<= 1;
+			bitmaskval++;
+		}
+	}
+
+	// Phase 2: Factory work
+	int manifestCounter = CollectionRef->totalRenderableEnclaves;
+	//auto start5 = std::chrono::high_resolution_clock::now();
+	EnclaveKeyDef::EnclaveKey innerTempKey;
+	FactoryRef->CurrentStorage = 0;					// reset storage location.
+	FactoryRef->StorageArrayCount = 0;
+	for (int a = 0; a < manifestCounter; a++)
+	{
+		innerTempKey = CollectionRef->RenderableEnclaves[a];
+		//cout << "Renderable key: " << innerTempKey.x << ", " << innerTempKey.y << ", " << innerTempKey.z << endl;
+		Enclave *tempEnclavePtr = &CollectionRef->GetEnclaveByKey(innerTempKey);
+		FactoryRef->AttachManifestToEnclave(tempEnclavePtr);
+	}
+
+	// Phase 3: Render actual collection
+	//cout << "Phase 3 beginning..." << endl;
+	//mutexval.lock();
+	RenderCollectionsRef->CreateRenderArrayFromFactory(mdjob->MDKey, FactoryRef, std::ref(mutexval));		// call function to add data into array; pass mutex to use
+																									//mutexval.unlock();
+																									//RenderCollection* collPtr = &RenderCollectionsRef->RenderMatrix[Key1];
+																									//cout << "Total renderables for Key (" << Key1.x << ", " << Key1.y << ", " << Key1.z << ") :" << tempdumbcount << ": " << collPtr->RenderCollectionArraySize << endl;
+																									//trueend = std::chrono::high_resolution_clock::now();
+
+
 }
 
 void OrganicSystem::JobCalibrateBlueprintBordersFromFactory(EnclaveKeyDef::EnclaveKey Key1, EnclaveManifestFactoryT1 *FactoryRef)
@@ -2040,7 +2117,7 @@ void OrganicSystem::MaterializeRenderablesByMM()
 		tempMatCollListRef->ListMatrix[tempKey] = tempMDJob;
 	}
 
-	std::mutex mutexval;
+	//std::mutex mutexval;
 
 
 	MDListJobMaterializeCollection* list1 = &MatCollList.MaterializeCollectionList.front();
@@ -2048,8 +2125,8 @@ void OrganicSystem::MaterializeRenderablesByMM()
 
 	//OrganicSystem::JobMaterializeMultiCollectionFromMM(MDListJobMaterializeCollection mdjob, mutex& mutexval, int ThreadID)
 	cout << "before job submit" << endl;
-	std::future<void> coll_3 = tpref->submit5(&OrganicSystem::JobMaterializeMultiCollectionFromMM, this, std::ref(list1), std::ref(mutexval), 1);
-	std::future<void> coll_4 = tpref2->submit5(&OrganicSystem::JobMaterializeMultiCollectionFromMM, this, std::ref(list2), std::ref(mutexval), 2);
+	std::future<void> coll_3 = tpref->submit5(&OrganicSystem::JobMaterializeMultiCollectionFromMM, this, std::ref(list1), std::ref(heapmutex), 1);
+	std::future<void> coll_4 = tpref2->submit5(&OrganicSystem::JobMaterializeMultiCollectionFromMM, this, std::ref(list2), std::ref(heapmutex), 2);
 
 	auto lowstart = std::chrono::high_resolution_clock::now();
 
@@ -2123,7 +2200,7 @@ void OrganicSystem::MaterializeRenderablesByFactory()
 		tempMatCollListRef->ListMatrix[tempKey] = tempMDJob;
 	}
 
-	std::mutex mutexval;
+	//std::mutex mutexval;
 
 	OrganicFactoryIndex.FactoryMap["Factory 1"].StorageArray[0].VertexArrayCount = 0;
 	EnclaveManifestFactoryT1 *FactoryPtr = &OrganicFactoryIndex.FactoryMap["Factory 1"];
@@ -2138,8 +2215,8 @@ void OrganicSystem::MaterializeRenderablesByFactory()
 	MDListJobMaterializeCollection* list1 = &MatCollList.MaterializeCollectionList.front();
 	MDListJobMaterializeCollection* list2 = &MatCollList.MaterializeCollectionList.back();
 
-	std::future<void> coll_3 = tpref->submit5(&OrganicSystem::JobMaterializeMultiCollectionFromFactory2, this, std::ref(list1), std::ref(mutexval), std::ref(FactoryPtr), 1);
-	std::future<void> coll_4 = tpref2->submit5(&OrganicSystem::JobMaterializeMultiCollectionFromFactory2, this, std::ref(list2), std::ref(mutexval), std::ref(FactoryPtr2), 2);
+	std::future<void> coll_3 = tpref->submit5(&OrganicSystem::JobMaterializeMultiCollectionFromFactory2, this, std::ref(list1), std::ref(heapmutex), std::ref(FactoryPtr), 1);
+	std::future<void> coll_4 = tpref2->submit5(&OrganicSystem::JobMaterializeMultiCollectionFromFactory2, this, std::ref(list2), std::ref(heapmutex), std::ref(FactoryPtr2), 2);
 
 	auto lowstart = std::chrono::high_resolution_clock::now();
 
@@ -2164,6 +2241,38 @@ void OrganicSystem::CheckForMorphing()
 		cout << ">>>>MORPH required. " << endl;
 		OGLM.OrganicBufferManager.MorphTerrainBuffers();
 		OGLM.OrganicBufferManager.shiftFlag = 0;
+	}
+}
+
+void OrganicSystem::CheckProcessingQueue()
+{
+
+
+	EnclaveManifestFactoryT1 *FactoryPtr = &OrganicFactoryIndex.FactoryMap["Factory 1"];		// factory pointer
+	thread_pool *tpref = getCell1();															// thread pool pointers
+	thread_pool *tpref2 = getCell2();
+
+	EnclaveCollectionBlueprintMatrix *passBlueprintMatrixPtr = &BlueprintMatrix;		// set up required pointers that are used as parameters for each MDJob
+	EnclaveCollectionMatrix *passEnclaveCollectionPtr = &EnclaveCollections;
+	ManifestCollectionMatrix *passManifestCollPtr = &ManifestCollections;
+	RenderCollectionMatrix *passRenderCollMatrixPtr = &RenderCollections;
+	EnclaveCollection *passCollectionPtrNew;
+	ManifestCollection *passManifestPtrNew;
+
+
+
+	if (!CollectionProcessingQueue.empty())	// only do the following if the queue isn't empty
+	{
+		EnclaveKeyDef::EnclaveKey popKey = CollectionProcessingQueue.front();
+		cout << ">>>>  popping queue..." << endl;
+		CollectionProcessingQueue.pop();
+
+		MDJobMaterializeCollection tempMDJob(popKey, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew));
+		MDJobMaterializeCollection* tempMDJobRef = &tempMDJob;
+		std::future<void> pop_1 = tpref->submit5(&OrganicSystem::JobMaterializeCollectionFromFactoryViaMorph, this, tempMDJobRef, std::ref(heapmutex), std::ref(FactoryPtr));
+		pop_1.wait();
+		cout << ">>>> popped collection processed..." << endl;
+
 	}
 }
 

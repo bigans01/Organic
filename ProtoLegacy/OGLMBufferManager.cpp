@@ -11,6 +11,7 @@ Description: OGLMBufferManager.cpp contains the definitions for the declarations
 #include <chrono>
 #include "OGLMBufferManager.h"
 #include "OrganicGLManager.h"
+#include "OrganicSystem.h"
 
 void OGLMBufferManager::SetCubesize(int inCubesize)
 {
@@ -197,7 +198,8 @@ void OGLMBufferManager::MorphTerrainBuffers()
 				blueprintMapIterator = blueprintMatrixPtr->BlueprintMap.find(currentFirstKeyInRow);		// attempt to find the blueprint
 				if (blueprintMapIterator != blueprintMatrixPtr->BlueprintMap.end())					// if it isn't equal to end, it was found.
 				{
-
+					organicSystemPtr->CollectionProcessingQueue.push(currentFirstKeyInRow);
+					cout << ">>>>>>>>>>>Blueprint was found!! adding to processing queue..." << endl;
 				}
 				else
 				{
@@ -211,7 +213,7 @@ void OGLMBufferManager::MorphTerrainBuffers()
 	}
 	auto carveend = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> carveelapsed = carveend - carvestart;
-	std::cout << "Elapsed time: (matrix shift + blueprint search (" << cubesize*cubesize << "): " << carveelapsed.count() << endl;
+	//std::cout << "Elapsed time: (matrix shift + blueprint search (" << cubesize*cubesize << "): " << carveelapsed.count() << endl;
 }
 
 int OGLMBufferManager::determineRenderDataSubBufferKey(EnclaveKeyDef::EnclaveKey renderCollectionKey)

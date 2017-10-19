@@ -26,6 +26,7 @@ Notes:	this will very likely be modified continuously throughout development.
 #include "EnclaveCollectionBlueprintMatrix.h"
 
 class OrganicGLManager;					// required forward declaration
+class OrganicSystem;
 class OGLMBufferManager {
 public:
 	int* BufferOffsetMatrixArray;		// a pointer to a dynamic array which will contain memory offsets measured in bytes. these offsets represent the exact beginning location of each "sub-buffer" that a collection has within the mega buffer
@@ -36,6 +37,7 @@ public:
 	OrganicGLManager* OGLMPtr;
 	OGLMRenderMetaContainer OGLMRMC;		// RMC = render meta container
 	OGLMDrawCallMeta* DCMPtr;
+	OrganicSystem* organicSystemPtr;
 	EnclaveCollectionBlueprintMatrix* blueprintMatrixPtr;						// pointer to the OrganicSystem's blueprint matrix
 	EnclaveKeyDef::EnclaveKey oldCenterCollectionKey;							// sets the key before the array morph
 	EnclaveKeyDef::EnclaveKey currentCenterCollectionKey;						// sets the current key after morph
