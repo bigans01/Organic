@@ -308,12 +308,12 @@ void OrganicSystem::MaterializeCollection(EnclaveKeyDef::EnclaveKey Key1, Enclav
 
 	//EnclaveManifestFactoryT1Index MainFactoryIndex;
 
-	OrganicFactoryIndex.FactoryMap["Factory 1"].StorageArray[0].VertexArrayCount = 0;
-	EnclaveManifestFactoryT1 *FactoryPtr = &OrganicFactoryIndex.FactoryMap["Factory 1"];
+	OrganicFactoryIndex.FactoryMap["Factory 0"].StorageArray[0].VertexArrayCount = 0;
+	EnclaveManifestFactoryT1 *FactoryPtr = &OrganicFactoryIndex.FactoryMap["Factory 0"];
 	FactoryPtr->TextureDictionaryRef = &TextureDictionary;
 
-	OrganicFactoryIndex.FactoryMap["Factory 2"].StorageArray[0].VertexArrayCount = 0;
-	EnclaveManifestFactoryT1 *FactoryPtr2 = &OrganicFactoryIndex.FactoryMap["Factory 2"];
+	OrganicFactoryIndex.FactoryMap["Factory 1"].StorageArray[0].VertexArrayCount = 0;
+	EnclaveManifestFactoryT1 *FactoryPtr2 = &OrganicFactoryIndex.FactoryMap["Factory 1"];
 	FactoryPtr2->TextureDictionaryRef = &TextureDictionary;
 	
 	//std::future<void> coll_3 = tpref->submit5(&OrganicSystem::JobMaterializeMultiCollectionFromFactory, this, std::ref(tempJobList), std::ref(mutexval), std::ref(FactoryPtr), 1);
@@ -987,6 +987,7 @@ void OrganicSystem::JobMaterializeMultiCollectionFromFactory2(MDListJobMateriali
 		}
 
 		// Phase 2: Factory work
+		//cout << "dictionary debug check (0) " << endl;
 		int manifestCounter = CollectionRef->totalRenderableEnclaves;
 		//auto start5 = std::chrono::high_resolution_clock::now();
 		EnclaveKeyDef::EnclaveKey innerTempKey;
@@ -2211,15 +2212,15 @@ void OrganicSystem::MaterializeRenderablesByFactory()
 
 	//std::mutex mutexval;
 
-	OrganicFactoryIndex.FactoryMap["Factory 1"].StorageArray[0].VertexArrayCount = 0;
-	EnclaveManifestFactoryT1 *FactoryPtr = &OrganicFactoryIndex.FactoryMap["Factory 1"];
-	FactoryPtr->TextureDictionaryRef = &TextureDictionary;
-	FactoryPtr->VertexColorDictionaryRef = &VertexColorDictionary;
+	OrganicFactoryIndex.FactoryMap["Factory 0"].StorageArray[0].VertexArrayCount = 0;
+	EnclaveManifestFactoryT1 *FactoryPtr = &OrganicFactoryIndex.FactoryMap["Factory 0"];
+	//FactoryPtr->TextureDictionaryRef = &TextureDictionary;
+	//FactoryPtr->VertexColorDictionaryRef = &VertexColorDictionary;
 
-	OrganicFactoryIndex.FactoryMap["Factory 2"].StorageArray[0].VertexArrayCount = 0;
-	EnclaveManifestFactoryT1 *FactoryPtr2 = &OrganicFactoryIndex.FactoryMap["Factory 2"];
-	FactoryPtr2->TextureDictionaryRef = &TextureDictionary;
-	FactoryPtr2->VertexColorDictionaryRef = &VertexColorDictionary;
+	OrganicFactoryIndex.FactoryMap["Factory 1"].StorageArray[0].VertexArrayCount = 0;
+	EnclaveManifestFactoryT1 *FactoryPtr2 = &OrganicFactoryIndex.FactoryMap["Factory 1"];
+	//FactoryPtr2->TextureDictionaryRef = &TextureDictionary;
+	//FactoryPtr2->VertexColorDictionaryRef = &VertexColorDictionary;
 
 	MDListJobMaterializeCollection* list1 = &MatCollList.MaterializeCollectionList.front();
 	MDListJobMaterializeCollection* list2 = &MatCollList.MaterializeCollectionList.back();
