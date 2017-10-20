@@ -2256,8 +2256,10 @@ void OrganicSystem::CheckForMorphing()
 void OrganicSystem::CheckProcessingQueue()
 {
 
-
+	
 	EnclaveManifestFactoryT1 *FactoryPtr = &OrganicFactoryIndex.FactoryMap["Factory 1"];		// factory pointer
+
+	// needs to be configured to use OCList
 	thread_pool *tpref = getCell1();															// thread pool pointers
 	thread_pool *tpref2 = getCell2();
 
