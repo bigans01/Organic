@@ -82,7 +82,7 @@ public:
 	void TracePathToBlock(int x, int y, int z);																						// testing purposes -- will output the coordinates taken to find a particualr block (i.e., prints x of the collection, then x of the chunk, then x of the block)
 
 	ElevationMapRef& GetElevationMapFromCollection(EnclaveKeyDef::EnclaveKey InKey);												// returns a pointer to an ElevationMap corresponding to a particular EnclaveCollection
-	PathTraceContainer GetCoordTrace(int x);																					// returns a PathTraceContainer that contains the x, y, or z value of the collection, chunk, and individual block that would be returned when finding the coordinate. (would be called 3 times																																// to get a true x/y/z coordinate.
+	PathTraceContainer GetCoordTrace(float x);																					// returns a PathTraceContainer that contains the x, y, or z value of the collection, chunk, and individual block that would be returned when finding the coordinate. (would be called 3 times																																// to get a true x/y/z coordinate.
 	CursorPathTraceContainer GetCursorCoordTrace(float x);
 	int KeyToSingle(EnclaveKeyDef::EnclaveKey InKey);																				// returns an integer representing the value of an EnclaveKey transformed to a single value (i.e., 7,7,7 = 512 -- the 8th enclave on x,y, and z)
 	void SetOrganicSystem(OrganicSystem *organicRef);																				// sets the OrganicSystem that this instance of EnclaveCollectionMatrix points to

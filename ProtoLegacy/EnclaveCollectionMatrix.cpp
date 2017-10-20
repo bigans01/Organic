@@ -1189,7 +1189,7 @@ void EnclaveCollectionMatrix::TracePathToBlock(int x, int y, int z)
 	
 }
 
-PathTraceContainer EnclaveCollectionMatrix::GetCoordTrace(int x)
+PathTraceContainer EnclaveCollectionMatrix::GetCoordTrace(float x)
 {
 	/* Summary: returns a PathTraceContainer object, which contains either the x/y/z axis points of a collection, a chunk within the collection, and a block within chunk of said collection. */
 
@@ -1200,36 +1200,38 @@ PathTraceContainer EnclaveCollectionMatrix::GetCoordTrace(int x)
 	CollectionKey.z = 0;
 	//cout << "TracePath test: " << (x / 32) << endl;
 
-	int x_divide = (x / 32);							// here, 32 is the length of an entire collection (8 chunks = 32 blocks width)
+	float x_divide = (x / 32);							// here, 32 is the length of an entire collection (8 chunks = 32 blocks width)
 	int collection_x = 0;								// the coordinate of the collection that will be returned (x or y or z)
 	int chunk_x = 0;									// the coordinate of the chunk that will be returned (x or y or z)
 	int block_x = 0;									// the coordinate of the block that will be returned (x or y or z)
 
 	if (x < 0)											// operations to be performed when the input value is less than 0.
 	{
+		cout << ">>>>X_DIVIDE ENTRY; x_divide is  " << endl;
 		collection_x = 0;
 		if ((x_divide < 0) && x < -32)
 		{
-			if ((x % 32) != 0)
+			
+			if (fmod(x,32) != 0)
 			{
-				collection_x = (x_divide - 1);
+				collection_x = -1;  // collection_x = (x_divide - 1);
 			}
-			else
-			{
-				collection_x = x_divide;
-			}
+			//else
+			//{
+			//collection_x = x_divide;
+			//}
 
 
 		}
 		else if ((x_divide < 0) && x >= -32)
 		{
-			collection_x = -1;
+			collection_x = int(x_divide) - 1;
 		}
 
 		//cout << "collection_x: " << collection_x << endl;
-		chunk_x = 7 - ((x % 32) / 4);
+		chunk_x = 7 - abs(int(fmod(x, 32) / 4));
 		//cout << "chunk_x: " << chunk_x << endl;
-		block_x = ((x % 32) % 4);
+		block_x = 3 - abs(fmod(ceil(fmod(x, 32)), 4));
 		//cout << "block_x: " << block_x << endl;
 
 	}
@@ -1238,27 +1240,23 @@ PathTraceContainer EnclaveCollectionMatrix::GetCoordTrace(int x)
 		collection_x = 0;
 		if ((x_divide > 0) && x > 32)
 		{
-			if ((x % 32) != 0)
+			if (fmod(x, 32) != 0)
 			{
-				collection_x = (x_divide + 1);
+				collection_x = x_divide;  // collection_x = (x_divide + 1);
 			}
-			else
-			{
-				collection_x = x_divide;
-			}
+			//else
+			//{
+			//collection_x = x_divide;
+			//}
 		}
-		else if ((x_divide > 0) && x <= 32)
-		{
-			collection_x = 1;
-		}
+		//else if ((x_divide > 0) && x <= 32)
+		//{
+		//collection_x = 1;
+		//}
 		//cout << "collection_x: " << collection_x << endl;
-		chunk_x = ((x % 32) / 4);
-		//cout << "chunk_x: " << chunk_x << endl;
-		 block_x = ((x % 32) % 4);
-		//cout << "block_x: " << block_x << endl;
-
-
-		//cout << "NoOfCollections passed: " << NoOfCollections << endl;
+		chunk_x = (fmod(x, 32) / 4);					// old:  chunk_x = ((x % 32) / 4);
+														//cout << "chunk_x: " << chunk_x << endl;
+		block_x = (fmod(fmod(x, 32), 4));				// old : block_x = ((x % 32) % 4);
 	}
 	tempPathTrace.CollectionCoord = collection_x;		// set the return value for the Collection coordinate
 	tempPathTrace.ChunkCoord = chunk_x;					// set the return value for the Chunk coordinate
