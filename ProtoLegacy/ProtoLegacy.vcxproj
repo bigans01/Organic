@@ -199,6 +199,8 @@
     <ClInclude Include="OGLMRenderMetaContainerElement.h" />
     <ClInclude Include="OrganicBlockMeta.h" />
     <ClInclude Include="OrganicBlockTarget.h" />
+    <ClInclude Include="OrganicCell.h" />
+    <ClInclude Include="OrganicCellList.h" />
     <ClInclude Include="OrganicFaceMeta.h" />
     <ClInclude Include="OrganicGLManager.h" />
     <ClInclude Include="OGLMRenderMetaContainer.h" />

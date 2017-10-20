@@ -24,6 +24,7 @@ OrganicSystem object contains all objects necessary to preserve information on t
 #include "EnclaveCollectionBlueprintMatrix.h"
 #include "OrganicTextureDictionary.h"
 #include "OrganicVtxColorDictionary.h"
+#include "OrganicCellList.h"
 #include "MDJobMaterializeCollection.h"
 #include "MDListJobMaterializeCollection.h"
 #include "EnclaveManifestFactoryT1.h"
@@ -63,6 +64,7 @@ public:
 	EnclaveManifestFactoryT1Index OrganicFactoryIndex;							// FactoryIndex for this OrganicSystem
 	EnclaveKeyContainer renderCollectionList;									// contains a a list of Keys that determine which EnclaveCollections to render and/or process	
 	MaterializeCollectionListContainer MatCollList;
+	OrganicCellList OCList;														// the OrganicSystem's instance of OrganicCellList
 	thread_pool *Cell1;															// pointer for Cell 1
 	thread_pool *Cell2;															// pointer for Cell 2
 	EnclaveKeyDef::EnclaveKey PreviousCCKey;									// will store the previous Camera Collection key from the previous frame here
@@ -89,7 +91,8 @@ public:
 	void SetupFutureCollectionMM(EnclaveKeyDef::EnclaveKey tempKey);							// does the same as SetupFuturecollectionMM, but uses an EnclaveKey as input.
 	void SetupFutureCollectionMMFromRenderList();												// runs SetupFutureCollectionMM function for all enclave keys found in renderCollectionList.
 	void SetOrganicCell1(thread_pool *thread_pool_ref);											// sets the pointer for Cell1 to be a valid worker thread
-	void SetOrganicCell2(thread_pool *thread_pool_ref);											// sets the pointer for Cell2 to be a valid worker thread
+	void SetOrganicCell2(thread_pool *thread_pool_ref);					// sets the pointer for Cell2 to be a valid worker thread
+	void AddOrganicCell(thread_pool* thread_pool_ref);
 	void AddOrganicTextureMetaArray(string mapname);											// adds a new texture meta array, which is a list that is used to map block IDs to texture UV coordinates.
 	void AddOrganicVtxColorMetaArray(string mapname);											// adds a new vertex color meta array, which is a list that is used to color individual vertexes.
 	void SetGraphicsAPI();																		// sets up initial data for OpenGL functionality						

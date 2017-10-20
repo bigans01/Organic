@@ -8,15 +8,17 @@ void EnclaveManifestFactoryT1::AttachManifestToEnclave(Enclave *in_ptr)
 	OrganicTextureMeta *textureMetaRef;
 	//OrganicTextureMeta textureMetaCopy;
 	OrganicTextureMetaArray *textureMetaArrayRef;
+	//cout << "debug: first in_ptr pass" << endl;
 	textureMetaArrayRef = &TextureDictionaryRef->Dictionary["base"];
-
+	//cout << "debug: first in_ptr pass (0)..." << endl;
 	OrganicVtxColorMeta *vertexColorMetaRef;
 	OrganicVtxColorMetaArray *vertexColorMetaArrayRef;
 	vertexColorMetaArrayRef = &VertexColorDictionaryRef->Dictionary["base"];
-
+	//cout << "debug: first in_ptr pass (1)..." << endl;
 	//StorageArray[CurrentStorage].VertexArrayCount =	(in_ptr->GetTotalTrianglesInEnclave()) * 9;	// set the total amount of vertex data to store
 	//StorageArray[CurrentStorage].TextureArrayCount = (in_ptr->GetTotalTrianglesInEnclave()) * 6; // set the total amount of texture data to store
 	StorageArray[CurrentStorage].StorageKey = in_ptr->UniqueKey;
+	//cout << "debug: first in_ptr pass (2)..." << endl;
 	StorageArray[CurrentStorage].VertexArrayCount = 0;			// set the total amount of vertex data to store
 	StorageArray[CurrentStorage].TextureArrayCount = 0;			// set the total amount of texture data to store
 	StorageArray[CurrentStorage].VertexColorArrayCount = 0;		// set the total amount of vertex color data to store

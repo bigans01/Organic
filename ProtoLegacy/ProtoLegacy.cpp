@@ -310,6 +310,10 @@ int main()
 	//Organic.LoadNWChunks();
 	Organic.SetOrganicCell1(mainthreadpoolref);				// set the Organic instance's first worker thread
 	Organic.SetOrganicCell2(mainthreadpoolref2);			// set the Organic instance's second worker thread
+
+	Organic.AddOrganicCell(mainthreadpoolref);
+	Organic.AddOrganicCell(mainthreadpoolref2);
+
 	Organic.AddOrganicTextureMetaArray("base");					// set up the texture map; first ever map will be named "base"
 	Organic.AddOrganicVtxColorMetaArray("base");
 	Organic.SetWorldCoordinates(-3.0f, 30.0f, -1.0f);

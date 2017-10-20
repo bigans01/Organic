@@ -258,6 +258,12 @@
     <ClInclude Include="OGLMDrawCallMeta.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="OrganicCell.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OrganicCellList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

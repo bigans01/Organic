@@ -182,7 +182,7 @@ void OGLMBufferManager::MorphTerrainBuffers()
 		//cout << "old key: " << oldCenterCollectionKey.x << ", " << oldCenterCollectionKey.y << ", " << oldCenterCollectionKey.z << endl;
 
 		EnclaveKeyDef::EnclaveKey currentFirstKeyInRow = OGLMRMC.renderMetaContainerArray[translateXYZToSingle(0, 0, 0)].ElementCollectionKey;		// get the enclave collection key of the first element in the row
-		cout << "(Moving WEST) test old key value for -x shift is: " << currentFirstKeyInRow.x << ", " << currentFirstKeyInRow.y << ", " << currentFirstKeyInRow.z << " cubesize: " << cubesize <<  endl;
+		//cout << "(Moving WEST) test old key value for -x shift is: " << currentFirstKeyInRow.x << ", " << currentFirstKeyInRow.y << ", " << currentFirstKeyInRow.z << " cubesize: " << cubesize <<  endl;
 
 		std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveCollectionBlueprint, EnclaveKeyDef::KeyHasher>::iterator blueprintMapIterator;
 		//cout << "less than x morph!" << endl;
@@ -210,7 +210,7 @@ void OGLMBufferManager::MorphTerrainBuffers()
 				if (blueprintMapIterator != blueprintMatrixPtr->BlueprintMap.end())					// if it isn't equal to end, it was found.
 				{
 					organicSystemPtr->CollectionProcessingQueue.push(currentFirstKeyInRow);
-					cout << ">>>>>>>>>>>Blueprint was found!! adding to processing queue..." << endl;
+					//cout << ">>>>>>>>>>>Blueprint was found!! adding to processing queue..." << endl;
 				}
 				else
 				{
@@ -222,7 +222,7 @@ void OGLMBufferManager::MorphTerrainBuffers()
 		}
 
 		currentFirstKeyInRow = OGLMRMC.renderMetaContainerArray[translateXYZToSingle(0, 0, 0)].ElementCollectionKey;		// get the enclave collection key of the first element in the row
-		cout << "(Moving WEST) test old key value for -x POST shift is: " << currentFirstKeyInRow.x << ", " << currentFirstKeyInRow.y << ", " << currentFirstKeyInRow.z << " cubesize: " << cubesize << endl;
+		//cout << "(Moving WEST) test old key value for -x POST shift is: " << currentFirstKeyInRow.x << ", " << currentFirstKeyInRow.y << ", " << currentFirstKeyInRow.z << " cubesize: " << cubesize << endl;
 		
 	}
 
@@ -236,7 +236,7 @@ void OGLMBufferManager::MorphTerrainBuffers()
 		//cout << "old key: " << oldCenterCollectionKey.x << ", " << oldCenterCollectionKey.y << ", " << oldCenterCollectionKey.z << endl;
 
 		EnclaveKeyDef::EnclaveKey currentFirstKeyInRow = OGLMRMC.renderMetaContainerArray[translateXYZToSingle(0, 0, 0)].ElementCollectionKey;		// get the enclave collection key of the first element in the row
-		cout << "(Moving EAST) test 1 old key value for -x shift is: " << currentFirstKeyInRow.x << ", " << currentFirstKeyInRow.y << ", " << currentFirstKeyInRow.z << " cubesize: " << cubesize << endl;
+		//cout << "(Moving EAST) test 1 old key value for -x shift is: " << currentFirstKeyInRow.x << ", " << currentFirstKeyInRow.y << ", " << currentFirstKeyInRow.z << " cubesize: " << cubesize << endl;
 
 		//currentFirstKeyInRow = OGLMRMC.renderMetaContainerArray[translateXYZToSingle(cubesize - 1, 0, 0)].ElementCollectionKey;		// get the enclave collection key of the first element in the row
 		//cout << "test 2 old key value for -x shift is: " << currentFirstKeyInRow.x << ", " << currentFirstKeyInRow.y << ", " << currentFirstKeyInRow.z << " cubesize: " << cubesize << endl;
@@ -265,7 +265,7 @@ void OGLMBufferManager::MorphTerrainBuffers()
 				if (blueprintMapIterator != blueprintMatrixPtr->BlueprintMap.end())					// if it isn't equal to end, it was found.
 				{
 					organicSystemPtr->CollectionProcessingQueue.push(currentLastKeyInRow);
-					cout << ">>>>>>>>>>>Blueprint was found!! adding to processing queue..." << endl;
+					//cout << ">>>>>>>>>>>Blueprint was found!! adding to processing queue..." << endl;
 				}
 				else
 				{
@@ -279,7 +279,7 @@ void OGLMBufferManager::MorphTerrainBuffers()
 		//currentFirstKeyInRow = OGLMRMC.renderMetaContainerArray[translateXYZToSingle(cubesize - 1, 0, 0)].ElementCollectionKey;		// get the enclave collection key of the first element in the row
 		//EnclaveKeyDef::EnclaveKey 
 		currentFirstKeyInRow = OGLMRMC.renderMetaContainerArray[translateXYZToSingle(0, 0, 0)].ElementCollectionKey;
-		cout << "(Moving EAST) test 2 old key value for -x POST shift is:" << currentFirstKeyInRow.x << ", " << currentFirstKeyInRow.y << ", " << currentFirstKeyInRow.z << " cubesize: " << cubesize << endl;
+		//cout << "(Moving EAST) test 2 old key value for -x POST shift is:" << currentFirstKeyInRow.x << ", " << currentFirstKeyInRow.y << ", " << currentFirstKeyInRow.z << " cubesize: " << cubesize << endl;
 	}
 
 	// NEGATIVE Y MOVEMENT

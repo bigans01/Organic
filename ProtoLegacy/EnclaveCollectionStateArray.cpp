@@ -201,7 +201,7 @@ void EnclaveCollectionStateArray::ShiftCenterCollection(EnclaveKeyDef::EnclaveKe
 				}
 			}
 			EnclaveKeyDef::EnclaveKey outputKey = StateMatrixPtr[translateXYZToSingle(centerCollectionStateOffset, centerCollectionStateOffset, centerCollectionStateOffset)].ActualCollectionKey;
-			cout << "New collection center (east) is: " << outputKey.x << ", " << outputKey.y << ", " << outputKey.z << endl;
+			//cout << "New collection center (east) is: " << outputKey.x << ", " << outputKey.y << ", " << outputKey.z << endl;
 
 		}
 		else if (currentKey.x < previousKey.x)	// negative shift (west)
@@ -243,7 +243,7 @@ void EnclaveCollectionStateArray::ShiftCenterCollection(EnclaveKeyDef::EnclaveKe
 				}
 			}
 			EnclaveKeyDef::EnclaveKey outputKey = StateMatrixPtr[translateXYZToSingle(centerCollectionStateOffset, centerCollectionStateOffset, centerCollectionStateOffset)].ActualCollectionKey;
-			cout << "New collection center (west) is: " << outputKey.x << ", " << outputKey.y << ", " << outputKey.z << endl;
+			//cout << "New collection center (west) is: " << outputKey.x << ", " << outputKey.y << ", " << outputKey.z << endl;
 		}
 	}
 
@@ -274,7 +274,7 @@ void EnclaveCollectionStateArray::ShiftCenterCollection(EnclaveKeyDef::EnclaveKe
 					collectionIterator = collectionMatrixPtr->EnclaveCollectionMap.find(tempFindKey);
 					if (collectionIterator != collectionMatrixPtr->EnclaveCollectionMap.end())
 					{
-						cout << "found!" << endl;
+						//cout << "found!" << endl;
 						EnclaveCollectionState newState;			// the brand new state value, that will replace the end of the row (the index at cubesize - 1)
 						newState.ActualCollectionKey = tempFindKey;
 						newState.isActive = 1;
@@ -283,7 +283,7 @@ void EnclaveCollectionStateArray::ShiftCenterCollection(EnclaveKeyDef::EnclaveKe
 					}
 					else
 					{
-						cout << "not found!" << endl;
+						//cout << "not found!" << endl;
 						EnclaveCollectionState newState;
 						newState.ActualCollectionKey = tempFindKey;
 						newState.isActive = 0;
@@ -292,7 +292,7 @@ void EnclaveCollectionStateArray::ShiftCenterCollection(EnclaveKeyDef::EnclaveKe
 				}
 			}
 			EnclaveKeyDef::EnclaveKey outputKey = StateMatrixPtr[translateXYZToSingle(centerCollectionStateOffset, centerCollectionStateOffset, centerCollectionStateOffset)].ActualCollectionKey;
-			cout << "New collection center (above) is: " << outputKey.x << ", " << outputKey.y << ", " << outputKey.z << endl;
+			//cout << "New collection center (above) is: " << outputKey.x << ", " << outputKey.y << ", " << outputKey.z << endl;
 		}
 		else if (currentKey.y < previousKey.y)	// negative shift (below)
 		{
@@ -380,7 +380,7 @@ void EnclaveCollectionStateArray::ShiftCenterCollection(EnclaveKeyDef::EnclaveKe
 				}
 			}
 			EnclaveKeyDef::EnclaveKey outputKey = StateMatrixPtr[translateXYZToSingle(centerCollectionStateOffset, centerCollectionStateOffset, centerCollectionStateOffset)].ActualCollectionKey;
-			cout << "New collection center (south) is: " << outputKey.x << ", " << outputKey.y << ", " << outputKey.z << endl;
+			//cout << "New collection center (south) is: " << outputKey.x << ", " << outputKey.y << ", " << outputKey.z << endl;
 
 		}
 		else if (currentKey.z < previousKey.z)	// negative shift (north)
@@ -422,7 +422,7 @@ void EnclaveCollectionStateArray::ShiftCenterCollection(EnclaveKeyDef::EnclaveKe
 				}
 			}
 			EnclaveKeyDef::EnclaveKey outputKey = StateMatrixPtr[translateXYZToSingle(centerCollectionStateOffset, centerCollectionStateOffset, centerCollectionStateOffset)].ActualCollectionKey;
-			cout << "New collection center (north) is: " << outputKey.x << ", " << outputKey.y << ", " << outputKey.z << endl;
+			//cout << "New collection center (north) is: " << outputKey.x << ", " << outputKey.y << ", " << outputKey.z << endl;
 
 		}
 	}

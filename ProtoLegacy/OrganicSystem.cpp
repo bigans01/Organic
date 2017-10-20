@@ -518,6 +518,14 @@ void OrganicSystem::SetOrganicCell2(thread_pool *thread_pool_ref)
 	Cell2 = thread_pool_ref;
 }
 
+void OrganicSystem::AddOrganicCell(thread_pool* thread_pool_ref)
+{
+	OrganicCell cellToAdd;			// create a temporary unfilled cell
+	cellToAdd.cellStatus = 0;		// set the cell's status
+	cellToAdd.threadPtr = thread_pool_ref;	// add the thread pointer
+	OCList.cellList[OCList.numberOfCells++] = cellToAdd;	// add the cell to the map
+}
+
 void OrganicSystem::AddOrganicTextureMetaArray(string mapname)
 {
 	/* Summary: adds a new texture meta array, that will have a key value of the passed in parameter, "mapname" */
@@ -910,7 +918,7 @@ void OrganicSystem::JobMaterializeMultiCollectionFromFactory(MDListJobMaterializ
 	std::chrono::duration<double> trueelapsed = trueend - truestart;
 	//std::chrono::duration<double> unordered_elapsed = unordered_end - unordered_start;
 
-	cout << "Total time: " << trueelapsed.count() << endl;
+	//cout << "Total time: " << trueelapsed.count() << endl;
 	mutexval.unlock();
 }
 
@@ -1037,7 +1045,6 @@ void OrganicSystem::JobMaterializeCollectionFromFactoryViaMorph(MDJobMaterialize
 	int bitmaskval = 0;		// ""
 	int renderablecount = 0;
 
-
 	// Phase 1: EnclaveCollection instantiation
 
 	for (int x = 0; x < 8; x++)
@@ -1075,9 +1082,9 @@ void OrganicSystem::JobMaterializeCollectionFromFactoryViaMorph(MDJobMaterialize
 		innerTempKey = CollectionRef->RenderableEnclaves[a];
 		//cout << "Renderable key: " << innerTempKey.x << ", " << innerTempKey.y << ", " << innerTempKey.z << endl;
 		Enclave *tempEnclavePtr = &CollectionRef->GetEnclaveByKey(innerTempKey);
+		//cout << "manifestCounter loop pass" << endl;
 		FactoryRef->AttachManifestToEnclave(tempEnclavePtr);
 	}
-
 	// Phase 3: Render actual collection
 	//cout << "Phase 3 beginning..." << endl;
 	//mutexval.lock();
@@ -1484,7 +1491,7 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 		// CollectionStateArray.? (? == placeholder for function name)
 		CollectionStateArray.ShiftCenterCollection(PreviousCCKey, CameraCollectionKey, ECMPointer);			// shift the collection state array
 		OGLM.OrganicBufferManager.setShiftedCollectionKeys(lastCollectionKey, newCollectionKey);									// send the shifted keys to the OGLM
-		cout << "collection has changed! Old: (" << lastCollectionKey.x << ", " << lastCollectionKey.y << " , " << lastCollectionKey.z << ") " << endl;
+		//cout << "collection has changed! Old: (" << lastCollectionKey.x << ", " << lastCollectionKey.y << " , " << lastCollectionKey.z << ") " << endl;
 	}
 
 	// set PreviousCCKey to new key
@@ -1998,6 +2005,8 @@ void OrganicSystem::AllocateFactories(int noOfFactories)
 		//OrganicFactoryIndex.FactoryMap["Factory 1"].StorageArray[0].VertexArrayCount = 0;
 		OrganicFactoryIndex.FactoryMap[factory].StorageArray[0].VertexArrayCount = 0;
 		OrganicFactoryIndex.FactoryMap[factory].InsertEnclaveCollectionIntoFactory();
+		OrganicFactoryIndex.FactoryMap[factory].TextureDictionaryRef = &TextureDictionary;
+		OrganicFactoryIndex.FactoryMap[factory].VertexColorDictionaryRef = &VertexColorDictionary;
 	}
 	auto factoryend = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> factorytime = factoryend - factorystart;
@@ -2057,8 +2066,8 @@ void OrganicSystem::SendRenderListToGLTerrainBuffer()
 void OrganicSystem::MaterializeRenderablesByMM()
 {
 	EnclaveCollections.SetOrganicSystem(this);
-	thread_pool *tpref = getCell1();
-	thread_pool *tpref2 = getCell2();
+	//thread_pool *tpref = getCell1();
+	//thread_pool *tpref2 = getCell2();
 	int totalCollectionsToRender = 0;																				// will count total number of collections to be rendered from renderCollectionList
 	int numberOfThreadsToRun = 2;																					// indicates the number of threads that will be running these jobs
 	int collectionsPerThread = 0;																					// indicates how many collections each thread will process.
@@ -2125,8 +2134,8 @@ void OrganicSystem::MaterializeRenderablesByMM()
 
 	//OrganicSystem::JobMaterializeMultiCollectionFromMM(MDListJobMaterializeCollection mdjob, mutex& mutexval, int ThreadID)
 	cout << "before job submit" << endl;
-	std::future<void> coll_3 = tpref->submit5(&OrganicSystem::JobMaterializeMultiCollectionFromMM, this, std::ref(list1), std::ref(heapmutex), 1);
-	std::future<void> coll_4 = tpref2->submit5(&OrganicSystem::JobMaterializeMultiCollectionFromMM, this, std::ref(list2), std::ref(heapmutex), 2);
+	std::future<void> coll_3 = OCList.cellList[0].threadPtr->submit5(&OrganicSystem::JobMaterializeMultiCollectionFromMM, this, std::ref(list1), std::ref(heapmutex), 1);
+	std::future<void> coll_4 = OCList.cellList[1].threadPtr->submit5(&OrganicSystem::JobMaterializeMultiCollectionFromMM, this, std::ref(list2), std::ref(heapmutex), 2);
 
 	auto lowstart = std::chrono::high_resolution_clock::now();
 
@@ -2141,8 +2150,8 @@ void OrganicSystem::MaterializeRenderablesByMM()
 void OrganicSystem::MaterializeRenderablesByFactory()
 {
 	EnclaveCollections.SetOrganicSystem(this);
-	thread_pool *tpref = getCell1();
-	thread_pool *tpref2 = getCell2();
+	//thread_pool *tpref = OCList.cellList[0].threadPtr;
+	//thread_pool *tpref2 = OCList.cellList[1].threadPtr;
 	int totalCollectionsToRender = 0;																				// will count total number of collections to be rendered from renderCollectionList
 	int numberOfThreadsToRun = 2;																					// indicates the number of threads that will be running these jobs
 	int collectionsPerThread = 0;																					// indicates how many collections each thread will process.
@@ -2215,8 +2224,8 @@ void OrganicSystem::MaterializeRenderablesByFactory()
 	MDListJobMaterializeCollection* list1 = &MatCollList.MaterializeCollectionList.front();
 	MDListJobMaterializeCollection* list2 = &MatCollList.MaterializeCollectionList.back();
 
-	std::future<void> coll_3 = tpref->submit5(&OrganicSystem::JobMaterializeMultiCollectionFromFactory2, this, std::ref(list1), std::ref(heapmutex), std::ref(FactoryPtr), 1);
-	std::future<void> coll_4 = tpref2->submit5(&OrganicSystem::JobMaterializeMultiCollectionFromFactory2, this, std::ref(list2), std::ref(heapmutex), std::ref(FactoryPtr2), 2);
+	std::future<void> coll_3 = OCList.cellList[0].threadPtr->submit5(&OrganicSystem::JobMaterializeMultiCollectionFromFactory2, this, std::ref(list1), std::ref(heapmutex), std::ref(FactoryPtr), 1);
+	std::future<void> coll_4 = OCList.cellList[1].threadPtr->submit5(&OrganicSystem::JobMaterializeMultiCollectionFromFactory2, this, std::ref(list2), std::ref(heapmutex), std::ref(FactoryPtr2), 2);
 
 	auto lowstart = std::chrono::high_resolution_clock::now();
 
@@ -2238,7 +2247,7 @@ void OrganicSystem::CheckForMorphing()
 	if (OGLM.OrganicBufferManager.shiftFlag == 1)
 	{
 		// do stuff
-		cout << ">>>>MORPH required. " << endl;
+		//cout << ">>>>MORPH required. " << endl;
 		OGLM.OrganicBufferManager.MorphTerrainBuffers();
 		OGLM.OrganicBufferManager.shiftFlag = 0;
 	}
@@ -2264,14 +2273,14 @@ void OrganicSystem::CheckProcessingQueue()
 	if (!CollectionProcessingQueue.empty())	// only do the following if the queue isn't empty
 	{
 		EnclaveKeyDef::EnclaveKey popKey = CollectionProcessingQueue.front();
-		cout << ">>>>  popping queue..." << endl;
+		//cout << ">>>>  popping queue..." << endl;
 		CollectionProcessingQueue.pop();
 
 		MDJobMaterializeCollection tempMDJob(popKey, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew));
 		MDJobMaterializeCollection* tempMDJobRef = &tempMDJob;
 		std::future<void> pop_1 = tpref->submit5(&OrganicSystem::JobMaterializeCollectionFromFactoryViaMorph, this, tempMDJobRef, std::ref(heapmutex), std::ref(FactoryPtr));
 		pop_1.wait();
-		cout << ">>>> popped collection processed..." << endl;
+		//cout << ">>>> popped collection processed..." << endl;
 
 	}
 }
