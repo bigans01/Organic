@@ -2070,7 +2070,7 @@ void OrganicSystem::MaterializeRenderablesByMM()
 	//thread_pool *tpref = getCell1();
 	//thread_pool *tpref2 = getCell2();
 	int totalCollectionsToRender = 0;																				// will count total number of collections to be rendered from renderCollectionList
-	int numberOfThreadsToRun = 2;																					// indicates the number of threads that will be running these jobs
+	int numberOfThreadsToRun = OCList.numberOfCells;																					// indicates the number of threads that will be running these jobs
 	int collectionsPerThread = 0;																					// indicates how many collections each thread will process.
 	int oddflag = 0;																								// indicates if the number of collections to render is even or odd
 	std::vector<EnclaveKeyDef::EnclaveKey>::iterator collectionListIter = renderCollectionList.KeyVector.begin();	// set iterator to be the beginning of the list.
@@ -2130,13 +2130,10 @@ void OrganicSystem::MaterializeRenderablesByMM()
 	//std::mutex mutexval;
 	// NEW CODE: cycle through factories (10/20/2017)
 	std::unordered_map<std::string, EnclaveManifestFactoryT1>::iterator factoryIterator;		// temporary iterator
-
 	std::vector<EnclaveManifestFactoryT1*> manifestFactoryPtrVector;							// vector of pointers for EnclaveManifestFactoryT1
 	std::vector<EnclaveManifestFactoryT1*>::iterator manifestFactoryPtrVectorIterator;
-
 	std::vector<MDListJobMaterializeCollection*> mdListPtrVector;								// vector of pointers for MDListJobMaterializeCollection
 	std::vector<MDListJobMaterializeCollection*>::iterator mdListPtrVectorIterator;
-
 	std::vector<MDListJobMaterializeCollection>::iterator mdListVector;							// iterator for going through the MatCollList
 	std::vector<std::future<void>> futureList;													// vector of futures (futures will be moved into this vector)
 	std::vector<std::future<void>>::iterator futureListIterator;								// iterator for the list of futures
@@ -2153,11 +2150,12 @@ void OrganicSystem::MaterializeRenderablesByMM()
 		MDListJobMaterializeCollection* tempListPtr = &*mdListVector;			// get the reference to the list (iterating through list is done in the format *<vector name>)
 		mdListPtrVector.push_back(tempListPtr);									// push the temporary pointer into the vector
 		mdListVector++;															// increment the list iterator
-																				//std::future<void> futureToMove = OCList.cellList[x].threadPtr->submit5(&OrganicSystem::JobMaterializeMultiCollectionFromFactory2, this, std::ref(tempListPtr), std::ref(heapmutex), std::ref(tempFactoryPtr), 1);		// submit the job
-																				//heapmutex.lock();
-																				//futureList.push_back(std::move(futureToMove));			// push_back the future via move
-																				//heapmutex.unlock();
-																				//cout << "thread push complete, " << x << endl;
+
+		//std::future<void> futureToMove = OCList.cellList[x].threadPtr->submit5(&OrganicSystem::JobMaterializeMultiCollectionFromFactory2, this, std::ref(tempListPtr), std::ref(heapmutex), std::ref(tempFactoryPtr), 1);		// submit the job
+		//heapmutex.lock();
+		//futureList.push_back(std::move(futureToMove));			// push_back the future via move
+		//heapmutex.unlock();
+		//cout << "thread push complete, " << x << endl;
 	}
 
 	// submit jobs to threads
@@ -2175,8 +2173,6 @@ void OrganicSystem::MaterializeRenderablesByMM()
 
 
 	// wait for futures to complete
-
-
 	futureListIterator = futureList.begin();
 	auto lowstart = std::chrono::high_resolution_clock::now();
 	for (int x = 0; x < numberOfThreadsToRun; x++)
@@ -2216,7 +2212,7 @@ void OrganicSystem::MaterializeRenderablesByFactory()
 	//thread_pool *tpref = OCList.cellList[0].threadPtr;
 	//thread_pool *tpref2 = OCList.cellList[1].threadPtr;
 	int totalCollectionsToRender = 0;																				// will count total number of collections to be rendered from renderCollectionList
-	int numberOfThreadsToRun = 2;																					// indicates the number of threads that will be running these jobs
+	int numberOfThreadsToRun = OCList.numberOfCells;																					// indicates the number of threads that will be running these jobs
 	int collectionsPerThread = 0;																					// indicates how many collections each thread will process.
 	int oddflag = 0;																								// indicates if the number of collections to render is even or odd
 	std::vector<EnclaveKeyDef::EnclaveKey>::iterator collectionListIter = renderCollectionList.KeyVector.begin();	// set iterator to be the beginning of the list.
@@ -2280,14 +2276,12 @@ void OrganicSystem::MaterializeRenderablesByFactory()
 
 	
 	// NEW CODE: cycle through factories (10/20/2017)
+	// set up vectors
 	std::unordered_map<std::string, EnclaveManifestFactoryT1>::iterator factoryIterator;		// temporary iterator
-
 	std::vector<EnclaveManifestFactoryT1*> manifestFactoryPtrVector;							// vector of pointers for EnclaveManifestFactoryT1
 	std::vector<EnclaveManifestFactoryT1*>::iterator manifestFactoryPtrVectorIterator;
-
 	std::vector<MDListJobMaterializeCollection*> mdListPtrVector;								// vector of pointers for MDListJobMaterializeCollection
 	std::vector<MDListJobMaterializeCollection*>::iterator mdListPtrVectorIterator;
-
 	std::vector<MDListJobMaterializeCollection>::iterator mdListVector;							// iterator for going through the MatCollList
 	std::vector<std::future<void>> futureList;													// vector of futures (futures will be moved into this vector)
 	std::vector<std::future<void>>::iterator futureListIterator;								// iterator for the list of futures
@@ -2324,10 +2318,7 @@ void OrganicSystem::MaterializeRenderablesByFactory()
 		mdListPtrVectorIterator++;
 	}
 
-
 	// wait for futures to complete
-	
-	
 	futureListIterator = futureList.begin();
 	auto lowstart = std::chrono::high_resolution_clock::now();
 	for (int x = 0; x < numberOfThreadsToRun; x++)
@@ -2335,7 +2326,6 @@ void OrganicSystem::MaterializeRenderablesByFactory()
 		std::future<void>* futurePtr = &*futureListIterator;	// get a pointer to the future
 		futurePtr->wait();										// wait for the future to be done
 		futureListIterator++;									// increment the futureList iterator
-		//cout << "future wait complete..." << endl;
 	}
 	auto lowend = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> lowelapsed = lowend - lowstart;
@@ -2370,8 +2360,7 @@ void OrganicSystem::MaterializeRenderablesByFactory()
 	cout << "Dual coollection instantiation speed (Low Memory Efficiency):  " << lowelapsed.count() << endl;
 	*/
 
-
-	cout << ">>>>>> collection jobs finished..." << endl;
+	//cout << ">>>>>> collection jobs finished..." << endl;
 }
 
 void OrganicSystem::LoadNWChunks()
@@ -2396,10 +2385,18 @@ void OrganicSystem::CheckProcessingQueue()
 	
 	EnclaveManifestFactoryT1 *FactoryPtr = &OrganicFactoryIndex.FactoryMap["Factory 1"];		// factory pointer
 
+	// set up vectors
+	std::unordered_map<std::string, EnclaveManifestFactoryT1>::iterator factoryIterator;		// temporary iterator
+	std::vector<EnclaveManifestFactoryT1*> manifestFactoryPtrVector;							// vector of pointers for EnclaveManifestFactoryT1
+	std::vector<EnclaveManifestFactoryT1*>::iterator manifestFactoryPtrVectorIterator;
+	std::vector<std::future<void>> futureList;													// vector of futures (futures will be moved into this vector)
+	std::vector<std::future<void>>::iterator futureListIterator;								// iterator for the list of futures
+	factoryIterator = OrganicFactoryIndex.FactoryMap.begin();
 	// needs to be configured to use OCList
-	thread_pool *tpref = getCell1();															// thread pool pointers
-	thread_pool *tpref2 = getCell2();
+	//thread_pool *tpref = getCell1();															// thread pool pointers
+	//thread_pool *tpref2 = getCell2();
 
+	//set up pointers
 	EnclaveCollectionBlueprintMatrix *passBlueprintMatrixPtr = &BlueprintMatrix;		// set up required pointers that are used as parameters for each MDJob
 	EnclaveCollectionMatrix *passEnclaveCollectionPtr = &EnclaveCollections;
 	ManifestCollectionMatrix *passManifestCollPtr = &ManifestCollections;
@@ -2407,21 +2404,57 @@ void OrganicSystem::CheckProcessingQueue()
 	EnclaveCollection *passCollectionPtrNew;
 	ManifestCollection *passManifestPtrNew;
 
-
-
-	if (!CollectionProcessingQueue.empty())	// only do the following if the queue isn't empty
+	int numberOfThreads = OCList.numberOfCells;
+	for (int x = 0; x < numberOfThreads; x++)
 	{
-		EnclaveKeyDef::EnclaveKey popKey = CollectionProcessingQueue.front();
-		//cout << ">>>>  popping queue..." << endl;
-		CollectionProcessingQueue.pop();
-
-		MDJobMaterializeCollection tempMDJob(popKey, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew));
-		MDJobMaterializeCollection* tempMDJobRef = &tempMDJob;
-		std::future<void> pop_1 = tpref->submit5(&OrganicSystem::JobMaterializeCollectionFromFactoryViaMorph, this, tempMDJobRef, std::ref(heapmutex), std::ref(FactoryPtr));
-		pop_1.wait();
-		//cout << ">>>> popped collection processed..." << endl;
-
+		heapmutex.lock();			// this is here for future functionality (other parallel jobs alongside this one)
+		EnclaveManifestFactoryT1* tempFactoryPtr = &factoryIterator->second;	// create a temporary pointer
+		manifestFactoryPtrVector.push_back(tempFactoryPtr);						// push the temporary pointer into the vector
+		factoryIterator++;
+		heapmutex.unlock();
 	}
+
+	manifestFactoryPtrVectorIterator = manifestFactoryPtrVector.begin();	// set factory iterator
+	for (int x = 0; x < numberOfThreads; x++)		// have each thread check for work
+	{
+
+		if (!CollectionProcessingQueue.empty())	// only do the following if the queue isn't empty
+		{
+			EnclaveKeyDef::EnclaveKey popKey = CollectionProcessingQueue.front();
+			//cout << ">>>>  popping queue..." << endl;
+			heapmutex.lock();
+			CollectionProcessingQueue.pop();
+			heapmutex.unlock();
+			MDJobMaterializeCollection tempMDJob(popKey, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew));
+			MDJobMaterializeCollection* tempMDJobRef = &tempMDJob;
+			std::future<void> pop_1 = OCList.cellList[x].threadPtr->submit5(&OrganicSystem::JobMaterializeCollectionFromFactoryViaMorph, this, tempMDJobRef, std::ref(heapmutex), std::ref(*manifestFactoryPtrVectorIterator));
+			heapmutex.lock();
+			futureList.push_back(std::move(pop_1));			// push_back the future via move
+			heapmutex.unlock();
+			//pop_1.wait();
+			//cout << ">>>> popped collection processed..." << endl;
+
+		}
+		manifestFactoryPtrVectorIterator++;
+	}
+
+	// if there were collections to be processed, size will be > 0...check for promises
+	futureListIterator = futureList.begin();
+	if (futureList.size() > 0)
+	{
+		int numberOfPromises = futureList.size();
+		for (int x = 0; x < numberOfPromises; x++)
+		{
+			std::future<void>* futurePtr = &*futureListIterator;	// get a pointer to the future
+			futurePtr->wait();										// wait for the future to be done
+			futureListIterator++;									// increment the futureList iterator
+		}
+		cout << "number of promises: " << numberOfPromises << endl;
+	}
+
+
+
+
 }
 
 void OrganicSystem::SetWorldCoordinates(float x, float y, float z)
