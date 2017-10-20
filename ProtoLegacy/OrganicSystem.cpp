@@ -2128,8 +2128,69 @@ void OrganicSystem::MaterializeRenderablesByMM()
 	}
 
 	//std::mutex mutexval;
+	// NEW CODE: cycle through factories (10/20/2017)
+	std::unordered_map<std::string, EnclaveManifestFactoryT1>::iterator factoryIterator;		// temporary iterator
+
+	std::vector<EnclaveManifestFactoryT1*> manifestFactoryPtrVector;							// vector of pointers for EnclaveManifestFactoryT1
+	std::vector<EnclaveManifestFactoryT1*>::iterator manifestFactoryPtrVectorIterator;
+
+	std::vector<MDListJobMaterializeCollection*> mdListPtrVector;								// vector of pointers for MDListJobMaterializeCollection
+	std::vector<MDListJobMaterializeCollection*>::iterator mdListPtrVectorIterator;
+
+	std::vector<MDListJobMaterializeCollection>::iterator mdListVector;							// iterator for going through the MatCollList
+	std::vector<std::future<void>> futureList;													// vector of futures (futures will be moved into this vector)
+	std::vector<std::future<void>>::iterator futureListIterator;								// iterator for the list of futures
+	factoryIterator = OrganicFactoryIndex.FactoryMap.begin();
+	mdListVector = MatCollList.MaterializeCollectionList.begin();
+	for (int x = 0; x < numberOfThreadsToRun; x++)
+	{
+		factoryIterator->second.StorageArray[0].VertexArrayCount = 0;			// reset vertex array count? (may not be needed later)
+
+		EnclaveManifestFactoryT1* tempFactoryPtr = &factoryIterator->second;	// create a temporary pointer
+		manifestFactoryPtrVector.push_back(tempFactoryPtr);						// push the temporary pointer into the vector
+		factoryIterator++;														// increment the factoryIterator
+
+		MDListJobMaterializeCollection* tempListPtr = &*mdListVector;			// get the reference to the list (iterating through list is done in the format *<vector name>)
+		mdListPtrVector.push_back(tempListPtr);									// push the temporary pointer into the vector
+		mdListVector++;															// increment the list iterator
+																				//std::future<void> futureToMove = OCList.cellList[x].threadPtr->submit5(&OrganicSystem::JobMaterializeMultiCollectionFromFactory2, this, std::ref(tempListPtr), std::ref(heapmutex), std::ref(tempFactoryPtr), 1);		// submit the job
+																				//heapmutex.lock();
+																				//futureList.push_back(std::move(futureToMove));			// push_back the future via move
+																				//heapmutex.unlock();
+																				//cout << "thread push complete, " << x << endl;
+	}
+
+	// submit jobs to threads
+	manifestFactoryPtrVectorIterator = manifestFactoryPtrVector.begin();	// set factory iterator
+	mdListPtrVectorIterator = mdListPtrVector.begin();
+	for (int x = 0; x < numberOfThreadsToRun; x++)
+	{
+		std::future<void> futureToMove = OCList.cellList[x].threadPtr->submit5(&OrganicSystem::JobMaterializeMultiCollectionFromMM, this, std::ref(*mdListPtrVectorIterator), std::ref(heapmutex), 1);		// submit the job
+		heapmutex.lock();
+		futureList.push_back(std::move(futureToMove));			// push_back the future via move
+		heapmutex.unlock();
+		manifestFactoryPtrVectorIterator++;
+		mdListPtrVectorIterator++;
+	}
 
 
+	// wait for futures to complete
+
+
+	futureListIterator = futureList.begin();
+	auto lowstart = std::chrono::high_resolution_clock::now();
+	for (int x = 0; x < numberOfThreadsToRun; x++)
+	{
+		std::future<void>* futurePtr = &*futureListIterator;	// get a pointer to the future
+		futurePtr->wait();										// wait for the future to be done
+		futureListIterator++;									// increment the futureList iterator
+																//cout << "future wait complete..." << endl;
+	}
+	auto lowend = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> lowelapsed = lowend - lowstart;
+	cout << "Dual coollection instantiation speed (MM Method):  " << lowelapsed.count() << endl;
+
+	/*
 	MDListJobMaterializeCollection* list1 = &MatCollList.MaterializeCollectionList.front();
 	MDListJobMaterializeCollection* list2 = &MatCollList.MaterializeCollectionList.back();
 
@@ -2146,6 +2207,7 @@ void OrganicSystem::MaterializeRenderablesByMM()
 
 	std::chrono::duration<double> lowelapsed = lowend - lowstart;
 	cout << "Dual coollection instantiation speed (High Memory Efficiency):  " << lowelapsed.count() << endl;
+	*/
 }
 
 void OrganicSystem::MaterializeRenderablesByFactory()
@@ -2210,8 +2272,77 @@ void OrganicSystem::MaterializeRenderablesByFactory()
 		tempMatCollListRef->ListMatrix[tempKey] = tempMDJob;
 	}
 
+
+
+
 	//std::mutex mutexval;
 
+
+	
+	// NEW CODE: cycle through factories (10/20/2017)
+	std::unordered_map<std::string, EnclaveManifestFactoryT1>::iterator factoryIterator;		// temporary iterator
+
+	std::vector<EnclaveManifestFactoryT1*> manifestFactoryPtrVector;							// vector of pointers for EnclaveManifestFactoryT1
+	std::vector<EnclaveManifestFactoryT1*>::iterator manifestFactoryPtrVectorIterator;
+
+	std::vector<MDListJobMaterializeCollection*> mdListPtrVector;								// vector of pointers for MDListJobMaterializeCollection
+	std::vector<MDListJobMaterializeCollection*>::iterator mdListPtrVectorIterator;
+
+	std::vector<MDListJobMaterializeCollection>::iterator mdListVector;							// iterator for going through the MatCollList
+	std::vector<std::future<void>> futureList;													// vector of futures (futures will be moved into this vector)
+	std::vector<std::future<void>>::iterator futureListIterator;								// iterator for the list of futures
+	factoryIterator = OrganicFactoryIndex.FactoryMap.begin();
+	mdListVector = MatCollList.MaterializeCollectionList.begin();
+	for (int x = 0; x < numberOfThreadsToRun; x++)
+	{
+		factoryIterator->second.StorageArray[0].VertexArrayCount = 0;			// reset vertex array count? (may not be needed later)
+
+		EnclaveManifestFactoryT1* tempFactoryPtr = &factoryIterator->second;	// create a temporary pointer
+		manifestFactoryPtrVector.push_back(tempFactoryPtr);						// push the temporary pointer into the vector
+		factoryIterator++;														// increment the factoryIterator
+
+		MDListJobMaterializeCollection* tempListPtr = &*mdListVector;			// get the reference to the list (iterating through list is done in the format *<vector name>)
+		mdListPtrVector.push_back(tempListPtr);									// push the temporary pointer into the vector
+		mdListVector++;															// increment the list iterator
+		//std::future<void> futureToMove = OCList.cellList[x].threadPtr->submit5(&OrganicSystem::JobMaterializeMultiCollectionFromFactory2, this, std::ref(tempListPtr), std::ref(heapmutex), std::ref(tempFactoryPtr), 1);		// submit the job
+		//heapmutex.lock();
+		//futureList.push_back(std::move(futureToMove));			// push_back the future via move
+		//heapmutex.unlock();
+		//cout << "thread push complete, " << x << endl;
+	}
+
+	// submit jobs to threads
+	manifestFactoryPtrVectorIterator = manifestFactoryPtrVector.begin();	// set factory iterator
+	mdListPtrVectorIterator = mdListPtrVector.begin();
+	for (int x = 0; x < numberOfThreadsToRun; x++)
+	{
+		std::future<void> futureToMove = OCList.cellList[x].threadPtr->submit5(&OrganicSystem::JobMaterializeMultiCollectionFromFactory2, this, std::ref(*mdListPtrVectorIterator), std::ref(heapmutex), std::ref(*manifestFactoryPtrVectorIterator), 1);		// submit the job
+		heapmutex.lock();
+		futureList.push_back(std::move(futureToMove));			// push_back the future via move
+		heapmutex.unlock();
+		manifestFactoryPtrVectorIterator++;
+		mdListPtrVectorIterator++;
+	}
+
+
+	// wait for futures to complete
+	
+	
+	futureListIterator = futureList.begin();
+	auto lowstart = std::chrono::high_resolution_clock::now();
+	for (int x = 0; x < numberOfThreadsToRun; x++)
+	{
+		std::future<void>* futurePtr = &*futureListIterator;	// get a pointer to the future
+		futurePtr->wait();										// wait for the future to be done
+		futureListIterator++;									// increment the futureList iterator
+		//cout << "future wait complete..." << endl;
+	}
+	auto lowend = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> lowelapsed = lowend - lowstart;
+	cout << "Dual coollection instantiation speed (Factory Method):  " << lowelapsed.count() << endl;
+	
+	/*
+	// OLD CODE (10/20/2017)
 	OrganicFactoryIndex.FactoryMap["Factory 0"].StorageArray[0].VertexArrayCount = 0;
 	EnclaveManifestFactoryT1 *FactoryPtr = &OrganicFactoryIndex.FactoryMap["Factory 0"];
 	//FactoryPtr->TextureDictionaryRef = &TextureDictionary;
@@ -2233,9 +2364,14 @@ void OrganicSystem::MaterializeRenderablesByFactory()
 	coll_3.wait();
 	coll_4.wait();
 	auto lowend = std::chrono::high_resolution_clock::now();
+	
 
 	std::chrono::duration<double> lowelapsed = lowend - lowstart;
 	cout << "Dual coollection instantiation speed (Low Memory Efficiency):  " << lowelapsed.count() << endl;
+	*/
+
+
+	cout << ">>>>>> collection jobs finished..." << endl;
 }
 
 void OrganicSystem::LoadNWChunks()
