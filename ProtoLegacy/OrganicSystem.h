@@ -25,6 +25,7 @@ OrganicSystem object contains all objects necessary to preserve information on t
 #include "OrganicTextureDictionary.h"
 #include "OrganicVtxColorDictionary.h"
 #include "OrganicCellList.h"
+#include "OrganicMorphMeta.h"
 #include "MDJobMaterializeCollection.h"
 #include "MDListJobMaterializeCollection.h"
 #include "EnclaveManifestFactoryT1.h"
@@ -72,7 +73,7 @@ public:
 	EnclaveKeyDef::EnclaveKey CameraChunkKey;									// the curent chunk of the collection the camera is in
 	EnclaveKeyDef::EnclaveKey CameraBlockKey;									// the current block in the chunk the camera is in
 	EnclaveCollectionStateArray CollectionStateArray;
-	std::queue<EnclaveKeyDef::EnclaveKey> CollectionProcessingQueue;			// a queue that stores collection keys that need to be processed
+	std::queue<OrganicMorphMeta> CollectionProcessingQueue;			// a queue that stores collection keys that need to be processed
 	std::mutex heapmutex;														// global mutexval
 	int numberOfCells = 2;														// the number of worker threads in this OrganicSystem
 

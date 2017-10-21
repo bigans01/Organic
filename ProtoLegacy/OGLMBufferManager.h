@@ -23,6 +23,7 @@ Notes:	this will very likely be modified continuously throughout development.
 #include "EnclaveKeyDef.h"
 #include "OGLMDrawCallMeta.h"
 #include "OGLMRenderMetaContainer.h"
+#include "OrganicMorphMeta.h"
 #include "EnclaveCollectionBlueprintMatrix.h"
 
 class OrganicGLManager;					// required forward declaration

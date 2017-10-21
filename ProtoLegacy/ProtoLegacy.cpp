@@ -406,6 +406,11 @@ int main()
 	flatKeyToAdd.y = 0;
 	flatKeyToAdd.z = 0;
 	Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, flatBlueprint);
+
+	flatKeyToAdd.x = -7;
+	flatKeyToAdd.y = 0;
+	flatKeyToAdd.z = 1;
+	Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, flatBlueprint);
 	
 	auto collectionsSetupEND = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> collectionsSetupELAPSED = collectionsSetupEND - collectionsSetupBEGIN;

@@ -2414,18 +2414,20 @@ void OrganicSystem::CheckProcessingQueue()
 		heapmutex.unlock();
 	}
 
+	std::queue<OrganicMorphMeta> morphMetaToSendToBuffer;
 	manifestFactoryPtrVectorIterator = manifestFactoryPtrVector.begin();	// set factory iterator
 	for (int x = 0; x < numberOfThreads; x++)		// have each thread check for work
 	{
 
 		if (!CollectionProcessingQueue.empty())	// only do the following if the queue isn't empty
 		{
-			EnclaveKeyDef::EnclaveKey popKey = CollectionProcessingQueue.front();
+			OrganicMorphMeta popKey = CollectionProcessingQueue.front();		// get the value at the front
 			//cout << ">>>>  popping queue..." << endl;
 			heapmutex.lock();
+			morphMetaToSendToBuffer.push(popKey);								// insert a value into the buffer work queue
 			CollectionProcessingQueue.pop();
 			heapmutex.unlock();
-			MDJobMaterializeCollection tempMDJob(popKey, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew));
+			MDJobMaterializeCollection tempMDJob(popKey.collectionKey, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew));
 			MDJobMaterializeCollection* tempMDJobRef = &tempMDJob;
 			std::future<void> pop_1 = OCList.cellList[x].threadPtr->submit5(&OrganicSystem::JobMaterializeCollectionFromFactoryViaMorph, this, tempMDJobRef, std::ref(heapmutex), std::ref(*manifestFactoryPtrVectorIterator));
 			heapmutex.lock();
@@ -2452,7 +2454,19 @@ void OrganicSystem::CheckProcessingQueue()
 		cout << "number of promises: " << numberOfPromises << endl;
 	}
 
-
+	// send OrganicMorphMeta pairs to the OrganicGLManager for processing
+	int morphMetaQueueSize = morphMetaToSendToBuffer.size();
+	if (morphMetaQueueSize > 0) // do this only if there is data in morphMetaToSendToBuffer
+	{
+		for (int x = 0; x < morphMetaQueueSize; x++)
+		{
+			OrganicMorphMeta metaToSend = morphMetaToSendToBuffer.front();	// copy the value at the front
+			RenderCollection* renderCollectionPtr = &RenderCollections.RenderMatrix[metaToSend.collectionKey];
+			OGLM.sendRenderCollectionDataToBuffer(metaToSend, renderCollectionPtr);				// send the vertex data to buffer
+			OGLM.sendRenderCollectionVCDataToBuffer(metaToSend, renderCollectionPtr);			// send the vertex color data to buffer
+			morphMetaToSendToBuffer.pop();
+		}
+	}
 
 
 }

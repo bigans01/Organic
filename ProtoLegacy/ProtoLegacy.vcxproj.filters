@@ -264,6 +264,9 @@
     <ClInclude Include="OrganicCellList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="OrganicMorphMeta.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

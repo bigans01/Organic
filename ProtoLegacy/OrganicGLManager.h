@@ -26,6 +26,7 @@ Summary: An instance of OrganicGLManager is responsible for managing all OpenGL 
 #include "OrganicGLRenderCollectionMeta.h"
 #include "OGLMBufferManager.h"
 #include "OGLMDrawCallMeta.h"
+#include "OrganicMorphMeta.h"
 #include "EnclaveKeyDef.h"
 
 class OrganicGLManager
@@ -83,10 +84,10 @@ public:
 	void RenderReadyArrays();													// renders whatever render collections have been prepared for rendering, to the screen
 	void ShutdownOpenGL();														// unbind buffers, etc
 	void computeMatricesFromInputs();											// determines how to move the camera based on user input
-	void sendRenderCollectionDataToBuffer(RenderCollection *renderCollPtr);		// sends a prepared instance of RenderCollection which has vertex point data to OpenGL buffers
+	void sendRenderCollectionDataToBuffer(OrganicMorphMeta inMorphMeta, RenderCollection* renderCollPtr);		// sends a prepared instance of RenderCollection which has vertex point data to OpenGL buffers
 	void sendRenderCollectionDataToBufferOnGameLoad(RenderCollection *renderCollPtr);
 	void sendRenderCollectionVCDataTOBufferOnGameLoad(RenderCollection *renderCollPtr);
-	void sendRenderCollectionVCDataToBuffer(RenderCollection *renderCollPtr);	// sends a prepared instance of RenderCollection which has vertex color point data to OpenGL buffers
+	void sendRenderCollectionVCDataToBuffer(OrganicMorphMeta inMorphMeta, RenderCollection* renderCollPtr);	// sends a prepared instance of RenderCollection which has vertex color point data to OpenGL buffers
 	void SendPointerToBufferManager(OrganicGLManager* in_OGLMptr);				// sends this own object's pointer to the instance of OGLMBufferManager (OrganicBufferManager)
 	void PrepBuffersForMoveNW();												// reserved for later use (will "move" buffers around)
 	void selectShader();														// selects the appropriate shader program based on the render mode

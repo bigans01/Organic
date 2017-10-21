@@ -338,17 +338,17 @@ void OrganicGLManager::computeMatricesFromInputs()
 }
 
 
-void OrganicGLManager::sendRenderCollectionDataToBuffer(RenderCollection *renderCollPtr)
+void OrganicGLManager::sendRenderCollectionDataToBuffer(OrganicMorphMeta inMorphMeta, RenderCollection* renderCollPtr)
 {
-	EnclaveKeyDef::EnclaveKey firstRenderableEnclaveKey = renderCollPtr->EnclaveCollectionPtr->RenderableEnclaves[0];		// use for the below
-	EnclaveKeyDef::EnclaveKey collectionKey = renderCollPtr->EnclaveCollectionPtr->EnclaveArray[firstRenderableEnclaveKey.x][firstRenderableEnclaveKey.y][firstRenderableEnclaveKey.z].CollectionKey;
+	//EnclaveKeyDef::EnclaveKey firstRenderableEnclaveKey = renderCollPtr->EnclaveCollectionPtr->RenderableEnclaves[0];		// use for the below
+	//EnclaveKeyDef::EnclaveKey collectionKey = renderCollPtr->EnclaveCollectionPtr->EnclaveArray[firstRenderableEnclaveKey.x][firstRenderableEnclaveKey.y][firstRenderableEnclaveKey.z].CollectionKey;
 	// cout << "(Vertex data) Test; originating collection key:  " << collectionKey.x << ", " << collectionKey.y << ", " << collectionKey.z << endl;
-	glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexBufferID);				// OrganicGLVertexBufferArray[0], OrganicGLVertexBufferID
-	glBufferSubData(GL_ARRAY_BUFFER, RMContainer.CurrentIndex*CollectionBufferSize, renderCollPtr->RenderCollectionArraySize, renderCollPtr->GLFloatPtr);
-	RMContainer.RenderMetaArray[RMContainer.CurrentIndex].MetaIndex = RMContainer.CurrentIndex;
-	RMContainer.RenderMetaArray[RMContainer.CurrentIndex].ArraySize = renderCollPtr->RenderCollectionArraySize;
-	RMContainer.CurrentIndex++;
-	RMContainer.TotalRenderable++;
+	//glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexBufferID);				// OrganicGLVertexBufferArray[0], OrganicGLVertexBufferID
+	//glBufferSubData(GL_ARRAY_BUFFER, RMContainer.CurrentIndex*CollectionBufferSize, renderCollPtr->RenderCollectionArraySize, renderCollPtr->GLFloatPtr);
+	//RMContainer.RenderMetaArray[RMContainer.CurrentIndex].MetaIndex = RMContainer.CurrentIndex;
+	//RMContainer.RenderMetaArray[RMContainer.CurrentIndex].ArraySize = renderCollPtr->RenderCollectionArraySize;
+	//RMContainer.CurrentIndex++;
+	//RMContainer.TotalRenderable++;
 }
 
 void OrganicGLManager::sendRenderCollectionDataToBufferOnGameLoad(RenderCollection *renderCollPtr)
@@ -369,14 +369,14 @@ void OrganicGLManager::sendRenderCollectionDataToBufferOnGameLoad(RenderCollecti
 
 
 
-void OrganicGLManager::sendRenderCollectionVCDataToBuffer(RenderCollection *renderCollPtr)
+void OrganicGLManager::sendRenderCollectionVCDataToBuffer(OrganicMorphMeta inMorphMeta, RenderCollection* renderCollPtr)
 {
-	glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexColorBufferID);
-	glBufferSubData(GL_ARRAY_BUFFER, RMContainer.CurrentIndex*CollectionBufferSize, renderCollPtr->RenderCollectionArraySize, renderCollPtr->VertexColorArrayPtr);
-	RMContainer.RenderMetaArray[RMContainer.CurrentIndex].MetaIndex = RMContainer.CurrentIndex;						
-	RMContainer.RenderMetaArray[RMContainer.CurrentIndex].ArraySize = renderCollPtr->RenderCollectionArraySize;
-	RMContainer.CurrentIndex++;
-	RMContainer.TotalRenderable++;
+	//glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexColorBufferID);
+	//glBufferSubData(GL_ARRAY_BUFFER, RMContainer.CurrentIndex*CollectionBufferSize, renderCollPtr->RenderCollectionArraySize, renderCollPtr->VertexColorArrayPtr);
+	//RMContainer.RenderMetaArray[RMContainer.CurrentIndex].MetaIndex = RMContainer.CurrentIndex;						
+	//RMContainer.RenderMetaArray[RMContainer.CurrentIndex].ArraySize = renderCollPtr->RenderCollectionArraySize;
+	//RMContainer.CurrentIndex++;
+	//RMContainer.TotalRenderable++;
 }
 
 void OrganicGLManager::sendRenderCollectionVCDataTOBufferOnGameLoad(RenderCollection *renderCollPtr)
