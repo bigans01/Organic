@@ -1033,7 +1033,9 @@ void OrganicSystem::JobMaterializeCollectionFromFactoryViaMorph(MDJobMaterialize
 	EnclaveCollection* CollectionRef = &FactoryRef->FactoryCollections[0];
 
 	// set up pointers
-	
+	mutexval.lock();
+	cout << "MORPH FUNCTION CALL KEY: " << mdjob->MDKey.x << ", " << mdjob->MDKey.y << ", " << mdjob->MDKey.z << endl;
+	mutexval.unlock();
 	EnclaveCollectionBlueprintMatrix *BlueprintMatrixRef = mdjob->MDBlueprintMatrixRef;			// set Blueprint matrix ref
 	EnclaveCollectionMatrix *EnclaveCollectionsRef = mdjob->MDEnclaveCollectionsRef;			// set a ref to the EnclaveCollection matrix		
 	RenderCollectionMatrix *RenderCollectionsRef = mdjob->MDRenderCollectionsRef;				// set a ref to the RenderCollection matrix
@@ -1094,8 +1096,9 @@ void OrganicSystem::JobMaterializeCollectionFromFactoryViaMorph(MDJobMaterialize
 																									//RenderCollection* collPtr = &RenderCollectionsRef->RenderMatrix[Key1];
 																									//cout << "Total renderables for Key (" << Key1.x << ", " << Key1.y << ", " << Key1.z << ") :" << tempdumbcount << ": " << collPtr->RenderCollectionArraySize << endl;
 																									//trueend = std::chrono::high_resolution_clock::now();
-	//cout << "test output of morphed render size: " << RenderCollectionsRef->RenderMatrix[mdjob->MDKey].RenderCollectionArraySize << endl;
-
+	mutexval.lock();
+	cout << "test output of morphed render size: (Key is " << mdjob->MDKey.x << ", " << mdjob->MDKey.y << ", " << mdjob->MDKey.z << ", || " << RenderCollectionsRef->RenderMatrix[mdjob->MDKey].RenderCollectionArraySize << ")" << endl;
+	mutexval.unlock();
 }
 
 void OrganicSystem::JobCalibrateBlueprintBordersFromFactory(EnclaveKeyDef::EnclaveKey Key1, EnclaveManifestFactoryT1 *FactoryRef)
@@ -2416,29 +2419,103 @@ void OrganicSystem::CheckProcessingQueue()
 
 	std::queue<OrganicMorphMeta> morphMetaToSendToBuffer;
 	manifestFactoryPtrVectorIterator = manifestFactoryPtrVector.begin();	// set factory iterator
+
+	EnclaveKeyDef::EnclaveKey tempKeyArray[2];
+	MDJobMaterializeCollection tempMDJobArray[2];
+
+
+
+	EnclaveKeyDef::EnclaveKey key1;
+	key1.x = -7;
+	key1.y = 0;
+	key1.z = 0;
+	tempKeyArray[0] = key1;
+	MDJobMaterializeCollection tempMDJob0(tempKeyArray[0], std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew));
+	tempMDJobArray[0] = tempMDJob0;
+	
+	key1.x = -7;
+	key1.y = 0;
+	key1.z = 1;
+	tempKeyArray[1] = key1;
+	MDJobMaterializeCollection tempMDJob1(tempKeyArray[1], std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew));
+	tempMDJobArray[1] = tempMDJob1;
+
+	
+	std::vector<MDJobMaterializeCollection> MDJobVector;
+	std::vector<MDJobMaterializeCollection>::iterator MDJobVectorIterator;
+	std::vector<OrganicMorphMeta> OMMVector;
+	std::vector<OrganicMorphMeta>::iterator OMMVectorIterator;
+	int hasWorkToDo = 0;
+	for (int x = 0; x < numberOfThreads; x++)
+	{
+		if (!CollectionProcessingQueue.empty())	// only do the following if the queue isn't empty
+		{
+			OrganicMorphMeta popKey = CollectionProcessingQueue.front();	// get the front
+			CollectionProcessingQueue.pop();								// pop the queue
+			OMMVector.push_back(popKey);									// push it to OMMVector
+			EnclaveKeyDef::EnclaveKey tempKey = popKey.collectionKey;		// get the collection key of the popKey
+			MDJobMaterializeCollection tempMDJob(tempKey, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew));	//... use it to make a temp MDJob
+			MDJobVector.push_back(tempMDJob);
+			hasWorkToDo++;
+		}
+	}
+	
+
+	if (hasWorkToDo > 0)
+	{
+		OMMVectorIterator = OMMVector.begin();
+		MDJobVectorIterator = MDJobVector.begin();
+		for (int x = 0; x < numberOfThreads; x++)
+		{
+			OrganicMorphMeta popKey = *OMMVectorIterator;						// get a copy of the element this iterator points to
+			MDJobMaterializeCollection* tempMDJobRef = &*MDJobVectorIterator;	// get a pointer to the current element this iterator points to
+			morphMetaToSendToBuffer.push(popKey);								// insert a value into the buffer work queue
+			std::future<void> pop_1 = OCList.cellList[x].threadPtr->submit5(&OrganicSystem::JobMaterializeCollectionFromFactoryViaMorph, this, std::ref(tempMDJobRef), std::ref(heapmutex), std::ref(*manifestFactoryPtrVectorIterator));
+			heapmutex.lock();
+			//cout << "job submitted..." << endl;
+			futureList.push_back(std::move(pop_1));			// push_back the future via move
+			heapmutex.unlock();
+			OMMVectorIterator++;
+			MDJobVectorIterator++;
+			manifestFactoryPtrVectorIterator++;
+		}
+	}
+
+	/*
 	for (int x = 0; x < numberOfThreads; x++)		// have each thread check for work
 	{
 
 		if (!CollectionProcessingQueue.empty())	// only do the following if the queue isn't empty
 		{
 			OrganicMorphMeta popKey = CollectionProcessingQueue.front();		// get the value at the front
-			//cout << ">>>>  popping queue..." << endl;
+			//cout << ">>>>  popping queue..." << popKey.collectionKey.x << ", " << popKey.collectionKey.y << ", " << popKey.collectionKey.z << endl;
 			heapmutex.lock();
 			morphMetaToSendToBuffer.push(popKey);								// insert a value into the buffer work queue
 			CollectionProcessingQueue.pop();
 			heapmutex.unlock();
-			MDJobMaterializeCollection tempMDJob(popKey.collectionKey, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew));
-			MDJobMaterializeCollection* tempMDJobRef = &tempMDJob;
-			std::future<void> pop_1 = OCList.cellList[x].threadPtr->submit5(&OrganicSystem::JobMaterializeCollectionFromFactoryViaMorph, this, tempMDJobRef, std::ref(heapmutex), std::ref(*manifestFactoryPtrVectorIterator));
+			EnclaveKeyDef::EnclaveKey tempKey = popKey.collectionKey;
+			cout << ">>>>  popping queue..." << popKey.collectionKey.x << ", " << popKey.collectionKey.y << ", " << popKey.collectionKey.z << endl;
+			MDJobMaterializeCollection tempMDJob(tempKey, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew));
+			//heapmutex.lock();
+			//MDJobVector.push_back(tempMDJob);
+			//heapmutex.unlock();
+			MDJobMaterializeCollection* tempMDJobRef = &tempMDJobArray[x];
+			//MDJobMaterializeCollection testJobRef = MDJobVector.back();
+			//MDJobMaterializeCollection* tempMDJobRef = &testJobRef;
+			//cout << ">>>> pointed value: " << tempMDJobRef->MDKey.x << ", " << tempMDJobRef->MDKey.y << ", " << tempMDJobRef->MDKey.z << endl;
+			std::future<void> pop_1 = OCList.cellList[x].threadPtr->submit5(&OrganicSystem::JobMaterializeCollectionFromFactoryViaMorph, this, std::ref(tempMDJobRef), std::ref(heapmutex), std::ref(*manifestFactoryPtrVectorIterator));
 			heapmutex.lock();
+			//cout << "job submitted..." << endl;
 			futureList.push_back(std::move(pop_1));			// push_back the future via move
 			heapmutex.unlock();
 			//pop_1.wait();
 			//cout << ">>>> popped collection processed..." << endl;
-
+			//cout << "test:" << MDJobVector.back().MDKey.x << ", " << MDJobVector.back().MDKey.y << ", " << MDJobVector.back().MDKey.z << endl;
 		}
 		manifestFactoryPtrVectorIterator++;
 	}
+	*/
+	
 
 	// if there were collections to be processed, size will be > 0...check for promises
 	futureListIterator = futureList.begin();

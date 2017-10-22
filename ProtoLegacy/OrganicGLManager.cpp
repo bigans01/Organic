@@ -340,6 +340,11 @@ void OrganicGLManager::computeMatricesFromInputs()
 
 void OrganicGLManager::sendRenderCollectionDataToBuffer(OrganicMorphMeta inMorphMeta, RenderCollection* renderCollPtr)
 {
+	glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexBufferID);
+	glBufferSubData(GL_ARRAY_BUFFER, inMorphMeta.subBufferIndex*CollectionBufferSize, renderCollPtr->RenderCollectionArraySize, renderCollPtr->GLFloatPtr);
+	renderableCollectionList.sendTerrainT1RequestToDelegator(inMorphMeta.collectionKey, inMorphMeta.subBufferIndex, renderCollPtr->RenderCollectionArraySize, CollectionBufferSize);
+	cout << "collection sent to buffer..." << inMorphMeta.collectionKey.x << ", " << inMorphMeta.collectionKey.y << ", " << inMorphMeta.collectionKey.z << endl;
+	cout << "size: " << renderCollPtr->RenderCollectionArraySize << endl;
 	//EnclaveKeyDef::EnclaveKey firstRenderableEnclaveKey = renderCollPtr->EnclaveCollectionPtr->RenderableEnclaves[0];		// use for the below
 	//EnclaveKeyDef::EnclaveKey collectionKey = renderCollPtr->EnclaveCollectionPtr->EnclaveArray[firstRenderableEnclaveKey.x][firstRenderableEnclaveKey.y][firstRenderableEnclaveKey.z].CollectionKey;
 	// cout << "(Vertex data) Test; originating collection key:  " << collectionKey.x << ", " << collectionKey.y << ", " << collectionKey.z << endl;
@@ -371,6 +376,9 @@ void OrganicGLManager::sendRenderCollectionDataToBufferOnGameLoad(RenderCollecti
 
 void OrganicGLManager::sendRenderCollectionVCDataToBuffer(OrganicMorphMeta inMorphMeta, RenderCollection* renderCollPtr)
 {
+	glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexColorBufferID);
+	glBufferSubData(GL_ARRAY_BUFFER, inMorphMeta.subBufferIndex*CollectionBufferSize, renderCollPtr->RenderCollectionArraySize, renderCollPtr->VertexColorArrayPtr);
+	//glBufferSubData(GL_ARRAY_BUFFER, subBufferIndex*CollectionBufferSize, renderCollPtr->RenderCollectionArraySize, renderCollPtr->VertexColorArrayPtr);
 	//glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexColorBufferID);
 	//glBufferSubData(GL_ARRAY_BUFFER, RMContainer.CurrentIndex*CollectionBufferSize, renderCollPtr->RenderCollectionArraySize, renderCollPtr->VertexColorArrayPtr);
 	//RMContainer.RenderMetaArray[RMContainer.CurrentIndex].MetaIndex = RMContainer.CurrentIndex;						
