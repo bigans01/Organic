@@ -2443,6 +2443,8 @@ void OrganicSystem::CheckProcessingQueue()
 	
 	std::vector<MDJobMaterializeCollection> MDJobVector;
 	std::vector<MDJobMaterializeCollection>::iterator MDJobVectorIterator;
+	std::vector<MDJobMaterializeCollection*> MDJobPtrVector;
+	std::vector<MDJobMaterializeCollection*>::iterator MDJobPtrVectorIterator;
 	std::vector<OrganicMorphMeta> OMMVector;
 	std::vector<OrganicMorphMeta>::iterator OMMVectorIterator;
 	int hasWorkToDo = 0;
@@ -2454,8 +2456,12 @@ void OrganicSystem::CheckProcessingQueue()
 			CollectionProcessingQueue.pop();								// pop the queue
 			OMMVector.push_back(popKey);									// push it to OMMVector
 			EnclaveKeyDef::EnclaveKey tempKey = popKey.collectionKey;		// get the collection key of the popKey
+
 			MDJobMaterializeCollection tempMDJob(tempKey, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew));	//... use it to make a temp MDJob
 			MDJobVector.push_back(tempMDJob);
+			MDJobMaterializeCollection* tempMDJobRef = &MDJobVector.back();
+			MDJobPtrVector.push_back(tempMDJobRef);
+
 			hasWorkToDo++;
 		}
 	}
@@ -2465,21 +2471,25 @@ void OrganicSystem::CheckProcessingQueue()
 	{
 		OMMVectorIterator = OMMVector.begin();
 		MDJobVectorIterator = MDJobVector.begin();
+		MDJobPtrVectorIterator = MDJobPtrVector.begin();
 		for (int x = 0; x < numberOfThreads; x++)
 		{
 			OrganicMorphMeta popKey = *OMMVectorIterator;						// get a copy of the element this iterator points to
 			MDJobMaterializeCollection* tempMDJobRef = &*MDJobVectorIterator;	// get a pointer to the current element this iterator points to
 			morphMetaToSendToBuffer.push(popKey);								// insert a value into the buffer work queue
-			std::future<void> pop_1 = OCList.cellList[x].threadPtr->submit5(&OrganicSystem::JobMaterializeCollectionFromFactoryViaMorph, this, std::ref(tempMDJobRef), std::ref(heapmutex), std::ref(*manifestFactoryPtrVectorIterator));
+			cout << "popKey of new loop is: " << popKey.collectionKey.x << ", " << popKey.collectionKey.y << ", " << popKey.collectionKey.z << endl;
+			std::future<void> pop_1 = OCList.cellList[x].threadPtr->submit5(&OrganicSystem::JobMaterializeCollectionFromFactoryViaMorph, this, tempMDJobRef, std::ref(heapmutex), std::ref(*manifestFactoryPtrVectorIterator));
 			heapmutex.lock();
 			//cout << "job submitted..." << endl;
 			futureList.push_back(std::move(pop_1));			// push_back the future via move
 			heapmutex.unlock();
 			OMMVectorIterator++;
 			MDJobVectorIterator++;
+			MDJobPtrVectorIterator++;
 			manifestFactoryPtrVectorIterator++;
 		}
 	}
+	
 
 	/*
 	for (int x = 0; x < numberOfThreads; x++)		// have each thread check for work
