@@ -2478,7 +2478,7 @@ void OrganicSystem::CheckProcessingQueue()
 			MDJobMaterializeCollection* tempMDJobRef = &*MDJobVectorIterator;	// get a pointer to the current element this iterator points to
 			morphMetaToSendToBuffer.push(popKey);								// insert a value into the buffer work queue
 			cout << "popKey of new loop is: " << popKey.collectionKey.x << ", " << popKey.collectionKey.y << ", " << popKey.collectionKey.z << endl;
-			std::future<void> pop_1 = OCList.cellList[x].threadPtr->submit5(&OrganicSystem::JobMaterializeCollectionFromFactoryViaMorph, this, tempMDJobRef, std::ref(heapmutex), std::ref(*manifestFactoryPtrVectorIterator));
+			std::future<void> pop_1 = OCList.cellList[x].threadPtr->submit5(&OrganicSystem::JobMaterializeCollectionFromFactoryViaMorph, this, tempMDJobRef, std::ref(heapmutex), std::ref(*manifestFactoryPtrVectorIterator));		// SOLUTION TO THIS (10/22/2017): changed input parameter, "tempMDJobRef" to not use std::ref()
 			heapmutex.lock();
 			//cout << "job submitted..." << endl;
 			futureList.push_back(std::move(pop_1));			// push_back the future via move
