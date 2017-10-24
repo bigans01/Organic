@@ -2443,8 +2443,6 @@ void OrganicSystem::CheckProcessingQueue()
 	
 	std::vector<MDJobMaterializeCollection> MDJobVector;
 	std::vector<MDJobMaterializeCollection>::iterator MDJobVectorIterator;
-	std::vector<MDJobMaterializeCollection*> MDJobPtrVector;
-	std::vector<MDJobMaterializeCollection*>::iterator MDJobPtrVectorIterator;
 	std::vector<OrganicMorphMeta> OMMVector;
 	std::vector<OrganicMorphMeta>::iterator OMMVectorIterator;
 	int hasWorkToDo = 0;
@@ -2459,19 +2457,16 @@ void OrganicSystem::CheckProcessingQueue()
 
 			MDJobMaterializeCollection tempMDJob(tempKey, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew));	//... use it to make a temp MDJob
 			MDJobVector.push_back(tempMDJob);
-			MDJobMaterializeCollection* tempMDJobRef = &MDJobVector.back();
-			MDJobPtrVector.push_back(tempMDJobRef);
 
 			hasWorkToDo++;
 		}
 	}
 	
-
+	// "hasWorkToDo" will need to be modified later
 	if (hasWorkToDo > 0)
 	{
 		OMMVectorIterator = OMMVector.begin();
 		MDJobVectorIterator = MDJobVector.begin();
-		MDJobPtrVectorIterator = MDJobPtrVector.begin();
 		for (int x = 0; x < numberOfThreads; x++)
 		{
 			OrganicMorphMeta popKey = *OMMVectorIterator;						// get a copy of the element this iterator points to
@@ -2480,12 +2475,10 @@ void OrganicSystem::CheckProcessingQueue()
 			cout << "popKey of new loop is: " << popKey.collectionKey.x << ", " << popKey.collectionKey.y << ", " << popKey.collectionKey.z << endl;
 			std::future<void> pop_1 = OCList.cellList[x].threadPtr->submit5(&OrganicSystem::JobMaterializeCollectionFromFactoryViaMorph, this, tempMDJobRef, std::ref(heapmutex), std::ref(*manifestFactoryPtrVectorIterator));		// SOLUTION TO THIS (10/22/2017): changed input parameter, "tempMDJobRef" to not use std::ref()
 			heapmutex.lock();
-			//cout << "job submitted..." << endl;
 			futureList.push_back(std::move(pop_1));			// push_back the future via move
 			heapmutex.unlock();
 			OMMVectorIterator++;
 			MDJobVectorIterator++;
-			MDJobPtrVectorIterator++;
 			manifestFactoryPtrVectorIterator++;
 		}
 	}

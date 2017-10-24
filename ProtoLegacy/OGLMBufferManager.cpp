@@ -289,10 +289,14 @@ void OGLMBufferManager::MorphTerrainBuffers()
 		//currentFirstKeyInRow = OGLMRMC.renderMetaContainerArray[translateXYZToSingle(cubesize - 1, 0, 0)].ElementCollectionKey;		// get the enclave collection key of the first element in the row
 		//EnclaveKeyDef::EnclaveKey 
 		currentFirstKeyInRow = OGLMRMC.renderMetaContainerArray[translateXYZToSingle(0, 0, 0)].ElementCollectionKey;
-		cout << "(Moving EAST) test 2 old key value for -x POST shift is:" << currentFirstKeyInRow.x << ", " << currentFirstKeyInRow.y << ", " << currentFirstKeyInRow.z << " cubesize: " << cubesize << endl;
+		cout << "(Moving EAST) test 2 old key value for +x POST shift is:" << currentFirstKeyInRow.x << ", " << currentFirstKeyInRow.y << ", " << currentFirstKeyInRow.z << " cubesize: " << cubesize << endl;
 		//cout << "(Moving EAST): SingularXYZValue after shift: " << OGLMRMC.renderMetaContainerArray[translateXYZToSingle(0, 0, 0)].ElementSingularXYZValue << endl;
 		//cout << "(Moving EAST): SingularXYZValue after shift of last element in row: " << OGLMRMC.renderMetaContainerArray[translateXYZToSingle(cubesize - 1, 0, 0)].ElementSingularXYZValue << endl;
 	}
+
+
+
+
 
 	// NEGATIVE Y MOVEMENT
 	if (currentCenterCollectionKey.y < oldCenterCollectionKey.y)
@@ -311,12 +315,87 @@ void OGLMBufferManager::MorphTerrainBuffers()
 		{
 			for (int z = 0; z < cubesize; z++)
 			{
+				EnclaveKeyDef::EnclaveKey currentFirstKeyInColumn = OGLMRMC.renderMetaContainerArray[translateXYZToSingle(x, 0, z)].ElementCollectionKey; // get the collection key for the first element in the column
+				int currentLastSingularXYZValueInColumn = OGLMRMC.renderMetaContainerArray[translateXYZToSingle(x, cubesize - 1, z)].ElementSingularXYZValue;	// get the last singular XYZ value in the row, to be shifted to the front as the last step of sorting in this column
+				for (int y = cubesize - 1; y > 0; y--)
+				{
+					EnclaveKeyDef::EnclaveKey keyToShift = OGLMRMC.renderMetaContainerArray[translateXYZToSingle(x, y - 1, z)].ElementCollectionKey;	// get the value of the collection key at x,y,z
+					OGLMRMC.renderMetaContainerArray[translateXYZToSingle(x, y, z)].ElementCollectionKey = keyToShift;
 
+					int valueToShift = OGLMRMC.renderMetaContainerArray[translateXYZToSingle(x, y - 1, z)].ElementSingularXYZValue;
+					OGLMRMC.renderMetaContainerArray[translateXYZToSingle(x, y, z)].ElementSingularXYZValue = valueToShift;
+				}
+				EnclaveKeyDef::EnclaveKey originalCurrentFirstKey = currentFirstKeyInColumn;		// store the value of currentFirstKeyInRow
+				currentFirstKeyInColumn.y -= 1;
+
+				OGLMRMC.renderMetaContainerArray[translateXYZToSingle(x, 0, z)].ElementCollectionKey = currentFirstKeyInColumn;	// put new value of currentFirstKeyInRow into the new element that is the first key in the row (the new element was previously the last element in this row, prior to the shift)
+				OGLMRMC.renderMetaContainerArray[translateXYZToSingle(x, 0, z)].ElementSingularXYZValue = currentLastSingularXYZValueInColumn;	// store the new singular XYZ value in the new first element
+				blueprintMapIterator = blueprintMatrixPtr->BlueprintMap.find(currentFirstKeyInColumn);		// attempt to find the blueprint
+				if (blueprintMapIterator != blueprintMatrixPtr->BlueprintMap.end())					// if it isn't equal to end, it was found.
+				{
+					OrganicMorphMeta tempMorphMeta;
+					tempMorphMeta.subBufferIndex = currentLastSingularXYZValueInColumn;
+					tempMorphMeta.collectionKey = currentFirstKeyInColumn;
+					organicSystemPtr->CollectionProcessingQueue.push(tempMorphMeta);
+					cout << ">>>>>>>>>>>Blueprint was found!! adding to processing queue....." << tempMorphMeta.collectionKey.x << ", " << tempMorphMeta.collectionKey.y << ", " << tempMorphMeta.collectionKey.z << endl;
+				}
+				else
+				{
+					//cout << "blueprint not found in OrganicSystem!" << endl;
+				}
 			}
 
 		}
+		cout << "(Moving BELOW): SingularXYZValue after shift: " << OGLMRMC.renderMetaContainerArray[translateXYZToSingle(0, 0, 0)].ElementSingularXYZValue << endl;
+		cout << "(Moving BELOW): SingularXYZValue after shift of last element in column: " << OGLMRMC.renderMetaContainerArray[translateXYZToSingle(0, cubesize - 1, 0)].ElementSingularXYZValue << endl;
 
+		currentFirstKeyInRow = OGLMRMC.renderMetaContainerArray[translateXYZToSingle(0, 0, 0)].ElementCollectionKey;		// get the enclave collection key of the first element in the row
+		cout << "(Moving BELOW) test NEW key value for -y shift is: " << currentFirstKeyInRow.x << ", " << currentFirstKeyInRow.y << ", " << currentFirstKeyInRow.z << " cubesize: " << cubesize << endl;
+	}
 
+	if (currentCenterCollectionKey.y > oldCenterCollectionKey.y)
+	{
+		EnclaveKeyDef::EnclaveKey currentFirstKeyInRow = OGLMRMC.renderMetaContainerArray[translateXYZToSingle(0, cubesize - 1, 0)].ElementCollectionKey;		// get the enclave collection key of the first element in the row
+		cout << "(Moving ABOVE) test old key value for -y shift is: " << currentFirstKeyInRow.x << ", " << currentFirstKeyInRow.y << ", " << currentFirstKeyInRow.z << " cubesize: " << cubesize << endl;
+
+		std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveCollectionBlueprint, EnclaveKeyDef::KeyHasher>::iterator blueprintMapIterator;
+		for (int x = 0; x < cubesize; x++)
+		{
+			for (int z = 0; z < cubesize; z++)
+			{
+				EnclaveKeyDef::EnclaveKey currentLastKeyInColumn = OGLMRMC.renderMetaContainerArray[translateXYZToSingle(x, cubesize - 1, z)].ElementCollectionKey; // get the collection key for the first element in the column
+				int currentFirstSingularXYZValueInColumn = OGLMRMC.renderMetaContainerArray[translateXYZToSingle(x, 0, z)].ElementSingularXYZValue;
+				for (int y = 0; y < cubesize - 1; y++)
+				{
+					EnclaveKeyDef::EnclaveKey keyToShift = OGLMRMC.renderMetaContainerArray[translateXYZToSingle(x, y + 1, z)].ElementCollectionKey;
+					OGLMRMC.renderMetaContainerArray[translateXYZToSingle(x, y, z)].ElementCollectionKey = keyToShift;
+
+					int valueToShift = OGLMRMC.renderMetaContainerArray[translateXYZToSingle(x, y + 1, z)].ElementSingularXYZValue;
+					OGLMRMC.renderMetaContainerArray[translateXYZToSingle(x, y, z)].ElementSingularXYZValue = valueToShift;
+				}
+				EnclaveKeyDef::EnclaveKey originalCurrentFirstKey = currentLastKeyInColumn;		// store the value of currentFirstKeyInRow
+				currentLastKeyInColumn.y += 1;
+				OGLMRMC.renderMetaContainerArray[translateXYZToSingle(x, cubesize - 1, z)].ElementCollectionKey = currentLastKeyInColumn;
+				OGLMRMC.renderMetaContainerArray[translateXYZToSingle(x, cubesize - 1, z)].ElementSingularXYZValue = currentFirstSingularXYZValueInColumn;
+				blueprintMapIterator = blueprintMatrixPtr->BlueprintMap.find(currentLastKeyInColumn);
+				if (blueprintMapIterator != blueprintMatrixPtr->BlueprintMap.end())					// if it isn't equal to end, it was found.
+				{
+					OrganicMorphMeta tempMorphMeta;
+					tempMorphMeta.subBufferIndex = currentFirstSingularXYZValueInColumn;
+					tempMorphMeta.collectionKey = currentLastKeyInColumn;
+					organicSystemPtr->CollectionProcessingQueue.push(tempMorphMeta);
+					cout << ">>>>>>>>>>>Blueprint was found!! adding to processing queue....." << tempMorphMeta.collectionKey.x << ", " << tempMorphMeta.collectionKey.y << ", " << tempMorphMeta.collectionKey.z << endl;
+				}
+				else
+				{
+					//cout << "blueprint not found in OrganicSystem!" << endl;
+				}
+
+			}
+		}
+
+		currentFirstKeyInRow = OGLMRMC.renderMetaContainerArray[translateXYZToSingle(0, cubesize - 1, 0)].ElementCollectionKey;		// get the enclave collection key of the first element in the row
+		cout << "(Moving ABOVE) test NEW key value for +y shift is: " << currentFirstKeyInRow.x << ", " << currentFirstKeyInRow.y << ", " << currentFirstKeyInRow.z << " cubesize: " << cubesize << endl;
 	}
 
 
