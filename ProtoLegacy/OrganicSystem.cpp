@@ -308,12 +308,12 @@ void OrganicSystem::MaterializeCollection(EnclaveKeyDef::EnclaveKey Key1, Enclav
 
 	//EnclaveManifestFactoryT1Index MainFactoryIndex;
 
-	OrganicFactoryIndex.FactoryMap["Factory 0"].StorageArray[0].VertexArrayCount = 0;
-	EnclaveManifestFactoryT1 *FactoryPtr = &OrganicFactoryIndex.FactoryMap["Factory 0"];
+	OrganicFactoryIndex.FactoryMap[0].StorageArray[0].VertexArrayCount = 0;
+	EnclaveManifestFactoryT1 *FactoryPtr = &OrganicFactoryIndex.FactoryMap[0];
 	FactoryPtr->TextureDictionaryRef = &TextureDictionary;
 
-	OrganicFactoryIndex.FactoryMap["Factory 1"].StorageArray[0].VertexArrayCount = 0;
-	EnclaveManifestFactoryT1 *FactoryPtr2 = &OrganicFactoryIndex.FactoryMap["Factory 1"];
+	OrganicFactoryIndex.FactoryMap[1].StorageArray[0].VertexArrayCount = 0;
+	EnclaveManifestFactoryT1 *FactoryPtr2 = &OrganicFactoryIndex.FactoryMap[1];
 	FactoryPtr2->TextureDictionaryRef = &TextureDictionary;
 	
 	//std::future<void> coll_3 = tpref->submit5(&OrganicSystem::JobMaterializeMultiCollectionFromFactory, this, std::ref(tempJobList), std::ref(mutexval), std::ref(FactoryPtr), 1);
@@ -478,7 +478,7 @@ void OrganicSystem::ChangeSingleBlockMaterialAtXYZ(int x, int y, int z, int newm
 	//std::mutex mutexval;
 	thread_pool *tpref = getCell1();
 	//OrganicFactoryIndex.FactoryMap["Factory 1"].StorageArray[0].VertexArrayCount = 0;
-	EnclaveManifestFactoryT1 *FactoryPtr = &OrganicFactoryIndex.FactoryMap["Factory 1"];
+	EnclaveManifestFactoryT1 *FactoryPtr = &OrganicFactoryIndex.FactoryMap[1];
 	FactoryPtr->TextureDictionaryRef = &TextureDictionary;
 	EnclaveCollection *CollectionPtr = &EnclaveCollections.EnclaveCollectionMap[CollectionKey];
 	RenderCollectionMatrix *RenderCollectionsPtr = &RenderCollections;
@@ -524,6 +524,22 @@ void OrganicSystem::AddOrganicCell(thread_pool* thread_pool_ref)
 	cellToAdd.cellStatus = 0;		// set the cell's status
 	cellToAdd.threadPtr = thread_pool_ref;	// add the thread pointer
 	OCList.cellList[OCList.numberOfCells++] = cellToAdd;	// add the cell to the map
+}
+
+void OrganicSystem::AddFactoryPointersToCells()
+{
+	std::unordered_map<int, EnclaveManifestFactoryT1>::iterator factoryMapIter;	// create a temp iterator
+	std::map<int, OrganicCell>::iterator cellListIter;
+	factoryMapIter = OrganicFactoryIndex.FactoryMap.begin();					// set the factory iterator's begin value
+	cellListIter = OCList.cellList.begin();										// set the cellList iterator's begin value
+	
+	for (int x = 0; x < OCList.numberOfCells; x++)	// cycle through all cells
+	{
+		cellListIter->second.factoryPtr = &factoryMapIter->second;				// set the reference to the factory that was added when
+		factoryMapIter++;			// increment the iterators
+		cellListIter++;				// ""
+	}
+	
 }
 
 void OrganicSystem::AddOrganicTextureMetaArray(string mapname)
@@ -2001,16 +2017,16 @@ void OrganicSystem::AllocateFactories(int noOfFactories)
 	auto factorystart = std::chrono::high_resolution_clock::now();
 	for (int x = 0; x < noOfFactories; x++)
 	{
-		char factoryprefix[] = "Factory ";
-		string factorystring(factoryprefix);
-		string factorynumber = to_string(x);
-		string factory = factorystring + factorynumber;
+		//char factoryprefix[] = "Factory ";
+		//string factorystring(factoryprefix);
+		//string factorynumber = to_string(x);
+		//string factory = factorystring + factorynumber;
 		//cout << "Factory: " << factory << endl;
 		//OrganicFactoryIndex.FactoryMap["Factory 1"].StorageArray[0].VertexArrayCount = 0;
-		OrganicFactoryIndex.FactoryMap[factory].StorageArray[0].VertexArrayCount = 0;
-		OrganicFactoryIndex.FactoryMap[factory].InsertEnclaveCollectionIntoFactory();
-		OrganicFactoryIndex.FactoryMap[factory].TextureDictionaryRef = &TextureDictionary;
-		OrganicFactoryIndex.FactoryMap[factory].VertexColorDictionaryRef = &VertexColorDictionary;
+		OrganicFactoryIndex.FactoryMap[x].StorageArray[0].VertexArrayCount = 0;
+		OrganicFactoryIndex.FactoryMap[x].InsertEnclaveCollectionIntoFactory();
+		OrganicFactoryIndex.FactoryMap[x].TextureDictionaryRef = &TextureDictionary;
+		OrganicFactoryIndex.FactoryMap[x].VertexColorDictionaryRef = &VertexColorDictionary;
 	}
 	auto factoryend = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> factorytime = factoryend - factorystart;
@@ -2132,7 +2148,7 @@ void OrganicSystem::MaterializeRenderablesByMM()
 
 	//std::mutex mutexval;
 	// NEW CODE: cycle through factories (10/20/2017)
-	std::unordered_map<std::string, EnclaveManifestFactoryT1>::iterator factoryIterator;		// temporary iterator
+	std::unordered_map<int, EnclaveManifestFactoryT1>::iterator factoryIterator;		// temporary iterator
 	std::vector<EnclaveManifestFactoryT1*> manifestFactoryPtrVector;							// vector of pointers for EnclaveManifestFactoryT1
 	std::vector<EnclaveManifestFactoryT1*>::iterator manifestFactoryPtrVectorIterator;
 	std::vector<MDListJobMaterializeCollection*> mdListPtrVector;								// vector of pointers for MDListJobMaterializeCollection
@@ -2280,7 +2296,7 @@ void OrganicSystem::MaterializeRenderablesByFactory()
 	
 	// NEW CODE: cycle through factories (10/20/2017)
 	// set up vectors
-	std::unordered_map<std::string, EnclaveManifestFactoryT1>::iterator factoryIterator;		// temporary iterator
+	std::unordered_map<int, EnclaveManifestFactoryT1>::iterator factoryIterator;		// temporary iterator
 	std::vector<EnclaveManifestFactoryT1*> manifestFactoryPtrVector;							// vector of pointers for EnclaveManifestFactoryT1
 	std::vector<EnclaveManifestFactoryT1*>::iterator manifestFactoryPtrVectorIterator;
 	std::vector<MDListJobMaterializeCollection*> mdListPtrVector;								// vector of pointers for MDListJobMaterializeCollection
@@ -2386,10 +2402,10 @@ void OrganicSystem::CheckProcessingQueue()
 {
 
 	
-	EnclaveManifestFactoryT1 *FactoryPtr = &OrganicFactoryIndex.FactoryMap["Factory 1"];		// factory pointer
+	//EnclaveManifestFactoryT1 *FactoryPtr = &OrganicFactoryIndex.FactoryMap["Factory 1"];		// factory pointer
 
 	// set up vectors
-	std::unordered_map<std::string, EnclaveManifestFactoryT1>::iterator factoryIterator;		// temporary iterator
+	std::unordered_map<int, EnclaveManifestFactoryT1>::iterator factoryIterator;		// temporary iterator
 	std::vector<EnclaveManifestFactoryT1*> manifestFactoryPtrVector;							// vector of pointers for EnclaveManifestFactoryT1
 	std::vector<EnclaveManifestFactoryT1*>::iterator manifestFactoryPtrVectorIterator;
 	std::vector<std::future<void>> futureList;													// vector of futures (futures will be moved into this vector)
@@ -2548,6 +2564,11 @@ void OrganicSystem::CheckProcessingQueue()
 		}
 	}
 
+
+}
+
+void OrganicSystem::DivideTickWork()
+{
 
 }
 

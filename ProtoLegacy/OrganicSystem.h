@@ -135,6 +135,8 @@ public:
 	void CheckForMorphing();																																					// checks to see if there is any buffer morphing to be done
 	void CheckProcessingQueue();																																				// checks to see if there are any collections to process
 	void SetWorldCoordinates(float x, float y, float z);
+	void AddFactoryPointersToCells();																																			// cycles through each cell and adds the appropriate factory pointer to each
+	void DivideTickWork();																																						// determines how to divide the work among worker threads for this game tick
 	thread_pool* getCell1();																																					// gets a pointer to worker thread (Cell) #1
 	thread_pool* getCell2();																																					// gets a pointer to worker thread (Cell) #2
 

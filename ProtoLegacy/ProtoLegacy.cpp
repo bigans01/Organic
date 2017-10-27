@@ -308,11 +308,12 @@ int main()
 	//OrganicSystem Organic(2, 13, 2560, 1440);
 	OrganicSystem Organic(2, 13, 1024, 768);					// number of factories, buffer size, pixel width, pixel height
 	//Organic.LoadNWChunks();
-	Organic.SetOrganicCell1(mainthreadpoolref);				// set the Organic instance's first worker thread
-	Organic.SetOrganicCell2(mainthreadpoolref2);			// set the Organic instance's second worker thread
+	//Organic.SetOrganicCell1(mainthreadpoolref);				// set the Organic instance's first worker thread
+	//Organic.SetOrganicCell2(mainthreadpoolref2);			// set the Organic instance's second worker thread
 
 	Organic.AddOrganicCell(mainthreadpoolref);
 	Organic.AddOrganicCell(mainthreadpoolref2);
+	Organic.AddFactoryPointersToCells();
 
 	Organic.AddOrganicTextureMetaArray("base");					// set up the texture map; first ever map will be named "base"
 	Organic.AddOrganicVtxColorMetaArray("base");
@@ -322,7 +323,7 @@ int main()
 
 
 	EnclaveManifestFactoryT1* factoryRef;
-	factoryRef = &Organic.OrganicFactoryIndex.FactoryMap["Factory 1"];
+	factoryRef = &Organic.OrganicFactoryIndex.FactoryMap[1];
 
 	EnclaveCollectionBlueprint* flatPtr = &flatBlueprint;
 	EnclaveCollectionBlueprint* testBPPtr = &testBlueprint3;
@@ -701,6 +702,7 @@ int main()
 		auto start3 = std::chrono::high_resolution_clock::now();
 		// |||||||||||||||||||||| PHASE 1: Terrain. collection pointer changes; detect any OGLMBufferManager morphing
 		Organic.CheckForMorphing();			// determine if there were any OGLM buffer shifts that needed to be done.
+		//Organic.DivideTickWork();			// split work for the tick here
 		Organic.CheckProcessingQueue();
 		// check for any available collections to process here
 		// |||||||||||||||||||||| PHASE 2: Render terrain and targeted blocks

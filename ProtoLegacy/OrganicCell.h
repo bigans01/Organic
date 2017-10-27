@@ -11,6 +11,7 @@ Summary: An OrganicCell is a data structure that contains a pointer to a "thread
 #pragma once
 
 #include "thread_pool.h"
+#include "EnclaveManifestFactoryT1.h"
 
 #ifndef ORGANICCELL_H
 #define ORGANICCELL_H
@@ -20,6 +21,8 @@ class OrganicCell
 public:
 	int cellStatus;
 	thread_pool* threadPtr;
+	EnclaveManifestFactoryT1* factoryPtr;
+
 };
 
 #endif

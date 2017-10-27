@@ -353,6 +353,7 @@ void OGLMBufferManager::MorphTerrainBuffers()
 		cout << "(Moving BELOW) test NEW key value for -y shift is: " << currentFirstKeyInRow.x << ", " << currentFirstKeyInRow.y << ", " << currentFirstKeyInRow.z << " cubesize: " << cubesize << endl;
 	}
 
+	// POSITIVE Y MOVEMENT
 	if (currentCenterCollectionKey.y > oldCenterCollectionKey.y)
 	{
 		EnclaveKeyDef::EnclaveKey currentFirstKeyInRow = OGLMRMC.renderMetaContainerArray[translateXYZToSingle(0, cubesize - 1, 0)].ElementCollectionKey;		// get the enclave collection key of the first element in the row
@@ -396,6 +397,40 @@ void OGLMBufferManager::MorphTerrainBuffers()
 
 		currentFirstKeyInRow = OGLMRMC.renderMetaContainerArray[translateXYZToSingle(0, cubesize - 1, 0)].ElementCollectionKey;		// get the enclave collection key of the first element in the row
 		cout << "(Moving ABOVE) test NEW key value for +y shift is: " << currentFirstKeyInRow.x << ", " << currentFirstKeyInRow.y << ", " << currentFirstKeyInRow.z << " cubesize: " << cubesize << endl;
+	}
+
+	// NEGATIVE Z MOVEMENT
+	if (currentCenterCollectionKey.z < oldCenterCollectionKey.z)
+	{
+		for (int y = 0; y < cubesize; y++)
+		{
+			for (int x = 0; x < cubesize; x++)
+			{
+				EnclaveKeyDef::EnclaveKey currentFirstKeyInRow = OGLMRMC.renderMetaContainerArray[translateXYZToSingle(x, y, 0)].ElementCollectionKey;		// get the enclave collection key of the first element in the row
+				int currentLastSingularXYZValueInRow = OGLMRMC.renderMetaContainerArray[translateXYZToSingle(x, y, cubesize - 1)].ElementSingularXYZValue;	// get the last singular XYZ value in the row, to be shifted to the front as the last step of sorting in this row
+				for (int z = cubesize - 1; z > 0; z--)
+				{
+
+				}
+			}
+		}
+	}
+
+	// POSITIVE Z MOVEMENT
+	if (currentCenterCollectionKey.z > oldCenterCollectionKey.z)
+	{
+		for (int y = 0; y < cubesize; y++)
+		{
+			for (int x = 0; x < cubesize; x++)
+			{
+				EnclaveKeyDef::EnclaveKey currentLastKeyInRow = OGLMRMC.renderMetaContainerArray[translateXYZToSingle(x, y, cubesize - 1)].ElementCollectionKey;
+				int currentFirstSingularXYZValueInRow = OGLMRMC.renderMetaContainerArray[translateXYZToSingle(x, y, 0)].ElementSingularXYZValue;
+				for (int z = 0; z < cubesize - 1; z++)
+				{
+
+				}
+			}
+		}
 	}
 
 

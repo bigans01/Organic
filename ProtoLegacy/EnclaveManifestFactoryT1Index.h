@@ -24,7 +24,7 @@ Dependents: a valid instance of ManifestCollectionMatrix
 class EnclaveManifestFactoryT1Index
 {
 public:
-	std::unordered_map<std::string, EnclaveManifestFactoryT1> FactoryMap;		// unordered_map that contains instances of EnclaveManifestFactoryT1
+	std::unordered_map<int, EnclaveManifestFactoryT1> FactoryMap;		// unordered_map that contains instances of EnclaveManifestFactoryT1
 };
 
 #endif
