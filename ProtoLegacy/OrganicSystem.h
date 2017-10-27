@@ -25,6 +25,7 @@ OrganicSystem object contains all objects necessary to preserve information on t
 #include "OrganicTextureDictionary.h"
 #include "OrganicVtxColorDictionary.h"
 #include "OrganicCellList.h"
+#include "OrganicCellManager.h"
 #include "OrganicMorphMeta.h"
 #include "MDJobMaterializeCollection.h"
 #include "MDListJobMaterializeCollection.h"
@@ -66,6 +67,7 @@ public:
 	EnclaveKeyContainer renderCollectionList;									// contains a a list of Keys that determine which EnclaveCollections to render and/or process	
 	MaterializeCollectionListContainer MatCollList;
 	OrganicCellList OCList;														// the OrganicSystem's instance of OrganicCellList
+	OrganicCellManager OCManager;												// an instance of OCManager that is responsible for determining what things to work on for OrganicCells
 	thread_pool *Cell1;															// pointer for Cell 1
 	thread_pool *Cell2;															// pointer for Cell 2
 	EnclaveKeyDef::EnclaveKey PreviousCCKey;									// will store the previous Camera Collection key from the previous frame here
@@ -76,6 +78,7 @@ public:
 	std::queue<OrganicMorphMeta> CollectionProcessingQueue;			// a queue that stores collection keys that need to be processed
 	std::mutex heapmutex;														// global mutexval
 	int numberOfCells = 2;														// the number of worker threads in this OrganicSystem
+	int workPriority = 0;														// work priority mode for per-tick splitting up of jobs for OrganicCells
 
 	OrganicSystem(int numberOfFactories, int bufferCubeSize, int windowWidth, int windowHeight);					// default constructor: number of factories, plus the size of the buffer cube
 
@@ -135,7 +138,7 @@ public:
 	void CheckForMorphing();																																					// checks to see if there is any buffer morphing to be done
 	void CheckProcessingQueue();																																				// checks to see if there are any collections to process
 	void SetWorldCoordinates(float x, float y, float z);
-	void AddFactoryPointersToCells();																																			// cycles through each cell and adds the appropriate factory pointer to each
+	void SetupCellMeta();																																			// cycles through each cell and adds the appropriate factory pointer to each
 	void DivideTickWork();																																						// determines how to divide the work among worker threads for this game tick
 	thread_pool* getCell1();																																					// gets a pointer to worker thread (Cell) #1
 	thread_pool* getCell2();																																					// gets a pointer to worker thread (Cell) #2

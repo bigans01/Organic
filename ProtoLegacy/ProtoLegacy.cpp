@@ -313,7 +313,7 @@ int main()
 
 	Organic.AddOrganicCell(mainthreadpoolref);
 	Organic.AddOrganicCell(mainthreadpoolref2);
-	Organic.AddFactoryPointersToCells();
+	Organic.SetupCellMeta();									// set up metadata about the cells
 
 	Organic.AddOrganicTextureMetaArray("base");					// set up the texture map; first ever map will be named "base"
 	Organic.AddOrganicVtxColorMetaArray("base");
@@ -702,7 +702,7 @@ int main()
 		auto start3 = std::chrono::high_resolution_clock::now();
 		// |||||||||||||||||||||| PHASE 1: Terrain. collection pointer changes; detect any OGLMBufferManager morphing
 		Organic.CheckForMorphing();			// determine if there were any OGLM buffer shifts that needed to be done.
-		//Organic.DivideTickWork();			// split work for the tick here
+		Organic.DivideTickWork();			// split work for the tick here
 		Organic.CheckProcessingQueue();
 		// check for any available collections to process here
 		// |||||||||||||||||||||| PHASE 2: Render terrain and targeted blocks

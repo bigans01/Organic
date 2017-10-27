@@ -526,16 +526,18 @@ void OrganicSystem::AddOrganicCell(thread_pool* thread_pool_ref)
 	OCList.cellList[OCList.numberOfCells++] = cellToAdd;	// add the cell to the map
 }
 
-void OrganicSystem::AddFactoryPointersToCells()
+void OrganicSystem::SetupCellMeta()
 {
 	std::unordered_map<int, EnclaveManifestFactoryT1>::iterator factoryMapIter;	// create a temp iterator
 	std::map<int, OrganicCell>::iterator cellListIter;
+	std::map<int, OrganicCell*>::iterator cellManagerIter;
 	factoryMapIter = OrganicFactoryIndex.FactoryMap.begin();					// set the factory iterator's begin value
 	cellListIter = OCList.cellList.begin();										// set the cellList iterator's begin value
 	
 	for (int x = 0; x < OCList.numberOfCells; x++)	// cycle through all cells
 	{
 		cellListIter->second.factoryPtr = &factoryMapIter->second;				// set the reference to the factory that was added when
+		OCManager.availableCellMap[x] = &cellListIter->second;					// add the cell as available to the OCManager
 		factoryMapIter++;			// increment the iterators
 		cellListIter++;				// ""
 	}
@@ -2498,7 +2500,7 @@ void OrganicSystem::CheckProcessingQueue()
 			manifestFactoryPtrVectorIterator++;
 		}
 	}
-	
+
 
 	/*
 	for (int x = 0; x < numberOfThreads; x++)		// have each thread check for work
@@ -2534,7 +2536,7 @@ void OrganicSystem::CheckProcessingQueue()
 		manifestFactoryPtrVectorIterator++;
 	}
 	*/
-	
+
 
 	// if there were collections to be processed, size will be > 0...check for promises
 	futureListIterator = futureList.begin();
@@ -2569,6 +2571,37 @@ void OrganicSystem::CheckProcessingQueue()
 
 void OrganicSystem::DivideTickWork()
 {
+	// MODE 0 default
+	if (workPriority == 0)
+	{
+		// first, check for terrain work
+		// ...is there terrain to be worked on?
+		if (!CollectionProcessingQueue.empty())
+		{
+			cout << ">>>> Queue is not empty!!! dividing work..." << endl;
+			// if there is, are there already threads assigned to do it?
+			if (OCManager.terrainCellMap.size() == 0)	//if there are no threads, assign them to do this work
+			{
+				cout << ">>>> No terrain cells assigned, attempting assignment..." << endl;
+				// function call here
+				OCManager.AssignT1TerrainCells();
+			}
+
+		}
+		// ...is there no terrain to be worked on?
+		else if (CollectionProcessingQueue.empty())
+		{
+			
+			// if there were cells working in the last tick, but the terrain queue is empty, they must be freed
+			if (OCManager.terrainCellMap.size() > 0)
+			{
+				cout << ">>>> Queue is empty!!! reassigning cells used for terrain during last tick..." << endl;
+				// function call here
+				OCManager.ReleaseT1TerrainCells();
+			}
+		}
+		
+	}
 
 }
 
