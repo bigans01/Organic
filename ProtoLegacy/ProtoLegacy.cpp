@@ -218,6 +218,9 @@ int main()
 	thread_pool mainthreadpool2;
 	thread_pool* mainthreadpoolref2 = &mainthreadpool2;
 
+	thread_pool mainthreadpool3;
+	thread_pool* mainthreadpoolref3 = &mainthreadpool3;
+
 	
 	EnclaveCollectionBlueprint testBlueprint3, flatBlueprint;
 
@@ -306,13 +309,15 @@ int main()
 	//1024, 768, 
 	 //2560, 1440,
 	//OrganicSystem Organic(2, 13, 2560, 1440);
-	OrganicSystem Organic(2, 13, 1024, 768);					// number of factories, buffer size, pixel width, pixel height
+	//OrganicSystem Organic(2, 13, 1024, 768);					// number of factories, buffer size, pixel width, pixel height
+	OrganicSystem Organic(3, 13, 1024, 768);					// number of factories, buffer size, pixel width, pixel height
 	//Organic.LoadNWChunks();
 	//Organic.SetOrganicCell1(mainthreadpoolref);				// set the Organic instance's first worker thread
 	//Organic.SetOrganicCell2(mainthreadpoolref2);			// set the Organic instance's second worker thread
 
 	Organic.AddOrganicCell(mainthreadpoolref);
 	Organic.AddOrganicCell(mainthreadpoolref2);
+	Organic.AddOrganicCell(mainthreadpoolref3);
 	Organic.SetupCellMeta();									// set up metadata about the cells
 
 	Organic.AddOrganicTextureMetaArray("base");					// set up the texture map; first ever map will be named "base"
@@ -412,6 +417,22 @@ int main()
 	flatKeyToAdd.y = 0;
 	flatKeyToAdd.z = 1;
 	Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, flatBlueprint);
+
+	flatKeyToAdd.x = -7;
+	flatKeyToAdd.y = 0;
+	flatKeyToAdd.z = 2;
+	Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, flatBlueprint);
+
+	flatKeyToAdd.x = -7;
+	flatKeyToAdd.y = 0;
+	flatKeyToAdd.z = 3;
+	Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, flatBlueprint);
+
+	flatKeyToAdd.x = -7;
+	flatKeyToAdd.y = 0;
+	flatKeyToAdd.z = 4;
+	Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, flatBlueprint);
+
 	
 	auto collectionsSetupEND = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> collectionsSetupELAPSED = collectionsSetupEND - collectionsSetupBEGIN;
@@ -513,7 +534,7 @@ int main()
 	std::cout << "Elapsed time (Blueprint addition): " << blueelapsed.count() << endl;
 	*/
 	//Organic.ArrayTest();
-	Organic.MaterializeAllCollectionsInRenderList(0);			// 0 = use a set of Factories, 1 = use a ManifestMatrix style
+	Organic.MaterializeAllCollectionsInRenderList(1);			// 0 = use a set of Factories, 1 = use a ManifestMatrix style
 
 
 	//cout << "-------------------------PASS" << endl;

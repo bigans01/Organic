@@ -343,8 +343,8 @@ void OrganicGLManager::sendRenderCollectionDataToBuffer(OrganicMorphMeta inMorph
 	glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexBufferID);
 	glBufferSubData(GL_ARRAY_BUFFER, inMorphMeta.subBufferIndex*CollectionBufferSize, renderCollPtr->RenderCollectionArraySize, renderCollPtr->GLFloatPtr);
 	renderableCollectionList.sendTerrainT1RequestToDelegator(inMorphMeta.collectionKey, inMorphMeta.subBufferIndex, renderCollPtr->RenderCollectionArraySize, CollectionBufferSize);
-	cout << "collection sent to buffer..." << inMorphMeta.collectionKey.x << ", " << inMorphMeta.collectionKey.y << ", " << inMorphMeta.collectionKey.z << endl;
-	cout << "size: " << renderCollPtr->RenderCollectionArraySize << endl;
+	//cout << "collection sent to buffer..." << inMorphMeta.collectionKey.x << ", " << inMorphMeta.collectionKey.y << ", " << inMorphMeta.collectionKey.z << endl;
+	//cout << "size: " << renderCollPtr->RenderCollectionArraySize << endl;
 	//EnclaveKeyDef::EnclaveKey firstRenderableEnclaveKey = renderCollPtr->EnclaveCollectionPtr->RenderableEnclaves[0];		// use for the below
 	//EnclaveKeyDef::EnclaveKey collectionKey = renderCollPtr->EnclaveCollectionPtr->EnclaveArray[firstRenderableEnclaveKey.x][firstRenderableEnclaveKey.y][firstRenderableEnclaveKey.z].CollectionKey;
 	// cout << "(Vertex data) Test; originating collection key:  " << collectionKey.x << ", " << collectionKey.y << ", " << collectionKey.z << endl;
