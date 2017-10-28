@@ -310,14 +310,25 @@ int main()
 	 //2560, 1440,
 	//OrganicSystem Organic(2, 13, 2560, 1440);
 	//OrganicSystem Organic(2, 13, 1024, 768);					// number of factories, buffer size, pixel width, pixel height
-	OrganicSystem Organic(3, 13, 1024, 768);					// number of factories, buffer size, pixel width, pixel height
+	//OrganicSystem Organic(3, 13, 1024, 768);					// number of factories, buffer size, pixel width, pixel height
 	//Organic.LoadNWChunks();
 	//Organic.SetOrganicCell1(mainthreadpoolref);				// set the Organic instance's first worker thread
 	//Organic.SetOrganicCell2(mainthreadpoolref2);			// set the Organic instance's second worker thread
 
+	//OrganicSystem Organic(1, 13, 1024, 768);
+	//Organic.AddOrganicCell(mainthreadpoolref);
+
+	OrganicSystem Organic(2, 13, 1024, 768);
 	Organic.AddOrganicCell(mainthreadpoolref);
 	Organic.AddOrganicCell(mainthreadpoolref2);
-	Organic.AddOrganicCell(mainthreadpoolref3);
+
+	//OrganicSystem Organic(3, 13, 1024, 768);					// number of factories, buffer size, pixel width, pixel height
+	//Organic.SetOrganicCell1(mainthreadpoolref);				// set the Organic instance's first worker thread
+	//Organic.SetOrganicCell2(mainthreadpoolref2);			// set the Organic instance's second worker thread
+	//Organic.SetOrganicCell2(mainthreadpoolref3);			// set the Organic instance's second worker thread
+
+
+	//Organic.AddOrganicCell(mainthreadpoolref3);
 	Organic.SetupCellMeta();									// set up metadata about the cells
 
 	Organic.AddOrganicTextureMetaArray("base");					// set up the texture map; first ever map will be named "base"
@@ -328,7 +339,7 @@ int main()
 
 
 	EnclaveManifestFactoryT1* factoryRef;
-	factoryRef = &Organic.OrganicFactoryIndex.FactoryMap[1];
+	factoryRef = &Organic.OrganicFactoryIndex.FactoryMap[0];
 
 	EnclaveCollectionBlueprint* flatPtr = &flatBlueprint;
 	EnclaveCollectionBlueprint* testBPPtr = &testBlueprint3;
@@ -534,7 +545,7 @@ int main()
 	std::cout << "Elapsed time (Blueprint addition): " << blueelapsed.count() << endl;
 	*/
 	//Organic.ArrayTest();
-	Organic.MaterializeAllCollectionsInRenderList(1);			// 0 = use a set of Factories, 1 = use a ManifestMatrix style
+	Organic.MaterializeAllCollectionsInRenderList(0);			// 0 = use a set of Factories, 1 = use a ManifestMatrix style
 
 
 	//cout << "-------------------------PASS" << endl;
