@@ -23,6 +23,7 @@ void OrganicCellManager::AssignT1TerrainCells()
 	{
 		availableCellMap.erase(*availablesToEraseIter);	// erase the value
 	}
+	cout << ">>>> Cell Assignment complete..." << endl;
 }
 
 void OrganicCellManager::ReleaseT1TerrainCells()
@@ -42,4 +43,5 @@ void OrganicCellManager::ReleaseT1TerrainCells()
 	{
 		terrainCellMap.erase(*terrainCellsToEraseIter);	// erase the value
 	}
+	cout << ">>>> Terrain cells successfully released..." << endl;
 }

@@ -338,14 +338,18 @@ void RenderCollection::CombineManifestArraysFromT1Factory(EnclaveManifestFactory
 
 	// STEP 2: create the dynamic array, acquire heap lock while doing so
 	mutexval.lock();
+	//cout << "GL float check begin...; total floats is: " << totalfloats << "Total Enclaves is: " << TotalEnclavesInFactory << endl;
 	if (IsGLFloatPtrLoaded == 1)		// delete old array if it was previously set
 	{
+		//cout << "GL float is loaded; deleting..." << endl;
 		delete[] GLFloatPtr;
 		delete[] VertexColorArrayPtr;
+		//cout << "GL floats deleted..." << endl;
 	}
 	IsGLFloatPtrLoaded = 1;									// indicate that the pointer was loaded with data
 	GLFloatPtr = new GLfloat[totalfloats];	// 9 floats per triangle
 	VertexColorArrayPtr = new GLfloat[totalfloats];
+	//cout << "GL float check end..." << endl;
 	mutexval.unlock();
 	//cout << "Render 2 entry:" << endl;
 

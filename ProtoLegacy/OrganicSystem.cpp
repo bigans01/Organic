@@ -958,7 +958,7 @@ void OrganicSystem::JobMaterializeMultiCollectionFromFactory2(MDListJobMateriali
 	EnclaveCollectionMatrix *EnclaveCollectionsRef = JobIterator->second.MDEnclaveCollectionsRef;			// set a ref to the EnclaveCollection matrix		
 	RenderCollectionMatrix *RenderCollectionsRef = JobIterator->second.MDRenderCollectionsRef;				// set a ref to the RenderCollection matrix
 																									//truestart = std::chrono::high_resolution_clock::now();		// optional, for performance testing only
-	for (JobIterator = mdjob->ListMatrix.begin(); JobIterator != JobIteratorEnd; ++JobIterator)
+	for (JobIterator; JobIterator != JobIteratorEnd; ++JobIterator)
 	{
 		//truestart = std::chrono::high_resolution_clock::now();		// optional, for performance testing only
 		auto initstart = std::chrono::high_resolution_clock::now();												// for performance testing only
@@ -1037,7 +1037,7 @@ void OrganicSystem::JobMaterializeMultiCollectionFromFactory2(MDListJobMateriali
 	std::chrono::duration<double> trueelapsed = trueend - truestart;
 	//std::chrono::duration<double> unordered_elapsed = unordered_end - unordered_start;
 
-	cout << "Total time, " << totalProcessed << "collections: (" << ThreadID << ") " << trueelapsed.count() << endl;
+	cout << "Total time, " << totalProcessed << " collections: (" << ThreadID << ") " << trueelapsed.count() << endl;
 	mutexval.unlock();
 }
 
@@ -1052,9 +1052,7 @@ void OrganicSystem::JobMaterializeCollectionFromFactoryViaMorph(MDJobMaterialize
 	EnclaveCollection* CollectionRef = &FactoryRef->FactoryCollections[0];
 
 	// set up pointers
-	mutexval.lock();
-	//cout << "MORPH FUNCTION CALL KEY: " << mdjob->MDKey.x << ", " << mdjob->MDKey.y << ", " << mdjob->MDKey.z << endl;
-	mutexval.unlock();
+	
 	EnclaveCollectionBlueprintMatrix *BlueprintMatrixRef = mdjob->MDBlueprintMatrixRef;			// set Blueprint matrix ref
 	EnclaveCollectionMatrix *EnclaveCollectionsRef = mdjob->MDEnclaveCollectionsRef;			// set a ref to the EnclaveCollection matrix		
 	RenderCollectionMatrix *RenderCollectionsRef = mdjob->MDRenderCollectionsRef;				// set a ref to the RenderCollection matrix
@@ -1068,6 +1066,9 @@ void OrganicSystem::JobMaterializeCollectionFromFactoryViaMorph(MDJobMaterialize
 	int renderablecount = 0;
 
 	// Phase 1: EnclaveCollection instantiation
+
+	// reset total renderable enclaves value
+	CollectionRef->totalRenderableEnclaves = 0;
 
 	for (int x = 0; x < 8; x++)
 	{
@@ -1095,6 +1096,9 @@ void OrganicSystem::JobMaterializeCollectionFromFactoryViaMorph(MDJobMaterialize
 
 	// Phase 2: Factory work
 	int manifestCounter = CollectionRef->totalRenderableEnclaves;
+	mutexval.lock();
+	//cout << "MORPH FUNCTION CALL KEY: " << mdjob->MDKey.x << ", " << mdjob->MDKey.y << ", " << mdjob->MDKey.z << "| Renderable enclave number is: " << manifestCounter << endl;
+	mutexval.unlock();
 	//auto start5 = std::chrono::high_resolution_clock::now();
 	EnclaveKeyDef::EnclaveKey innerTempKey;
 	FactoryRef->CurrentStorage = 0;					// reset storage location.
@@ -1110,20 +1114,28 @@ void OrganicSystem::JobMaterializeCollectionFromFactoryViaMorph(MDJobMaterialize
 	// Phase 3: Render actual collection
 	//cout << "Phase 3 beginning..." << endl;
 	//mutexval.lock();
+
+	mutexval.lock();
+	//cout << "FACTORY WORK COMPLETE PASS..." << mdjob->MDKey.x << ", " << mdjob->MDKey.y << ", " << mdjob->MDKey.z << endl;
+	mutexval.unlock();
 	RenderCollectionsRef->CreateRenderArrayFromFactory(mdjob->MDKey, FactoryRef, std::ref(mutexval));		// call function to add data into array; pass mutex to use
+	//mutexval.unlock();
 																									//mutexval.unlock();
 																									//RenderCollection* collPtr = &RenderCollectionsRef->RenderMatrix[Key1];
 																									//cout << "Total renderables for Key (" << Key1.x << ", " << Key1.y << ", " << Key1.z << ") :" << tempdumbcount << ": " << collPtr->RenderCollectionArraySize << endl;
 																									//trueend = std::chrono::high_resolution_clock::now();
+	mutexval.lock();
+	//cout << "CREATE RENDER ARRAY COMPLETE PASS..." << mdjob->MDKey.x << ", " << mdjob->MDKey.y << ", " << mdjob->MDKey.z << endl;
+	mutexval.unlock();
 	auto trueend = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> trueelapsed = trueend - truestart;
 	//std::chrono::duration<double> unordered_elapsed = unordered_end - unordered_start;
 
 	
-	//mutexval.lock();
+	mutexval.lock();
 	//cout << "test output of morphed render size: (Key is " << mdjob->MDKey.x << ", " << mdjob->MDKey.y << ", " << mdjob->MDKey.z << ", || " << RenderCollectionsRef->RenderMatrix[mdjob->MDKey].RenderCollectionArraySize << ")" << endl;
 	//cout << "Total time, terrain morph: " << trueelapsed.count() << endl;
-	//mutexval.unlock();
+	mutexval.unlock();
 }
 
 void OrganicSystem::JobCalibrateBlueprintBordersFromFactory(EnclaveKeyDef::EnclaveKey Key1, EnclaveManifestFactoryT1 *FactoryRef)
@@ -2477,6 +2489,7 @@ void OrganicSystem::CheckProcessingQueue()
 	// "hasWorkToDo" will need to be modified later
 	if (hasWorkToDo > 0)
 	{
+		//cout << ">>>> CheckProcessingQueue begin (1)..." << endl;
 		OMMVectorIterator = OMMVector.begin();
 		MDJobVectorIterator = MDJobVector.begin();
 		for (int x = 0; x < hasWorkToDo; x++)
@@ -2492,23 +2505,36 @@ void OrganicSystem::CheckProcessingQueue()
 			OMMVectorIterator++;
 			MDJobVectorIterator++;
 			terrainCellMapIter++;
+			//cout << "work added for collection: " << x << endl;
 		}
+		//cout << ">>>> CheckProcessingQueue end (1)..." << endl;
 	}
 
 
 	// if there were collections to be processed, size will be > 0...check for promises
+	heapmutex.lock();
 	futureListIterator = futureList.begin();
+	heapmutex.unlock();
+	
 	if (futureList.size() > 0)
 	{
+		//cout << ">>>> CheckProcessingQueue post-future list begin (1)...; future list size is: " << futureList.size() << endl;
 		int numberOfPromises = futureList.size();
-		for (int x = 0; x < numberOfPromises; x++)
+		for (int x = 0; x < numberOfPromises; x++)	// numberOfPromises
 		{
-			std::future<void>* futurePtr = &*futureListIterator;	// get a pointer to the future
-			futurePtr->wait();										// wait for the future to be done
+			//heapmutex.lock();
+			//std::future<void>* futurePtr = &*futureListIterator;	// get a pointer to the future
+			//heapmutex.unlock();
+			//cout << "pre-wait call..." << endl;
+			futureListIterator->wait();
+			//futurePtr->wait();										// wait for the future to be done
+			//cout << "waiting for future..." << endl;
 			futureListIterator++;									// increment the futureList iterator
 		}
 		//cout << "number of promises: " << numberOfPromises << endl;
+		//cout << ">>>> CheckProcessingQueue post-future list end (1)..." << endl;
 	}
+	
 
 	// send OrganicMorphMeta pairs to the OrganicGLManager for processing
 	int morphMetaQueueSize = morphMetaToSendToBuffer.size();

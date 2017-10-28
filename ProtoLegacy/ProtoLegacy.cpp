@@ -323,12 +323,10 @@ int main()
 	Organic.AddOrganicCell(mainthreadpoolref2);
 
 	//OrganicSystem Organic(3, 13, 1024, 768);					// number of factories, buffer size, pixel width, pixel height
-	//Organic.SetOrganicCell1(mainthreadpoolref);				// set the Organic instance's first worker thread
-	//Organic.SetOrganicCell2(mainthreadpoolref2);			// set the Organic instance's second worker thread
-	//Organic.SetOrganicCell2(mainthreadpoolref3);			// set the Organic instance's second worker thread
-
-
+	//Organic.AddOrganicCell(mainthreadpoolref);
+	//Organic.AddOrganicCell(mainthreadpoolref2);
 	//Organic.AddOrganicCell(mainthreadpoolref3);
+
 	Organic.SetupCellMeta();									// set up metadata about the cells
 
 	Organic.AddOrganicTextureMetaArray("base");					// set up the texture map; first ever map will be named "base"
@@ -418,6 +416,36 @@ int main()
 	auto collectionsSetupBEGIN = std::chrono::high_resolution_clock::now();
 	Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, flatBlueprint);
 
+	
+	
+	// add blueprint for morph testing
+	flatKeyToAdd.x = -7;
+	flatKeyToAdd.y = 0;
+	flatKeyToAdd.z = 0;
+	Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, flatBlueprint);
+
+	flatKeyToAdd.x = -7;
+	flatKeyToAdd.y = 0;
+	flatKeyToAdd.z = 1;
+	Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, testBlueprint3);
+
+	flatKeyToAdd.x = -7;
+	flatKeyToAdd.y = 0;
+	flatKeyToAdd.z = 2;
+	Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, testBlueprint3);
+
+	flatKeyToAdd.x = -7;
+	flatKeyToAdd.y = 0;
+	flatKeyToAdd.z = 3;
+	Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, testBlueprint3);
+
+	flatKeyToAdd.x = -7;
+	flatKeyToAdd.y = 0;
+	flatKeyToAdd.z = 4;
+	Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, testBlueprint3);
+	
+
+	/*
 	// add blueprint for morph testing
 	flatKeyToAdd.x = -7;
 	flatKeyToAdd.y = 0;
@@ -443,6 +471,8 @@ int main()
 	flatKeyToAdd.y = 0;
 	flatKeyToAdd.z = 4;
 	Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, flatBlueprint);
+	*/
+
 
 	
 	auto collectionsSetupEND = std::chrono::high_resolution_clock::now();
