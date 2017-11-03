@@ -76,6 +76,8 @@ public:
 	EnclaveKeyDef::EnclaveKey CameraBlockKey;									// the current block in the chunk the camera is in
 	EnclaveCollectionStateArray CollectionStateArray;
 	std::queue<OrganicMorphMeta> T2CollectionProcessingQueue;					// a queue that stores Type 2 collection keys that need to be processed
+	std::vector<MDJobMaterializeCollection> OrganicMDJobVector;
+	std::vector<MDJobMaterializeCollection>::iterator OrganicMDJobVectorIterator;
 	std::queue<OrganicMorphMeta> T1CollectionProcessingQueue;					// a queue that stores Type 1 collection keys that need to be processed
 	std::vector<std::future<void>> FL_T2CollectionsProcessed;					// a vector of futures for any processed (completed) T2 collections
 	std::vector<std::future<void>> FL_T1CollectionsProcessed;					// a vector of futures for any processed (completed) T1 collections

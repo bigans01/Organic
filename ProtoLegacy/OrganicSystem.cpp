@@ -2571,7 +2571,8 @@ void OrganicSystem::CheckProcessingQueue()
 			OMMVector.push_back(popKey);									// push it to OMMVector
 			EnclaveKeyDef::EnclaveKey tempKey = popKey.collectionKey;		// get the collection key of the popKey
 			MDJobMaterializeCollection tempMDJob(tempKey, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew));	//... use it to make a temp MDJob
-			MDJobVector.push_back(tempMDJob);		// push into the job vector
+			//MDJobVector.push_back(tempMDJob);		// push into the job vector
+			OrganicMDJobVector.push_back(tempMDJob);
 			T2_jobCount++;							// increment workable task counter
 		}
 	}
@@ -2581,12 +2582,17 @@ void OrganicSystem::CheckProcessingQueue()
 	{
 		//cout << ">>>> CheckProcessingQueue begin (1)..." << endl;
 		OMMVectorIterator = OMMVector.begin();
-		MDJobVectorIterator = MDJobVector.begin();
+		//MDJobVectorIterator = MDJobVector.begin();
+		MDJobVectorIterator = OrganicMDJobVector.begin();
 		for (int x = 0; x < T2_jobCount; x++)
 		{
 			OrganicMorphMeta popKey = *OMMVectorIterator;						// get a copy of the element this iterator points to
 			MDJobMaterializeCollection* tempMDJobRef = &*MDJobVectorIterator;	// get a pointer to the current element this iterator points to
+
 			morphMetaToSendToBuffer.push(popKey);								// insert a value into the buffer work queue
+			//T2CollectionProcessingQueue.push(popKey);
+			//OrganicMorphMetaToSendToBuffer.push(popKey);
+
 			//cout << "popKey of new loop is: " << popKey.collectionKey.x << ", " << popKey.collectionKey.y << ", " << popKey.collectionKey.z << endl;
 			std::future<void> pop_1 = OCList.cellList[x].threadPtr->submit5(&OrganicSystem::JobMaterializeCollectionFromFactoryViaMorph, this, tempMDJobRef, std::ref(heapmutex), std::ref(terrainCellMapIter->second->factoryPtr));		// SOLUTION TO THIS (10/22/2017): changed input parameter, "tempMDJobRef" to not use std::ref() || std::ref(*manifestFactoryPtrVectorIterator)
 			heapmutex.lock();
@@ -2661,6 +2667,12 @@ void OrganicSystem::CheckProcessingQueue()
 		heapmutex.unlock();
 	}
 	
+	if (OrganicMDJobVector.size() > 0)
+	{
+		heapmutex.lock();
+		OrganicMDJobVector.clear();
+		heapmutex.unlock();
+	}
 
 
 }
