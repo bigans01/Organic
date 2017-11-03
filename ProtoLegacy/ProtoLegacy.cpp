@@ -762,14 +762,15 @@ int main()
 	do {
 
 		auto start3 = std::chrono::high_resolution_clock::now();
-		// |||||||||||||||||||||| PHASE 1: Terrain. collection pointer changes; detect any OGLMBufferManager morphing
+		// |||||||||||||||||||||| PHASE 1 operations: work division
 		Organic.CheckForMorphing();			// determine if there were any OGLM buffer shifts that needed to be done.
 		Organic.DivideTickWork();			// split work for the tick here
+
+		// |||||||||||||||||||||| PHASE 2 operations: run terrain jobs in queues
 		Organic.CheckProcessingQueue();		// check for work in collection processing queue(s)
-		// check for any available collections to process here
-		// |||||||||||||||||||||| PHASE 2: Render terrain and targeted blocks
-		Organic.RenderGLTerrain();																				// Step 1 (?): perform render frame work
-		// Step 2: check if camera has moved to another collection; if so shift the OrganicCollectionPointerMatrix(?)
+		//Organic.WaitForPhase2Promises();
+		// |||||||||||||||||||||| PHASE 3: Render terrain and targeted blocks
+		Organic.RenderGLTerrain();																				// Step 1 (?): perform render frame work	// Step 2: check if camera has moved to another collection; if so shift the OrganicCollectionPointerMatrix(?)
 		Organic.DetermineMouseCursorTargets2(Organic.OGLM.positionVecPtr, Organic.OGLM.directionVecPtr, 14);	// Step 3: determine targetable blocks 
 
 		auto finish3 = std::chrono::high_resolution_clock::now();

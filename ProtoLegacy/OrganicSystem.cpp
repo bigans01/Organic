@@ -2452,6 +2452,78 @@ void OrganicSystem::CheckForMorphing()
 	}
 }
 
+void OrganicSystem::WaitForPhase2Promises()
+{
+	std::vector<std::future<void>>::iterator futureListIterator;								// iterator for the list of futures
+
+	// check for T2 promises 
+	//cout << "checking t2 promises..." << endl;
+	if (FL_T2CollectionsProcessed.size() > 0)	// check if there are any futures to wait for
+	{
+		
+		heapmutex.lock();
+		cout << "size greater than 0, proceeding..." << "(size is " << FL_T2CollectionsProcessed.size() << ") " << endl;
+		futureListIterator = FL_T2CollectionsProcessed.begin();
+		int collectionsToProcess = FL_T2CollectionsProcessed.size();
+		heapmutex.unlock();
+		for (int x = 0; x < collectionsToProcess; x++)
+		{
+			cout << "waiting for future..." << endl;
+			//std::future<void>* futurePtr = &*futureListIterator;	// get a pointer to the future
+			futureListIterator->wait();
+			futureListIterator++;
+		}
+	}
+
+	// check for T1 promises
+	// cout << "checking t1 promises..." << endl;
+	if (FL_T1CollectionsProcessed.size() > 0)
+	{
+		futureListIterator = FL_T1CollectionsProcessed.begin();
+		int collectionsToProcess = FL_T1CollectionsProcessed.size();
+		for (int x = 0; x < collectionsToProcess; x++)
+		{
+			futureListIterator->wait();
+			futureListIterator++;
+		}
+	}
+
+
+	// send data to OGLM, after waiting for all futures to complete
+	//cout << "before queue size acquired..." << endl;
+	int organicMorphMetaQueueSize = OrganicMorphMetaToSendToBuffer.size();
+	//cout << "queue size acquired..." << endl;
+	if (organicMorphMetaQueueSize > 0)
+	{
+		for (int x = 0; x < organicMorphMetaQueueSize; x++)
+		{
+			cout << "attempting send to buffer..." << endl;
+			OrganicMorphMeta metaToSend = OrganicMorphMetaToSendToBuffer.front();
+			RenderCollection* renderCollectionPtr = &RenderCollections.RenderMatrix[metaToSend.collectionKey];
+			OGLM.sendRenderCollectionDataToBuffer(metaToSend, renderCollectionPtr);				// send the vertex data to buffer
+			OGLM.sendRenderCollectionVCDataToBuffer(metaToSend, renderCollectionPtr);			// send the vertex color data to buffer
+			heapmutex.lock();																	// acquire lock for critical section safety (other threads may be performing actions at this point in time)
+			OrganicMorphMetaToSendToBuffer.pop();
+			heapmutex.unlock();																	
+		}
+	}
+
+	// cout << "wait check 3 " << endl;
+	// empty collection vectors
+	// empty T2
+	if (FL_T2CollectionsProcessed.size() > 0)	// check if there are any futures to wait for
+	{
+		cout << "clearing t2 promises..." << endl;
+		FL_T2CollectionsProcessed.clear();
+	}
+
+	// empty T1
+	if (FL_T1CollectionsProcessed.size() > 0)
+	{
+		FL_T1CollectionsProcessed.clear();
+	}
+}
+
 void OrganicSystem::CheckProcessingQueue()
 {
 
@@ -2489,28 +2561,28 @@ void OrganicSystem::CheckProcessingQueue()
 	std::vector<MDJobMaterializeCollection>::iterator MDJobVectorIterator;
 	std::vector<OrganicMorphMeta> OMMVector;
 	std::vector<OrganicMorphMeta>::iterator OMMVectorIterator;
-	int hasWorkToDo = 0;
+	int T2_jobCount = 0;
 	for (int x = 0; x < numberOfThreads2; x++)
 	{
-		if (!CollectionProcessingQueue.empty())	// only do the following if the queue isn't empty
+		if (!T2CollectionProcessingQueue.empty())	// only do the following if the queue isn't empty
 		{
-			OrganicMorphMeta popKey = CollectionProcessingQueue.front();	// get the front
-			CollectionProcessingQueue.pop();								// pop the queue
+			OrganicMorphMeta popKey = T2CollectionProcessingQueue.front();	// get the front
+			T2CollectionProcessingQueue.pop();								// pop the queue
 			OMMVector.push_back(popKey);									// push it to OMMVector
 			EnclaveKeyDef::EnclaveKey tempKey = popKey.collectionKey;		// get the collection key of the popKey
 			MDJobMaterializeCollection tempMDJob(tempKey, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew));	//... use it to make a temp MDJob
 			MDJobVector.push_back(tempMDJob);		// push into the job vector
-			hasWorkToDo++;							// increment workable task counter
+			T2_jobCount++;							// increment workable task counter
 		}
 	}
 	
-	// "hasWorkToDo" will need to be modified later
-	if (hasWorkToDo > 0)
+	// submit jobs for T2 terrain cell work
+	if (T2_jobCount > 0)
 	{
 		//cout << ">>>> CheckProcessingQueue begin (1)..." << endl;
 		OMMVectorIterator = OMMVector.begin();
 		MDJobVectorIterator = MDJobVector.begin();
-		for (int x = 0; x < hasWorkToDo; x++)
+		for (int x = 0; x < T2_jobCount; x++)
 		{
 			OrganicMorphMeta popKey = *OMMVectorIterator;						// get a copy of the element this iterator points to
 			MDJobMaterializeCollection* tempMDJobRef = &*MDJobVectorIterator;	// get a pointer to the current element this iterator points to
@@ -2518,26 +2590,35 @@ void OrganicSystem::CheckProcessingQueue()
 			//cout << "popKey of new loop is: " << popKey.collectionKey.x << ", " << popKey.collectionKey.y << ", " << popKey.collectionKey.z << endl;
 			std::future<void> pop_1 = OCList.cellList[x].threadPtr->submit5(&OrganicSystem::JobMaterializeCollectionFromFactoryViaMorph, this, tempMDJobRef, std::ref(heapmutex), std::ref(terrainCellMapIter->second->factoryPtr));		// SOLUTION TO THIS (10/22/2017): changed input parameter, "tempMDJobRef" to not use std::ref() || std::ref(*manifestFactoryPtrVectorIterator)
 			heapmutex.lock();
-			futureList.push_back(std::move(pop_1));			// push_back the future via move
+
+			//futureList.push_back(std::move(pop_1));			// push_back the future via move
+			FL_T2CollectionsProcessed.push_back(std::move(pop_1));
+
 			heapmutex.unlock();
 			OMMVectorIterator++;
 			MDJobVectorIterator++;
 			terrainCellMapIter++;
 			//cout << "work added for collection: " << x << endl;
 		}
-		//cout << ">>>> CheckProcessingQueue end (1)..." << endl;
+		cout << ">>>> CheckProcessingQueue end (1)..." << endl;
 	}
 
 
 	// if there were collections to be processed, size will be > 0...check for promises
-	heapmutex.lock();
-	futureListIterator = futureList.begin();
-	heapmutex.unlock();
+
 	
-	if (futureList.size() > 0)
+	
+	heapmutex.lock();
+	//futureListIterator = futureList.begin();
+	futureListIterator = FL_T2CollectionsProcessed.begin();
+	heapmutex.unlock();
+	//int listSize = futureList.size();
+	int listSize = FL_T2CollectionsProcessed.size();
+	
+	if (listSize > 0)
 	{
 		//cout << ">>>> CheckProcessingQueue post-future list begin (1)...; future list size is: " << futureList.size() << endl;
-		int numberOfPromises = futureList.size();
+		int numberOfPromises = listSize;
 		for (int x = 0; x < numberOfPromises; x++)	// numberOfPromises
 		{
 			//heapmutex.lock();
@@ -2572,6 +2653,14 @@ void OrganicSystem::CheckProcessingQueue()
 		cout << "Terrain Cell work time: " << factorytime.count() << endl;
 	}
 
+	if (FL_T2CollectionsProcessed.size() > 0)
+	{
+		heapmutex.lock();
+		//cout << "clearing future vector..." << endl;
+		FL_T2CollectionsProcessed.clear();
+		heapmutex.unlock();
+	}
+	
 
 
 }
@@ -2583,7 +2672,7 @@ void OrganicSystem::DivideTickWork()
 	{
 		// first, check for terrain work
 		// ...is there terrain to be worked on?
-		if (!CollectionProcessingQueue.empty())
+		if (!T2CollectionProcessingQueue.empty())
 		{
 			cout << ">>>> Queue is not empty!!! dividing work..." << endl;
 			// if there is, are there already threads assigned to do it?
@@ -2596,7 +2685,7 @@ void OrganicSystem::DivideTickWork()
 
 		}
 		// ...is there no terrain to be worked on?
-		else if (CollectionProcessingQueue.empty())
+		else if (T2CollectionProcessingQueue.empty())
 		{
 			
 			// if there were cells working in the last tick, but the terrain queue is empty, they must be freed

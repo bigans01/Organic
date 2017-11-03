@@ -75,7 +75,12 @@ public:
 	EnclaveKeyDef::EnclaveKey CameraChunkKey;									// the curent chunk of the collection the camera is in
 	EnclaveKeyDef::EnclaveKey CameraBlockKey;									// the current block in the chunk the camera is in
 	EnclaveCollectionStateArray CollectionStateArray;
-	std::queue<OrganicMorphMeta> CollectionProcessingQueue;			// a queue that stores collection keys that need to be processed
+	std::queue<OrganicMorphMeta> T2CollectionProcessingQueue;					// a queue that stores Type 2 collection keys that need to be processed
+	std::queue<OrganicMorphMeta> T1CollectionProcessingQueue;					// a queue that stores Type 1 collection keys that need to be processed
+	std::vector<std::future<void>> FL_T2CollectionsProcessed;					// a vector of futures for any processed (completed) T2 collections
+	std::vector<std::future<void>> FL_T1CollectionsProcessed;					// a vector of futures for any processed (completed) T1 collections
+	std::queue<OrganicMorphMeta> OrganicMorphMetaToSendToBuffer;				// stores a list of OrganicMorphMeta that are ready to send to buffer
+
 	std::mutex heapmutex;														// global mutexval
 	int numberOfCells = 2;														// the number of worker threads in this OrganicSystem
 	int workPriority = 0;														// work priority mode for per-tick splitting up of jobs for OrganicCells
@@ -138,8 +143,9 @@ public:
 	void CheckForMorphing();																																					// checks to see if there is any buffer morphing to be done
 	void CheckProcessingQueue();																																				// checks to see if there are any collections to process
 	void SetWorldCoordinates(float x, float y, float z);
-	void SetupCellMeta();																																			// cycles through each cell and adds the appropriate factory pointer to each
+	void SetupCellMeta();																																						// cycles through each cell and adds the appropriate factory pointer to each
 	void DivideTickWork();																																						// determines how to divide the work among worker threads for this game tick
+	void WaitForPhase2Promises();																																				// waits for promises to finish in phase 2
 	thread_pool* getCell1();																																					// gets a pointer to worker thread (Cell) #1
 	thread_pool* getCell2();																																					// gets a pointer to worker thread (Cell) #2
 

@@ -352,7 +352,7 @@ void RenderCollection::CombineManifestArraysFromT1Factory(EnclaveManifestFactory
 	//cout << "total triangles to render will be: " << totalfloats << endl;
 
 
-	AllocateNewArraysViaLockGuard(totalfloats, std::ref(mutexval));
+	AllocateNewArraysViaLockGuard(totalfloats, std::ref(mutexval));			// new code from (11/2/2017)
 
 	/*
 	// STEP 2: create the dynamic array, acquire heap lock while doing so

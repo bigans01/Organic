@@ -214,7 +214,7 @@ void OGLMBufferManager::MorphTerrainBuffers()
 					OrganicMorphMeta tempMorphMeta;
 					tempMorphMeta.subBufferIndex = currentLastSingularXYZValueInRow;
 					tempMorphMeta.collectionKey = currentFirstKeyInRow;
-					organicSystemPtr->CollectionProcessingQueue.push(tempMorphMeta);
+					organicSystemPtr->T2CollectionProcessingQueue.push(tempMorphMeta);
 					cout << ">>>>>>>>>>>Blueprint was found!! adding to processing queue....." << tempMorphMeta.collectionKey.x << ", " << tempMorphMeta.collectionKey.y << ", " << tempMorphMeta.collectionKey.z << endl;
 				}
 				else
@@ -274,7 +274,7 @@ void OGLMBufferManager::MorphTerrainBuffers()
 					OrganicMorphMeta tempMorphMeta;
 					tempMorphMeta.subBufferIndex = currentFirstSingularXYZValueInRow;
 					tempMorphMeta.collectionKey = currentLastKeyInRow;
-					organicSystemPtr->CollectionProcessingQueue.push(tempMorphMeta);
+					organicSystemPtr->T2CollectionProcessingQueue.push(tempMorphMeta);
 					cout << ">>>>>>>>>>>Blueprint was found!! adding to processing queue....." << tempMorphMeta.collectionKey.x << ", " << tempMorphMeta.collectionKey.y << ", " << tempMorphMeta.collectionKey.z << endl;
 				}
 				else
@@ -336,7 +336,7 @@ void OGLMBufferManager::MorphTerrainBuffers()
 					OrganicMorphMeta tempMorphMeta;
 					tempMorphMeta.subBufferIndex = currentLastSingularXYZValueInColumn;
 					tempMorphMeta.collectionKey = currentFirstKeyInColumn;
-					organicSystemPtr->CollectionProcessingQueue.push(tempMorphMeta);
+					organicSystemPtr->T2CollectionProcessingQueue.push(tempMorphMeta);
 					cout << ">>>>>>>>>>>Blueprint was found!! adding to processing queue....." << tempMorphMeta.collectionKey.x << ", " << tempMorphMeta.collectionKey.y << ", " << tempMorphMeta.collectionKey.z << endl;
 				}
 				else
@@ -384,7 +384,7 @@ void OGLMBufferManager::MorphTerrainBuffers()
 					OrganicMorphMeta tempMorphMeta;
 					tempMorphMeta.subBufferIndex = currentFirstSingularXYZValueInColumn;
 					tempMorphMeta.collectionKey = currentLastKeyInColumn;
-					organicSystemPtr->CollectionProcessingQueue.push(tempMorphMeta);
+					organicSystemPtr->T2CollectionProcessingQueue.push(tempMorphMeta);
 					cout << ">>>>>>>>>>>Blueprint was found!! adding to processing queue....." << tempMorphMeta.collectionKey.x << ", " << tempMorphMeta.collectionKey.y << ", " << tempMorphMeta.collectionKey.z << endl;
 				}
 				else
@@ -430,7 +430,7 @@ void OGLMBufferManager::MorphTerrainBuffers()
 					OrganicMorphMeta tempMorphMeta;
 					tempMorphMeta.subBufferIndex = currentLastSingularXYZValueInRow;
 					tempMorphMeta.collectionKey = currentFirstKeyInRow;
-					organicSystemPtr->CollectionProcessingQueue.push(tempMorphMeta);
+					organicSystemPtr->T2CollectionProcessingQueue.push(tempMorphMeta);
 					cout << ">>>>>>>>>>>Blueprint was found!! adding to processing queue....." << tempMorphMeta.collectionKey.x << ", " << tempMorphMeta.collectionKey.y << ", " << tempMorphMeta.collectionKey.z << endl;
 				}
 				else
@@ -475,7 +475,7 @@ void OGLMBufferManager::MorphTerrainBuffers()
 					OrganicMorphMeta tempMorphMeta;
 					tempMorphMeta.subBufferIndex = currentFirstSingularXYZValueInRow;
 					tempMorphMeta.collectionKey = currentLastKeyInRow;
-					organicSystemPtr->CollectionProcessingQueue.push(tempMorphMeta);
+					organicSystemPtr->T2CollectionProcessingQueue.push(tempMorphMeta);
 					cout << ">>>>>>>>>>>Blueprint was found!! adding to processing queue....." << tempMorphMeta.collectionKey.x << ", " << tempMorphMeta.collectionKey.y << ", " << tempMorphMeta.collectionKey.z << endl;
 				}
 				else
