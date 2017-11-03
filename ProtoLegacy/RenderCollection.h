@@ -59,7 +59,7 @@ public:
 	void UpdateManifestArray(EnclaveKeyDef::EnclaveKey Key);											// rebuilds the dynamic array pointed to by GLFloatPtr by updating a single enclave manifest; designed for single enclave operations.
 	void SetManifestCollectionPtr(ManifestCollection *manifestcollectionref);							// sets the pointer to the corresponding ManifestCollection that this RenderCollection will be associated with. 
 	void SetEnclaveCollectionPtr(EnclaveCollection *enclavecollectionref);								// sets the pointer to the corresponding EnclaveCollection that this RenderCollection will be associated with.
-																		
+	void AllocateNewArraysViaLockGuard(int in_numberOfFloats, mutex& mutexval);
 
 	
 };

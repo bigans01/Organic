@@ -318,14 +318,14 @@ int main()
 	//OrganicSystem Organic(1, 13, 1024, 768);
 	//Organic.AddOrganicCell(mainthreadpoolref);
 
-	OrganicSystem Organic(2, 13, 1024, 768);
-	Organic.AddOrganicCell(mainthreadpoolref);
-	Organic.AddOrganicCell(mainthreadpoolref2);
-
-	//OrganicSystem Organic(3, 13, 1024, 768);					// number of factories, buffer size, pixel width, pixel height
+	//OrganicSystem Organic(2, 13, 1024, 768);
 	//Organic.AddOrganicCell(mainthreadpoolref);
 	//Organic.AddOrganicCell(mainthreadpoolref2);
-	//Organic.AddOrganicCell(mainthreadpoolref3);
+
+	OrganicSystem Organic(3, 13, 1024, 768);					// number of factories, buffer size, pixel width, pixel height
+	Organic.AddOrganicCell(mainthreadpoolref);
+	Organic.AddOrganicCell(mainthreadpoolref2);
+	Organic.AddOrganicCell(mainthreadpoolref3);
 
 	Organic.SetupCellMeta();									// set up metadata about the cells
 
@@ -765,7 +765,7 @@ int main()
 		// |||||||||||||||||||||| PHASE 1: Terrain. collection pointer changes; detect any OGLMBufferManager morphing
 		Organic.CheckForMorphing();			// determine if there were any OGLM buffer shifts that needed to be done.
 		Organic.DivideTickWork();			// split work for the tick here
-		Organic.CheckProcessingQueue();
+		Organic.CheckProcessingQueue();		// check for work in collection processing queue(s)
 		// check for any available collections to process here
 		// |||||||||||||||||||||| PHASE 2: Render terrain and targeted blocks
 		Organic.RenderGLTerrain();																				// Step 1 (?): perform render frame work

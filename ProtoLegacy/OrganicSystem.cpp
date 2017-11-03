@@ -1059,8 +1059,16 @@ void OrganicSystem::JobMaterializeCollectionFromFactoryViaMorph(MDJobMaterialize
 	EnclaveCollectionActivateListT2 listT2_1;													// set up a activate list
 	EnclaveCollectionBlueprint *blueprintptr = &BlueprintMatrixRef->BlueprintMap[mdjob->MDKey];			// the blueprint to use
 
-	////////////// BEGIN PROCESSING
+	////////////// BEGIN PROCESSING	(33% of estimated heavy workload (11/1/2017))
+	auto truestart2 = std::chrono::high_resolution_clock::now();		// optional, for performance testing only
 	EnclaveCollectionsRef->JobInstantiateAndPopulateEnclaveAlpha2(0, 7 + 1, std::ref(*CollectionRef), mdjob->MDKey, std::ref(blueprintptr), std::ref(BlueprintMatrixRef), std::ref(listT2_1), std::ref(mutexval));	// run the instantiation job on this thread (all 512 enclaves) //EnclaveCollectionMap[Key]
+	
+	//auto trueend2 = std::chrono::high_resolution_clock::now();		// optional, for performance testing only	
+	//std::chrono::duration<double> trueelapsed2 = trueend2 - truestart2;
+	//mutexval.lock();
+	//cout << "TEST, instantiation speed: " << trueelapsed2.count() << endl;
+	//mutexval.unlock();
+
 	int chunkbitmask = 1;	// set the chunk bit mask used below
 	int bitmaskval = 0;		// ""
 	int renderablecount = 0;
@@ -1070,6 +1078,7 @@ void OrganicSystem::JobMaterializeCollectionFromFactoryViaMorph(MDJobMaterialize
 	// reset total renderable enclaves value
 	CollectionRef->totalRenderableEnclaves = 0;
 
+	
 	for (int x = 0; x < 8; x++)
 	{
 		chunkbitmask = 1;
@@ -1093,12 +1102,14 @@ void OrganicSystem::JobMaterializeCollectionFromFactoryViaMorph(MDJobMaterialize
 			bitmaskval++;
 		}
 	}
-
+	
+	
+	
 	// Phase 2: Factory work
 	int manifestCounter = CollectionRef->totalRenderableEnclaves;
-	mutexval.lock();
+	//mutexval.lock();
 	//cout << "MORPH FUNCTION CALL KEY: " << mdjob->MDKey.x << ", " << mdjob->MDKey.y << ", " << mdjob->MDKey.z << "| Renderable enclave number is: " << manifestCounter << endl;
-	mutexval.unlock();
+	//mutexval.unlock();
 	//auto start5 = std::chrono::high_resolution_clock::now();
 	EnclaveKeyDef::EnclaveKey innerTempKey;
 	FactoryRef->CurrentStorage = 0;					// reset storage location.
@@ -1111,31 +1122,38 @@ void OrganicSystem::JobMaterializeCollectionFromFactoryViaMorph(MDJobMaterialize
 		//cout << "manifestCounter loop pass" << endl;
 		FactoryRef->AttachManifestToEnclave(tempEnclavePtr);
 	}
+	
+
 	// Phase 3: Render actual collection
 	//cout << "Phase 3 beginning..." << endl;
 	//mutexval.lock();
 
-	mutexval.lock();
+	//mutexval.lock();
 	//cout << "FACTORY WORK COMPLETE PASS..." << mdjob->MDKey.x << ", " << mdjob->MDKey.y << ", " << mdjob->MDKey.z << endl;
-	mutexval.unlock();
+	//mutexval.unlock();
 	RenderCollectionsRef->CreateRenderArrayFromFactory(mdjob->MDKey, FactoryRef, std::ref(mutexval));		// call function to add data into array; pass mutex to use
 	//mutexval.unlock();
 																									//mutexval.unlock();
 																									//RenderCollection* collPtr = &RenderCollectionsRef->RenderMatrix[Key1];
 																									//cout << "Total renderables for Key (" << Key1.x << ", " << Key1.y << ", " << Key1.z << ") :" << tempdumbcount << ": " << collPtr->RenderCollectionArraySize << endl;
 																									//trueend = std::chrono::high_resolution_clock::now();
-	mutexval.lock();
+	//mutexval.lock();
 	//cout << "CREATE RENDER ARRAY COMPLETE PASS..." << mdjob->MDKey.x << ", " << mdjob->MDKey.y << ", " << mdjob->MDKey.z << endl;
-	mutexval.unlock();
+	//mutexval.unlock();
 	auto trueend = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> trueelapsed = trueend - truestart;
 	//std::chrono::duration<double> unordered_elapsed = unordered_end - unordered_start;
 
 	
-	mutexval.lock();
+	//mutexval.lock();
 	//cout << "test output of morphed render size: (Key is " << mdjob->MDKey.x << ", " << mdjob->MDKey.y << ", " << mdjob->MDKey.z << ", || " << RenderCollectionsRef->RenderMatrix[mdjob->MDKey].RenderCollectionArraySize << ")" << endl;
 	//cout << "Total time, terrain morph: " << trueelapsed.count() << endl;
-	mutexval.unlock();
+	//mutexval.unlock();
+	auto trueend2 = std::chrono::high_resolution_clock::now();		// optional, for performance testing only	
+	std::chrono::duration<double> trueelapsed2 = trueend2 - truestart2;
+	//mutexval.lock();
+	//cout << "TEST, instantiation speed: " << trueelapsed2.count() << endl;
+	//mutexval.unlock();
 }
 
 void OrganicSystem::JobCalibrateBlueprintBordersFromFactory(EnclaveKeyDef::EnclaveKey Key1, EnclaveManifestFactoryT1 *FactoryRef)
