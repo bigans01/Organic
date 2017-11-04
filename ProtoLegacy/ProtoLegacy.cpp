@@ -767,8 +767,9 @@ int main()
 		Organic.DivideTickWork();			// split work for the tick here
 
 		// |||||||||||||||||||||| PHASE 2 operations: run terrain jobs in queues
+
 		Organic.CheckProcessingQueue();		// check for work in collection processing queue(s)
-		//Organic.WaitForPhase2Promises();
+		Organic.WaitForPhase2Promises();
 		// |||||||||||||||||||||| PHASE 3: Render terrain and targeted blocks
 		Organic.RenderGLTerrain();																				// Step 1 (?): perform render frame work	// Step 2: check if camera has moved to another collection; if so shift the OrganicCollectionPointerMatrix(?)
 		Organic.DetermineMouseCursorTargets2(Organic.OGLM.positionVecPtr, Organic.OGLM.directionVecPtr, 14);	// Step 3: determine targetable blocks 

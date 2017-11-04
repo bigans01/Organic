@@ -26,6 +26,7 @@ OrganicSystem object contains all objects necessary to preserve information on t
 #include "OrganicVtxColorDictionary.h"
 #include "OrganicCellList.h"
 #include "OrganicCellManager.h"
+#include "OrganicCellLimits.h"
 #include "OrganicMorphMeta.h"
 #include "MDJobMaterializeCollection.h"
 #include "MDListJobMaterializeCollection.h"
@@ -41,11 +42,13 @@ OrganicSystem object contains all objects necessary to preserve information on t
 #include "EnclaveCollectionStateArray.h"
 #include <GL/glew.h>
 #include <queue>
+#include <chrono>
 //#define GLFW_DLL		// only used when linking to a DLL version of GLFW.
 #include <GLFW/glfw3.h>
 // Include GLM
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+
 
 //#include "shader.hpp"
 #include "common/shader.hpp"
@@ -68,6 +71,7 @@ public:
 	MaterializeCollectionListContainer MatCollList;
 	OrganicCellList OCList;														// the OrganicSystem's instance of OrganicCellList
 	OrganicCellManager OCManager;												// an instance of OCManager that is responsible for determining what things to work on for OrganicCells
+	OrganicCellLimits OCLimits;													// contains the limits (max number per type of Cell) 
 	thread_pool *Cell1;															// pointer for Cell 1
 	thread_pool *Cell2;															// pointer for Cell 2
 	EnclaveKeyDef::EnclaveKey PreviousCCKey;									// will store the previous Camera Collection key from the previous frame here
@@ -75,16 +79,15 @@ public:
 	EnclaveKeyDef::EnclaveKey CameraChunkKey;									// the curent chunk of the collection the camera is in
 	EnclaveKeyDef::EnclaveKey CameraBlockKey;									// the current block in the chunk the camera is in
 	EnclaveCollectionStateArray CollectionStateArray;
-	std::queue<OrganicMorphMeta> T2CollectionProcessingQueue;					// a queue that stores Type 2 collection keys that need to be processed
-	std::vector<MDJobMaterializeCollection> OrganicMDJobVector;
-	std::vector<MDJobMaterializeCollection>::iterator OrganicMDJobVectorIterator;
 	std::queue<OrganicMorphMeta> T1CollectionProcessingQueue;					// a queue that stores Type 1 collection keys that need to be processed
-	std::vector<std::future<void>> FL_T2CollectionsProcessed;					// a vector of futures for any processed (completed) T2 collections
+	std::queue<OrganicMorphMeta> T2CollectionProcessingQueue;					// a queue that stores Type 2 collection keys that need to be processed
 	std::vector<std::future<void>> FL_T1CollectionsProcessed;					// a vector of futures for any processed (completed) T1 collections
+	std::vector<std::future<void>> FL_T2CollectionsProcessed;					// a vector of futures for any processed (completed) T2 collections
+	std::vector<MDJobMaterializeCollection> OrganicMDJobVectorT1;				// contains a list of T1 materialize collection jobs
+	std::vector<MDJobMaterializeCollection> OrganicMDJobVectorT2;				// contains a list of T2 materialize collection jobs
 	std::queue<OrganicMorphMeta> OrganicMorphMetaToSendToBuffer;				// stores a list of OrganicMorphMeta that are ready to send to buffer
-
-	std::mutex heapmutex;														// global mutexval
-	int numberOfCells = 2;														// the number of worker threads in this OrganicSystem
+	std::chrono::high_resolution_clock::time_point phase2begin, phase2end;		// used to determine amount of time for Phase 2 run completion time
+	std::mutex heapmutex;														// global heap mutexval; used by any thread when it must alter memory (vectors, using new/delete[], etc)
 	int workPriority = 0;														// work priority mode for per-tick splitting up of jobs for OrganicCells
 
 	OrganicSystem(int numberOfFactories, int bufferCubeSize, int windowWidth, int windowHeight);					// default constructor: number of factories, plus the size of the buffer cube
@@ -101,8 +104,8 @@ public:
 	void SetupFutureCollectionMM(int x, int y, int z);											// sets up all future data structures that will be needed for an EnclaveCollection that is produced using a ManifestMatrix
 	void SetupFutureCollectionMM(EnclaveKeyDef::EnclaveKey tempKey);							// does the same as SetupFuturecollectionMM, but uses an EnclaveKey as input.
 	void SetupFutureCollectionMMFromRenderList();												// runs SetupFutureCollectionMM function for all enclave keys found in renderCollectionList.
-	void SetOrganicCell1(thread_pool *thread_pool_ref);											// sets the pointer for Cell1 to be a valid worker thread
-	void SetOrganicCell2(thread_pool *thread_pool_ref);					// sets the pointer for Cell2 to be a valid worker thread
+	void SetOrganicCell1(thread_pool *thread_pool_ref);											// NEEDS REVISION/TERMINATION (11/3/2017): sets the pointer for Cell1 to be a valid worker thread
+	void SetOrganicCell2(thread_pool *thread_pool_ref);											// NEEDS REVISION/TERMINATION (11/3/2017): sets the pointer for Cell2 to be a valid worker thread
 	void AddOrganicCell(thread_pool* thread_pool_ref);
 	void AddOrganicTextureMetaArray(string mapname);											// adds a new texture meta array, which is a list that is used to map block IDs to texture UV coordinates.
 	void AddOrganicVtxColorMetaArray(string mapname);											// adds a new vertex color meta array, which is a list that is used to color individual vertexes.

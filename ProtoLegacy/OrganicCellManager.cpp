@@ -14,7 +14,7 @@ void OrganicCellManager::AssignT1TerrainCells()
 	{
 		int cellID = availableCellMapIter->first;					// get the OrganicCell's ID
 		//OrganicCell* cellReference = availableCellMapIter->second;	// get the direct reference to the cell
-		terrainCellMap[cellID] = availableCellMap[cellID];			// copy the value into terrainCellMap
+		t2CellMap[cellID] = availableCellMap[cellID];			// copy the value into terrainCellMap
 		availablesToErase.push_back(cellID);						// add the element to the eraseable list
 	}
 
@@ -28,20 +28,20 @@ void OrganicCellManager::AssignT1TerrainCells()
 
 void OrganicCellManager::ReleaseT1TerrainCells()
 {
-	std::map<int, OrganicCell*>::iterator terrainCellMapIter = terrainCellMap.begin();
+	std::map<int, OrganicCell*>::iterator terrainCellMapIter = t2CellMap.begin();
 	std::vector<int> terrainCellsToErase;
 
 	// first, copy the values into the available cell map
-	for (terrainCellMapIter; terrainCellMapIter != terrainCellMap.end(); ++terrainCellMapIter)
+	for (terrainCellMapIter; terrainCellMapIter != t2CellMap.end(); ++terrainCellMapIter)
 	{
 		int cellID = terrainCellMapIter->first;
-		availableCellMap[cellID] = terrainCellMap[cellID];
+		availableCellMap[cellID] = t2CellMap[cellID];
 		terrainCellsToErase.push_back(cellID);
 	}
 
 	for (std::vector<int>::iterator terrainCellsToEraseIter = terrainCellsToErase.begin(); terrainCellsToEraseIter != terrainCellsToErase.end(); ++terrainCellsToEraseIter)
 	{
-		terrainCellMap.erase(*terrainCellsToEraseIter);	// erase the value
+		t2CellMap.erase(*terrainCellsToEraseIter);	// erase the value
 	}
 	cout << ">>>> Terrain cells successfully released..." << endl;
 }

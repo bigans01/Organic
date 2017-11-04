@@ -20,7 +20,8 @@ class OrganicCellManager
 {
 public:
 	std::map<int, OrganicCell*> availableCellMap;		// a map containing available cells
-	std::map<int, OrganicCell*> terrainCellMap;			// a map containing all worker threads that can be work on terrain cells
+	std::map<int, OrganicCell*> t2CellMap;				// a map containing all worker threads that can work as T2 terrain cells
+	std::map<int, OrganicCell*> t1CellMap;				// a map containing all worker threads that can work as T1 terrain cells
 	int terrainT1CellLimit = 2;
 
 	void AssignT1TerrainCells();			// attempts to assign cells as T1 terrain processing cells
