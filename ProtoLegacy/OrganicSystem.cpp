@@ -26,7 +26,7 @@ OrganicSystem::OrganicSystem(int numberOfFactories, int bufferCubeSize, int wind
 	OGLM.OrganicBufferManager.DCMPtr = &OGLM.renderableCollectionList;	// set the OrganicBufferManager's DCMPtr (a pointer to an instance of OGLMDrawCallMeta)
 	OGLM.OrganicBufferManager.blueprintMatrixPtr = &BlueprintMatrix;	// set the OrganicBufferManager's blueprint matrix pointer
 	OGLM.OrganicBufferManager.organicSystemPtr = this;	// set the pointer to the processing queue in OGLM's buffer manager
-	OCLimits.setInitialOrganicCellLimits(this);				// sets the initial cell limits on engine startup (should only be called here)
+	OCLimits.setInitialOrganicCellLimits(this);				// sets the initial cell limits on engine startup (should only be called here); passes required pointer to this instance of OrganicSystem
 	blockTargetMeta.setVertexOffsets();					// set up vertex offsets
 }
 
@@ -1132,7 +1132,7 @@ void OrganicSystem::JobMaterializeCollectionFromFactoryViaMorph(MDJobMaterialize
 	//mutexval.lock();
 	//cout << "FACTORY WORK COMPLETE PASS..." << mdjob->MDKey.x << ", " << mdjob->MDKey.y << ", " << mdjob->MDKey.z << endl;
 	//mutexval.unlock();
-	RenderCollectionsRef->CreateRenderArrayFromFactory(mdjob->MDKey, FactoryRef, std::ref(mutexval));		// call function to add data into array; pass mutex to use
+	RenderCollectionsRef->CreateRenderArrayFromFactoryMorph(mdjob->MDKey, FactoryRef, std::ref(mutexval));		// call function to add data into array; pass mutex to use
 	//mutexval.unlock();
 																									//mutexval.unlock();
 																									//RenderCollection* collPtr = &RenderCollectionsRef->RenderMatrix[Key1];
@@ -2463,7 +2463,7 @@ void OrganicSystem::WaitForPhase2Promises()
 	{
 		
 		heapmutex.lock();
-		//cout << "size greater than 0, proceeding..." << "(size is " << FL_T2CollectionsProcessed.size() << ") " << endl;
+		cout << "T2 size greater than 0, proceeding..." << "(size is " << FL_T2CollectionsProcessed.size() << ") " << endl;
 		futureListIterator = FL_T2CollectionsProcessed.begin();
 		int collectionsToProcess = FL_T2CollectionsProcessed.size();
 		heapmutex.unlock();
@@ -2496,6 +2496,9 @@ void OrganicSystem::WaitForPhase2Promises()
 	//cout << "queue size acquired..." << endl;
 	if (organicMorphMetaQueueSize > 0)
 	{
+		heapmutex.lock();
+		cout << "MorphMetaQueueSize contains elements..." << endl;
+		heapmutex.unlock();
 		for (int x = 0; x < organicMorphMetaQueueSize; x++)
 		{
 			//cout << "attempting send to buffer..." << endl;
@@ -2514,6 +2517,7 @@ void OrganicSystem::WaitForPhase2Promises()
 	// empty T2
 	if (FL_T2CollectionsProcessed.size() > 0)	// check if there are any futures to wait for
 	{
+		//cout << "MorphMetaQueueSize contains elements..." << endl;
 		//cout << "clearing t2 promises..." << endl;
 		FL_T2CollectionsProcessed.clear();
 		OrganicMDJobVectorT2.clear();
@@ -2529,6 +2533,7 @@ void OrganicSystem::WaitForPhase2Promises()
 	// empty T1
 	if (FL_T1CollectionsProcessed.size() > 0)
 	{
+		cout << "clearing T1 queue..." << endl;
 		FL_T1CollectionsProcessed.clear();
 	}
 
@@ -2678,39 +2683,44 @@ void OrganicSystem::CheckProcessingQueue()
 
 void OrganicSystem::DivideTickWork()
 {
-	// MODE 0 default
+	// MODE 0: default (normal) = (3 cells) 1 T1 cell, 2 T2 cells
 	if (workPriority == 0)
 	{
 		// first, check for T1 terrain work
-
-		// second, check for T2 terrain work
 		// ...is there terrain to be worked on?
-		if (!T2CollectionProcessingQueue.empty())
+		if (T1CollectionProcessingQueue.empty())
 		{
-			cout << ">>>> Queue is not empty!!! dividing work..." << endl;
-			// if there is, are there already threads assigned to do it?
-			if (OCManager.t2CellMap.size() == 0)	//if there are no threads, assign them to do this work
+			// second, check for T2 terrain work
+			// ...is there terrain to be worked on?
+			if (!T2CollectionProcessingQueue.empty())
 			{
-				cout << ">>>> No terrain cells assigned, attempting assignment..." << endl;
-				// function call here
-				OCManager.AssignT1TerrainCells();
-			}
+				cout << ">>>> Queue is not empty!!! dividing work..." << endl;
+				// if there is, are there already threads assigned to do it?
+				if (OCManager.t2CellMap.size() == 0)	//if there are no threads, assign them to do this work
+				{
+					cout << ">>>> No terrain cells assigned, attempting assignment..." << endl;
+					// function call here
+					OCManager.AssignT1TerrainCells();
+				}
 
-		}
-		// ...is there no terrain to be worked on?
-		else if (T2CollectionProcessingQueue.empty())
-		{
-			
-			// if there were cells working in the last tick, but the terrain queue is empty, they must be freed
-			if (OCManager.t2CellMap.size() > 0)
+			}
+			// ...is there no terrain to be worked on?
+			else if (T2CollectionProcessingQueue.empty())
 			{
-				cout << ">>>> Queue is empty!!! reassigning cells used for terrain during last tick..." << endl;
-				// function call here
-				OCManager.ReleaseT1TerrainCells();
+
+				// if there were cells working in the last tick, but the terrain queue is empty, they must be freed
+				if (OCManager.t2CellMap.size() > 0)
+				{
+					cout << ">>>> Queue is empty!!! reassigning cells used for terrain during last tick..." << endl;
+					// function call here
+					OCManager.ReleaseT1TerrainCells();
+				}
 			}
 		}
 		
 	}
+
+	// MODE 1:
 
 }
 

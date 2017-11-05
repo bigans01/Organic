@@ -37,6 +37,7 @@ public:
 	int IsGLFloatPtrLoaded = 0;																			// indicates whether or not there is a valid dynamic array pointed to by GLFloatPtr.
 	int LastCollectionTriangleCount = 0;																// potentially unused?
 	int RenderCollectionArraySize = 0;																	// indicates the size of the dynamic array in bytes (required for OpenGL glBufferData)
+	int instantiatorFlag = 0;																			// has no purpose other than to instantiate this render collection on the heap (used with an OrganicSystem's heapMutex)
 	struct EnclaveManifestMeta {																		// stores meta data about a single EnclaveManifest
 		EnclaveKeyDef::EnclaveKey EnclaveManifestKey;
 		int currentTriangleCount = 0;
