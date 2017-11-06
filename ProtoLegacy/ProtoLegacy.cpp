@@ -212,14 +212,14 @@ int main()
 	// *********** thread pool set up
 
 
-	thread_pool mainthreadpool;
-	thread_pool* mainthreadpoolref = &mainthreadpool;
+	//thread_pool mainthreadpool;
+	//thread_pool* mainthreadpoolref = &mainthreadpool;
 
-	thread_pool mainthreadpool2;
-	thread_pool* mainthreadpoolref2 = &mainthreadpool2;
+	//thread_pool mainthreadpool2;
+	//thread_pool* mainthreadpoolref2 = &mainthreadpool2;
 
-	thread_pool mainthreadpool3;
-	thread_pool* mainthreadpoolref3 = &mainthreadpool3;
+	//thread_pool mainthreadpool3;
+	//thread_pool* mainthreadpoolref3 = &mainthreadpool3;
 
 	
 	EnclaveCollectionBlueprint testBlueprint3, flatBlueprint;
@@ -323,9 +323,9 @@ int main()
 	//Organic.AddOrganicCell(mainthreadpoolref2);
 
 	OrganicSystem Organic(3, 13, 1024, 768);					// number of factories, buffer size, pixel width, pixel height
-	Organic.AddOrganicCell(mainthreadpoolref);
-	Organic.AddOrganicCell(mainthreadpoolref2);
-	Organic.AddOrganicCell(mainthreadpoolref3);
+	//Organic.AddOrganicCell(mainthreadpoolref);
+	//Organic.AddOrganicCell(mainthreadpoolref2);
+	//Organic.AddOrganicCell(mainthreadpoolref3);
 
 	Organic.SetupCellMeta();									// set up metadata about the cells
 

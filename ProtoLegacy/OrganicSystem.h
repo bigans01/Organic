@@ -76,6 +76,9 @@ public:
 	OrganicCellLimitsList OCLimitsList;											// as list of OrganicCellLimits
 	thread_pool *Cell1;															// pointer for Cell 1
 	thread_pool *Cell2;															// pointer for Cell 2
+	thread_pool* organicThreadIndex[16];										// contains an array of up to 16 thread pool pointers
+	short threadIndexAmount;													// contains the amount of thread pointers in organicThreadIndex that actually point to valid threads
+	short isThreadIndexInitialized = 0;											// determines whether or not the pointers in organicThreadIndex have valid thread_pool references
 	EnclaveKeyDef::EnclaveKey PreviousCCKey;									// will store the previous Camera Collection key from the previous frame here
 	EnclaveKeyDef::EnclaveKey CameraCollectionKey;								// the current collection that the camera is in
 	EnclaveKeyDef::EnclaveKey CameraChunkKey;									// the curent chunk of the collection the camera is in
@@ -93,6 +96,7 @@ public:
 	int workPriority = 0;														// work priority mode for per-tick splitting up of jobs for OrganicCells
 
 	OrganicSystem(int numberOfFactories, int bufferCubeSize, int windowWidth, int windowHeight);					// default constructor: number of factories, plus the size of the buffer cube
+	~OrganicSystem();
 
 
 	void InterlockBaseCollections();															// connects the 3 base collections together -- EnclaveCollections, ManifestCollections, RenderCollections.
@@ -153,6 +157,7 @@ public:
 	void SetupCellMeta();																																						// cycles through each cell and adds the appropriate factory pointer to each
 	void DivideTickWork();																																						// determines how to divide the work among worker threads for this game tick
 	void WaitForPhase2Promises();																																				// waits for promises to finish in phase 2
+	int CreateThreads();
 	thread_pool* getCell1();																																					// gets a pointer to worker thread (Cell) #1
 	thread_pool* getCell2();																																					// gets a pointer to worker thread (Cell) #2
 

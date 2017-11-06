@@ -16,6 +16,7 @@ OrganicSystem::OrganicSystem(int numberOfFactories, int bufferCubeSize, int wind
 {
 	/* Summary: default constructor for the OrganicSystem */
 	InterlockBaseCollections();
+	CreateThreads();			// testing only.
 	AllocateFactories(numberOfFactories);				// setup the factories
 	OrganicGLManager* tempGLManagerPtr = &OGLM;			// get a pointer to the OrganicSystem's OGLM instance, and set the reference.
 	OGLM.SendPointerToBufferManager(tempGLManagerPtr);	// send the pointer to the buffer manager, so that it may use it to set up its buffer arrays
@@ -28,6 +29,31 @@ OrganicSystem::OrganicSystem(int numberOfFactories, int bufferCubeSize, int wind
 	OGLM.OrganicBufferManager.organicSystemPtr = this;	// set the pointer to the processing queue in OGLM's buffer manager
 	//OCLimits.setInitialOrganicCellLimits(this);				// sets the initial cell limits on engine startup (should only be called here); passes required pointer to this instance of OrganicSystem
 	blockTargetMeta.setVertexOffsets();					// set up vertex offsets
+}
+
+OrganicSystem::~OrganicSystem()
+{
+	if (isThreadIndexInitialized == 1)
+	{
+		cout << "attempting delete of threads..." << endl;
+		for (int x = 0; x < threadIndexAmount; x++)
+		{
+			delete organicThreadIndex[x];
+		}
+	}
+}
+
+int OrganicSystem::CreateThreads()
+{
+	isThreadIndexInitialized = 1;
+	int numberOfThreads = std::thread::hardware_concurrency() - 1;
+	threadIndexAmount = numberOfThreads;
+	for (int x = 0; x < numberOfThreads; x++)
+	{
+		organicThreadIndex[x] = new thread_pool;		// create a new instance of thread_pool on the heap, allocate to it
+		AddOrganicCell(organicThreadIndex[x]);			// add the cell
+	}
+	return numberOfThreads;				// return the number of threads; used to determine number of factories to create (next step in OrganicSystem constructor)
 }
 
 void OrganicSystem::InterlockBaseCollections()
