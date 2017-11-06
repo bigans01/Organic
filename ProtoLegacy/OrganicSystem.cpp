@@ -26,7 +26,7 @@ OrganicSystem::OrganicSystem(int numberOfFactories, int bufferCubeSize, int wind
 	OGLM.OrganicBufferManager.DCMPtr = &OGLM.renderableCollectionList;	// set the OrganicBufferManager's DCMPtr (a pointer to an instance of OGLMDrawCallMeta)
 	OGLM.OrganicBufferManager.blueprintMatrixPtr = &BlueprintMatrix;	// set the OrganicBufferManager's blueprint matrix pointer
 	OGLM.OrganicBufferManager.organicSystemPtr = this;	// set the pointer to the processing queue in OGLM's buffer manager
-	OCLimits.setInitialOrganicCellLimits(this);				// sets the initial cell limits on engine startup (should only be called here); passes required pointer to this instance of OrganicSystem
+	//OCLimits.setInitialOrganicCellLimits(this);				// sets the initial cell limits on engine startup (should only be called here); passes required pointer to this instance of OrganicSystem
 	blockTargetMeta.setVertexOffsets();					// set up vertex offsets
 }
 
@@ -543,6 +543,8 @@ void OrganicSystem::SetupCellMeta()
 		cellListIter++;				// ""
 	}
 	
+	OCLimitsList.setInitialOrganicCellLimits(this);								// set the values in the OCLimitsList, such ax max number of cells (which is equal to the number of cells added); pass a pointer 
+																	            // to this OrganicSystem. This can only be called after cells have been actually added. ( done in a previous step by calling 
 }
 
 void OrganicSystem::AddOrganicTextureMetaArray(string mapname)
@@ -2497,7 +2499,7 @@ void OrganicSystem::WaitForPhase2Promises()
 	if (organicMorphMetaQueueSize > 0)
 	{
 		heapmutex.lock();
-		cout << "MorphMetaQueueSize contains elements..." << endl;
+		//cout << "MorphMetaQueueSize contains elements..." << endl;
 		heapmutex.unlock();
 		for (int x = 0; x < organicMorphMetaQueueSize; x++)
 		{
@@ -2533,7 +2535,7 @@ void OrganicSystem::WaitForPhase2Promises()
 	// empty T1
 	if (FL_T1CollectionsProcessed.size() > 0)
 	{
-		cout << "clearing T1 queue..." << endl;
+		//cout << "clearing T1 queue..." << endl;
 		FL_T1CollectionsProcessed.clear();
 	}
 

@@ -35,7 +35,7 @@ void RenderCollectionMatrix::CreateRenderArrayFromManifestCollection(EnclaveKeyD
 {
 
 	mutexRef.lock();
-	RenderMatrix[Key].instantiatorFlag = 0;			// create the renderMatrtix on the stack
+	RenderMatrix[Key].instantiatorFlag = 0;			// create the renderMatrtix on the heap, if it wasn't created already (mutex is required to avoid heap corruption, in case another thread also needs to allocate on the heap)
 	mutexRef.unlock();
 
 	RenderMatrix[Key].SetManifestCollectionPtr(&ManifestCollectionMatrixPtr->ManiCollectionMap[Key]);	// set the pointer in the temp value
@@ -50,7 +50,7 @@ void RenderCollectionMatrix::CreateRenderArrayFromFactory(EnclaveKeyDef::Enclave
 {
 	//RenderMatrix[Key].SetManifestCollectionPtr(&ManifestCollectionMatrixPtr->ManiCollectionMap[Key]);	// set the pointer in the temp value
 	mutexRef.lock();
-	RenderMatrix[Key].instantiatorFlag = 0;			// create the renderMatrtix on the stack
+	RenderMatrix[Key].instantiatorFlag = 0;			// create the renderMatrtix on the heap, if it wasn't created already (mutex is required to avoid heap corruption, in case another thread also needs to allocate on the heap)
 	mutexRef.unlock();
 	RenderMatrix[Key].SetEnclaveCollectionPtr(&EnclaveCollectionMatrixPtr->EnclaveCollectionMap[Key]);
 	RenderMatrix[Key].CombineManifestArraysFromT1Factory(factoryRef, std::ref(mutexRef));

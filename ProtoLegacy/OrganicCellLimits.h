@@ -4,7 +4,7 @@
 
 Description: header file for OrganicCellLists.h
 
-Summary: An OrganicCellLists stores the current number of threads (Cells) that may be allocated to any specific type of task. This value is not static, and is subject to change throughout the engine's runtime.
+Summary: An OrganicCellLimits stores the current number of threads (Cells) that may be allocated to any specific type of task, based on the workPriority; it contains a set of values for each available work mode.
 
 ------------------------------------------------------------------------------------------*/
 

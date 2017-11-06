@@ -27,6 +27,7 @@ OrganicSystem object contains all objects necessary to preserve information on t
 #include "OrganicCellList.h"
 #include "OrganicCellManager.h"
 #include "OrganicCellLimits.h"
+#include "OrganicCellLimitsList.h"
 #include "OrganicMorphMeta.h"
 #include "MDJobMaterializeCollection.h"
 #include "MDListJobMaterializeCollection.h"
@@ -72,6 +73,7 @@ public:
 	OrganicCellList OCList;														// the OrganicSystem's instance of OrganicCellList
 	OrganicCellManager OCManager;												// an instance of OCManager that is responsible for determining what things to work on for OrganicCells
 	OrganicCellLimits OCLimits;													// contains the limits (max number per type of Cell) 
+	OrganicCellLimitsList OCLimitsList;											// as list of OrganicCellLimits
 	thread_pool *Cell1;															// pointer for Cell 1
 	thread_pool *Cell2;															// pointer for Cell 2
 	EnclaveKeyDef::EnclaveKey PreviousCCKey;									// will store the previous Camera Collection key from the previous frame here

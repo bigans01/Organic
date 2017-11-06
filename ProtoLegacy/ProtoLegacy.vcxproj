@@ -201,6 +201,7 @@
     <ClInclude Include="OrganicBlockTarget.h" />
     <ClInclude Include="OrganicCell.h" />
     <ClInclude Include="OrganicCellLimits.h" />
+    <ClInclude Include="OrganicCellLimitsList.h" />
     <ClInclude Include="OrganicCellList.h" />
     <ClInclude Include="OrganicCellManager.h" />
     <ClInclude Include="OrganicFaceMeta.h" />
@@ -256,6 +257,7 @@
     <ClCompile Include="OGLMRenderMetaContainer.cpp" />
     <ClCompile Include="OrganicBlockTarget.cpp" />
     <ClCompile Include="OrganicCellLimits.cpp" />
+    <ClCompile Include="OrganicCellLimitsList.cpp" />
     <ClCompile Include="OrganicCellManager.cpp" />
     <ClCompile Include="OrganicGLManager.cpp" />
     <ClCompile Include="OrganicSystem.cpp" />
