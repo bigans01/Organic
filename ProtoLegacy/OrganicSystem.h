@@ -59,6 +59,7 @@ class thread_pool;
 class OrganicSystem {
 
 public:
+	//friend class OGLMBufferManager;
 	EnclaveCollectionBlueprintMatrix BlueprintMatrix;							// stores blueprints that will be used to characterize/create collections of enclaves
 	EnclaveCollectionMatrix EnclaveCollections;									// matrix of EnclaveCollections (512 chunks, dynamically allocated array)
 	ManifestCollectionMatrix ManifestCollections;								// matrix of ManifestCollections (up to 512 chunks, unordered map)
@@ -79,19 +80,8 @@ public:
 	thread_pool* organicThreadIndex[16];										// contains an array of up to 16 thread pool pointers
 	short threadIndexAmount;													// contains the amount of thread pointers in organicThreadIndex that actually point to valid threads
 	short isThreadIndexInitialized = 0;											// determines whether or not the pointers in organicThreadIndex have valid thread_pool references
-	EnclaveKeyDef::EnclaveKey PreviousCCKey;									// will store the previous Camera Collection key from the previous frame here
-	EnclaveKeyDef::EnclaveKey CameraCollectionKey;								// the current collection that the camera is in
-	EnclaveKeyDef::EnclaveKey CameraChunkKey;									// the curent chunk of the collection the camera is in
-	EnclaveKeyDef::EnclaveKey CameraBlockKey;									// the current block in the chunk the camera is in
+
 	EnclaveCollectionStateArray CollectionStateArray;
-	std::queue<OrganicMorphMeta> T1CollectionProcessingQueue;					// a queue that stores Type 1 collection keys that need to be processed
-	std::queue<OrganicMorphMeta> T2CollectionProcessingQueue;					// a queue that stores Type 2 collection keys that need to be processed
-	std::vector<std::future<void>> FL_T1CollectionsProcessed;					// a vector of futures for any processed (completed) T1 collections
-	std::vector<std::future<void>> FL_T2CollectionsProcessed;					// a vector of futures for any processed (completed) T2 collections
-	std::vector<MDJobMaterializeCollection> OrganicMDJobVectorT1;				// contains a list of T1 materialize collection jobs
-	std::vector<MDJobMaterializeCollection> OrganicMDJobVectorT2;				// contains a list of T2 materialize collection jobs
-	std::queue<OrganicMorphMeta> OrganicMorphMetaToSendToBuffer;				// stores a list of OrganicMorphMeta that are ready to send to buffer
-	std::chrono::high_resolution_clock::time_point phase2begin, phase2end;		// used to determine amount of time for Phase 2 run completion time
 	std::mutex heapmutex;														// global heap mutexval; used by any thread when it must alter memory (vectors, using new/delete[], etc)
 	int workPriority = 0;														// work priority mode for per-tick splitting up of jobs for OrganicCells
 
@@ -99,9 +89,8 @@ public:
 	~OrganicSystem();
 
 
-	void InterlockBaseCollections();															// connects the 3 base collections together -- EnclaveCollections, ManifestCollections, RenderCollections.
-	void AddAndMaterializeSingleCollectionMM(int x, int y, int z);								/* adds a single new MM-based collection, and renders all top faces in all 64 top level chunks;
-																								 this task will run on the same thread on which it is called (will not utilize thread pool)*/
+	void JobCalibrateBlueprintBordersFromFactory(EnclaveKeyDef::EnclaveKey Key1, EnclaveManifestFactoryT1 *FactoryRef);															// for a blueprint in the blueprint matrix
+	void JobCalibrateBlueprintBordersFromFactory(EnclaveKeyDef::EnclaveKey Key1, EnclaveCollectionBlueprint* inBlueprintPtr, EnclaveManifestFactoryT1 *FactoryRef);				// for a stand-alone blueprint that hasn't been added to a matrix
 	void MaterializeCollection(EnclaveKeyDef::EnclaveKey Key1, EnclaveKeyDef::EnclaveKey Key2);	// temporary test function only; attempts to run all types of collection materialization jobs
 	void MaterializeAllCollectionsInRenderList(int renderProcess);								// will attempt to materialize all collections in renderCollectionList; 0 = Factory mode, 1 = MM mode
 	void ChangeSingleBlockMaterialAtXYZ(int x, int y, int z, int newmaterial);					// changes the material block at an x/y/z location
@@ -112,7 +101,7 @@ public:
 	void SetupFutureCollectionMMFromRenderList();												// runs SetupFutureCollectionMM function for all enclave keys found in renderCollectionList.
 	void SetOrganicCell1(thread_pool *thread_pool_ref);											// NEEDS REVISION/TERMINATION (11/3/2017): sets the pointer for Cell1 to be a valid worker thread
 	void SetOrganicCell2(thread_pool *thread_pool_ref);											// NEEDS REVISION/TERMINATION (11/3/2017): sets the pointer for Cell2 to be a valid worker thread
-	void AddOrganicCell(thread_pool* thread_pool_ref);
+	
 	void AddOrganicTextureMetaArray(string mapname);											// adds a new texture meta array, which is a list that is used to map block IDs to texture UV coordinates.
 	void AddOrganicVtxColorMetaArray(string mapname);											// adds a new vertex color meta array, which is a list that is used to color individual vertexes.
 	void SetGraphicsAPI();																		// sets up initial data for OpenGL functionality						
@@ -120,27 +109,7 @@ public:
 	void SendDataFromRenderPtrToGLBuffer(RenderCollection* renderCollectionPtr);				// sends all vertex data from the RenderCollection to the OGLM's OpenGL vertex data buffer (data buffer name: OrganicGLVertexBufferID)
 	void LoadVCDataToGLBuffer(RenderCollection* renderCollectionPtr);							// sends all vertex color data from the RenderCollection to the OGLM's OpenGL vertex color data buffer (data buffer name: OrganicGLVertexColorBufferID)
 	void AnalyzeRenderArray(int x, int y, int z, int xyz);										// reserved for future use.
-	void AllocateFactories(int noOfFactories);													// sets up Factories for future use. 
-	void JobMaterializeSingleCollectionFromMM(	EnclaveKeyDef::EnclaveKey Key1,																									// materializes a single collection from the ground up, utilizing a manifest matrix
-												EnclaveCollectionBlueprintMatrix BlueprintMatrixRef, 
-												EnclaveCollectionMatrix EnclaveCollectionsRef, 
-												ManifestCollectionMatrix ManifestCollectionsRef, 
-												RenderCollectionMatrix RenderCollectionsRef, 
-												EnclaveCollection *CollectionRef,
-												ManifestCollection *ManifestCollectionRef
-												);
-	void JobMaterializeMultiCollectionFromMM(MDListJobMaterializeCollection* mdjob, mutex& mutexval, int ThreadID);																// materializes multiple collections from the ground up, utilizing a manifest matrix.
-	void JobMaterializeMultiCollectionFromFactory(MDListJobMaterializeCollection mdjob, mutex& mutexval, EnclaveManifestFactoryT1 *FactoryRef, int ThreadID);					// materializes multiple collections from the ground up, utilizing a factory.
-	void JobMaterializeMultiCollectionFromFactory2(MDListJobMaterializeCollection* mdjob, mutex& mutexval, EnclaveManifestFactoryT1 *FactoryRef, int ThreadID);					// materializes multiple collections from the ground up, utilizing a factory. (testing only, may be erased)
-	void JobMaterializeCollectionFromFactoryViaMorph(MDJobMaterializeCollection* mdjob, mutex& mutexval, EnclaveManifestFactoryT1 *FactoryRef);
-	void JobRematerializeSingleExistingCollectionFromFactory(	EnclaveKeyDef::EnclaveKey Key1,																					// rematerializes a single collection on a currently loaded EnclaveCollection, from a Factory
-																EnclaveCollection *CollectionRef, 
-																EnclaveManifestFactoryT1 *FactoryRef, 
-																RenderCollectionMatrix *RenderCollectionRef, 
-																mutex& mutexval);		
-	void JobCalibrateBlueprintBordersFromFactory(EnclaveKeyDef::EnclaveKey Key1, EnclaveManifestFactoryT1 *FactoryRef);															// for a blueprint in the blueprint matrix
-	void JobCalibrateBlueprintBordersFromFactory(EnclaveKeyDef::EnclaveKey Key1, EnclaveCollectionBlueprint* inBlueprintPtr, EnclaveManifestFactoryT1 *FactoryRef);				// for a stand-alone blueprint that hasn't been added to a matrix
-	void DummyJob(int value, EnclaveManifestFactoryT1 *FactoryRef, mutex& mutexval);																							// dummy thread pool job, for testing only.
+
 	void SetRenderMode(int x);																																					// sets the RenderMode variable in the OGLM object
 	void RenderGLTerrain();																																						// renders everything in the Terrain buffer
 	void DetermineMouseCursorTargets(glm::vec3* originVector, glm::vec3* directionVector, int length);
@@ -162,8 +131,46 @@ public:
 	thread_pool* getCell2();																																					// gets a pointer to worker thread (Cell) #2
 
 private:
+	friend class OGLMBufferManager;
+	EnclaveKeyDef::EnclaveKey PreviousCCKey;									// will store the previous Camera Collection key from the previous frame here
+	EnclaveKeyDef::EnclaveKey CameraCollectionKey;								// the current collection that the camera is in
+	EnclaveKeyDef::EnclaveKey CameraChunkKey;									// the curent chunk of the collection the camera is in
+	EnclaveKeyDef::EnclaveKey CameraBlockKey;									// the current block in the chunk the camera is in
+	std::queue<OrganicMorphMeta> T1CollectionProcessingQueue;					// a queue that stores Type 1 collection keys that need to be processed
+	std::queue<OrganicMorphMeta> T2CollectionProcessingQueue;					// a queue that stores Type 2 collection keys that need to be processed
+	std::vector<std::future<void>> FL_T1CollectionsProcessed;					// a vector of futures for any processed (completed) T1 collections
+	std::vector<std::future<void>> FL_T2CollectionsProcessed;					// a vector of futures for any processed (completed) T2 collections
+	std::vector<MDJobMaterializeCollection> OrganicMDJobVectorT1;				// contains a list of T1 materialize collection jobs
+	std::vector<MDJobMaterializeCollection> OrganicMDJobVectorT2;				// contains a list of T2 materialize collection jobs
+	std::queue<OrganicMorphMeta> OrganicMorphMetaToSendToBuffer;				// stores a list of OrganicMorphMeta that are ready to send to buffer
+	std::chrono::high_resolution_clock::time_point phase2begin, phase2end;		// used to determine amount of time for Phase 2 run completion time
+
+
+	void AllocateFactories(int noOfFactories);													// sets up Factories for future use. 
+	void AddOrganicCell(thread_pool* thread_pool_ref);
+	void InterlockBaseCollections();															// connects the 3 base collections together -- EnclaveCollections, ManifestCollections, RenderCollections.
 	void MaterializeRenderablesByMM();						// this function will attempt to render all RenderCollections having keys found in this list, regardless of their status, by using a ManifestMatrix (ManifestCollectionMatrix)
 	void MaterializeRenderablesByFactory();					// this function  will attempt to render all RenderCollections having keys found in this list, regardless of their status, by using one or more Factories. (EnclaveManifestFactoryT1)
+	void AddAndMaterializeSingleCollectionMM(int x, int y, int z);								/* adds a single new MM-based collection, and renders all top faces in all 64 top level chunks;
+																								this task will run on the same thread on which it is called (will not utilize thread pool)*/
+	void JobMaterializeMultiCollectionFromMM(MDListJobMaterializeCollection* mdjob, mutex& mutexval, int ThreadID);																// materializes multiple collections from the ground up, utilizing a manifest matrix.
+	void JobMaterializeMultiCollectionFromFactory(MDListJobMaterializeCollection mdjob, mutex& mutexval, EnclaveManifestFactoryT1 *FactoryRef, int ThreadID);					// materializes multiple collections from the ground up, utilizing a factory.
+	void JobMaterializeMultiCollectionFromFactory2(MDListJobMaterializeCollection* mdjob, mutex& mutexval, EnclaveManifestFactoryT1 *FactoryRef, int ThreadID);					// materializes multiple collections from the ground up, utilizing a factory. (testing only, may be erased)
+	void JobMaterializeCollectionFromFactoryViaMorph(MDJobMaterializeCollection* mdjob, mutex& mutexval, EnclaveManifestFactoryT1 *FactoryRef);
+	void JobRematerializeSingleExistingCollectionFromFactory(EnclaveKeyDef::EnclaveKey Key1,																					// rematerializes a single collection on a currently loaded EnclaveCollection, from a Factory
+		EnclaveCollection *CollectionRef,
+		EnclaveManifestFactoryT1 *FactoryRef,
+		RenderCollectionMatrix *RenderCollectionRef,
+		mutex& mutexval);
+	void DummyJob(int value, EnclaveManifestFactoryT1 *FactoryRef, mutex& mutexval);																							// dummy thread pool job, for testing only.
+	void JobMaterializeSingleCollectionFromMM(EnclaveKeyDef::EnclaveKey Key1,																									// materializes a single collection from the ground up, utilizing a manifest matrix
+		EnclaveCollectionBlueprintMatrix BlueprintMatrixRef,
+		EnclaveCollectionMatrix EnclaveCollectionsRef,
+		ManifestCollectionMatrix ManifestCollectionsRef,
+		RenderCollectionMatrix RenderCollectionsRef,
+		EnclaveCollection *CollectionRef,
+		ManifestCollection *ManifestCollectionRef
+	);
 
 };
 

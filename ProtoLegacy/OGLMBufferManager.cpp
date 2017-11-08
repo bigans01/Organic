@@ -13,6 +13,7 @@ Description: OGLMBufferManager.cpp contains the definitions for the declarations
 #include "OrganicGLManager.h"
 #include "OrganicSystem.h"
 
+
 void OGLMBufferManager::SetCubesize(int inCubesize)
 {
 	cubesize = inCubesize;

@@ -14,6 +14,13 @@ void OrganicCellLimitsList::setInitialOrganicCellLimits(OrganicSystem* in_organi
 	// 4 core processor settings
 	if (maxCellLimit == 3)
 	{
+		// mode 0 values
+		cellLimitsArray[0].limitArray[0] = 2;
 
+		// mode 1 values
+
+		// mode 2 values
+
+		// mode 3 values
 	}
 }
