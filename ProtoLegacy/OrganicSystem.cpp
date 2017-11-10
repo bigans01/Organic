@@ -16,7 +16,7 @@ OrganicSystem::OrganicSystem(int numberOfFactories, int bufferCubeSize, int wind
 {
 	/* Summary: default constructor for the OrganicSystem */
 	InterlockBaseCollections();
-	int numOfFactoriesToCreate = CreateThreads();			// testing only.
+	int numOfFactoriesToCreate = CreateThreads();		// creates the worker threads, returns the number of factories to create (will be equal to number of worker threads)
 	AllocateFactories(numOfFactoriesToCreate);				// setup the factories
 	OrganicGLManager* tempGLManagerPtr = &OGLM;			// get a pointer to the OrganicSystem's OGLM instance, and set the reference.
 	OGLM.SendPointerToBufferManager(tempGLManagerPtr);	// send the pointer to the buffer manager, so that it may use it to set up its buffer arrays
@@ -26,10 +26,16 @@ OrganicSystem::OrganicSystem(int numberOfFactories, int bufferCubeSize, int wind
 	OGLM.createRenderableCollectionList(bufferCubeSize);	// create the dynamic array that stores a list of renderable collections; the max number of renderable collections is equal to bufferCubeSize cubed.
 	OGLM.OrganicBufferManager.DCMPtr = &OGLM.renderableCollectionList;	// set the OrganicBufferManager's DCMPtr (a pointer to an instance of OGLMDrawCallMeta)
 	OGLM.OrganicBufferManager.blueprintMatrixPtr = &BlueprintMatrix;	// set the OrganicBufferManager's blueprint matrix pointer
-	OGLM.OrganicBufferManager.organicSystemPtr = this;	// set the pointer to the processing queue in OGLM's buffer manager
-	//OCLimits.setInitialOrganicCellLimits(this);				// sets the initial cell limits on engine startup (should only be called here); passes required pointer to this instance of OrganicSystem
-	OCLimitsList.setInitialOrganicCellLimits(this);
+	OGLM.OrganicBufferManager.organicSystemPtr = this;	// set the pointer to the processing queue in OGLM's buffer manager			
+	OrganicCellManager* tempOCManagerPtr = &OCManager;	// create a temporary pointer to the intance of OrganicCellManager (used as a copy-by-value argument in following line)
+	OCLimitsList.setInitialOrganicCellLimits(this, tempOCManagerPtr);		// sets the initial cell limits on engine startup (should only be called here); passes required pointer to this instance of OrganicSystem
 	blockTargetMeta.setVertexOffsets();					// set up vertex offsets
+	SetupCellMeta();									// add cells into the availability pool
+	OrganicCellLimitsList* tempOrganicCellLimitsListPtr = &OCLimitsList;	// create a temporary pointer to the instance of OrganicCellLimitsList (used as a copy-by-value argument in following line)
+	OCManager.setOrganicCellLimitsListPtr(tempOrganicCellLimitsListPtr);
+	OCManager.setOrganicSystemPtr(this);				// pass the reference to this instance of OrganicSystem to the OCManager
+	//OCManager.populateCellMapsOnEngineStart();						// populate the cell maps in OCManager, based on the current number of cells available
+
 }
 
 OrganicSystem::~OrganicSystem()
@@ -205,8 +211,8 @@ void OrganicSystem::JobMaterializeSingleCollectionFromMM(	EnclaveKeyDef::Enclave
 void OrganicSystem::MaterializeCollection(EnclaveKeyDef::EnclaveKey Key1, EnclaveKeyDef::EnclaveKey Key2)
 {
 	EnclaveCollections.SetOrganicSystem(this);
-	thread_pool *tpref = getCell1();
-	thread_pool *tpref2 = getCell2();
+	thread_pool *tpref = OCList.cellList[0].threadPtr;
+	thread_pool *tpref2 = OCList.cellList[1].threadPtr;
 	EnclaveKeyDef::EnclaveKey dumbtempkey;
 	dumbtempkey.x = 0;
 	dumbtempkey.y = 0;
@@ -504,7 +510,7 @@ void OrganicSystem::ChangeSingleBlockMaterialAtXYZ(int x, int y, int z, int newm
 	
 	
 	//std::mutex mutexval;
-	thread_pool *tpref = getCell1();
+	thread_pool *tpref = OCList.cellList[0].threadPtr;
 	//OrganicFactoryIndex.FactoryMap["Factory 1"].StorageArray[0].VertexArrayCount = 0;
 	EnclaveManifestFactoryT1 *FactoryPtr = &OrganicFactoryIndex.FactoryMap[1];
 	FactoryPtr->TextureDictionaryRef = &TextureDictionary;
@@ -526,32 +532,14 @@ void OrganicSystem::AddBlueprint(int x, int y, int z, EnclaveCollectionBlueprint
 	BlueprintMatrix.BlueprintMap[tempKey] = blueprint;	// add blueprint to the BlueprintMatrix's unordered map -- BlueprintMap
 }
 
-thread_pool* OrganicSystem::getCell1()
-{
-	return Cell1;
-}
 
-thread_pool* OrganicSystem::getCell2()
-{
-	return Cell2;
-}
-
-void OrganicSystem::SetOrganicCell1(thread_pool *thread_pool_ref)
-{
-	Cell1 = thread_pool_ref;
-}
-
-void OrganicSystem::SetOrganicCell2(thread_pool *thread_pool_ref)
-{
-	Cell2 = thread_pool_ref;
-}
 
 void OrganicSystem::AddOrganicCell(thread_pool* thread_pool_ref)
 {
 	OrganicCell cellToAdd;			// create a temporary unfilled cell
 	cellToAdd.cellStatus = 0;		// set the cell's status
 	cellToAdd.threadPtr = thread_pool_ref;	// add the thread pointer
-	OCList.cellList[OCList.numberOfCells++] = cellToAdd;	// add the cell to the map
+	OCList.cellList[OCList.numberOfCells++] = cellToAdd;	// add the cell to the map; the value of numberOfCells indicates the key in the map
 }
 
 void OrganicSystem::SetupCellMeta()
@@ -560,17 +548,17 @@ void OrganicSystem::SetupCellMeta()
 	std::map<int, OrganicCell>::iterator cellListIter;
 	std::map<int, OrganicCell*>::iterator cellManagerIter;
 	factoryMapIter = OrganicFactoryIndex.FactoryMap.begin();					// set the factory iterator's begin value
-	cellListIter = OCList.cellList.begin();										// set the cellList iterator's begin value
+	cellListIter = OCList.cellList.begin();										// set the cellList iterator's begin value; we will start looking at the first OrganicCell in the list
 	
 	for (int x = 0; x < OCList.numberOfCells; x++)	// cycle through all cells
 	{
-		cellListIter->second.factoryPtr = &factoryMapIter->second;				// set the reference to the factory that was added when
+		cellListIter->second.factoryPtr = &factoryMapIter->second;				// set the reference to the factory that this OrganicCell will bea paired with
 		OCManager.availableCellMap[x] = &cellListIter->second;					// add the cell as available to the OCManager
 		factoryMapIter++;			// increment the iterators
 		cellListIter++;				// ""
 	}
 	
-	OCLimitsList.setInitialOrganicCellLimits(this);								// set the values in the OCLimitsList, such ax max number of cells (which is equal to the number of cells added); pass a pointer 
+	//OCLimitsList.setInitialOrganicCellLimits(this);								// set the values in the OCLimitsList, such ax max number of cells (which is equal to the number of cells added); pass a pointer 
 																	            // to this OrganicSystem. This can only be called after cells have been actually added. ( done in a previous step by calling 
 }
 
@@ -2102,10 +2090,6 @@ void OrganicSystem::AllocateFactories(int noOfFactories)
 	cout << "Organic Factory build time: " << factorytime.count() << endl;
 }
 
-void OrganicSystem::SetupFutureCollectionMMFromRenderList()
-{
-
-}
 
 void OrganicSystem::AddKeyToRenderList(EnclaveKeyDef::EnclaveKey tempKey)
 {
@@ -2672,7 +2656,7 @@ void OrganicSystem::CheckProcessingQueue()
 		//cout << "number of promises: " << numberOfPromises << endl;
 		//cout << ">>>> CheckProcessingQueue post-future list end (1)..." << endl;
 	}
-	
+
 
 	// send OrganicMorphMeta pairs to the OrganicGLManager for processing
 	int morphMetaQueueSize = morphMetaToSendToBuffer.size();
@@ -2699,7 +2683,7 @@ void OrganicSystem::CheckProcessingQueue()
 		FL_T2CollectionsProcessed.clear();
 		heapmutex.unlock();
 	}
-	
+
 	if (OrganicMDJobVector.size() > 0)
 	{
 		heapmutex.lock();
@@ -2746,11 +2730,41 @@ void OrganicSystem::DivideTickWork()
 				}
 			}
 		}
-		
+
 	}
 
 	// MODE 1:
 
+
+	// ****NEW MODE CHECKS****
+	// set conditions for mode 0
+	if (!T1CollectionProcessingQueue.empty() && !T2CollectionProcessingQueue.empty())		// condition for mode 0: T1 and T2 cannot be empty.
+	{
+		// check if previously set work priority is equal to 0; if this is true, do 
+		if (workPriority == 0)
+		{
+
+		}
+		// do this if the current workPriority is equal to 1
+		else if (workPriority == 1)
+		{
+			OCLimitsList.changeToPriority(0, 1);	// change from priority 1 to priority 0
+			workPriority = 0;
+		}
+	}
+	else if (T1CollectionProcessingQueue.empty() && !T2CollectionProcessingQueue.empty())	// condition for mode 1: T1 is empty, but T2 is not
+	{
+		if (workPriority == 1)
+		{
+
+		}
+		// do this if the current workPriority is equal to 0
+		else if (workPriority == 0)
+		{
+			OCLimitsList.changeToPriority(1, 0);	// change from priority 0 to priority 1
+			workPriority = 1;
+		}
+	}
 }
 
 void OrganicSystem::SetWorldCoordinates(float x, float y, float z)

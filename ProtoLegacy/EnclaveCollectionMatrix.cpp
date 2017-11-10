@@ -192,7 +192,7 @@ void EnclaveCollectionMatrix::MultiAddNewCollectionWithBlueprint(int numThreads,
 	if (numThreads == 1)
 	{
 		//cout << "1 thread called to run..." << endl;
-		thread_pool *tpref = OrganicPointer->getCell1();
+		thread_pool *tpref = OrganicPointer->OCList.cellList[0].threadPtr;
 		/*
 		thread_pool *tpref = OrganicPointer->getpool();
 		std::packaged_task<void()> Job1(std::bind
@@ -362,8 +362,8 @@ void EnclaveCollectionMatrix::MultiAddNewCollectionWithBlueprint(int numThreads,
 		);
 		*/
 		//auto jobstart = std::chrono::high_resolution_clock::now();
-		thread_pool *tpref = OrganicPointer->getCell1();
-		thread_pool *tpref2 = OrganicPointer->getCell2();
+		thread_pool *tpref = OrganicPointer->OCList.cellList[0].threadPtr;
+		thread_pool *tpref2 = OrganicPointer->OCList.cellList[1].threadPtr;
 		//auto jobfinish = std::chrono::high_resolution_clock::now();
 		// *********************************************************************************WORKING THREAD CODE*********************************************************************************
 		//std::packaged_task<int(int)> Job7(std::bind

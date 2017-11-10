@@ -327,7 +327,7 @@ int main()
 	//Organic.AddOrganicCell(mainthreadpoolref2);
 	//Organic.AddOrganicCell(mainthreadpoolref3);
 
-	Organic.SetupCellMeta();									// set up metadata about the cells
+	//Organic.SetupCellMeta();									// set up metadata about the cells
 
 	Organic.AddOrganicTextureMetaArray("base");					// set up the texture map; first ever map will be named "base"
 	Organic.AddOrganicVtxColorMetaArray("base");
@@ -760,7 +760,6 @@ int main()
 	//std::cout << "Elapsed time (Terrain targeting): " << targetselapsed.count() << endl;
 
 	do {
-
 		auto start3 = std::chrono::high_resolution_clock::now();
 		// |||||||||||||||||||||| PHASE 1 operations: work division
 		Organic.CheckForMorphing();			// determine if there were any OGLM buffer shifts that needed to be done.
