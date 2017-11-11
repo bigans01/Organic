@@ -17,8 +17,12 @@ Summary: An EnclavePainterListMatrix is an object that contains an unordered_map
 #include "EnclaveKeyDef.h"
 #include "EnclavePainterList.h"
 
+class EnclaveCollectionMatrix;
+class EnclaveCollectionBlueprint;
 class EnclavePainterListMatrix {
-public:
+private:
+	friend class EnclaveCollectionMatrix;
+	friend class EnclaveCollectionBlueprint;
 	std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclavePainterList, EnclaveKeyDef::KeyHasher> PainterListMatrix;	// the painter list matrix
 
 

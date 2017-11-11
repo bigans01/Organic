@@ -13,9 +13,15 @@ Description: Contains 6 instances of OrganicFaceMeta; this all comes together as
 
 #include "OrganicFaceMeta.h"
 
+class OrganicSystem;
+class EnclaveManifestFactoryT1;
+class EnclaveManifest;
 class OrganicBlockMeta
 {
-public:
+private:
+	friend class OrganicSystem;
+	friend class EnclaveManifestFactoryT1;
+	friend class EnclaveManifest;
 	OrganicFaceMeta FaceIndex[6];	// one face for each direction: west (32), north (16), east (8), south (4), top (2), bottom (1)
 };
 

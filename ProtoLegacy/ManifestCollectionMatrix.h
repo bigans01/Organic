@@ -27,9 +27,13 @@ Dependents: a valid instance of a EnclaveCollectionMatrix
 #include "ManifestCollection.h"
 //#include <mutex>
 
+class OrganicSystem;
+class RenderCollectionMatrix;
 class ManifestCollectionMatrix
 {
-public:
+private:
+	friend class OrganicSystem;
+	friend class RenderCollectionMatrix;
 	std::unordered_map<EnclaveKeyDef::EnclaveKey, ManifestCollection, EnclaveKeyDef::KeyHasher> ManiCollectionMap;				// un unordered map which stores the ManifestCollections
 	std::unordered_map<EnclaveKeyDef::EnclaveKey, reference_wrapper<ManifestCollection>, EnclaveKeyDef::KeyHasher> ManiCollectionMapRef;
 	EnclaveCollectionMatrix *CollectionMatrixRef;																				// a reference to a valid EnclaveCollectionMatrix

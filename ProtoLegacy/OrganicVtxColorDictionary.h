@@ -14,9 +14,15 @@ Description: contains one or more entries of OrganicVtxColorMetaArrays (?)
 #include "OrganicVtxColorMetaArray.h"
 #include <unordered_map>
 
+class OrganicSystem;
+class EnclaveManifestFactoryT1;
+class EnclaveManifest;
 class OrganicVtxColorDictionary
 {
-public:
+private:
+	friend class OrganicSystem;
+	friend class EnclaveManifestFactoryT1;
+	friend class EnclaveManifest;
 	std::unordered_map<std::string, OrganicVtxColorMetaArray> Dictionary;	// unordered map that actually contains the Dictionary objects
 	OrganicVtxColorDictionary();											// required so that te Dictionary can be added into the unordered map
 };

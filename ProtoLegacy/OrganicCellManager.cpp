@@ -6,6 +6,7 @@
 #include "OrganicSystem.h"
 #include "OrganicCellLimitsList.h"
 
+/*
 void OrganicCellManager::AssignT1TerrainCells()
 {
 	std::map<int, OrganicCell*>::iterator availableCellMapIter = availableCellMap.begin();	// set up an iterator for looping
@@ -47,6 +48,7 @@ void OrganicCellManager::ReleaseT1TerrainCells()
 	}
 	cout << ">>>> Terrain cells successfully released..." << endl;
 }
+*/
 
 void OrganicCellManager::populateCellMapsOnEngineStart()
 {

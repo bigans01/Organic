@@ -20,9 +20,11 @@ Dependents: a valid instance of a EnclaveCollectionMatrix
 #include <unordered_map>
 #include "MDJobMaterializeCollection.h"
 
+class OrganicSystem;
 class MDListJobMaterializeCollection
 {
-	public:
+	private:
+		friend class OrganicSystem;
 		std::unordered_map<EnclaveKeyDef::EnclaveKey, MDJobMaterializeCollection, EnclaveKeyDef::KeyHasher> ListMatrix; // the unordered_map containing all the MDJobMaterializeCollection instances needed for this job. 
 };
 

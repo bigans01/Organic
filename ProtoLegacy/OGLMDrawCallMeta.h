@@ -6,10 +6,13 @@
 #include "EnclaveKeyDef.h"
 #include <GL/glew.h>
 
+class OrganicGLManager;
+class OrganicSystem;
 class OGLMDrawCallMeta
 {
-	public:
-
+	private:
+		friend class OrganicGLManager;
+		friend class OrganicSystem;
 		// DCM delegator (DCMD) array pointers
 		int* DCMD_SubBufferContents;
 		int* DCMD_SubBufferLocation;

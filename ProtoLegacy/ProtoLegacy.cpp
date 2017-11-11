@@ -574,7 +574,7 @@ int main()
 	std::chrono::duration<double> blueelapsed = blueend - bluestart;
 	std::cout << "Elapsed time (Blueprint addition): " << blueelapsed.count() << endl;
 	*/
-	//Organic.ArrayTest();
+
 	Organic.MaterializeAllCollectionsInRenderList(0);			// 0 = use a set of Factories, 1 = use a ManifestMatrix style
 
 
@@ -714,14 +714,14 @@ int main()
 	float resultfloat = fmod(dummyfloat, 4);
 	int resultfloat2 = intnum / 32;
 
-	CursorPathTraceContainer containerResult = Organic.EnclaveCollections.GetCursorCoordTrace(37.3);
-	cout << "collection: " << containerResult.CollectionCoord << endl;
-	cout << "chunk: " << containerResult.ChunkCoord << endl;
-	cout << "block: " << containerResult.BlockCoord << endl;
-	cout << "distance from point to nearest positive floor/ceiling: " << containerResult.distance_to_pos << endl;
-	cout << "distance from point to nearest negative floor/ceiling: " << containerResult.distance_to_neg << endl;
+	//CursorPathTraceContainer containerResult = Organic.EnclaveCollections.GetCursorCoordTrace(37.3);
+	//cout << "collection: " << containerResult.CollectionCoord << endl;
+	//cout << "chunk: " << containerResult.ChunkCoord << endl;
+	//cout << "block: " << containerResult.BlockCoord << endl;
+	//cout << "distance from point to nearest positive floor/ceiling: " << containerResult.distance_to_pos << endl;
+	//cout << "distance from point to nearest negative floor/ceiling: " << containerResult.distance_to_neg << endl;
 
-	cout << "float test:" << resultfloat2 << endl;
+	//cout << "float test:" << resultfloat2 << endl;
 
 	// ------------------------------------END OPEN GL SET UP
 

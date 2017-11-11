@@ -11,9 +11,15 @@ Description: contains a single pair of UV coordinates used in finding a coordina
 #ifndef ORGANICTEXTURECOORDS_H
 #define ORGANICTEXTURECOORDS_H
 
+class OrganicSystem;
+class EnclaveManifestFactoryT1;
+class EnclaveManifest;
 class OrganicTextureCoords
 {
-public:
+private:
+	friend class OrganicSystem;
+	friend class EnclaveManifestFactoryT1;
+	friend class EnclaveManifest;
 	float U;
 	float V;
 };

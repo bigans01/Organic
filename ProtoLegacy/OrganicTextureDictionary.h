@@ -14,9 +14,15 @@ Description: contains one or more entries of OrganicTextureMetaArrays. Values mu
 #include "OrganicTextureMetaArray.h"
 #include <unordered_map>
 
+class OrganicSystem;
+class EnclaveManifestFactoryT1;
+class EnclaveManifest;
 class OrganicTextureDictionary
 {
-public:
+private:
+	friend class OrganicSystem;
+	friend class EnclaveManifestFactoryT1;
+	friend class EnclaveManifest;
 	std::unordered_map<std::string, OrganicTextureMetaArray> Dictionary;				// the member variable within the class that actually contains the OrganicTextureMetaArrays
 	OrganicTextureDictionary();															// default constructor
 };

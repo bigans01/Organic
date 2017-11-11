@@ -14,8 +14,10 @@ Summary: An EnclavePainter is an object that updates the block types in a single
 #ifndef ENCLAVEPAINTER_H
 #define ENCLAVEPAINTER_H
 
+class EnclaveCollectionMatrix;
 class EnclavePainter {
-	public:
+	private:
+		friend class EnclaveCollectionMatrix;
 		unsigned char PaintData[8];			// determines which of the 64 blocks in an Enclave will be painted.
 };
 #endif

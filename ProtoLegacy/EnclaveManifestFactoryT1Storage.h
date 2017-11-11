@@ -21,8 +21,14 @@ Dependents: a valid instance of ManifestCollectionMatrix
 #include <iostream>
 #include <GL/glew.h>
 
+class EnclaveManifestFactoryT1;
+class RenderCollection;
+class OrganicSystem;
 class EnclaveManifestFactoryT1Storage {
-public:
+private:
+	friend class RenderCollection;
+	friend class OrganicSystem;
+	friend class EnclaveManifestFactoryT1;
 	EnclaveKeyDef::EnclaveKey StorageKey;		// an EnclaveKey used to represent the proper EnclaveKey value of a stored Enclave
 	int TotalEnclaveTriangles = 0;				// total triangles to be rendered, stored within this enclave; equivalent of the same variable in EnclaveManifest
 	int VertexArrayCount = 0;					// the count of actual vertexes used in the VertexArray below (increments by one with each element added into VertexArray)

@@ -17,7 +17,9 @@ Summary: A PathTraceContainer stores the x, y, or z coordinates of a block's loc
 #include <iostream>
 
 class PathTraceContainer {
-public:
+private:
+	friend class OrganicSystem;
+	friend class EnclaveCollectionMatrix;
 	int CollectionCoord;			// x, y, or z coordinate of the Collection of Enclaves
 	int ChunkCoord;					// x, y, or z coordinate of the chunk within the Collection
 	int BlockCoord;					// x, y, or z coordinate of the block within the chunk

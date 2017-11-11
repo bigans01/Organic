@@ -14,9 +14,15 @@ Description: contains up to 32000~ different OrganicTextureMeta entries.
 
 #include "OrganicTextureMeta.h"
 
+class OrganicSystem;
+class EnclaveManifestFactoryT1;
+class EnclaveManifest;
 class OrganicTextureMetaArray
 {
-public:
+private:
+	friend class OrganicSystem;
+	friend class EnclaveManifestFactoryT1;
+	friend class EnclaveManifest;
 	OrganicTextureMeta Index[10000];			// can be increased beyond 10000 at a later time.
 };
 

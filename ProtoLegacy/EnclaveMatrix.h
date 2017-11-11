@@ -18,10 +18,12 @@ Description: Header file for EnclaveMatrix.cpp. EnclaveMatrix.cpp is a currently
 #include "Enclave.h"
 #include "EnclaveMultiJob.h"
 
+class ManifestCollection;
 class EnclaveMatrix
 {
 
-public:
+private:
+	friend class ManifestCollection;
 	std::unordered_map<EnclaveKeyDef::EnclaveKey, Enclave, EnclaveKeyDef::KeyHasher> PrimeMatrix;
 	std::unordered_map<EnclaveKeyDef::EnclaveKey, Enclave, EnclaveKeyDef::KeyHasher>::iterator m_iter;
 	EnclaveMultiJob testmulti;

@@ -21,10 +21,14 @@ Dependents: none.
 #ifndef ENCLAVECOLLECTIONACTIVATELISTT2_H
 #define ENCLAVECOLLECTIONACTIVATELISTT2_H
 
-
+//class OrganicSystem;
+//class EnclaveCollectionMatrix;
+//class EnclaveCollection;
 class EnclaveCollectionActivateListT2 {
-public:
-
+private:
+	friend class OrganicSystem;
+	friend class EnclaveCollectionMatrix;
+	friend class EnclaveCollection;
 	int flagArray[8][8] = { 0, 0, 0, 0, 0, 0, 0, 0		// potential unnecessary intialization (review later)
 							,0, 0, 0, 0, 0, 0, 0, 0
 							,0, 0, 0, 0, 0, 0, 0, 0

@@ -24,10 +24,22 @@ and has the ability to store EnclavePainters, which have the ability to change t
 #include <string>
 #include <vector>
 
-class EnclaveCollection;
+//class EnclaveCollection;
+//class OrganicSystem;
+//class Enclave;
+//class EnclaveCollectionMatrix;
+//class EnclaveCollectionBlueprintMatrix;
 class EnclaveCollectionBlueprint {
 
 public:
+	void FlattenToElevation();																	// Blueprint modelling: "flattens" the blueprint, so that it is aligned to be flat horizontally. (i.e., on the x and z axis)
+	void CarveSlope();																			// Blueprint modelling: sets a carved slope.
+private:
+	friend class EnclaveCollection;
+	friend class OrganicSystem;
+	friend class Enclave;
+	friend class EnclaveCollectionMatrix;
+	friend class EnclaveCollectionBlueprintMatrix;
 	int CarveMode = 1;											// determines the current carve mode; default is 1
 	typedef unsigned char(&ElevationMapRef)[8][8];				// set up type def for rest of header file
 	unsigned char SurfaceChunks[8][8] = { 0 } ;							// set up the 64 byte array for surface chunks (any chunk exposed to air)
@@ -61,8 +73,6 @@ public:
 	ElevationMapRef& GetSolidChunkData();														// returns a reference to the solid chunk array
 	ElevationMapRef& GetCustomPaintableChunkData();												// returns a reference to the custom chunk array
 	ElevationMapRef& GetStandardPaintableChunkData();											// returns a reference to the standard chunk array
-	void CarveSlope();																			// Blueprint modelling: sets a carved slope.
-	void FlattenToElevation();																	// Blueprint modelling: "flattens" the blueprint, so that it is aligned to be flat horizontally. (i.e., on the x and z axis)
 	EnclaveUnveilMeta SetupCarvePlan(EnclaveKeyDef::EnclaveKey tempKey);						// Blueprint modelling: sets up a 32 x 32 array that an Enclave may reference to find the y values to set itself at; this will be continually changed
 	EnclaveUnveilMeta ReturnBorderChunkFacesToRender(int x,		// used when there is a neighboring blueprint. It compares blueprint A to the border wall in blueprint B, to determine what to render.
 													 int y, 

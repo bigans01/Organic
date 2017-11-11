@@ -29,7 +29,9 @@ Notes:	this will very likely be modified continuously throughout development.
 class OrganicGLManager;					// required forward declaration
 class OrganicSystem;
 class OGLMBufferManager {
-public:
+private:
+	friend class OrganicGLManager;
+	friend class OrganicSystem;
 	int* BufferOffsetMatrixArray;		// a pointer to a dynamic array which will contain memory offsets measured in bytes. these offsets represent the exact beginning location of each "sub-buffer" that a collection has within the mega buffer
 	int* RenderCollectionMatrixArray;	// a pointer to a dynamic array which will contain pointers to the render collections that will need to be rendered.
 	int* RenderableBufferList;			// a pointer to a sorted list that will determine how many buffers to render. This will be resorted every time a new buffer needs to be executed by OpenGL.

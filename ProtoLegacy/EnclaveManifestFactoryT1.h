@@ -28,11 +28,15 @@ Dependents: a valid instance of ManifestCollectionMatrix
 #include "OrganicVtxColorDictionary.h"
 #include "FloatTupleXYZ.h"
 
+class OrganicSystem;
+class RenderCollection;
 class EnclaveManifestFactoryT1
 {
-public:
+private:
+	friend class OrganicSystem;
+	friend class RenderCollection;
 	EnclaveCollection *EnclaveCollectionPtr;												// pointer to a valid EnclaveCollection
-	std::map<int, EnclaveCollection> FactoryCollections;										// map that contains one or more personal, or "localized" EnclaveCollections designed for use specifically by the Factory.
+	std::map<int, EnclaveCollection> FactoryCollections;									// map that contains one or more personal, or "localized" EnclaveCollections designed for use specifically by the Factory.
 	Enclave::EnclavePolyArray *EnclavePolyArrayPtr;											// pointer to an EnclavePolyArray within previous EnclaveCollection
 	OrganicTextureDictionary *TextureDictionaryRef;											// pointer to a valid OrganicTextureDictionary contained within an OrganicSystem instance
 	OrganicVtxColorDictionary *VertexColorDictionaryRef;									// pointer to a valid OrganicVtxColorDictionary contained within an OrganicSystem instance

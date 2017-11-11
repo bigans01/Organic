@@ -13,9 +13,13 @@ Description: Contains 3 GLfloat values representing the RGB value of a vertex to
 
 #include <GL/glew.h>
 
+//class OrganicSystem;
 class OrganicVtxColorRGB
 {
-public:
+private:
+	friend class OrganicSystem;
+	friend class EnclaveManifest;
+	friend class EnclaveManifestFactoryT1;
 	GLfloat red;
 	GLfloat green;
 	GLfloat blue;

@@ -6,9 +6,13 @@
 #include "EnclaveCollection.h"
 #include "EnclaveKeyDef.h"
 
+class EnclaveCollectionStateArray;
+class EnclaveBlockRayTracker;
 class EnclaveCollectionState
 {
-public:
+private:
+	friend class EnclaveCollectionStateArray;
+	friend class EnclaveBlockRayTracker;
 	EnclaveKeyDef::EnclaveKey ActualCollectionKey;
 	int isActive = 0;
 	EnclaveCollection* collectionPtr;

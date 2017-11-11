@@ -18,9 +18,11 @@ Dependents: none
 #ifndef ECBXAXISCARVEPLAN_H
 #define ECBXAXISCARVEPLAN_H
 
+//class EnclaveCollectionBlueprint;
 class ECBXAxisCarvePlan
 {
-public:
+private:
+	friend class  EnclaveCollectionBlueprint;
 	unsigned char CPArray[32][32];			// first dimension is x, second is z
 
 };

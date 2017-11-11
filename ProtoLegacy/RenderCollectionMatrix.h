@@ -26,7 +26,8 @@ will iterate over all elements found within this object, calling one draw call f
 
 class RenderCollectionMatrix
 {
-	public:
+	private:
+		friend class OrganicSystem;
 		std::unordered_map<EnclaveKeyDef::EnclaveKey, RenderCollection, EnclaveKeyDef::KeyHasher> RenderMatrix;			// the unordered map of RenderCollections.
 		ManifestCollectionMatrix *ManifestCollectionMatrixPtr;															// pointer to the ManifestCollectionMatrix, where the ManifestCollections will be found.
 		EnclaveCollectionMatrix *EnclaveCollectionMatrixPtr;

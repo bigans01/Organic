@@ -16,9 +16,13 @@ Summary: An OrganicCellLimits stores the current number of threads (Cells) that 
 #include <thread>
 
 class OrganicSystem;
+class OrganicCellManager;
+class OrganicCellLimitsList;
 class OrganicCellLimits
 {
-public:
+private:
+	friend class OrganicCellManager;
+	friend class OrganicCellLimitsList;
 	OrganicSystem* organicSystemPtr;	// a pointer to the OrganicSystem that this instance of OrganicCellLimits belongs to (used to reference workPriority in the OrganicSystem)
 	int maxNumberOfCells;			// the max number of cells that can possibly run during the engine's life (equal to number of possible CPU threads -1)
 	unsigned char limitArray[8];	// an array of 4 "limits"
@@ -30,7 +34,6 @@ public:
 									// index 5 = maintenance cells
 									// index 6 = unused
 									// index 7 = unused
-	void setInitialOrganicCellLimits(OrganicSystem* in_organicPtr); // sets the cells based on the number of cores (called once on engine startup)
 
 };
 

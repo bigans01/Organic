@@ -13,9 +13,15 @@ Description: Contains meta data for a cube-based texture that will be used in th
 
 #include <OrganicVtxColorRGB.h>
 
+class OrganicSystem;
+class EnclaveManifestFactoryT1;
+class EnclaveManifest;
 class OrganicVtxColorFaceMeta
 {
-	public:
+	private:
+		friend class OrganicSystem;
+		friend class EnclaveManifestFactoryT1;
+		friend class EnclaveManifest;
 		OrganicVtxColorRGB FaceMeta[6];			// an array for storing 6 RGB float triplet values (one block face has 6 of these)
 };
 

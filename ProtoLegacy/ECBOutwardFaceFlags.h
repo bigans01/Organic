@@ -13,9 +13,11 @@ Summary: An ECBOutwardFaceFlags object contains 32 ints, one for each block that
 #ifndef ECBOUTWARDFACEFLAGS_H
 #define ECBOUTWARDFACEFLAGS_H
 
+//class EnclaveCollectionBlueprint;
 class ECBOutwardFaceFlags
 {
-public:
+private:
+	friend class EnclaveCollectionBlueprint;
 	int faceflagarray[32] = { 0 };		// the array of 32 ints, initialized for safety/best practice.
 };
 

@@ -29,6 +29,14 @@ Dependents: -a valid instance of a ManifestCollection (preferably with the same 
 
 class RenderCollection {
 public:
+	RenderCollection();																					// default constructor?
+	RenderCollection(int dummy);																		// potentially unused?
+	~RenderCollection();																				// required for manual memory management; deletes dynamic array pointed to by GLFloatPtr (if it exists) 
+private:
+	friend class RenderCollectionMatrix;
+	friend class OrganicSystem;
+	friend class OrganicGLManager;
+	friend class EnclaveManifest;
 	EnclaveDataFinder enclaveDataStart[64];
 	ManifestCollection *ManifestCollectionPtr;															// the pointer to the related ManifestCollection.
 	EnclaveCollection *EnclaveCollectionPtr;															// pointer to the associated EnclaveCollection.
@@ -49,11 +57,6 @@ public:
 		EnclaveManifestMeta MetaArray[512];
 	};
 	CollectionMeta RenderableManifestMeta;
-
-	RenderCollection();																					// default constructor?
-	RenderCollection(int dummy);																		// potentially unused?
-	~RenderCollection();																				// required for manual memory management; deletes dynamic array pointed to by GLFloatPtr (if it exists) 
-
 	void CombineManifestArrays();																		// iterates through all elements found in the ManifestCollection, and generates a dynamic array that is pointed to by GLFloatPtr.
 	void CombineManifestArrays(mutex& mutexval);														// iterates through all elements found in the ManifestCollection, and generates a dynamic array that is pointed to by GLFloatPtr. (uses a mutex)
 	void CombineManifestArraysFromT1Factory(EnclaveManifestFactoryT1 *factoryRef, mutex& mutexval);		// iterates through all of the current elements found in a T1 factory.

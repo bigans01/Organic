@@ -36,8 +36,15 @@ Dependents: none.
 #include <mutex>
 
 class OrganicSystem;
+class RenderCollectionMatrix;
+class EnclaveCollectionStateArray;
+class ManifestCollection;
 class EnclaveCollectionMatrix {
-public:
+private:
+	friend class OrganicSystem;
+	friend class RenderCollectionMatrix;
+	friend class EnclaveCollectionStateArray;
+	friend class ManifestCollection;
 	typedef unsigned char(&ElevationMapRef)[8][8];																					// typedef for returning an array of 8x8 chars
 	OrganicSystem *OrganicPointer;
 	std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveCollection, EnclaveKeyDef::KeyHasher> EnclaveCollectionMap;				// unordered map which stores the collections

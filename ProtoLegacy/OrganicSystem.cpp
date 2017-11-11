@@ -17,7 +17,7 @@ OrganicSystem::OrganicSystem(int numberOfFactories, int bufferCubeSize, int wind
 	/* Summary: default constructor for the OrganicSystem */
 	InterlockBaseCollections();
 	int numOfFactoriesToCreate = CreateThreads();		// creates the worker threads, returns the number of factories to create (will be equal to number of worker threads)
-	AllocateFactories(numOfFactoriesToCreate);				// setup the factories
+	AllocateFactories(numOfFactoriesToCreate);			// setup the factories
 	OrganicGLManager* tempGLManagerPtr = &OGLM;			// get a pointer to the OrganicSystem's OGLM instance, and set the reference.
 	OGLM.SendPointerToBufferManager(tempGLManagerPtr);	// send the pointer to the buffer manager, so that it may use it to set up its buffer arrays
 	OGLM.SetupBufferManagerArrays(bufferCubeSize);		// setup the buffer manager's arrays
@@ -32,9 +32,9 @@ OrganicSystem::OrganicSystem(int numberOfFactories, int bufferCubeSize, int wind
 	blockTargetMeta.setVertexOffsets();					// set up vertex offsets
 	SetupCellMeta();									// add cells into the availability pool
 	OrganicCellLimitsList* tempOrganicCellLimitsListPtr = &OCLimitsList;	// create a temporary pointer to the instance of OrganicCellLimitsList (used as a copy-by-value argument in following line)
-	OCManager.setOrganicCellLimitsListPtr(tempOrganicCellLimitsListPtr);
+	OCManager.setOrganicCellLimitsListPtr(tempOrganicCellLimitsListPtr);	// set the pointer to the OrganicCellLimits object, in the OCManager
 	OCManager.setOrganicSystemPtr(this);				// pass the reference to this instance of OrganicSystem to the OCManager
-	//OCManager.populateCellMapsOnEngineStart();						// populate the cell maps in OCManager, based on the current number of cells available
+	OCManager.populateCellMapsOnEngineStart();						// populate the cell maps in OCManager, based on the current number of cells available, and the chosen workPriority
 
 }
 
@@ -2097,12 +2097,6 @@ void OrganicSystem::AddKeyToRenderList(EnclaveKeyDef::EnclaveKey tempKey)
 	SetupFutureCollectionMM(tempKey);
 }
 
-void OrganicSystem::ArrayTest()
-{
-	EnclaveCollectionActivateListT2 listT2_1;
-	listT2_1.flagArray[0][0] = 128;
-}
-
 void OrganicSystem::SendRenderListToGLTerrainBuffer()
 {
 	std::vector<EnclaveKeyDef::EnclaveKey>::iterator renderListIter = renderCollectionList.KeyVector.begin();
@@ -2696,6 +2690,7 @@ void OrganicSystem::CheckProcessingQueue()
 
 void OrganicSystem::DivideTickWork()
 {
+	/*
 	// MODE 0: default (normal) = (3 cells) 1 T1 cell, 2 T2 cells
 	if (workPriority == 0)
 	{
@@ -2732,12 +2727,10 @@ void OrganicSystem::DivideTickWork()
 		}
 
 	}
-
-	// MODE 1:
-
+	*/
 
 	// ****NEW MODE CHECKS****
-	// set conditions for mode 0
+	// set conditions for priority 0
 	if (!T1CollectionProcessingQueue.empty() && !T2CollectionProcessingQueue.empty())		// condition for mode 0: T1 and T2 cannot be empty.
 	{
 		// check if previously set work priority is equal to 0; if this is true, do 
@@ -2748,10 +2741,13 @@ void OrganicSystem::DivideTickWork()
 		// do this if the current workPriority is equal to 1
 		else if (workPriority == 1)
 		{
+			cout << "Switching priority from 1 to 0" << endl;
 			OCLimitsList.changeToPriority(0, 1);	// change from priority 1 to priority 0
 			workPriority = 0;
 		}
 	}
+
+	// set conditions for priority 1
 	else if (T1CollectionProcessingQueue.empty() && !T2CollectionProcessingQueue.empty())	// condition for mode 1: T1 is empty, but T2 is not
 	{
 		if (workPriority == 1)
@@ -2761,6 +2757,7 @@ void OrganicSystem::DivideTickWork()
 		// do this if the current workPriority is equal to 0
 		else if (workPriority == 0)
 		{
+			cout << "Switching priority from 0 to 1" << endl;
 			OCLimitsList.changeToPriority(1, 0);	// change from priority 0 to priority 1
 			workPriority = 1;
 		}

@@ -52,14 +52,14 @@ void OrganicCellLimitsList::changeToPriority(int in_priority, int in_oldPriority
 		{
 			if (in_oldPriority == 0)	// old priority to change from is 0
 			{
-				//organicCellManagerPtr->reAssignCell_T1toT2();	// move a single T1 cell to the T2 availability pool
+				organicCellManagerPtr->reAssignCell_T1toT2();	// move a single T1 cell to the T2 availability pool
 			}
 		}
 		else if (in_priority == 0)	// new priority to change to is 0
 		{
 			if (in_oldPriority == 1)	// old priority to change from is 1
 			{
-				//organicCellManagerPtr->reAssignCell_T2toT1();	// move a single T2 cell to the T1 availability pool
+				organicCellManagerPtr->reAssignCell_T2toT1();	// move a single T2 cell to the T1 availability pool
 			}
 		}
 	}

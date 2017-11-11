@@ -24,9 +24,11 @@ Summary: An EnclaveBlockRayTracker keeps track of a ray as it traverses throguh 
 #include "FloatTupleXYZ.h"
 #include "OrganicBlockTarget.h"
 
+class OrganicSystem;
 class EnclaveBlockRayTracker
 {
-public:
+private:
+	friend class OrganicSystem;
 	EnclaveCollection* currentCollectionPtr;	// pointer to the current collection that the ray is traversing across; the ray can potentially traverse across multiple collections
 	Enclave* enclavePtr;
 	EnclaveCollectionState* currentCollectionState;

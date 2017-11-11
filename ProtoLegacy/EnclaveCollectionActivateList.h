@@ -7,7 +7,7 @@
 #include "EnclaveKeyDef.h"
 
 class EnclaveCollectionActivateList {
-public:
+private:
 	int count = 0;
 	EnclaveKeyDef::EnclaveKey activatables[512];
 	char flagArray[8][8];

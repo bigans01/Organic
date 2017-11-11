@@ -10,7 +10,7 @@
 #include <GL/glew.h>
 class EnclaveCollectionMesh
 {
-public:
+private:
 	struct EnclaveDict
 	{
 		EnclaveKeyDef::EnclaveKey UniqueKey;

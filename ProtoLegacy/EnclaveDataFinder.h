@@ -8,7 +8,7 @@
 
 class EnclaveDataFinder
 {
-public:
+private:
 	EnclaveKeyDef::EnclaveKey DFKey;
 	int indexStart;
 	int totalTriangles;

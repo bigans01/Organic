@@ -21,9 +21,11 @@ Dependents: a valid instance of ManifestCollectionMatrix
 #include <unordered_map>
 #include <EnclaveManifestFactoryT1.h>
 
+class OrganicSystem;
 class EnclaveManifestFactoryT1Index
 {
 public:
+	friend class OrganicSystem;
 	std::unordered_map<int, EnclaveManifestFactoryT1> FactoryMap;		// unordered_map that contains instances of EnclaveManifestFactoryT1
 };
 

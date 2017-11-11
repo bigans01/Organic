@@ -66,14 +66,13 @@ public:
 	RenderCollectionMatrix RenderCollections;									// matrix of RenderCollections
 	OrganicTextureDictionary TextureDictionary;									// an instance for an OrganicTextureDictionary
 	OrganicVtxColorDictionary VertexColorDictionary;							// an instance for an OrganicVtxColorDictionary
-	OrganicGLManager OGLM;														// an instance of the OrganicGLManager; will be used to manage OpenGL buffer data and other similiar operations
 	OrganicBlockTarget blockTargetMeta;											// meta data about the currently targeted block
 	EnclaveManifestFactoryT1Index OrganicFactoryIndex;							// FactoryIndex for this OrganicSystem
 	EnclaveKeyContainer renderCollectionList;									// contains a a list of Keys that determine which EnclaveCollections to render and/or process	
 	MaterializeCollectionListContainer MatCollList;
 	EnclaveCollectionStateArray CollectionStateArray;
 	std::mutex heapmutex;														// global heap mutexval; used by any thread when it must alter memory (vectors, using new/delete[], etc)
-
+	OrganicGLManager OGLM;														// an instance of the OrganicGLManager; will be used to manage OpenGL buffer data and other similiar operations
 	OrganicSystem(int numberOfFactories, int bufferCubeSize, int windowWidth, int windowHeight);					// default constructor: number of factories, plus the size of the buffer cube
 	~OrganicSystem();
 
@@ -98,7 +97,6 @@ public:
 	void SetRenderMode(int x);																																					// sets the RenderMode variable in the OGLM object
 	void RenderGLTerrain();																																						// renders everything in the Terrain buffer
 	void GLCleanup();																																							// for deallocating and/or turning off OpenGL components
-	void ArrayTest();																																							// testing only
 	void SendRenderListToGLTerrainBuffer();																																		// will send all renderable enclaves listed in the renderCollectionList to the OpenGL buffer
 	void LoadNWChunks();																																						// currently for testing: "moves the world" by preparing buffers to load data for RenderCollections +1 chunk NW of current camera position
 	void SetupWorldArea(float x, float y, float z);
@@ -110,6 +108,7 @@ public:
 	void WaitForPhase2Promises();																																				// waits for promises to finish in phase 2
 
 private:
+
 	thread_pool* organicThreadIndex[16];										// contains an array of up to 16 thread pool pointers
 	short threadIndexAmount;													// contains the amount of thread pointers in organicThreadIndex that actually point to valid threads
 	short isThreadIndexInitialized = 0;											// determines whether or not the pointers in organicThreadIndex have valid thread_pool references

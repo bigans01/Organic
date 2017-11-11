@@ -18,9 +18,11 @@ so that it knows all collections it needs to materialize.
 #include <vector>
 #include "MDListJobMaterializeCollection.h"
 
-class  MaterializeCollectionListContainer
+class OrganicSystem;
+class MaterializeCollectionListContainer
 {
-public:
+private:
+	friend class OrganicSystem;
 	std::vector<MDListJobMaterializeCollection> MaterializeCollectionList;	// the vector which contains the lists
 };
 

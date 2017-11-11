@@ -34,11 +34,34 @@ using namespace std;
 #include "EnclaveNeighborMeta.h"
 
 class EnclaveCollection;
+class EnclaveCollectionMatrix;
+class OrganicGLManager;
+class OrganicSystem;
+class EnclaveManifestFactoryT1;
+class EnclaveManifest;
+class EnclaveBlockRayTracker;
+class EnclaveMatrix;
+class EnclaveMulitJob;
+class EnclaveCollectionBlueprint;
 class EnclaveCollectionNeighborList;
 
 class Enclave {
-
 public:
+	Enclave();																// default constructor.
+
+private:
+	friend class EnclaveCollection;
+	friend class EnclaveCollectionMatrix;
+	friend class OrganicGLManager;
+	friend class OrganicSystem;
+	friend class EnclaveManifestFactoryT1;
+	friend class EnclaveManifest;
+	friend class EnclaveBlockRayTracker;
+	friend class EnclaveMatrix;
+	friend class EnclaveMultiJob;
+	friend class EnclaveCollectionBlueprint;
+	friend class EnclaveCollectionNeighborList;
+
 	typedef unsigned char(&ElevationMapRef)[8][8];
 	int total_triangles = 0;												// the sum of all triangles that will be rendered from the currently unveiled polygons.
 	EnclaveKeyDef::EnclaveKey UniqueKey, CollectionKey;						// the unique Key identifying the Enclave, and the key of the Collection that this enclave belongs to; 
@@ -70,7 +93,7 @@ public:
 
 
 
-	Enclave();																// default constructor.
+
 	Enclave(EnclaveKeyDef::EnclaveKey collectkey, int x, int y, int z);		// Required constructor for adding to a valid EnclaveCollectionMatrix
 	Enclave(int x, int y, int z);											// Required constructor for creating an Enclave in a case other than adding it to a collection
 	

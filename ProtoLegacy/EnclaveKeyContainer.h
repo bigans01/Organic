@@ -16,9 +16,11 @@ Summary: an EnclaveKeyContainer is an object which contains a vector, "KeyVector
 #include <vector>
 #include "EnclaveKeyDef.h"
 
+class OrganicSystem;
 class EnclaveKeyContainer
 {
-public:	
+private:	
+	friend class OrganicSystem;
 	std::vector<EnclaveKeyDef::EnclaveKey> KeyVector;	// the vector that the keys will be stored in
 };
 

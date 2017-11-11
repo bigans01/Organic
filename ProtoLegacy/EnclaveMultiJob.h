@@ -5,9 +5,11 @@
 
 #include <future>
 
+class EnclaveMatrix;
 class EnclaveMultiJob
 {
-	public:
+	private:
+		friend class EnclaveMatrix;
 		void RunMultiJob(
 			int x, 
 			int y, 

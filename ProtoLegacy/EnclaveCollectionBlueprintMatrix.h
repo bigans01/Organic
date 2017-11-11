@@ -22,9 +22,17 @@ will be used by the OrganicSystem to determine what to do with a collection of e
 #include <unordered_map>
 
 class EnclaveCollectionNeighborList;
+//class OrganicSystem;
+class OGLMBufferManager;
+//class EnclaveCollectionMatrix;
+//class EnclaveCollection;
 class EnclaveCollectionBlueprintMatrix
 {
-	public:
+	private:
+		friend OrganicSystem;
+		friend OGLMBufferManager;
+		friend EnclaveCollectionMatrix;
+		friend EnclaveCollection;
 		std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveCollectionBlueprint, EnclaveKeyDef::KeyHasher> BlueprintMap;
 		EnclaveCollectionNeighborList DetermineBlueprintBordersToRender(EnclaveKeyDef::EnclaveKey blueprintKey,				// this function determines which blueprints exist next to this one.
 																	    EnclaveCollectionBlueprint* originBlueprint, 

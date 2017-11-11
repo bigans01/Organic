@@ -24,9 +24,13 @@ Notes: When adding new member variables, accidentally copying a referenced value
 #include <RenderCollectionMatrix.h>
 #include <functional>
 
+class OrganicSystem;
 class MDJobMaterializeCollection
 {
 public:
+	MDJobMaterializeCollection();									// a dummy constructor
+private:
+	friend class OrganicSystem;
 	EnclaveKeyDef::EnclaveKey MDKey;								// the unique key of the collection that will be processed
 	EnclaveCollectionBlueprintMatrix* MDBlueprintMatrixRef;			// a pointer to the blueprint matrix
 	EnclaveCollectionMatrix* MDEnclaveCollectionsRef;				// a pointer to the enclave collection matrix
@@ -35,7 +39,6 @@ public:
 	EnclaveCollection* MDEnclaveCollectionPtr;						// a pointer to a valid enclave collection
 	ManifestCollection* MDManifestCollectionPtr;					// a pointer to a valid manifest collection; this is not used with factories but is included anyway
 
-	MDJobMaterializeCollection();									// a dummy constructor
 
 	MDJobMaterializeCollection(																					/* the only non-constructor function, 
 																												   passes all necessary parameters for this 

@@ -23,8 +23,23 @@ Dependents: none.
 #ifndef ENCLAVECOLLECTION_H
 #define ENCLAVECOLLECTION_H
 class EnclaveCollectionBlueprintMatrix;
+class EnclaveCollectionBlueprint;
+class EnclaveCollectionMatrix;
+class OrganicSystem;
+class Enclave;
+class EnclaveBlockRayTracker;
+class OrganicGLManager;
+class EnclaveManifestFactoryT1;
 class EnclaveCollection {
-public:
+private:
+	friend class EnclaveCollectionBlueprintMatrix;
+	friend class EnclaveCollectionBlueprint;
+	friend class EnclaveCollectionMatrix;
+	friend class OrganicSystem;
+	friend class Enclave;
+	friend class EnclaveBlockRayTracker;
+	friend class OrganicGLManager;
+	friend class EnclaveManifestFactoryT1;
 	Enclave EnclaveArray[8][8][8];																							// 8 x 8 x 8 chunks 
 	typedef unsigned char(&ElevationMapRef)[8][8];
 	unsigned char ElevationMap[8][8] = { 128, 128 };																		// this value is a 64-byte array, that determines which enclaves (on the y-axis) 																														// are the "surface" enclaves (i.e., those exposed to air)

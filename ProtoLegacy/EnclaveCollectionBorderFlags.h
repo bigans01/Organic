@@ -14,9 +14,15 @@ Summary: Contains meta data for determining which borders of an EnclaveCollectio
 #ifndef ENCLAVECOLLECTIONBORDERFLAGS_H
 #define ENCLAVECOLLECTIONBORDERFLAGS_H
 
+class EnclaveCollectionBlueprintMatrix;
+class Enclave;
+class EnclaveCollectionMatrix;
 class EnclaveCollectionBorderFlags
 {
-public:
+private:
+	friend class EnclaveCollectionBlueprintMatrix;
+	friend class Enclave;
+	friend class EnclaveCollectionMatrix;
 	int West = 1;
 	int North = 1;
 	int East = 1;

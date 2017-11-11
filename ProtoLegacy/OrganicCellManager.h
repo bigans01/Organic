@@ -20,20 +20,17 @@ class OrganicCellLimitsList;
 class OrganicSystem;
 class OrganicCellManager
 {
-public:
+	//void AssignT1TerrainCells();			// attempts to assign cells as T1 terrain processing cells
+	//void ReleaseT1TerrainCells();			// releases t1 terrain cells and puts them back into the available pool
+
+private:
+	friend class OrganicSystem;
+	friend class OrganicCellLimitsList;
 	std::map<int, OrganicCell*> availableCellMap;		// a map containing available cells
 	std::map<int, OrganicCell*> t2CellMap;				// a map containing all worker threads that can work as T2 terrain cells
 	std::map<int, OrganicCell*> t1CellMap;				// a map containing all worker threads that can work as T1 terrain cells
 	OrganicCellLimitsList* organicCellLimitsListPtr;	// a pointer to the OrganicSystem's instance of OrganicCellLimitsList
 	OrganicSystem* organicSystemPtr;					// a pointer ot the OrganicSystem that this instance belongs to
-	//int terrainT1CellLimit = 2;
-
-	void AssignT1TerrainCells();			// attempts to assign cells as T1 terrain processing cells
-	void ReleaseT1TerrainCells();			// releases t1 terrain cells and puts them back into the available pool
-
-private:
-	friend class OrganicSystem;
-	friend class OrganicCellLimitsList;
 	void setOrganicCellLimitsListPtr(OrganicCellLimitsList* in_OrganicCellLimitsListPtr);
 	void setOrganicSystemPtr(OrganicSystem* in_organicSystemPtr);
 	void populateCellMapsOnEngineStart();

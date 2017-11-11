@@ -15,9 +15,11 @@ determine which faces to render on blocks that face other chunks.
 
 #include "EnclaveUnveilMeta.h"
 
+class Enclave;
 class EnclaveNeighborMeta
 {
-public:
+private:
+	friend class Enclave;
 	unsigned char NeighborBlockData[4][4][4];		// stores up to 64 values that are equivalent to an Enclave "flag" (i.e., t1_flag, t2_flag) etc
 
 

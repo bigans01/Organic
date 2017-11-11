@@ -5,13 +5,23 @@
 
 #include "OGLMRenderMetaContainerElement.h"
 
+class OrganicGLManager;
+class OrganicSystem;
+class OrganicBufferManager;
+class OGLMBufferManager;
 class OGLMRenderMetaContainer
 {
 public:
+	~OGLMRenderMetaContainer();
+private:
+	friend class OrganicGLManager;
+	friend class OrganicSystem;
+	friend class OrganicBufferManager;
+	friend class OGLMBufferManager;
 	OGLMRenderMetaContainerElement* renderMetaContainerArray;
 	int isDynamicArrayCreated = 0;								// determines if the current dynamic array is being used
 	void createContainerArray(int inCubesize);
-	~OGLMRenderMetaContainer();
+
 };
 
 #endif

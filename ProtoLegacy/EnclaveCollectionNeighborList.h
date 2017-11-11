@@ -12,10 +12,15 @@ Summary: EnclaveCollectionNeighborList is an object that stores up to 6 pointers
 
 #include "EnclaveCollectionBlueprint.h"
 
-
+class EnclaveCollectionBlueprintMatrix;
+class Enclave;
+class EnclaveCollection;
 class EnclaveCollectionNeighborList
 {
-public:
+private:
+	friend class EnclaveCollectionBlueprintMatrix;
+	friend class Enclave;
+	friend class EnclaveCollection;
 	int WestNeighborExists = 0;			// determines if there is a neighboring collection west of this one; set to 1 if this is true
 	int NorthNeighborExists = 0;
 	int EastNeighborExists = 0;

@@ -24,9 +24,19 @@ Dependents: a valid instance of ManifestCollectionMatrix
 #include <functional>
 #include <mutex>
 
-
+class OrganicSystem;
+class ManifestCollectionMatrix;
+class EnclaveCollectionMesh;
+class RenderCollection;
 class ManifestCollection {
 public:
+	ManifestCollection();																									// default constructor
+	~ManifestCollection();																									// destructor called for manual memory cleanup 
+private:
+	friend class OrganicSystem;
+	friend class ManifestCollectionMatrix;
+	friend class EnclaveCollectionMesh;
+	friend class RenderCollection;
 	std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveManifest, EnclaveKeyDef::KeyHasher> ManMatrix;						// unordered map which stores the EnclaveManifests
 	std::unordered_map<EnclaveKeyDef::EnclaveKey, reference_wrapper<EnclaveManifest>, EnclaveKeyDef::KeyHasher> testmap2;
 	std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveManifest, EnclaveKeyDef::KeyHasher>::iterator ManMatrixIter;		// an iterator for the above unordered map
@@ -36,8 +46,7 @@ public:
 	ManifestCollection(EnclaveMatrix *matrixref);																			// unused constructor; reserved for later use
 	ManifestCollection(EnclaveMatrix *matrixref, EnclaveCollectionMatrix *collectionref);									// unused constructor; reserved for later use
 	ManifestCollection(EnclaveCollectionMatrix *collectionref);																// currently used constructor;  takes in a valid EnclaveCollectionMatrix, to set the corresponding public member for this class
-	ManifestCollection();																									// default constructor
-	~ManifestCollection();																									// destructor called for manual memory cleanup 
+
 
 	void AddManifestToMatrix(int x, int y, int z);																			// adds an EnclaveManifest with x/y/z of in the input parameters (unused)
 	void AddManifestToMatrix(int x, int y, int z, EnclaveKeyDef::EnclaveKey Key);											// adds an EnclaveManifest with x/y/z of in the input parameters; the EnclaveKey input parameter is used to 

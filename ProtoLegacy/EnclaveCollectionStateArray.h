@@ -7,8 +7,12 @@
 #ifndef ENCLAVECOLLECTIONSTATEARRAY_H
 #define ENCLAVECOLLECTIONSTATEARRAY_H
 
+class EnclaveBlockRayTracker;
+class OrganicSystem;
 class EnclaveCollectionStateArray {
-public:
+private:
+	friend class EnclaveBlockRayTracker;
+	friend class OrganicSystem;
 	int cubesize = 1;								// determines how many collections in any direction there are around the central collection
 	int isArraySet = 0;								// flag for determining if the arrays were set or not
 	int centerCollectionStateOffset = 0;					// the offset needed to get to the center of the dynamicCollectionState array
