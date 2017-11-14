@@ -139,6 +139,8 @@ void OGLMDrawCallMeta::sendTerrainT1RequestToDelegator(EnclaveKeyDef::EnclaveKey
 				//std::cout << "Vertices subtracted: " << (in_vertexArrayByteSize / 12) << std::endl;
 				//std::cout << "Remaining verties (2): " << DCMD_RemainingVertexSpace[x] << std::endl;
 			}
+
+			// needs new statement for when contents are not empty (i.e., already contains T1 data) (11/13/2017)
 		}
 	}
 }

@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------------------------------
 
---OrganicMorphMeta.h	(Last Update 10/21/2017)
+--OrganicMorphMeta.h	(Last Update 11/12/2017)
 
 Description: Header file for OrganicMorphMeta.h
 
@@ -21,7 +21,9 @@ class OrganicMorphMeta
 {
 public:
 	int subBufferIndex;
-	EnclaveKeyDef::EnclaveKey collectionKey;
+	EnclaveKeyDef::EnclaveKey collectionKey;		// the collection key to be inserted
+	int containsPreviousKey = 0;					// determines if there was a previous key in the sub buffer
+	EnclaveKeyDef::EnclaveKey oldCollectionKey;		// the previous collection key (determined by OGLMBufferManager, during a call to MorphTerrainBuffers)
 };
 
 #endif

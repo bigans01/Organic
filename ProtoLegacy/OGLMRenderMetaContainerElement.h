@@ -16,6 +16,7 @@ private:
 	EnclaveKeyDef::EnclaveKey ElementCollectionKey;					// the key of the collection stored in this element
 	int ElementSingularXYZValue;									// the singular XYZ value of the buffer number that this element belongs to
 	OrganicGLRenderCollectionMeta ElementRenderCollectionMeta;		// the render collection meta info for this element
+	int ContainsT1Key;												// determines if this element already contains a collection key (indicating that its being used)
 };
 
 #endif
