@@ -32,9 +32,6 @@ class OGLMBufferManager {
 private:
 	friend class OrganicGLManager;
 	friend class OrganicSystem;
-	int* BufferOffsetMatrixArray;		// a pointer to a dynamic array which will contain memory offsets measured in bytes. these offsets represent the exact beginning location of each "sub-buffer" that a collection has within the mega buffer
-	int* RenderCollectionMatrixArray;	// a pointer to a dynamic array which will contain pointers to the render collections that will need to be rendered.
-	int* RenderableBufferList;			// a pointer to a sorted list that will determine how many buffers to render. This will be resorted every time a new buffer needs to be executed by OpenGL.
 	int cubesize = 0;					// determines the x, y, and z lengths of the cube. 
 	int arraysSet = 0;
 	OrganicGLManager* OGLMPtr;
@@ -51,15 +48,19 @@ private:
 
 	void SetCubesize(int inCubesize);					// sets the buffer cube size, which is used to create the buffers
 	void SetOGLMPointer(OrganicGLManager* in_OGLMptr);	// sets the pointer to the instance of OrganicGLManager that this instance of OGLMBufferManager will be associated with
-	void GenerateArrays();								// generates a "cube" of arrays, based on the value of cubesize.
 	void PopulateOGLMRMCArrays(EnclaveKeyDef::EnclaveKey centerCollectionKey);
-	void ShiftMatricesForNW();
 	int translateXYZToSingle(int x, int y, int z);
 
 	void setShiftedCollectionKeys(EnclaveKeyDef::EnclaveKey oldKey, EnclaveKeyDef::EnclaveKey newKey);
 	void determineMorphDirections();
 	int determineRenderDataSubBufferKey(EnclaveKeyDef::EnclaveKey renderCollectionKey);
-	void MorphTerrainBuffers();
+	void MorphTerrainBuffers();				
+	void MorphTerrainBufferWest();		// morphs the terrain buffer to the west by shifting 1 collection on -x
+	void MorphTerrainBufferEast();		// morphs the terrain buffer to the east by shifting 1 collection on +x
+	void MorphTerrainBufferBelow();		// morphs the terrain buffer below by shifting 1 collection on -y
+	void MorphTerrainBufferAbove();		// morphs the terrain buffer above by shifting 1 collection on +y
+	void MorphTerrainBufferNorth();     // morphs the terrain buffer to the north by shifting 1 collection on -z
+	void MorphTerrainBufferSouth();		// morphs the terrain buffer to the south by shifting 1 collection on +z
 };
 
 #endif

@@ -36,7 +36,7 @@ class OrganicGLManager
 public:
 	glm::vec3* directionVecPtr;
 	glm::vec3* positionVecPtr;													// a pointer the position vector.
-	GLFWwindow*  GLwindow;														// OpenGL: pointer/handle to the OpenGL window (context?)
+		GLFWwindow*  GLwindow;														// OpenGL: pointer/handle to the OpenGL window (context?)
 private:
 	friend class OrganicSystem;
 	friend class OGLMBufferManager;
@@ -94,7 +94,7 @@ private:
 	void sendRenderCollectionVCDataTOBufferOnGameLoad(RenderCollection *renderCollPtr);
 	void sendRenderCollectionVCDataToBuffer(OrganicMorphMeta inMorphMeta, RenderCollection* renderCollPtr);	// sends a prepared instance of RenderCollection which has vertex color point data to OpenGL buffers
 	void SendPointerToBufferManager(OrganicGLManager* in_OGLMptr);				// sends this own object's pointer to the instance of OGLMBufferManager (OrganicBufferManager)
-	void PrepBuffersForMoveNW();												// reserved for later use (will "move" buffers around)
+	//void PrepBuffersForMoveNW();												// reserved for later use (will "move" buffers around)
 	void selectShader();														// selects the appropriate shader program based on the render mode
 	void setWindowSize(int length, int height);
 	void createRenderableCollectionList(int in_cubesize);

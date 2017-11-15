@@ -98,7 +98,7 @@ public:
 	void RenderGLTerrain();																																						// renders everything in the Terrain buffer
 	void GLCleanup();																																							// for deallocating and/or turning off OpenGL components
 	void SendRenderListToGLTerrainBuffer();																																		// will send all renderable enclaves listed in the renderCollectionList to the OpenGL buffer
-	void LoadNWChunks();																																						// currently for testing: "moves the world" by preparing buffers to load data for RenderCollections +1 chunk NW of current camera position
+	//void LoadNWChunks();																																						// currently for testing: "moves the world" by preparing buffers to load data for RenderCollections +1 chunk NW of current camera position
 	void SetupWorldArea(float x, float y, float z);
 	void SetWorldCameraPosition(float x, float y, float z);
 	void CheckForMorphing();																																					// checks to see if there is any buffer morphing to be done

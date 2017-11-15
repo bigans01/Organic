@@ -2444,10 +2444,7 @@ void OrganicSystem::MaterializeRenderablesByFactory()
 	//cout << ">>>>>> collection jobs finished..." << endl;
 }
 
-void OrganicSystem::LoadNWChunks()
-{
-	OGLM.PrepBuffersForMoveNW();
-}
+
 
 void OrganicSystem::CheckForMorphing()
 {
