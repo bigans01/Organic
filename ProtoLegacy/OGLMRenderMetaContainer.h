@@ -20,7 +20,7 @@ private:
 	friend class OGLMBufferManager;
 	OGLMRenderMetaContainerElement* renderMetaContainerArray;
 	int isDynamicArrayCreated = 0;								// determines if the current dynamic array is being used
-	void createContainerArray(int inCubesize);
+	void createContainerArrays(int T1_inCubesize, int T2_cubesize);	// creates 
 
 };
 

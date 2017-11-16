@@ -12,7 +12,7 @@
 #include <mutex>
 #include <string>
 
-OrganicSystem::OrganicSystem(int numberOfFactories, int bufferCubeSize, int windowWidth, int windowHeight)
+OrganicSystem::OrganicSystem(int numberOfFactories, int T1_bufferCubeSize, int T2_bufferCubeSize, int windowWidth, int windowHeight)
 {
 	/* Summary: default constructor for the OrganicSystem */
 	InterlockBaseCollections();
@@ -20,10 +20,10 @@ OrganicSystem::OrganicSystem(int numberOfFactories, int bufferCubeSize, int wind
 	AllocateFactories(numOfFactoriesToCreate);			// setup the factories
 	OrganicGLManager* tempGLManagerPtr = &OGLM;			// get a pointer to the OrganicSystem's OGLM instance, and set the reference.
 	OGLM.SendPointerToBufferManager(tempGLManagerPtr);	// send the pointer to the buffer manager, so that it may use it to set up its buffer arrays
-	OGLM.SetupBufferManagerArrays(bufferCubeSize);		// setup the buffer manager's arrays
+	OGLM.SetupBufferManagerArrays(T2_bufferCubeSize);	// setup the buffer manager's arrays
 	OGLM.setWindowSize(windowWidth, windowHeight);		// set OpenGL window size
-	OGLM.OrganicBufferManager.OGLMRMC.createContainerArray(bufferCubeSize);	// create the dynamic array in the OGLMRMC 
-	OGLM.createRenderableCollectionList(bufferCubeSize);	// create the dynamic array that stores a list of renderable collections; the max number of renderable collections is equal to bufferCubeSize cubed.
+	OGLM.OrganicBufferManager.OGLMRMC.createContainerArrays(T1_bufferCubeSize, T2_bufferCubeSize);	// create the T1 and T2 dynamic array in the OGLMRMC; the arrays will be populated at a later time, once the location of the camera/player is known
+	OGLM.createRenderableCollectionList(T2_bufferCubeSize);	// create the dynamic array that stores a list of renderable collections; the max number of renderable collections is equal to bufferCubeSize cubed.
 	OGLM.OrganicBufferManager.DCMPtr = &OGLM.renderableCollectionList;	// set the OrganicBufferManager's DCMPtr (a pointer to an instance of OGLMDrawCallMeta)
 	OGLM.OrganicBufferManager.blueprintMatrixPtr = &BlueprintMatrix;	// set the OrganicBufferManager's blueprint matrix pointer
 	OGLM.OrganicBufferManager.organicSystemPtr = this;	// set the pointer to the processing queue in OGLM's buffer manager			

@@ -73,7 +73,7 @@ public:
 	EnclaveCollectionStateArray CollectionStateArray;
 	std::mutex heapmutex;														// global heap mutexval; used by any thread when it must alter memory (vectors, using new/delete[], etc)
 	OrganicGLManager OGLM;														// an instance of the OrganicGLManager; will be used to manage OpenGL buffer data and other similiar operations
-	OrganicSystem(int numberOfFactories, int bufferCubeSize, int windowWidth, int windowHeight);					// default constructor: number of factories, plus the size of the buffer cube
+	OrganicSystem(int numberOfFactories, int T1_bufferCubeSize, int T2_bufferCubeSize, int windowWidth, int windowHeight);					// default constructor: number of factories, plus the size of the buffer cube
 	~OrganicSystem();
 
 	void DetermineMouseCursorTargets(glm::vec3* originVector, glm::vec3* directionVector, int length);

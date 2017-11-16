@@ -455,7 +455,6 @@ void OrganicGLManager::SetupBufferManagerArrays(int in_cubesize)
 {
 	/* Summary: this sets up the OGLMBufferManager's arrays; it must be called before generating any OpenGL buffers. */
 	OrganicBufferManager.SetCubesize(in_cubesize);					// sets the buffer cubesize in the buffer manager
-	//OrganicBufferManager.GenerateArrays();							// generates the arrays in the buffer manager
 	numberOfBuffers = (in_cubesize*in_cubesize*in_cubesize);		// set the OrganicGLManager's total buffer value 
 	cout << "OpenGL buffer data: --------------" << endl;
 	cout << "number of Buffers" << numberOfBuffers << endl;

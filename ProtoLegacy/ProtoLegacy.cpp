@@ -322,7 +322,7 @@ int main()
 	//Organic.AddOrganicCell(mainthreadpoolref);
 	//Organic.AddOrganicCell(mainthreadpoolref2);
 
-	OrganicSystem Organic(3, 13, 1024, 768);					// number of factories, buffer size, pixel width, pixel height
+	OrganicSystem Organic(3, 3, 13, 1024, 768);					// number of factories, T1 buffer size, T2 buffer size, pixel width, pixel height
 	//Organic.AddOrganicCell(mainthreadpoolref);
 	//Organic.AddOrganicCell(mainthreadpoolref2);
 	//Organic.AddOrganicCell(mainthreadpoolref3);

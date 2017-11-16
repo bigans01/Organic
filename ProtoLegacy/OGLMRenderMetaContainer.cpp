@@ -3,9 +3,11 @@
 #include <iostream>
 #include "OGLMRenderMetaContainer.h"
 
-void OGLMRenderMetaContainer::createContainerArray(int inCubesize)
+void OGLMRenderMetaContainer::createContainerArrays(int T1_inCubesize, int T2_inCubesize)
 {
-	renderMetaContainerArray = new OGLMRenderMetaContainerElement[inCubesize*inCubesize*inCubesize];
+	/* Summary: generates two dynamic arrays, one for T1 terrain and one for T2 terrain */
+																												
+	renderMetaContainerArray = new OGLMRenderMetaContainerElement[T2_inCubesize*T2_inCubesize*T2_inCubesize];	// T2 arrays
 
 	isDynamicArrayCreated = 1;
 }
