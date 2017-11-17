@@ -160,7 +160,7 @@ void EnclaveCollectionBlueprint::CarveSlope()
 		{										
 			if (x == 6 && z == 0)
 			{
-				std::cout << "test value of block key to single: " << BlockKeyToSingle(0, currentYpos, 0) + 1 << std::endl;
+				//std::cout << "test value of block key to single: " << BlockKeyToSingle(0, currentYpos, 0) + 1 << std::endl;
 			}
 			tempPlan.CPArray[0 + (x * 4)][0 + (z * 4)] = BlockKeyToSingle(0, currentYpos, 0);
 			tempPlan.CPArray[0 + (x * 4)][1 + (z * 4)] = BlockKeyToSingle(0, currentYpos, 1);

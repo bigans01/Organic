@@ -365,8 +365,8 @@ void OrganicGLManager::sendRenderCollectionDataToBufferOnGameLoad(RenderCollecti
 	// new glBufferSubData would go here...
 	glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexBufferID);
 	glBufferSubData(GL_ARRAY_BUFFER, subBufferIndex*CollectionBufferSize, renderCollPtr->RenderCollectionArraySize, renderCollPtr->GLFloatPtr);
-	OrganicBufferManager.OGLMRMC.renderMetaContainerArray[subBufferIndex].ElementRenderCollectionMeta.ArraySize = renderCollPtr->RenderCollectionArraySize;		// set the array size of this collection (in bytes; need to divide by 12 later on), in the appropriate element in OGLMRMC's dynamic array (renderMetaContainerArray)
-	OrganicBufferManager.OGLMRMC.renderMetaContainerArray[subBufferIndex].ElementSingularXYZValue = subBufferIndex;		// set the initial sub buffer index for this element (needed for when this sub buffer needs to be recycled during a morph)
+	OrganicBufferManager.OGLMRMC.T1_renderMetaContainerArray[subBufferIndex].ElementRenderCollectionMeta.ArraySize = renderCollPtr->RenderCollectionArraySize;		// set the array size of this collection (in bytes; need to divide by 12 later on), in the appropriate element in OGLMRMC's dynamic array (T1_renderMetaContainerArray)
+	OrganicBufferManager.OGLMRMC.T1_renderMetaContainerArray[subBufferIndex].ElementSingularXYZValue = subBufferIndex;		// set the initial sub buffer index for this element (needed for when this sub buffer needs to be recycled during a morph)
 	renderableCollectionList.sendTerrainT1RequestToDelegator(collectionKey, subBufferIndex, renderCollPtr->RenderCollectionArraySize, CollectionBufferSize);	// add this to the renderable collection list
 	cout << "Test; originating collection key:  " << collectionKey.x << ", " << collectionKey.y << ", " << collectionKey.z << endl;
 

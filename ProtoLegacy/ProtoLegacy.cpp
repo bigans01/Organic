@@ -443,7 +443,17 @@ int main()
 	flatKeyToAdd.y = 0;
 	flatKeyToAdd.z = 4;
 	Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, testBlueprint3);
-	
+
+	/*
+	for (int x = 0; x < 5000; x++)
+	{
+		EnclaveKeyDef::EnclaveKey tempKeyToAdd;
+		tempKeyToAdd.x = x;
+		tempKeyToAdd.y = 100;
+		tempKeyToAdd.z = 100;
+		Organic.AddBlueprint(tempKeyToAdd.x, tempKeyToAdd.y, tempKeyToAdd.z, testBlueprint3);
+	}
+	*/
 
 	/*
 	// add blueprint for morph testing
@@ -477,7 +487,7 @@ int main()
 	
 	auto collectionsSetupEND = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> collectionsSetupELAPSED = collectionsSetupEND - collectionsSetupBEGIN;
-	std::cout << "Elapsed time (Multiple collection instantiation): " << collectionsSetupELAPSED.count() << endl;
+	std::cout << "Elapsed time (Multiple blueprint addition): " << collectionsSetupELAPSED.count() << endl;
 	
 
 	EnclaveKeyDef::EnclaveKey calibrateKey;

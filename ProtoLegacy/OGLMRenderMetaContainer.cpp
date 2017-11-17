@@ -7,7 +7,7 @@ void OGLMRenderMetaContainer::createContainerArrays(int T1_inCubesize, int T2_in
 {
 	/* Summary: generates two dynamic arrays, one for T1 terrain and one for T2 terrain */
 																												
-	renderMetaContainerArray = new OGLMRenderMetaContainerElement[T2_inCubesize*T2_inCubesize*T2_inCubesize];	// T2 arrays
+	T1_renderMetaContainerArray = new OGLMRenderMetaContainerElement[T2_inCubesize*T2_inCubesize*T2_inCubesize];	// T2 arrays
 
 	isDynamicArrayCreated = 1;
 }
@@ -16,6 +16,6 @@ OGLMRenderMetaContainer::~OGLMRenderMetaContainer()
 {
 	if (isDynamicArrayCreated == 1)
 	{
-		delete[] renderMetaContainerArray;
+		delete[] T1_renderMetaContainerArray;
 	}
 }

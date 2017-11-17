@@ -18,7 +18,7 @@ private:
 	friend class OrganicSystem;
 	friend class OrganicBufferManager;
 	friend class OGLMBufferManager;
-	OGLMRenderMetaContainerElement* renderMetaContainerArray;
+	OGLMRenderMetaContainerElement* T1_renderMetaContainerArray;
 	int isDynamicArrayCreated = 0;								// determines if the current dynamic array is being used
 	void createContainerArrays(int T1_inCubesize, int T2_cubesize);	// creates 
 
