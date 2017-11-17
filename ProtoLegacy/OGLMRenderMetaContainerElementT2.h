@@ -1,14 +1,14 @@
 #pragma once
 
-#ifndef OGLMRENDERMETACONTAINERELEMENT_H
-#define OGLMRENDERMETACONTAINERELEMENT_H
+#ifndef OGLMRENDERMETACONTAINERELEMENTT2_H
+#define OGLMRENDERMETACONTAINERELEMENTT2_H
 
 #include "EnclaveKeyDef.h"
 #include "OrganicGLRenderCollectionMeta.h"
 
 class OGLMBufferManager;
 class OrganicGLManager;
-class OGLMRenderMetaContainerElement
+class OGLMRenderMetaContainerElementT2
 {
 private:
 	friend class OGLMBufferManager;

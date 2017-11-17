@@ -3,7 +3,7 @@
 #ifndef OGLMRENDERMETACONTAINER_H
 #define OGLMRENDERMETACONTAINER_H
 
-#include "OGLMRenderMetaContainerElement.h"
+#include "OGLMRenderMetaContainerElementT2.h"
 
 class OrganicGLManager;
 class OrganicSystem;
@@ -18,7 +18,7 @@ private:
 	friend class OrganicSystem;
 	friend class OrganicBufferManager;
 	friend class OGLMBufferManager;
-	OGLMRenderMetaContainerElement* T2_renderMetaContainerArray;
+	OGLMRenderMetaContainerElementT2* T2_renderMetaContainerArray;
 	int isDynamicArrayCreated = 0;								// determines if the current dynamic array is being used
 	void createContainerArrays(int T1_inCubesize, int T2_cubesize);	// creates 
 

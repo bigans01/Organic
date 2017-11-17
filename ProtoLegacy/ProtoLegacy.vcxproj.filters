@@ -249,9 +249,6 @@
     <ClInclude Include="FloatTupleXYZ.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="OGLMRenderMetaContainerElement.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="OGLMRenderMetaContainer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -274,6 +271,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="OrganicCellLimitsList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OGLMRenderMetaContainerElementT2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

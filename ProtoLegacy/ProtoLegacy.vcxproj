@@ -196,7 +196,7 @@
     <ClInclude Include="function_wrapper.h" />
     <ClInclude Include="OGLMBufferManager.h" />
     <ClInclude Include="OGLMDrawCallMeta.h" />
-    <ClInclude Include="OGLMRenderMetaContainerElement.h" />
+    <ClInclude Include="OGLMRenderMetaContainerElementT2.h" />
     <ClInclude Include="OrganicBlockMeta.h" />
     <ClInclude Include="OrganicBlockTarget.h" />
     <ClInclude Include="OrganicCell.h" />
