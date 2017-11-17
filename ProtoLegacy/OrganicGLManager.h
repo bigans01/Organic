@@ -84,7 +84,7 @@ private:
 	OrganicGLManager();
 	~OrganicGLManager();
 
-	void SetupBufferManagerArrays(int in_cubesize);								// sets up buffers based on the passed cube size
+	void SetupBufferManagerArrays(int in_T1_cubesize, int in_T2_cubesize);								// sets up buffers based on the passed cube size
 	void InitializeOpenGL();													// prepares OpenGL for future use; set up OpenGL context, prepare buffers etc
 	void RenderReadyArrays();													// renders whatever render collections have been prepared for rendering, to the screen
 	void ShutdownOpenGL();														// unbind buffers, etc

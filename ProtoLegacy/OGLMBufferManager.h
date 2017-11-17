@@ -5,7 +5,7 @@
 Description: Header file for OGLMBufferManager.cpp
 
 Summary: An OGLMBufferManager is responsible for determining which OpenGL buffers need to be updated for terrain rendering operations, as well as how many buffers need to be udpated for those operations. It contains several 3d matrices that are used in unison to properly 
-determine what buffers need to be "morphed" or shifted around in the "mega-buffer"
+determine what buffers need to be "morphed" or shifted around in the "mega-buffer"; naming conventions in this class should follow the rules associated with the terrain types (T1, T2, etc)
 
 Dependents: -a valid instance of an OrganicSystem
 			-enough RAM on MemoryCard to support the desired buffer size (could possibly result in undefined behavior or worse, a crash)
@@ -32,7 +32,8 @@ class OGLMBufferManager {
 private:
 	friend class OrganicGLManager;
 	friend class OrganicSystem;
-	int T2_cubesize = 0;					// determines the x, y, and z lengths of the cube. 
+	int T1_cubesize = 0;					// determines the x, y, and z axis lengths of the T1 dynamic array (cube)
+	int T2_cubesize = 0;					// determines the x, y, and z axis lengths of the T2 dynamic array (cube)
 	int arraysSet = 0;
 	OrganicGLManager* OGLMPtr;
 	OGLMRenderMetaContainer OGLMRMC;		// RMC = render meta container
@@ -46,11 +47,12 @@ private:
 	//OGLMBufferManager();	
 	~OGLMBufferManager();				// deletes all dynamically allocated objects created using the "new" operator
 
-	void SetCubesize(int inCubesize);					// sets the buffer cube size, which is used to create the buffers
 	void SetOGLMPointer(OrganicGLManager* in_OGLMptr);	// sets the pointer to the instance of OrganicGLManager that this instance of OGLMBufferManager will be associated with
 	void PopulateOGLMRMCArrays(EnclaveKeyDef::EnclaveKey centerCollectionKey);
+	void T1_SetCubeSize(int inT1_CubeSize);
+	int T1_translateXYZToSingle(int x, int y, int z);
+	void T2_SetCubesize(int inT2_Cubesize);					// sets the buffer cube size, which is used to create the buffers
 	int T2_translateXYZToSingle(int x, int y, int z);		// translates XYZ coords for the T2 dynamic array
-
 	void setShiftedCollectionKeys(EnclaveKeyDef::EnclaveKey oldKey, EnclaveKeyDef::EnclaveKey newKey);
 	void determineMorphDirections();
 	int determineRenderDataSubBufferKey(EnclaveKeyDef::EnclaveKey renderCollectionKey);

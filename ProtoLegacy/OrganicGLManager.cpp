@@ -451,11 +451,12 @@ void OrganicGLManager::selectShader()
 	}
 }
 
-void OrganicGLManager::SetupBufferManagerArrays(int in_cubesize)
+void OrganicGLManager::SetupBufferManagerArrays(int in_T1_cubesize, int in_T2_cubesize)
 {
 	/* Summary: this sets up the OGLMBufferManager's arrays; it must be called before generating any OpenGL buffers. */
-	OrganicBufferManager.SetCubesize(in_cubesize);					// sets the buffer cubesize in the buffer manager
-	numberOfBuffers = (in_cubesize*in_cubesize*in_cubesize);		// set the OrganicGLManager's total buffer value 
+	OrganicBufferManager.T1_SetCubeSize(in_T1_cubesize);					// sets the T1 buffer cubesize in the buffer manager
+	OrganicBufferManager.T2_SetCubesize(in_T2_cubesize);					// sets the T2 buffer cubesize in the buffer manager
+	numberOfBuffers = (in_T2_cubesize*in_T2_cubesize*in_T2_cubesize);		// set the OrganicGLManager's total buffer value 
 	cout << "OpenGL buffer data: --------------" << endl;
 	cout << "number of Buffers" << numberOfBuffers << endl;
 	cout << "buffer size: " << (numberOfBuffers * CollectionBufferSize) / 1024 / 1024 << " Megabytes " << endl;

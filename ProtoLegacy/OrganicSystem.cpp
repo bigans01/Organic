@@ -20,7 +20,7 @@ OrganicSystem::OrganicSystem(int numberOfFactories, int T1_bufferCubeSize, int T
 	AllocateFactories(numOfFactoriesToCreate);			// setup the factories
 	OrganicGLManager* tempGLManagerPtr = &OGLM;			// get a pointer to the OrganicSystem's OGLM instance, and set the reference.
 	OGLM.SendPointerToBufferManager(tempGLManagerPtr);	// send the pointer to the buffer manager, so that it may use it to set up its buffer arrays
-	OGLM.SetupBufferManagerArrays(T2_bufferCubeSize);	// setup the buffer manager's arrays
+	OGLM.SetupBufferManagerArrays(T1_bufferCubeSize, T2_bufferCubeSize);	// setup the buffer manager's dynamic arrays for both T1 and T2 terrain types
 	OGLM.setWindowSize(windowWidth, windowHeight);		// set OpenGL window size
 	OGLM.OrganicBufferManager.OGLMRMC.createContainerArrays(T1_bufferCubeSize, T2_bufferCubeSize);	// create the T1 and T2 dynamic array in the OGLMRMC; the arrays will be populated at a later time, once the location of the camera/player is known
 	OGLM.createRenderableCollectionList(T2_bufferCubeSize);	// create the dynamic array that stores a list of renderable collections; the max number of renderable collections is equal to bufferCubeSize cubed.

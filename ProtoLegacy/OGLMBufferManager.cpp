@@ -14,9 +14,14 @@ Description: OGLMBufferManager.cpp contains the definitions for the declarations
 #include "OrganicSystem.h"
 
 
-void OGLMBufferManager::SetCubesize(int inT2_cubesize)
+void OGLMBufferManager::T2_SetCubesize(int inT2_cubesize)
 {
 	T2_cubesize = inT2_cubesize;
+}
+
+void OGLMBufferManager::T1_SetCubeSize(int inT1_cubesize)
+{
+	T1_cubesize = inT1_cubesize;
 }
 
 
@@ -73,6 +78,14 @@ int OGLMBufferManager::T2_translateXYZToSingle(int x, int y, int z)
 											/*Summary: takes in the x/y/z to get the exact location in the buffers for this value */
 	return x_axis + y_axis + x;
 
+}
+
+int OGLMBufferManager::T1_translateXYZToSingle(int x, int y, int z)
+{
+	int x_axis = z * (T1_cubesize*T1_cubesize);
+	int y_axis = y * (T1_cubesize);
+
+	return x_axis + y_axis + x;
 }
 
 void OGLMBufferManager::SetOGLMPointer(OrganicGLManager* in_OGLMptr)
