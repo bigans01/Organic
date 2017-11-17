@@ -32,7 +32,7 @@ class OGLMBufferManager {
 private:
 	friend class OrganicGLManager;
 	friend class OrganicSystem;
-	int cubesize = 0;					// determines the x, y, and z lengths of the cube. 
+	int T2_cubesize = 0;					// determines the x, y, and z lengths of the cube. 
 	int arraysSet = 0;
 	OrganicGLManager* OGLMPtr;
 	OGLMRenderMetaContainer OGLMRMC;		// RMC = render meta container
@@ -49,7 +49,7 @@ private:
 	void SetCubesize(int inCubesize);					// sets the buffer cube size, which is used to create the buffers
 	void SetOGLMPointer(OrganicGLManager* in_OGLMptr);	// sets the pointer to the instance of OrganicGLManager that this instance of OGLMBufferManager will be associated with
 	void PopulateOGLMRMCArrays(EnclaveKeyDef::EnclaveKey centerCollectionKey);
-	int translateXYZToSingle(int x, int y, int z);
+	int T2_translateXYZToSingle(int x, int y, int z);		// translates XYZ coords for the T2 dynamic array
 
 	void setShiftedCollectionKeys(EnclaveKeyDef::EnclaveKey oldKey, EnclaveKeyDef::EnclaveKey newKey);
 	void determineMorphDirections();
