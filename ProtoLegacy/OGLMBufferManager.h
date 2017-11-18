@@ -5,7 +5,8 @@
 Description: Header file for OGLMBufferManager.cpp
 
 Summary: An OGLMBufferManager is responsible for determining which OpenGL buffers need to be updated for terrain rendering operations, as well as how many buffers need to be udpated for those operations. It contains several 3d matrices that are used in unison to properly 
-determine what buffers need to be "morphed" or shifted around in the "mega-buffer"; naming conventions in this class should follow the rules associated with the terrain types (T1, T2, etc)
+determine what buffers need to be "morphed" or shifted around in the "mega-buffer"; naming conventions in this class should follow the rules associated with the terrain types (T1, T2, etc). It directly shifts or "morphs" the array contents of its member, OGLMRMC (which is an
+instance of OGLMRenderMetaContainer).
 
 Dependents: -a valid instance of an OrganicSystem
 			-enough RAM on MemoryCard to support the desired buffer size (could possibly result in undefined behavior or worse, a crash)
