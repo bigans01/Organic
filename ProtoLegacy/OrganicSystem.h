@@ -151,7 +151,7 @@ private:
 	void JobMaterializeMultiCollectionFromFactory(MDListJobMaterializeCollection mdjob, mutex& mutexval, EnclaveManifestFactoryT1 *FactoryRef, int ThreadID);					// materializes multiple collections from the ground up, utilizing a factory.
 	void JobMaterializeMultiCollectionFromFactory2(MDListJobMaterializeCollection* mdjob, mutex& mutexval, EnclaveManifestFactoryT1 *FactoryRef, int ThreadID);					// materializes multiple collections from the ground up, utilizing a factory. (testing only, may be erased)
 	void JobMaterializeCollectionFromFactoryViaMorph(MDJobMaterializeCollection* mdjob, mutex& mutexval, EnclaveManifestFactoryT1 *FactoryRef);
-	void JobMaterializeCollectionFromMM(MDJobMaterializeCollection* mdjob, mutex& mutexval, EnclaveManifestFactoryT1 *FactoryRef);
+	void JobMaterializeCollectionFromMM(MDJobMaterializeCollection* mdjob, mutex& mutexval);
 	void JobRematerializeSingleExistingCollectionFromFactory(EnclaveKeyDef::EnclaveKey Key1,																					// rematerializes a single collection on a currently loaded EnclaveCollection, from a Factory
 		EnclaveCollection *CollectionRef,
 		EnclaveManifestFactoryT1 *FactoryRef,
