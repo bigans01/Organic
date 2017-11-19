@@ -585,6 +585,7 @@ int main()
 	std::cout << "Elapsed time (Blueprint addition): " << blueelapsed.count() << endl;
 	*/
 
+	Organic.MaterializeAllCollectionsInRenderList();
 	Organic.MaterializeAllCollectionsInRenderList(0);			// 0 = use a set of Factories, 1 = use a ManifestMatrix style
 
 

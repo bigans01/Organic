@@ -426,6 +426,86 @@ void OrganicSystem::MaterializeAllCollectionsInRenderList(int renderProcess)
 	}
 }
 
+void OrganicSystem::MaterializeAllCollectionsInRenderList()
+{
+	// PHASE 1: split up the work, into the T1 and T2 processing queues
+	int T1_axis_size = OGLM.OrganicBufferManager.T1_cubesize / 2;	// get the length of the T1 cube on a single axis
+	int T2_axis_size = OGLM.OrganicBufferManager.T2_cubesize / 2;	// get the length of the T2 cube on a single axis
+	EnclaveKeyDef::EnclaveKey T1_centerElementIndexValue;		// declare index values
+	EnclaveKeyDef::EnclaveKey T2_centerElementIndexValue;
+
+	T1_centerElementIndexValue.x = T1_axis_size;						// determine the center values of the T1 dynamic array
+	T1_centerElementIndexValue.y = T1_axis_size;
+	T1_centerElementIndexValue.z = T1_axis_size;
+
+	T2_centerElementIndexValue.x = T2_axis_size;						// determine the center values of the T2 dynamic array
+	T2_centerElementIndexValue.y = T2_axis_size;
+	T2_centerElementIndexValue.z = T2_axis_size;
+
+	EnclaveKeyDef::EnclaveKey centerKey = OGLM.OrganicBufferManager.currentCenterCollectionKey;
+
+	cout << "Materialize Collections V2: " << centerKey.x << ", " << centerKey.y << ", " << centerKey.x << ", " << endl;
+
+	
+	std::vector<EnclaveKeyDef::EnclaveKey>::iterator collectionListIter = renderCollectionList.KeyVector.begin();	// set iterator to be the beginning of the list.
+	for (collectionListIter; collectionListIter != renderCollectionList.KeyVector.end(); ++collectionListIter)		// loop through each key
+	{
+		EnclaveKeyDef::EnclaveKey listKey = *collectionListIter;	// set the temp listKey
+
+		// Type 1 (T1) terrain checks...add the key to the list of of T1 keys to be rendered, if the key exists within the T1 field
+		if (abs(listKey.x - centerKey.x) <= T1_axis_size		&&		abs(listKey.y - centerKey.y) <= T1_axis_size		&&		abs(listKey.z - centerKey.z) <= T1_axis_size)	// if the absolute difference between the listKey and the CenterKey is <= the T1_size, it will go into the T1 dynamic array (condition must be met for x y AND z).
+		{
+			// part A: perform updates in T1 dynamic array
+			int currentT1BufferElement = OGLM.OrganicBufferManager.T1_translateXYZToSingle(T1_centerElementIndexValue.x + (listKey.x - centerKey.x),	// get the currentBufferElement
+																						   T1_centerElementIndexValue.y + (listKey.y - centerKey.y), 
+																						   T1_centerElementIndexValue.z + (listKey.z - centerKey.z));
+			OGLM.OrganicBufferManager.OGLMRMC.T1_renderMetaContainerArray[currentT1BufferElement].ElementCollectionKey = listKey;
+			OGLM.OrganicBufferManager.OGLMRMC.T1_renderMetaContainerArray[currentT1BufferElement].ContainsUsedT1Key = 1;								// indicate that this element actually contains a used key
+
+			// part B: get "true" OpenGL buffer value for this element, by getting the center value of the T2 array and adding the (listKey - centerKey) value
+			int trueBufferElement = OGLM.OrganicBufferManager.T2_translateXYZToSingle(T2_centerElementIndexValue.x + (listKey.x - centerKey.x),
+																					  T2_centerElementIndexValue.y + (listKey.y - centerKey.y),
+																					  T2_centerElementIndexValue.z + (listKey.z - centerKey.z)
+				);
+
+			// part C: prepare morph meta that is to be added to the T1 queue
+			OrganicMorphMeta tempMorphMeta;
+			tempMorphMeta.subBufferIndex = trueBufferElement;
+			tempMorphMeta.collectionKey = listKey;
+			//T1CollectionProcessingQueue.push(tempMorphMeta);					// add to the T1 processing queue
+			//cout << "Terrain type 1 (T1) List key added! " << listKey.x << ", " << listKey.y << ", " << listKey.z << endl;
+		}
+
+		// Type 2 (T2) terrain checks
+		else
+		{
+			// part A: perform updates in T1 dynamic array
+			int currentT2BufferElement = OGLM.OrganicBufferManager.T2_translateXYZToSingle(T2_centerElementIndexValue.x + (listKey.x - centerKey.x),
+																						   T2_centerElementIndexValue.y + (listKey.y - centerKey.y),
+																						   T2_centerElementIndexValue.z + (listKey.z - centerKey.z));
+			OGLM.OrganicBufferManager.OGLMRMC.T2_renderMetaContainerArray[currentT2BufferElement].ContainsUsedT2Key = 1;								// indicate that this element actually contains a used key
+
+			// part B: get "true" OpenGL buffer value for this element
+			int trueBufferElement = OGLM.OrganicBufferManager.T2_translateXYZToSingle(T2_centerElementIndexValue.x + (listKey.x - centerKey.x),
+				T2_centerElementIndexValue.y + (listKey.y - centerKey.y),
+				T2_centerElementIndexValue.z + (listKey.z - centerKey.z)
+			);
+
+			// part C: prepare morph meta that is to be added to the T2 queue
+			OrganicMorphMeta tempMorphMeta;
+			tempMorphMeta.subBufferIndex = trueBufferElement;
+			tempMorphMeta.collectionKey = listKey;
+			//T2CollectionProcessingQueue.push(tempMorphMeta);
+			//cout << "Terrain type 2 (T2) List key added! " << listKey.x << ", " << listKey.y << ", " << listKey.z << endl;
+
+		}
+
+	}
+
+	// PHASE 2: submit jobs to appropriate worker threads
+
+}
+
 void OrganicSystem::SetupFutureCollectionMM(int x, int y, int z)
 {
 	/* Summary: sets up all necessary future data structures for a collection
@@ -1172,6 +1252,13 @@ void OrganicSystem::JobMaterializeCollectionFromFactoryViaMorph(MDJobMaterialize
 	//mutexval.lock();
 	//cout << "TEST, instantiation speed: " << trueelapsed2.count() << endl;
 	//mutexval.unlock();
+}
+
+void OrganicSystem::JobMaterializeCollectionFromMM(MDJobMaterializeCollection* mdjob, mutex& mutexval, EnclaveManifestFactoryT1 *FactoryRef)
+{
+	EnclaveCollectionBlueprintMatrix *BlueprintMatrixRef = mdjob->MDBlueprintMatrixRef;		// set Blueprint matrix ref
+	EnclaveCollectionMatrix *EnclaveCollectionsRef = mdjob->MDEnclaveCollectionsRef;		// set a ref to the EnclaveCollection matrix		
+	RenderCollectionMatrix *RenderCollectionsRef = mdjob->MDRenderCollectionsRef;			// set a ref to the RenderCollection matrix
 }
 
 void OrganicSystem::JobCalibrateBlueprintBordersFromFactory(EnclaveKeyDef::EnclaveKey Key1, EnclaveManifestFactoryT1 *FactoryRef)
@@ -2572,20 +2659,47 @@ void OrganicSystem::CheckProcessingQueue()
 	EnclaveCollection *passCollectionPtrNew;
 	ManifestCollection *passManifestPtrNew;
 
-	int numberOfThreads2 = OCManager.t2CellMap.size();											// get the size of the terrain cell list
-	std::map<int, OrganicCell*>::iterator terrainCellMapIter = OCManager.t2CellMap.begin();	// create and assign an iterator for the cell
+	// >>>>>>>>>>>>>>>>>>> PHASE 1: prepare variables
+	int numberOfThreads1 = OCManager.t1CellMap.size();											// get the size of the T1 terrain cell list
+	int numberOfThreads2 = OCManager.t2CellMap.size();											// get the size of the T2 terrain cell list
+	std::map<int, OrganicCell*>::iterator T1terrainCellMapIter = OCManager.t1CellMap.begin();
+	std::map<int, OrganicCell*>::iterator T2terrainCellMapIter = OCManager.t2CellMap.begin();	// create and assign an iterator for the T2 cells
 
-	std::vector<MDJobMaterializeCollection>::iterator MDJobVectorIterator;
-	std::vector<OrganicMorphMeta> OMMVector;
+	std::vector<MDJobMaterializeCollection>::iterator T2_MDJobVectorIterator;
+	std::vector<OrganicMorphMeta> T1_OMMVector;													// vector for holding T1 OrganicMorphMeta data
+	std::vector<OrganicMorphMeta> T2_OMMVector;													// vector for holding T2 OrganicMorphMeta data
 	std::vector<OrganicMorphMeta>::iterator OMMVectorIterator;
+	int T1_jobCount = 0;					
 	int T2_jobCount = 0;
+
+	// >>>>>>>>>>>>>>>>>>> PHASE 2: set up work vectors
+
+	// Type 1 set up
+	for (int x = 0; x < numberOfThreads1; x++)
+	{
+		if (!T1CollectionProcessingQueue.empty())
+		{
+			OrganicMorphMeta popKey = T1CollectionProcessingQueue.front();  // get the front
+			T1CollectionProcessingQueue.pop();							    // pop the queue
+			T1_OMMVector.push_back(popKey);								    // push it to OMMVector
+			EnclaveKeyDef::EnclaveKey tempKey = popKey.collectionKey;		// get the collection key of the popKey
+			MDJobMaterializeCollection tempMDJob(tempKey, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew));	//... use it to make a temp MDJob
+			OrganicMDJobVectorT1.push_back(tempMDJob);
+			T1_jobCount++;
+		}
+
+	}
+
+
+
+	// Type 2 set up
 	for (int x = 0; x < numberOfThreads2; x++)
 	{
 		if (!T2CollectionProcessingQueue.empty())	// only do the following if the queue isn't empty
 		{
 			OrganicMorphMeta popKey = T2CollectionProcessingQueue.front();	// get the front
 			T2CollectionProcessingQueue.pop();								// pop the queue
-			OMMVector.push_back(popKey);									// push it to OMMVector
+			T2_OMMVector.push_back(popKey);									// push it to OMMVector
 			EnclaveKeyDef::EnclaveKey tempKey = popKey.collectionKey;		// get the collection key of the popKey
 			MDJobMaterializeCollection tempMDJob(tempKey, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew));	//... use it to make a temp MDJob
 			OrganicMDJobVectorT2.push_back(tempMDJob);
@@ -2597,21 +2711,25 @@ void OrganicSystem::CheckProcessingQueue()
 	if (T2_jobCount > 0)
 	{
 		//cout << ">>>> CheckProcessingQueue begin (1)..." << endl;
-		OMMVectorIterator = OMMVector.begin();
-		MDJobVectorIterator = OrganicMDJobVectorT2.begin();
+		std::map<int, OrganicCell*>::iterator T2CellIterator = OCManager.t2CellMap.begin();		// set the T2 cell iterator to be the beginning of the list.
+		OMMVectorIterator = T2_OMMVector.begin();
+		T2_MDJobVectorIterator = OrganicMDJobVectorT2.begin();
 		for (int x = 0; x < T2_jobCount; x++)
 		{
 			OrganicMorphMeta popKey = *OMMVectorIterator;						// get a copy of the element this iterator points to
-			MDJobMaterializeCollection* tempMDJobRef = &*MDJobVectorIterator;	// get a pointer to the current element this iterator points to
+			MDJobMaterializeCollection* tempMDJobRef = &*T2_MDJobVectorIterator;	// get a pointer to the current element this iterator points to
 			OrganicMorphMetaToSendToBuffer.push(popKey);	// insert a value into the buffer work queue
 			//cout << "popKey of new loop is: " << popKey.collectionKey.x << ", " << popKey.collectionKey.y << ", " << popKey.collectionKey.z << endl;
-			std::future<void> pop_1 = OCList.cellList[x].threadPtr->submit5(&OrganicSystem::JobMaterializeCollectionFromFactoryViaMorph, this, tempMDJobRef, std::ref(heapmutex), std::ref(terrainCellMapIter->second->factoryPtr));		// SOLUTION TO THIS (10/22/2017): changed input parameter, "tempMDJobRef" to not use std::ref() || std::ref(*manifestFactoryPtrVectorIterator)
+			//T2CellIterator->second->threadPtr->
+			//std::future<void> pop_1 = OCList.cellList[x].threadPtr->submit5(&OrganicSystem::JobMaterializeCollectionFromFactoryViaMorph, this, tempMDJobRef, std::ref(heapmutex), std::ref(terrainCellMapIter->second->factoryPtr));		// SOLUTION TO THIS (10/22/2017): changed input parameter, "tempMDJobRef" to not use std::ref() || std::ref(*manifestFactoryPtrVectorIterator)
+			std::future<void> pop_1 = T2CellIterator->second->threadPtr->submit5(&OrganicSystem::JobMaterializeCollectionFromFactoryViaMorph, this, tempMDJobRef, std::ref(heapmutex), std::ref(T2terrainCellMapIter->second->factoryPtr));		// SOLUTION TO THIS (10/22/2017): changed input parameter, "tempMDJobRef" to not use std::ref() || std::ref(*manifestFactoryPtrVectorIterator)
 			heapmutex.lock();
 			FL_T2CollectionsProcessed.push_back(std::move(pop_1));
 			heapmutex.unlock();
 			OMMVectorIterator++;
-			MDJobVectorIterator++;
-			terrainCellMapIter++;
+			T2_MDJobVectorIterator++;
+			T2terrainCellMapIter++;
+			T2CellIterator++;
 			//cout << "work added for collection: " << x << endl;
 		}
 		cout << ">>>> CheckProcessingQueue end (1)..." << endl;

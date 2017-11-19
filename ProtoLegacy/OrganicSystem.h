@@ -82,6 +82,7 @@ public:
 	void JobCalibrateBlueprintBordersFromFactory(EnclaveKeyDef::EnclaveKey Key1, EnclaveCollectionBlueprint* inBlueprintPtr, EnclaveManifestFactoryT1 *FactoryRef);				// for a stand-alone blueprint that hasn't been added to a matrix
 	void MaterializeCollection(EnclaveKeyDef::EnclaveKey Key1, EnclaveKeyDef::EnclaveKey Key2);	// temporary test function only; attempts to run all types of collection materialization jobs
 	void MaterializeAllCollectionsInRenderList(int renderProcess);								// will attempt to materialize all collections in renderCollectionList; 0 = Factory mode, 1 = MM mode
+	void MaterializeAllCollectionsInRenderList();												// will attempt to materialize all collections; will divide up work between Collections that need to be processed via MM and Factory modes
 	void ChangeSingleBlockMaterialAtXYZ(int x, int y, int z, int newmaterial);					// changes the material block at an x/y/z location
 	void AddBlueprint(int x, int y, int z, EnclaveCollectionBlueprint blueprint);				// adds a blueprint to the OrganicSystem's blueprint matrix.
 	void AddKeyToRenderList(EnclaveKeyDef::EnclaveKey tempKey);									// adds 1 key to the renderCollectionList.
@@ -150,6 +151,7 @@ private:
 	void JobMaterializeMultiCollectionFromFactory(MDListJobMaterializeCollection mdjob, mutex& mutexval, EnclaveManifestFactoryT1 *FactoryRef, int ThreadID);					// materializes multiple collections from the ground up, utilizing a factory.
 	void JobMaterializeMultiCollectionFromFactory2(MDListJobMaterializeCollection* mdjob, mutex& mutexval, EnclaveManifestFactoryT1 *FactoryRef, int ThreadID);					// materializes multiple collections from the ground up, utilizing a factory. (testing only, may be erased)
 	void JobMaterializeCollectionFromFactoryViaMorph(MDJobMaterializeCollection* mdjob, mutex& mutexval, EnclaveManifestFactoryT1 *FactoryRef);
+	void JobMaterializeCollectionFromMM(MDJobMaterializeCollection* mdjob, mutex& mutexval, EnclaveManifestFactoryT1 *FactoryRef);
 	void JobRematerializeSingleExistingCollectionFromFactory(EnclaveKeyDef::EnclaveKey Key1,																					// rematerializes a single collection on a currently loaded EnclaveCollection, from a Factory
 		EnclaveCollection *CollectionRef,
 		EnclaveManifestFactoryT1 *FactoryRef,

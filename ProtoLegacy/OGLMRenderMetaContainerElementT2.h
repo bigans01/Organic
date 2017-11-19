@@ -8,15 +8,17 @@
 
 class OGLMBufferManager;
 class OrganicGLManager;
+class OrganicSystem;
 class OGLMRenderMetaContainerElementT2
 {
 private:
 	friend class OGLMBufferManager;
 	friend class OrganicGLManager;
+	friend class OrganicSystem;
 	EnclaveKeyDef::EnclaveKey ElementCollectionKey;					// the key of the collection stored in this element
 	int ElementSingularXYZValue;									// the singular XYZ value of the buffer number that this element belongs to
 	OrganicGLRenderCollectionMeta ElementRenderCollectionMeta;		// the render collection meta info for this element
-	int ContainsT1Key;												// determines if this element already contains a collection key (indicating that its being used)
+	int ContainsUsedT2Key;												// determines if this element already contains a used collection key (indicating that the collection is actively being displayed in OpenGL)
 };
 
 #endif

@@ -29,9 +29,38 @@ void OGLMBufferManager::T1_SetCubeSize(int inT1_cubesize)
 void OGLMBufferManager::PopulateOGLMRMCArrays(EnclaveKeyDef::EnclaveKey centerCollectionKey)
 {
 	cout << "OGLMRMC key is: " << centerCollectionKey.x << ", " << centerCollectionKey.y << ", " << centerCollectionKey.z << endl;
-	int centerCollectionOffset = T2_cubesize / 2;				// if T2_cubesize is 13, this would be equal to 6; element location 6 on any x/y/z access would be the center
+
+	// T1 dynamic array setup
+	int centerCollectionOffset = T1_cubesize / 2;			// if T1_cubesize is 13, this would be equal to 6; element location 6 on any x/y/z access would be the center
 	currentCenterCollectionKey = centerCollectionKey;
 	EnclaveKeyDef::EnclaveKey lowerNWCornerKey = centerCollectionKey;				// the key of the collection that would be in the lower most corner; it is initiually set to the input value
+	lowerNWCornerKey.x -= centerCollectionOffset;			// subtract the key's x value by the offset
+	lowerNWCornerKey.y -= centerCollectionOffset;			// subtract the key's y value by the offset
+	lowerNWCornerKey.z -= centerCollectionOffset;			// subtract the key's z value by the offset
+	for (int x = 0; x < T1_cubesize; x++)
+	{
+		for (int y = 0; y < T1_cubesize; y++)
+		{
+			for (int z = 0; z < T1_cubesize; z++)
+			{
+				int currentBufferElement = T1_translateXYZToSingle(x, y, z);
+				EnclaveKeyDef::EnclaveKey elementCollectionKey = lowerNWCornerKey;
+				elementCollectionKey.x += x;
+				elementCollectionKey.y += y;
+				elementCollectionKey.z += z;
+				OGLMRMC.T1_renderMetaContainerArray[currentBufferElement].ElementCollectionKey = elementCollectionKey;		// set the collection key
+				OGLMRMC.T1_renderMetaContainerArray[currentBufferElement].ElementSingularXYZValue = currentBufferElement;	// set the singular element value 
+				OGLMRMC.T1_renderMetaContainerArray[currentBufferElement].ContainsUsedT1Key = 0;							// set the used key flag
+				//cout << "T1 element key value: " << elementCollectionKey.x << ", " << elementCollectionKey.y << ", " << elementCollectionKey.z << endl;
+			}
+		}
+	}
+
+
+	// T2 dynamic array setup
+	centerCollectionOffset = T2_cubesize / 2;				// if T2_cubesize is 13, this would be equal to 6; element location 6 on any x/y/z access would be the center
+	currentCenterCollectionKey = centerCollectionKey;
+	lowerNWCornerKey = centerCollectionKey;				// the key of the collection that would be in the lower most corner; it is initiually set to the input value
 	lowerNWCornerKey.x -= centerCollectionOffset;			// subtract the key's x value by the offset
 	lowerNWCornerKey.y -= centerCollectionOffset;			// subtract the key's y value by the offset
 	lowerNWCornerKey.z -= centerCollectionOffset;			// subtract the key's z value by the offset
@@ -48,6 +77,7 @@ void OGLMBufferManager::PopulateOGLMRMCArrays(EnclaveKeyDef::EnclaveKey centerCo
 				elementCollectionKey.z += z;
 				OGLMRMC.T2_renderMetaContainerArray[currentBufferElement].ElementCollectionKey = elementCollectionKey;			// set the collection key
 				OGLMRMC.T2_renderMetaContainerArray[currentBufferElement].ElementSingularXYZValue = currentBufferElement;		// set the singular value
+				OGLMRMC.T2_renderMetaContainerArray[currentBufferElement].ContainsUsedT2Key = 0;								// set the used key flag
 			}
 		}
 	}
@@ -169,8 +199,8 @@ void OGLMBufferManager::MorphTerrainBufferWest()
 			EnclaveKeyDef::EnclaveKey currentFirstKeyInRow = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(0, y, z)].ElementCollectionKey;		// get the enclave collection key of the first element in the row
 																																						//cout << "old key value for -x shift is: " << currentFirstKeyInRow.x << ", " << currentFirstKeyInRow.y << ", " << currentFirstKeyInRow.z << " T2_cubesize: " << T2_cubesize <<  endl;
 			int currentLastSingularXYZValueInRow = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(T2_cubesize - 1, y, z)].ElementSingularXYZValue;	// get the last singular XYZ value in the row, to be shifted to the front as the last step of sorting in this row
-			int currentContainsT1KeyValue = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(T2_cubesize - 1, y, z)].ContainsT1Key;
-			if (OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(T2_cubesize - 1, y, z)].ContainsT1Key == 1)	// check to see if there was already an EnclaveCollection stored 
+			int currentContainsUsedT2KeyValue = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(T2_cubesize - 1, y, z)].ContainsUsedT2Key;
+			if (OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(T2_cubesize - 1, y, z)].ContainsUsedT2Key == 1)	// check to see if there was already an EnclaveCollection stored 
 			{
 				tempMorphMeta.oldCollectionKey = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(T2_cubesize - 1, y, z)].ElementCollectionKey;	// set the old key
 				tempMorphMeta.containsPreviousKey = 1;		// set the flag indicating that there is an old key
@@ -185,14 +215,14 @@ void OGLMBufferManager::MorphTerrainBufferWest()
 				int valueToShift = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x - 1, y, z)].ElementSingularXYZValue;
 				OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, z)].ElementSingularXYZValue = valueToShift;
 
-				int containsT1KeyValueToShift = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x - 1, y, z)].ContainsT1Key;
-				OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, z)].ContainsT1Key = containsT1KeyValueToShift;
+				int ContainsUsedT2KeyValueToShift = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x - 1, y, z)].ContainsUsedT2Key;
+				OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, z)].ContainsUsedT2Key = ContainsUsedT2KeyValueToShift;
 			}
 			EnclaveKeyDef::EnclaveKey originalCurrentFirstKey = currentFirstKeyInRow;		// store the value of currentFirstKeyInRow
 			currentFirstKeyInRow.x -= 1;																								// subtract 1 from the currentFirstKeyInRow
 			OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(0, y, z)].ElementCollectionKey = currentFirstKeyInRow;				// put new value of currentFirstKeyInRow into the new element that is the first key in the row (the new element was previously the last element in this row, prior to the shift)
 			OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(0, y, z)].ElementSingularXYZValue = currentLastSingularXYZValueInRow;	// store the new singular XYZ value in the new first element
-			OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(0, y, z)].ContainsT1Key = currentContainsT1KeyValue;
+			OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(0, y, z)].ContainsUsedT2Key = currentContainsUsedT2KeyValue;
 
 			blueprintMapIterator = blueprintMatrixPtr->BlueprintMap.find(currentFirstKeyInRow);		// attempt to find the blueprint
 			if (blueprintMapIterator != blueprintMatrixPtr->BlueprintMap.end())					// if it isn't equal to end, it was found.
@@ -201,7 +231,7 @@ void OGLMBufferManager::MorphTerrainBufferWest()
 				tempMorphMeta.subBufferIndex = currentLastSingularXYZValueInRow;
 				tempMorphMeta.collectionKey = currentFirstKeyInRow;
 				organicSystemPtr->T2CollectionProcessingQueue.push(tempMorphMeta);
-				OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(0, y, z)].ContainsT1Key = 1;	// indicate that the element at the beginning of this row now contains a T1 key.
+				OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(0, y, z)].ContainsUsedT2Key = 1;	// indicate that the element at the beginning of this row now contains a T1 key.
 				cout << ">>>>>>>>>>>Blueprint was found!! adding to processing queue....." << tempMorphMeta.collectionKey.x << ", " << tempMorphMeta.collectionKey.y << ", " << tempMorphMeta.collectionKey.z << endl;
 			}
 			else
@@ -238,8 +268,8 @@ void OGLMBufferManager::MorphTerrainBufferEast()
 			OrganicMorphMeta tempMorphMeta;
 			EnclaveKeyDef::EnclaveKey currentLastKeyInRow = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(T2_cubesize - 1, y, z)].ElementCollectionKey;
 			int currentFirstSingularXYZValueInRow = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(0, y, z)].ElementSingularXYZValue;
-			int currentContainsT1KeyValue = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(0, y, z)].ContainsT1Key;
-			if (OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(0, y, z)].ContainsT1Key == 1)	// check to see if there was already an EnclaveCollection stored in the T2_renderMetaContainerArrayElement
+			int currentContainsUsedT2KeyValue = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(0, y, z)].ContainsUsedT2Key;
+			if (OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(0, y, z)].ContainsUsedT2Key == 1)	// check to see if there was already an EnclaveCollection stored in the T2_renderMetaContainerArrayElement
 			{
 				tempMorphMeta.oldCollectionKey = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(0, y, z)].ElementCollectionKey;	// set the old key
 				tempMorphMeta.containsPreviousKey = 1;		// set the flag indicating that there is an old key
@@ -254,14 +284,14 @@ void OGLMBufferManager::MorphTerrainBufferEast()
 				int valueToShift = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x + 1, y, z)].ElementSingularXYZValue;
 				OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, z)].ElementSingularXYZValue = valueToShift;
 
-				int containsT1KeyValueToShift = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x + 1, y, z)].ContainsT1Key;
-				OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, z)].ContainsT1Key = containsT1KeyValueToShift;
+				int ContainsUsedT2KeyValueToShift = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x + 1, y, z)].ContainsUsedT2Key;
+				OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, z)].ContainsUsedT2Key = ContainsUsedT2KeyValueToShift;
 			}
 			EnclaveKeyDef::EnclaveKey originalCurrentLastKey = currentLastKeyInRow;
 			currentLastKeyInRow.x += 1;
 			OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(T2_cubesize - 1, y, z)].ElementCollectionKey = currentLastKeyInRow;
 			OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(T2_cubesize - 1, y, z)].ElementSingularXYZValue = currentFirstSingularXYZValueInRow;
-			OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(T2_cubesize - 1, y, z)].ContainsT1Key = currentContainsT1KeyValue;
+			OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(T2_cubesize - 1, y, z)].ContainsUsedT2Key = currentContainsUsedT2KeyValue;
 
 			blueprintMapIterator = blueprintMatrixPtr->BlueprintMap.find(currentLastKeyInRow);		// attempt to find the blueprint
 			if (blueprintMapIterator != blueprintMatrixPtr->BlueprintMap.end())					// if it isn't equal to end, it was found.
@@ -270,7 +300,7 @@ void OGLMBufferManager::MorphTerrainBufferEast()
 				tempMorphMeta.subBufferIndex = currentFirstSingularXYZValueInRow;
 				tempMorphMeta.collectionKey = currentLastKeyInRow;
 				organicSystemPtr->T2CollectionProcessingQueue.push(tempMorphMeta);
-				OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(T2_cubesize - 1, y, z)].ContainsT1Key = 1;	// indicate that the element at the beginning of this row now contains a T1 key.
+				OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(T2_cubesize - 1, y, z)].ContainsUsedT2Key = 1;	// indicate that the element at the beginning of this row now contains a T1 key.
 				cout << ">>>>>>>>>>>Blueprint was found!! adding to processing queue....." << tempMorphMeta.collectionKey.x << ", " << tempMorphMeta.collectionKey.y << ", " << tempMorphMeta.collectionKey.z << endl;
 			}
 			else
@@ -308,8 +338,8 @@ void OGLMBufferManager::MorphTerrainBufferBelow()
 			OrganicMorphMeta tempMorphMeta;
 			EnclaveKeyDef::EnclaveKey currentFirstKeyInColumn = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, 0, z)].ElementCollectionKey; // get the collection key for the first element in the column
 			int currentLastSingularXYZValueInColumn = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, T2_cubesize - 1, z)].ElementSingularXYZValue;	// get the last singular XYZ value in the row, to be shifted to the front as the last step of sorting in this column
-			int currentContainsT1KeyValue = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, T2_cubesize - 1, z)].ContainsT1Key;
-			if (OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, T2_cubesize - 1, z)].ContainsT1Key == 1)
+			int currentContainsUsedT2KeyValue = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, T2_cubesize - 1, z)].ContainsUsedT2Key;
+			if (OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, T2_cubesize - 1, z)].ContainsUsedT2Key == 1)
 			{
 				tempMorphMeta.oldCollectionKey = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, T2_cubesize - 1, z)].ElementCollectionKey;
 				tempMorphMeta.containsPreviousKey = 1;
@@ -323,15 +353,15 @@ void OGLMBufferManager::MorphTerrainBufferBelow()
 				int valueToShift = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y - 1, z)].ElementSingularXYZValue;
 				OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, z)].ElementSingularXYZValue = valueToShift;
 
-				int containsT1KeyValueToShift = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y - 1, z)].ContainsT1Key;
-				OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, z)].ContainsT1Key = containsT1KeyValueToShift;
+				int ContainsUsedT2KeyValueToShift = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y - 1, z)].ContainsUsedT2Key;
+				OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, z)].ContainsUsedT2Key = ContainsUsedT2KeyValueToShift;
 			}
 			EnclaveKeyDef::EnclaveKey originalCurrentFirstKey = currentFirstKeyInColumn;		// store the value of currentFirstKeyInRow
 			currentFirstKeyInColumn.y -= 1;
 
 			OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, 0, z)].ElementCollectionKey = currentFirstKeyInColumn;	// put new value of currentFirstKeyInRow into the new element that is the first key in the row (the new element was previously the last element in this row, prior to the shift)
 			OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, 0, z)].ElementSingularXYZValue = currentLastSingularXYZValueInColumn;	// store the new singular XYZ value in the new first element
-			OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, 0, z)].ContainsT1Key = currentContainsT1KeyValue;
+			OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, 0, z)].ContainsUsedT2Key = currentContainsUsedT2KeyValue;
 			blueprintMapIterator = blueprintMatrixPtr->BlueprintMap.find(currentFirstKeyInColumn);		// attempt to find the blueprint
 			if (blueprintMapIterator != blueprintMatrixPtr->BlueprintMap.end())					// if it isn't equal to end, it was found.
 			{
@@ -339,7 +369,7 @@ void OGLMBufferManager::MorphTerrainBufferBelow()
 				tempMorphMeta.subBufferIndex = currentLastSingularXYZValueInColumn;
 				tempMorphMeta.collectionKey = currentFirstKeyInColumn;
 				organicSystemPtr->T2CollectionProcessingQueue.push(tempMorphMeta);
-				OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, 0, z)].ContainsT1Key = 1;
+				OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, 0, z)].ContainsUsedT2Key = 1;
 				cout << ">>>>>>>>>>>Blueprint was found!! adding to processing queue....." << tempMorphMeta.collectionKey.x << ", " << tempMorphMeta.collectionKey.y << ", " << tempMorphMeta.collectionKey.z << endl;
 			}
 			else
@@ -368,8 +398,8 @@ void OGLMBufferManager::MorphTerrainBufferAbove()
 			OrganicMorphMeta tempMorphMeta;
 			EnclaveKeyDef::EnclaveKey currentLastKeyInColumn = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, T2_cubesize - 1, z)].ElementCollectionKey; // get the collection key for the first element in the column
 			int currentFirstSingularXYZValueInColumn = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, 0, z)].ElementSingularXYZValue;
-			int currentContainsT1KeyValue = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, 0, z)].ContainsT1Key;
-			if (OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, 0, z)].ContainsT1Key == 1)
+			int currentContainsUsedT2KeyValue = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, 0, z)].ContainsUsedT2Key;
+			if (OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, 0, z)].ContainsUsedT2Key == 1)
 			{
 				tempMorphMeta.oldCollectionKey = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, 0, z)].ElementCollectionKey;
 				tempMorphMeta.containsPreviousKey = 1;
@@ -383,14 +413,14 @@ void OGLMBufferManager::MorphTerrainBufferAbove()
 				int valueToShift = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y + 1, z)].ElementSingularXYZValue;
 				OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, z)].ElementSingularXYZValue = valueToShift;
 
-				int containsT1KeyValueToShift = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y + 1, z)].ContainsT1Key;
-				OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, z)].ContainsT1Key = containsT1KeyValueToShift;
+				int ContainsUsedT2KeyValueToShift = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y + 1, z)].ContainsUsedT2Key;
+				OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, z)].ContainsUsedT2Key = ContainsUsedT2KeyValueToShift;
 			}
 			EnclaveKeyDef::EnclaveKey originalCurrentFirstKey = currentLastKeyInColumn;		// store the value of currentFirstKeyInRow
 			currentLastKeyInColumn.y += 1;
 			OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, T2_cubesize - 1, z)].ElementCollectionKey = currentLastKeyInColumn;
 			OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, T2_cubesize - 1, z)].ElementSingularXYZValue = currentFirstSingularXYZValueInColumn;
-			OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, T2_cubesize - 1, z)].ContainsT1Key = currentContainsT1KeyValue;
+			OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, T2_cubesize - 1, z)].ContainsUsedT2Key = currentContainsUsedT2KeyValue;
 			blueprintMapIterator = blueprintMatrixPtr->BlueprintMap.find(currentLastKeyInColumn);
 			if (blueprintMapIterator != blueprintMatrixPtr->BlueprintMap.end())					// if it isn't equal to end, it was found.
 			{
@@ -398,7 +428,7 @@ void OGLMBufferManager::MorphTerrainBufferAbove()
 				tempMorphMeta.subBufferIndex = currentFirstSingularXYZValueInColumn;
 				tempMorphMeta.collectionKey = currentLastKeyInColumn;
 				organicSystemPtr->T2CollectionProcessingQueue.push(tempMorphMeta);
-				OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, T2_cubesize - 1, z)].ContainsT1Key = 1;
+				OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, T2_cubesize - 1, z)].ContainsUsedT2Key = 1;
 				cout << ">>>>>>>>>>>Blueprint was found!! adding to processing queue....." << tempMorphMeta.collectionKey.x << ", " << tempMorphMeta.collectionKey.y << ", " << tempMorphMeta.collectionKey.z << endl;
 			}
 			else
@@ -425,8 +455,8 @@ void OGLMBufferManager::MorphTerrainBufferNorth()
 			OrganicMorphMeta tempMorphMeta;
 			EnclaveKeyDef::EnclaveKey currentFirstKeyInRow = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, 0)].ElementCollectionKey;		// get the enclave collection key of the first element in the row
 			int currentLastSingularXYZValueInRow = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, T2_cubesize - 1)].ElementSingularXYZValue;	// get the last singular XYZ value in the row, to be shifted to the front as the last step of sorting in this row
-			int currentContainsT1KeyValue = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, T2_cubesize - 1)].ContainsT1Key;
-			if (OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, T2_cubesize - 1)].ContainsT1Key == 1)
+			int currentContainsUsedT2KeyValue = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, T2_cubesize - 1)].ContainsUsedT2Key;
+			if (OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, T2_cubesize - 1)].ContainsUsedT2Key == 1)
 			{
 				tempMorphMeta.oldCollectionKey = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, T2_cubesize - 1)].ElementCollectionKey;
 				tempMorphMeta.containsPreviousKey = 1;
@@ -440,14 +470,14 @@ void OGLMBufferManager::MorphTerrainBufferNorth()
 				int valueToShift = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, z - 1)].ElementSingularXYZValue;
 				OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, z)].ElementSingularXYZValue = valueToShift;
 
-				int containsT1KeyValueToShift = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, z - 1)].ContainsT1Key;
-				OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, z)].ContainsT1Key = containsT1KeyValueToShift;
+				int ContainsUsedT2KeyValueToShift = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, z - 1)].ContainsUsedT2Key;
+				OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, z)].ContainsUsedT2Key = ContainsUsedT2KeyValueToShift;
 			}
 			EnclaveKeyDef::EnclaveKey originalCurrentFirstKey = currentFirstKeyInRow;		// store the value of currentFirstKeyInRow
 			currentFirstKeyInRow.z -= 1;																					// subtract 1 from the currentFirstKeyInRow
 			OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, 0)].ElementCollectionKey = currentFirstKeyInRow;	// put new value of currentFirstKeyInRow into the new element that is the first key in the row (the new element was previously the last element in this row, prior to the shift)
 			OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, 0)].ElementSingularXYZValue = currentLastSingularXYZValueInRow;	// store the new singular XYZ value in the new first element
-			OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, 0)].ContainsT1Key = currentContainsT1KeyValue;
+			OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, 0)].ContainsUsedT2Key = currentContainsUsedT2KeyValue;
 			blueprintMapIterator = blueprintMatrixPtr->BlueprintMap.find(currentFirstKeyInRow);		// attempt to find the blueprint
 			if (blueprintMapIterator != blueprintMatrixPtr->BlueprintMap.end())					// if it isn't equal to end, it was found.
 			{
@@ -455,7 +485,7 @@ void OGLMBufferManager::MorphTerrainBufferNorth()
 				tempMorphMeta.subBufferIndex = currentLastSingularXYZValueInRow;
 				tempMorphMeta.collectionKey = currentFirstKeyInRow;
 				organicSystemPtr->T2CollectionProcessingQueue.push(tempMorphMeta);
-				OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, 0)].ContainsT1Key = 1;
+				OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, 0)].ContainsUsedT2Key = 1;
 				cout << ">>>>>>>>>>>Blueprint was found!! adding to processing queue....." << tempMorphMeta.collectionKey.x << ", " << tempMorphMeta.collectionKey.y << ", " << tempMorphMeta.collectionKey.z << endl;
 			}
 			else
@@ -488,8 +518,8 @@ void OGLMBufferManager::MorphTerrainBufferSouth()
 			OrganicMorphMeta tempMorphMeta;
 			EnclaveKeyDef::EnclaveKey currentLastKeyInRow = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, T2_cubesize - 1)].ElementCollectionKey;
 			int currentFirstSingularXYZValueInRow = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, 0)].ElementSingularXYZValue;
-			int currentContainsT1KeyValue = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, 0)].ContainsT1Key;
-			if (OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, 0)].ContainsT1Key == 1)
+			int currentContainsUsedT2KeyValue = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, 0)].ContainsUsedT2Key;
+			if (OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, 0)].ContainsUsedT2Key == 1)
 			{
 				tempMorphMeta.oldCollectionKey = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, 0)].ElementCollectionKey;
 				tempMorphMeta.containsPreviousKey = 1;
@@ -503,14 +533,14 @@ void OGLMBufferManager::MorphTerrainBufferSouth()
 				int valueToShift = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, z + 1)].ElementSingularXYZValue;
 				OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, z)].ElementSingularXYZValue = valueToShift;
 
-				int containsT1KeyValueToShift = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, z + 1)].ContainsT1Key;
-				OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, z)].ContainsT1Key = containsT1KeyValueToShift;
+				int ContainsUsedT2KeyValueToShift = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, z + 1)].ContainsUsedT2Key;
+				OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, z)].ContainsUsedT2Key = ContainsUsedT2KeyValueToShift;
 			}
 			EnclaveKeyDef::EnclaveKey originalCurrentLastKey = currentLastKeyInRow;
 			currentLastKeyInRow.z += 1;
 			OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, T2_cubesize - 1)].ElementCollectionKey = currentLastKeyInRow;
 			OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, T2_cubesize - 1)].ElementSingularXYZValue = currentFirstSingularXYZValueInRow;
-			OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, T2_cubesize - 1)].ContainsT1Key = currentContainsT1KeyValue;
+			OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, T2_cubesize - 1)].ContainsUsedT2Key = currentContainsUsedT2KeyValue;
 			//cout << "key output: " << currentLastKeyInRow.x << ", " << currentLastKeyInRow.y << ", " << currentLastKeyInRow.z << ", " << endl;
 			blueprintMapIterator = blueprintMatrixPtr->BlueprintMap.find(currentLastKeyInRow);		// attempt to find the blueprint
 			if (blueprintMapIterator != blueprintMatrixPtr->BlueprintMap.end())					// if it isn't equal to end, it was found.
@@ -519,7 +549,7 @@ void OGLMBufferManager::MorphTerrainBufferSouth()
 				tempMorphMeta.subBufferIndex = currentFirstSingularXYZValueInRow;
 				tempMorphMeta.collectionKey = currentLastKeyInRow;
 				organicSystemPtr->T2CollectionProcessingQueue.push(tempMorphMeta);
-				OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, T2_cubesize - 1)].ContainsT1Key = 1;
+				OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, T2_cubesize - 1)].ContainsUsedT2Key = 1;
 				cout << ">>>>>>>>>>>Blueprint was found!! adding to processing queue....." << tempMorphMeta.collectionKey.x << ", " << tempMorphMeta.collectionKey.y << ", " << tempMorphMeta.collectionKey.z << endl;
 			}
 			else
