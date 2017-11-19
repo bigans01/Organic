@@ -331,11 +331,11 @@ int main()
 	//cout << "debug test 1" << endl;
 	Organic.AddOrganicTextureMetaArray("base");					// set up the texture map; first ever map will be named "base"
 	Organic.AddOrganicVtxColorMetaArray("base");
-	Organic.SetGraphicsAPI();												// setup the graphics API (OpenGL context, etc)
+	//Organic.SetGraphicsAPI();												// setup the graphics API (OpenGL context, etc)
 	//auto start3 = std::chrono::high_resolution_clock::now();				// benchmark testing only
 
 																			// send all processed collections to OPEN GL	
-	Organic.SetRenderMode(1);
+	//Organic.SetRenderMode(1);
 
 
 	//cout << "debug test 2" << endl;
@@ -593,8 +593,8 @@ int main()
 	std::cout << "Elapsed time (Blueprint addition): " << blueelapsed.count() << endl;
 	*/
 
-	//Organic.MaterializeAllCollectionsInRenderList();
-	Organic.MaterializeAllCollectionsInRenderList(1);			// 0 = use a set of Factories, 1 = use a ManifestMatrix style
+	Organic.MaterializeAllCollectionsInRenderList();
+	//Organic.MaterializeAllCollectionsInRenderList(1);			// 0 = use a set of Factories, 1 = use a ManifestMatrix style
 
 
 	//cout << "-------------------------PASS" << endl;
@@ -685,7 +685,7 @@ int main()
 
 	// send all processed collections to OPEN GL	
 	//Organic.SetRenderMode(1);
-	Organic.SendRenderListToGLTerrainBuffer();							
+	//Organic.SendRenderListToGLTerrainBuffer();							
 	/*
 	RenderCollection* newRenderCollPtr;
 
