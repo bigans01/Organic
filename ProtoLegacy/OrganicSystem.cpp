@@ -503,7 +503,14 @@ void OrganicSystem::MaterializeAllCollectionsInRenderList()
 	}
 
 	// PHASE 2: submit jobs to appropriate worker threads
-
+	/*
+	while (!T1CollectionProcessingQueue.empty && !T2CollectionProcessingQueue.empty)	// do this until everything has been processed
+	{
+		DivideTickWork();			// split work for the tick here
+		CheckProcessingQueue();		// check for work in collection processing queue(s)
+		WaitForPhase2Promises();
+	}
+	*/
 }
 
 void OrganicSystem::SetupFutureCollectionMM(int x, int y, int z)
@@ -2780,6 +2787,7 @@ void OrganicSystem::CheckProcessingQueue()
 			T1CollectionProcessingQueue.pop();							    // pop the queue
 			T1_OMMVector.push_back(popKey);								    // push it to OMMVector
 			EnclaveKeyDef::EnclaveKey tempKey = popKey.collectionKey;		// get the collection key of the popKey
+			passManifestPtrNew = &ManifestCollections.ManiCollectionMap[tempKey];	// get the manifest collection pointer to pass (instantiates a new instance of a ManifestCollection if it doesn't exist already)
 			MDJobMaterializeCollection tempMDJob(tempKey, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew));	//... use it to make a temp MDJob
 			OrganicMDJobVectorT1.push_back(tempMDJob);
 			T1_jobCount++;

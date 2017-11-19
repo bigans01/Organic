@@ -96,7 +96,9 @@ void ManifestCollection::AddManifestToMatrix(int x, int y, int z, EnclaveKeyDef:
 	OrganicVtxColorDictionary *tempColorDictionaryRef = &CollectionMatrixRef->OrganicPointer->VertexColorDictionary;
 	EnclaveManifest tempmanifest(x, y, z, tempDictionaryRef, tempColorDictionaryRef);
 
+	HeapMutex.lock();
 	ManMatrix[tempkey] = tempmanifest;
+	HeapMutex.unlock();
 	//EnclaveManifest *tptr;
 	//tptr = &ManMatrix[tempkey];
 	//ManMatrix.emplace(tempkey,EnclaveManifest (x, y, z));
