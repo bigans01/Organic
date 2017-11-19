@@ -428,6 +428,7 @@ void OrganicSystem::MaterializeAllCollectionsInRenderList(int renderProcess)
 
 void OrganicSystem::MaterializeAllCollectionsInRenderList()
 {
+	EnclaveCollections.SetOrganicSystem(this);
 	// PHASE 1: split up the work, into the T1 and T2 processing queues
 	int T1_axis_size = OGLM.OrganicBufferManager.T1_cubesize / 2;	// get the length of the T1 cube on a single axis
 	int T2_axis_size = OGLM.OrganicBufferManager.T2_cubesize / 2;	// get the length of the T2 cube on a single axis
@@ -472,8 +473,8 @@ void OrganicSystem::MaterializeAllCollectionsInRenderList()
 			OrganicMorphMeta tempMorphMeta;
 			tempMorphMeta.subBufferIndex = trueBufferElement;
 			tempMorphMeta.collectionKey = listKey;
-			//T1CollectionProcessingQueue.push(tempMorphMeta);					// add to the T1 processing queue
-			//cout << "Terrain type 1 (T1) List key added! " << listKey.x << ", " << listKey.y << ", " << listKey.z << endl;
+			T1CollectionProcessingQueue.push(tempMorphMeta);					// add to the T1 processing queue
+			cout << "Terrain type 1 (T1) List key added! " << listKey.x << ", " << listKey.y << ", " << listKey.z << endl;
 		}
 
 		// Type 2 (T2) terrain checks
@@ -495,22 +496,22 @@ void OrganicSystem::MaterializeAllCollectionsInRenderList()
 			OrganicMorphMeta tempMorphMeta;
 			tempMorphMeta.subBufferIndex = trueBufferElement;
 			tempMorphMeta.collectionKey = listKey;
-			//T2CollectionProcessingQueue.push(tempMorphMeta);
-			//cout << "Terrain type 2 (T2) List key added! " << listKey.x << ", " << listKey.y << ", " << listKey.z << endl;
+			T2CollectionProcessingQueue.push(tempMorphMeta);
+			cout << "Terrain type 2 (T2) List key added! " << listKey.x << ", " << listKey.y << ", " << listKey.z << endl;
 
 		}
 
 	}
 
 	// PHASE 2: submit jobs to appropriate worker threads
-	/*
-	while (!T1CollectionProcessingQueue.empty && !T2CollectionProcessingQueue.empty)	// do this until everything has been processed
+	
+	while (!T1CollectionProcessingQueue.empty() && !T2CollectionProcessingQueue.empty())	// do this until everything has been processed
 	{
 		DivideTickWork();			// split work for the tick here
 		CheckProcessingQueue();		// check for work in collection processing queue(s)
 		WaitForPhase2Promises();
 	}
-	*/
+	cout << "Collection loading complete..." << endl;
 }
 
 void OrganicSystem::SetupFutureCollectionMM(int x, int y, int z)
@@ -654,7 +655,9 @@ void OrganicSystem::AddOrganicTextureMetaArray(string mapname)
 	/* Summary: adds a new texture meta array, that will have a key value of the passed in parameter, "mapname" */
 
 	OrganicTextureMeta tempMeta(0);															// dummy constructor for map compatibility (can fix later)
+	//cout << "umm what" << endl;
 	TextureDictionary.Dictionary[mapname].Index[1] = tempMeta;								// set up the texture meta for a block id of 1.
+	//cout << "umm what" << endl;
 	OrganicTextureMeta *tempMetaRef = &TextureDictionary.Dictionary[mapname].Index[1];		// set up a reference to the new texture data for the block
 
 	// set up some data 
@@ -1317,7 +1320,9 @@ void OrganicSystem::JobMaterializeCollectionFromMM(MDJobMaterializeCollection* m
 			bitmaskval++;			// increment bitmask val
 		}
 	}
-
+	mutexval.lock();
+	//cout << "New: Phase 1 pass" << endl;
+	mutexval.unlock();
 	// Phase 2: ManifestCollection set up
 	//mutexval.lock();
 	/*
@@ -1331,6 +1336,10 @@ void OrganicSystem::JobMaterializeCollectionFromMM(MDJobMaterializeCollection* m
 	int manifestCounter = CollectionRef->totalRenderableEnclaves;	// set the manifestCounter equal to the number of renderable manifests from the EnclaveCollection ref
 	auto start5 = std::chrono::high_resolution_clock::now();	// optional performance testing values
 	EnclaveKeyDef::EnclaveKey innerTempKey;		// create a variable to store a temporary key
+	mutexval.lock();
+	//cout << "New: Phase 1 post-pass" << endl;
+	mutexval.unlock();
+	//cout << "collection key value: " << Key1.x << ", " << Key1.y << ", " << Key1.z << endl;
 	for (int a = 0; a < manifestCounter; a++)	// loop count is equal to the number of manifests to be rendered 
 	{
 		innerTempKey = CollectionRef->RenderableEnclaves[a];
@@ -1354,6 +1363,9 @@ void OrganicSystem::JobMaterializeCollectionFromMM(MDJobMaterializeCollection* m
 																								//cout << "HOO BOY!" << ManifestCollectionRef->ManMatrix[innerTempKey].TotalEnclaveTriangles << endl;				// RENAME THIS TO SOMETHING ELSE! (ManifestCollectionRef)
 																								// Phase 3: Render collection set up
 																								//mutexval.lock();								
+	mutexval.lock();
+	//cout << "New: Phase 2 pass" << endl;
+	mutexval.unlock();
 	// Phase 3: create render array
 	RenderCollectionsRef->CreateRenderArrayFromManifestCollection(Key1, std::ref(mutexval));						// creates the to-be rendered array, from a MM
 																													//mutexval.unlock();
@@ -2647,7 +2659,8 @@ void OrganicSystem::CheckForMorphing()
 
 void OrganicSystem::WaitForPhase2Promises()
 {
-	std::vector<std::future<void>>::iterator futureListIterator;								// iterator for the list of futures
+	std::vector<std::future<void>>::iterator T1_futureListIterator;								// iterator for the list of futures
+	std::vector<std::future<void>>::iterator T2_futureListIterator;
 
 	// check for T2 promises 
 	//cout << "checking t2 promises..." << endl;
@@ -2656,29 +2669,35 @@ void OrganicSystem::WaitForPhase2Promises()
 		
 		heapmutex.lock();
 		cout << "T2 size greater than 0, proceeding..." << "(size is " << FL_T2CollectionsProcessed.size() << ") " << endl;
-		futureListIterator = FL_T2CollectionsProcessed.begin();
+		T2_futureListIterator = FL_T2CollectionsProcessed.begin();
 		int collectionsToProcess = FL_T2CollectionsProcessed.size();
 		heapmutex.unlock();
 		for (int x = 0; x < collectionsToProcess; x++)
 		{
 			//cout << "waiting for future..." << endl;
 			//std::future<void>* futurePtr = &*futureListIterator;	// get a pointer to the future
-			futureListIterator->wait();
-			futureListIterator++;
+			T2_futureListIterator->wait();
+			T2_futureListIterator++;
 		}
+		cout << "T2 waits complete..." << endl;
 	}
 
 	// check for T1 promises
 	// cout << "checking t1 promises..." << endl;
 	if (FL_T1CollectionsProcessed.size() > 0)
-	{
-		futureListIterator = FL_T1CollectionsProcessed.begin();
+	{	
+		heapmutex.lock();
+		cout << "T1 size greater than 0, proceeding..." << "(size is " << FL_T1CollectionsProcessed.size() << ") " << endl;
+		heapmutex.unlock();
+		T1_futureListIterator = FL_T1CollectionsProcessed.begin();
 		int collectionsToProcess = FL_T1CollectionsProcessed.size();
 		for (int x = 0; x < collectionsToProcess; x++)
 		{
-			futureListIterator->wait();
-			futureListIterator++;
+			T1_futureListIterator->wait();
+			cout << "wait complete..." << endl;
+			T1_futureListIterator++;
 		}
+		cout << "T1 waits complete..." << endl;
 	}
 
 
@@ -2696,6 +2715,7 @@ void OrganicSystem::WaitForPhase2Promises()
 			//cout << "attempting send to buffer..." << endl;
 			OrganicMorphMeta metaToSend = OrganicMorphMetaToSendToBuffer.front();
 			RenderCollection* renderCollectionPtr = &RenderCollections.RenderMatrix[metaToSend.collectionKey];
+			cout << "Sending key:" << metaToSend.collectionKey.x << ", " << metaToSend.collectionKey.y << ", " << metaToSend.collectionKey.z << endl;
 			OGLM.sendRenderCollectionDataToBuffer(metaToSend, renderCollectionPtr);				// send the vertex data to buffer
 			OGLM.sendRenderCollectionVCDataToBuffer(metaToSend, renderCollectionPtr);			// send the vertex color data to buffer
 			heapmutex.lock();																	// acquire lock for critical section safety (other threads may be performing actions at this point in time)
@@ -2787,10 +2807,12 @@ void OrganicSystem::CheckProcessingQueue()
 			T1CollectionProcessingQueue.pop();							    // pop the queue
 			T1_OMMVector.push_back(popKey);								    // push it to OMMVector
 			EnclaveKeyDef::EnclaveKey tempKey = popKey.collectionKey;		// get the collection key of the popKey
+			passCollectionPtrNew = &EnclaveCollections.EnclaveCollectionMap[tempKey];
 			passManifestPtrNew = &ManifestCollections.ManiCollectionMap[tempKey];	// get the manifest collection pointer to pass (instantiates a new instance of a ManifestCollection if it doesn't exist already)
 			MDJobMaterializeCollection tempMDJob(tempKey, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew));	//... use it to make a temp MDJob
 			OrganicMDJobVectorT1.push_back(tempMDJob);
 			T1_jobCount++;
+			cout << "T1 job added!" << endl;
 		}
 
 	}
@@ -2809,11 +2831,12 @@ void OrganicSystem::CheckProcessingQueue()
 			MDJobMaterializeCollection tempMDJob(tempKey, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew));	//... use it to make a temp MDJob
 			OrganicMDJobVectorT2.push_back(tempMDJob);
 			T2_jobCount++;							// increment workable task counter
+			cout << "T2 job added!" << endl;
 		}
 	}
 
 	//  >>>>>>>>>>>>>>>>>>> PHASE 3: submit jobs to worker threads
-	/*
+	
 	if (T1_jobCount > 0)
 	{
 		std::map<int, OrganicCell*>::iterator T1CellIterator = OCManager.t1CellMap.begin();		// set the T1 cell iterator to be the beginning of the list.
@@ -2835,9 +2858,10 @@ void OrganicSystem::CheckProcessingQueue()
 			T1terrainCellMapIter++;
 			T1CellIterator++;
 		}
-		cout << ">>>> T1 CheckProcessingQueue end (1)..." << endl;
+
+		//cout << ">>>> T1 CheckProcessingQueue end (1)..." << endl;
 	}
-	*/
+	
 	
 	// submit jobs for T2 terrain cell work
 	if (T2_jobCount > 0)
@@ -2866,7 +2890,7 @@ void OrganicSystem::CheckProcessingQueue()
 			T2CellIterator++;
 			//cout << "work added for collection: " << x << endl;
 		}
-		cout << ">>>> T2 CheckProcessingQueue end (1)..." << endl;
+		//cout << ">>>> T2 CheckProcessingQueue end (1)..." << endl;
 	}
 
 
@@ -2980,12 +3004,13 @@ void OrganicSystem::DivideTickWork()
 
 	// ****NEW MODE CHECKS****
 	// set conditions for priority 0
+	//cout << "divide tick work call..." << endl;
 	if (!T1CollectionProcessingQueue.empty() && !T2CollectionProcessingQueue.empty())		// condition for mode 0: T1 and T2 cannot be empty.
 	{
 		// check if previously set work priority is equal to 0; if this is true, do 
 		if (workPriority == 0)
 		{
-
+			cout << "work priority is already 0!" << endl;
 		}
 		// do this if the current workPriority is equal to 1
 		else if (workPriority == 1)
@@ -3001,7 +3026,7 @@ void OrganicSystem::DivideTickWork()
 	{
 		if (workPriority == 1)
 		{
-
+			cout << "work priority is already 1!" << endl;
 		}
 		// do this if the current workPriority is equal to 0
 		else if (workPriority == 0)

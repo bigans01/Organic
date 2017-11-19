@@ -17,13 +17,18 @@ Description: contains one or more entries of OrganicTextureMetaArrays. Values mu
 class OrganicSystem;
 class EnclaveManifestFactoryT1;
 class EnclaveManifest;
+class ManifestCollection;
 class OrganicTextureDictionary
 {
+//public:
+	//int dumbval;
 private:
 	friend class OrganicSystem;
 	friend class EnclaveManifestFactoryT1;
 	friend class EnclaveManifest;
+	friend class ManifestCollection;
 	std::unordered_map<std::string, OrganicTextureMetaArray> Dictionary;				// the member variable within the class that actually contains the OrganicTextureMetaArrays
+	int dumbval = 0;																	
 	OrganicTextureDictionary();															// default constructor
 };
 

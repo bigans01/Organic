@@ -180,22 +180,25 @@ void EnclaveManifest::AttachToEnclave(Enclave &in_ptr, mutex& heapmutex)
 																				//OrganicTextureMeta *tempMetaRef = &TextureDictionary.Dictionary[mapname].Index[1];		// set up a reference to the new texture data for the block
 																				//tempMetaRef->BlockData.FaceIndex[0].FaceData[0].U = 2;
 																				//Organic.AddAndMaterializeCollection(0, 0, 0);
+		//cout << "pre-triangle check test 1 " << endl;
 		//cout << "before dictionary..." << endl;
 		OrganicTextureMeta *textureMetaRef;
 		//OrganicTextureMeta textureMetaCopy;
 		OrganicTextureMetaArray *textureMetaArrayRef;
+		//cout << "pre-triangle check test 2 " << endl;
+		//cout << "dumbval test: " << &TextureDictionaryRef->dumbval << endl;
 		textureMetaArrayRef = &TextureDictionaryRef->Dictionary["base"];
-
 		OrganicVtxColorMeta *vertexColorMetaRef;
 		OrganicVtxColorMetaArray *vertexColorMetaArrayRef;
 		vertexColorMetaArrayRef = &VertexColorDictionaryRef->Dictionary["base"];
-
+		//cout << "pre-triangle check test 3 " << endl;
 		//auto orgstart = std::chrono::high_resolution_clock::now();
 		//int testval2 = TextureDictionaryRef->Dictionary["base"].Index[1].BlockData.FaceIndex[0].FaceData[0].U;
 		//auto orgend = std::chrono::high_resolution_clock::now();
 		//std::chrono::duration<double> orgelapsed = orgend - orgstart;
 		//std::cout << "Elapsed time (Organic collection instantiation): " << orgelapsed.count() << endl;
 		//cout << "testing of new Texture data: " << testval2 << endl;
+		
 		if (EnclavePtr.GetTotalTrianglesInEnclave() == 0)
 		{
 			cout << "Enclave location: " << EnclavePtr.UniqueKey.x << ", " << EnclavePtr.UniqueKey.y << ", " << EnclavePtr.UniqueKey.z << " : " << IsEnclaveGLPtrLoaded << endl;
