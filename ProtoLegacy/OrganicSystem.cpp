@@ -463,6 +463,7 @@ void OrganicSystem::MaterializeAllCollectionsInRenderList()
 		if (abs(listKey.x - centerKey.x) <= T1_axis_size		&&		abs(listKey.y - centerKey.y) <= T1_axis_size		&&		abs(listKey.z - centerKey.z) <= T1_axis_size)	// if the absolute difference between the listKey and the CenterKey is <= the T1_size, it will go into the T1 dynamic array (condition must be met for x y AND z).
 		{
 			// part A: perform updates in T1 dynamic array
+			SetupFutureCollectionMM(listKey);
 			int currentT1BufferElement = OGLM.OrganicBufferManager.T1_translateXYZToSingle(T1_centerElementIndexValue.x + (listKey.x - centerKey.x),	// get the currentBufferElement
 																						   T1_centerElementIndexValue.y + (listKey.y - centerKey.y), 
 																						   T1_centerElementIndexValue.z + (listKey.z - centerKey.z));
@@ -510,13 +511,17 @@ void OrganicSystem::MaterializeAllCollectionsInRenderList()
 	}
 
 	// PHASE 2: submit jobs to appropriate worker threads
+	//cout << "T1 queue size (before loop): " << T1CollectionProcessingQueue.size() << endl;
+	//cout << "T2 queue size (before loop): " << T2CollectionProcessingQueue.size() << endl;
 	
-	while (!T1CollectionProcessingQueue.empty() && !T2CollectionProcessingQueue.empty())	// do this until everything has been processed
+	while (!T1CollectionProcessingQueue.empty() || !T2CollectionProcessingQueue.empty())	// do this until everything has been processed
 	{
 		DivideTickWork();			// split work for the tick here
 		CheckProcessingQueue();		// check for work in collection processing queue(s)
 		WaitForPhase2Promises();	// finish by waiting for promises to be fulfilled
 	}
+	//cout << "T1 queue size (after loop): " << T1CollectionProcessingQueue.size() << endl;
+	//cout << "T2 queue size (after loop): " << T2CollectionProcessingQueue.size() << endl;
 	auto newend = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> newduration = newend - newstart;
 
@@ -2303,7 +2308,7 @@ void OrganicSystem::AllocateFactories(int noOfFactories)
 void OrganicSystem::AddKeyToRenderList(EnclaveKeyDef::EnclaveKey tempKey)
 {
 	renderCollectionList.KeyVector.push_back(tempKey);
-	SetupFutureCollectionMM(tempKey);
+	//SetupFutureCollectionMM(tempKey);
 }
 
 void OrganicSystem::SendRenderListToGLTerrainBuffer()

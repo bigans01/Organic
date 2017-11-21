@@ -164,9 +164,11 @@ void EnclaveManifest::AttachToEnclave(Enclave &in_ptr, mutex& heapmutex)
 		
 		if (IsEnclaveGLPtrLoaded == 1)						// check to see if it was loaded already, on a previous call
 		{
+			heapmutex.lock();
 			delete[] EnclaveGLPtr;							// delete old array
 			delete[] VertexColorGLPtr;
 			delete[] TextureGLPtr;
+			heapmutex.unlock();
 		}
 
 		IsEnclaveGLPtrLoaded = 1;
@@ -320,6 +322,7 @@ void EnclaveManifest::AttachToEnclave(Enclave &in_ptr, mutex& heapmutex)
 		}
 		//delete[] EnclaveManifestRenderables;
 		//delete[] EnclaveGLPtr;
+		/*
 		if (EnclavePtr.CollectionKey.x == 0 && EnclavePtr.CollectionKey.y == 0 && EnclavePtr.CollectionKey.z == 0)
 		{
 			if (EnclavePtr.UniqueKey.x == 3 && EnclavePtr.UniqueKey.y == 1 && EnclavePtr.UniqueKey.z == 0)
@@ -329,6 +332,7 @@ void EnclaveManifest::AttachToEnclave(Enclave &in_ptr, mutex& heapmutex)
 				//cout << "||||||||||||||||||||test" << endl;
 			}
 		}
+		*/
 	}
 }
 
