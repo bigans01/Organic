@@ -23,6 +23,7 @@
 #include "EnclavePainterList.h"
 #include "thread_pool.h"
 #include <thread>
+#include <memory>
 
 //#define GLEW_STATIC
 #include <GL/glew.h>
@@ -772,10 +773,28 @@ int main()
 	cout << "-----------------------------------cursor target testing..." << endl;
 	//Organic.DetermineMouseCursorTargets2(originVecPtr, directionVecPtr, 10);	// Step 3: determine targetable blocks 
 
+	cout << "----SMART POINTER TESTING----" << endl;
 	auto targetsbegin = std::chrono::high_resolution_clock::now();
 	//Organic.DetermineMouseCursorTargets2(originVecPtr, directionVecPtr, 10);
+	//unique_ptr<GLfloat[]> testptr = make_unique<GLfloat[]>(1000);
+	//unique_ptr<GLfloat[]> testptr(new GLfloat[1000]);
+	unique_ptr<GLfloat[]> testptr(nullptr);
+	//testptr(new GLfloat[1000]);
+	testptr.reset(new GLfloat[1000]);
+
 	auto targetsend = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> targetselapsed = targetsend - targetsbegin;
+	cout << "Smart pointer time: " << targetselapsed.count() << ", testvalue is: " << testptr[0] <<  endl;
+
+
+
+	auto targetsbegin2 = std::chrono::high_resolution_clock::now();
+	GLfloat* testptr2 = new GLfloat[1000];
+	auto targetsend2 = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> targetselapsed2 = targetsend2 - targetsbegin2;
+	cout << "Dynamic array pointer time: " << targetselapsed2.count() << ", testvalue is: " << testptr2[0] << endl;
+	delete[] testptr2;
+
 	//std::cout << "Elapsed time (Terrain targeting): " << targetselapsed.count() << endl;
 
 	do {

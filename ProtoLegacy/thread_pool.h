@@ -119,6 +119,7 @@ public:
 	function_wrapper& operator=(const function_wrapper&) = delete;
 };
 
+/*
 class function_wrapper2
 {
 	struct impl_base {
@@ -159,12 +160,13 @@ public:
 	function_wrapper2(function_wrapper2&) = delete;
 	function_wrapper2& operator=(const function_wrapper2&) = delete;
 };
+*/
 
 class thread_pool
 {
 	std::atomic_bool done;
 	thread_safe_queue<function_wrapper> work_queue;								// DO SEARCH FOR (7/25/2017)
-	thread_safe_queue<function_wrapper2> work_queue2;
+	//thread_safe_queue<function_wrapper2> work_queue2;
 	//thread_safe_queue<int> lolwhat;
 	std::vector<std::thread> threads;
 	join_threads joiner;
@@ -174,7 +176,7 @@ class thread_pool
 		while (!done)
 		{
 			function_wrapper task;
-			function_wrapper2 task2;
+			//function_wrapper2 task2;
 
 			
 			if (work_queue.try_pop(task))
