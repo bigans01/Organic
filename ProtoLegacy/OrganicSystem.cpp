@@ -1493,9 +1493,9 @@ void OrganicSystem::DetermineMouseCursorTargets(glm::vec3* originVector, glm::ve
 
 	// step 2: calculate length of ray between the two points
 	
-	float x_pow = pow(rayDirection.x, 2.0);		// square difference in x, that is between two points
-	float y_pow = pow(rayDirection.y, 2.0);		// square difference in y, that is between two points
-	float z_pow = pow(rayDirection.z, 2.0);		// square difference in z, that is between two points
+	float x_pow = pow(rayDirection.x, 2.0f);		// square difference in x, that is between two points
+	float y_pow = pow(rayDirection.y, 2.0f);		// square difference in y, that is between two points
+	float z_pow = pow(rayDirection.z, 2.0f);		// square difference in z, that is between two points
 	float rayLength = sqrt(x_pow + y_pow + z_pow);
 	//cout << "Ray Length: " << rayLength << endl;
 
@@ -1510,18 +1510,18 @@ void OrganicSystem::DetermineMouseCursorTargets(glm::vec3* originVector, glm::ve
 	float y_offset = rayDirection.y * rayMultiplier;
 	float z_offset = rayDirection.z * rayMultiplier;
 
-	float x_offset_pow = pow(x_offset, 2.0);
-	float y_offset_pow = pow(y_offset, 2.0);
-	float z_offset_pow = pow(z_offset, 2.0);
+	float x_offset_pow = pow(x_offset, 2.0f);
+	float y_offset_pow = pow(y_offset, 2.0f);
+	float z_offset_pow = pow(z_offset, 2.0f);
 	float newRayLength = sqrt(x_offset_pow + y_offset_pow + z_offset_pow);
 
 	//cout << "Final ray length test: " << newRayLength << endl;
 
 
 	// step 6: determine distances to traverse, assuming origin's x/y/z is less than 1.0. 
-	float tmax_x = 1.0 / rayDirection.x;	// x = 1
-	float tmax_y = 1.0 / rayDirection.y;	// y = 1
-	float tmax_z = 1.0 / rayDirection.z;	// z = 1 
+	float tmax_x = 1.0f / rayDirection.x;	// x = 1
+	float tmax_y = 1.0f / rayDirection.y;	// y = 1
+	float tmax_z = 1.0f / rayDirection.z;	// z = 1 
 
 	// step 5: get distances for Deltas
 
@@ -1533,9 +1533,9 @@ void OrganicSystem::DetermineMouseCursorTargets(glm::vec3* originVector, glm::ve
 	float xDelta_x_coord = origin_point.x + (rayDirection.x * xDelta_multiplier);	// get the value of x where x = 1
 	float xDelta_y_coord = origin_point.y + (rayDirection.y * xDelta_multiplier);	// get the value of y where x = 1
 	float xDelta_z_coord = origin_point.z + (rayDirection.z * xDelta_multiplier);	// get the value of z where x = 1
-	float xDelta_x_pow = pow(xDelta_x_coord, 2.0);
-	float xDelta_y_pow = pow(xDelta_y_coord, 2.0);
-	float xDelta_z_pow = pow(xDelta_z_coord, 2.0);
+	float xDelta_x_pow = float(pow(xDelta_x_coord, 2.0f));
+	float xDelta_y_pow = float(pow(xDelta_y_coord, 2.0f));
+	float xDelta_z_pow = float(pow(xDelta_z_coord, 2.0f));
 	float xInitialDeltaDistance = sqrt(xDelta_x_pow + xDelta_y_pow + xDelta_z_pow);
 
 	// y delta
@@ -1544,9 +1544,9 @@ void OrganicSystem::DetermineMouseCursorTargets(glm::vec3* originVector, glm::ve
 	float yDelta_x_coord = origin_point.x + (rayDirection.x * yDelta_multiplier);
 	float yDelta_y_coord = origin_point.y + (rayDirection.y * yDelta_multiplier);
 	float yDelta_z_coord = origin_point.z + (rayDirection.z * yDelta_multiplier);
-	float yDelta_x_pow = pow(yDelta_x_coord, 2.0);
-	float yDelta_y_pow = pow(yDelta_y_coord, 2.0);
-	float yDelta_z_pow = pow(yDelta_z_coord, 2.0);
+	float yDelta_x_pow = float(pow(yDelta_x_coord, 2.0f));
+	float yDelta_y_pow = float(pow(yDelta_y_coord, 2.0f));
+	float yDelta_z_pow = float(pow(yDelta_z_coord, 2.0f));
 	float yInitialDeltaDistance = sqrt(yDelta_x_pow + yDelta_y_pow + yDelta_z_pow);
 
 	// z delta
@@ -1555,9 +1555,9 @@ void OrganicSystem::DetermineMouseCursorTargets(glm::vec3* originVector, glm::ve
 	float zDelta_x_coord = origin_point.x + (rayDirection.x * zDelta_multiplier);
 	float zDelta_y_coord = origin_point.y + (rayDirection.y * zDelta_multiplier);
 	float zDelta_z_coord = origin_point.z + (rayDirection.z * zDelta_multiplier);
-	float zDelta_x_pow = pow(zDelta_x_coord, 2.0);
-	float zDelta_y_pow = pow(zDelta_y_coord, 2.0);
-	float zDelta_z_pow = pow(zDelta_z_coord, 2.0);
+	float zDelta_x_pow = float(pow(zDelta_x_coord, 2.0f));
+	float zDelta_y_pow = float(pow(zDelta_y_coord, 2.0f));
+	float zDelta_z_pow = float(pow(zDelta_z_coord, 2.0f));
 	float zInitialDeltaDistance = sqrt(zDelta_x_pow + zDelta_y_pow + zDelta_z_pow);
 
 	//cout << "Delta checks: " << endl;
@@ -1583,35 +1583,35 @@ void OrganicSystem::DetermineMouseCursorTargets(glm::vec3* originVector, glm::ve
 
 	// x delta
 	 xDelta_Begin_distance = 1.0f;							// get the distance traveled between x = 1.0f and x  = 0.2f
-	 xDelta_multiplier = xDelta_Begin_distance * (1.0 / rayDirection.x);						// multiply the distance to traverse to get to x = 1.0 by  the multiplier for x (in this case, 5)	
+	 xDelta_multiplier = xDelta_Begin_distance * (1.0f / rayDirection.x);						// multiply the distance to traverse to get to x = 1.0 by  the multiplier for x (in this case, 5)	
 	 xDelta_x_coord =  (rayDirection.x * xDelta_multiplier);	// get the value of x where x = 1
 	 xDelta_y_coord =  (rayDirection.y * xDelta_multiplier);	// get the value of y where x = 1
 	 xDelta_z_coord =  (rayDirection.z * xDelta_multiplier);	// get the value of z where x = 1
-	 xDelta_x_pow = pow(xDelta_x_coord, 2.0);
-	 xDelta_y_pow = pow(xDelta_y_coord, 2.0);
-	 xDelta_z_pow = pow(xDelta_z_coord, 2.0);
+	 xDelta_x_pow = pow(xDelta_x_coord, 2.0f);
+	 xDelta_y_pow = pow(xDelta_y_coord, 2.0f);
+	 xDelta_z_pow = pow(xDelta_z_coord, 2.0f);
 	 float xDeltaDistance = sqrt(xDelta_x_pow + xDelta_y_pow + xDelta_z_pow);
 
 	// y delta
 	 yDelta_Begin_distance = 1.0f;
-	 yDelta_multiplier = yDelta_Begin_distance * (1.0 / rayDirection.y);
+	 yDelta_multiplier = yDelta_Begin_distance * (1.0f / rayDirection.y);
 	 yDelta_x_coord =  (rayDirection.x * yDelta_multiplier);
 	 yDelta_y_coord =  (rayDirection.y * yDelta_multiplier);
 	 yDelta_z_coord =  (rayDirection.z * yDelta_multiplier);
-	 yDelta_x_pow = pow(yDelta_x_coord, 2.0);
-	 yDelta_y_pow = pow(yDelta_y_coord, 2.0);
-	 yDelta_z_pow = pow(yDelta_z_coord, 2.0);
+	 yDelta_x_pow = pow(yDelta_x_coord, 2.0f);
+	 yDelta_y_pow = pow(yDelta_y_coord, 2.0f);
+	 yDelta_z_pow = pow(yDelta_z_coord, 2.0f);
 	 float yDeltaDistance = sqrt(yDelta_x_pow + yDelta_y_pow + yDelta_z_pow);
 
 	// z delta
 	 zDelta_Begin_distance = 1.0f;
-	 zDelta_multiplier = zDelta_Begin_distance * (1.0 / rayDirection.z);
+	 zDelta_multiplier = zDelta_Begin_distance * (1.0f / rayDirection.z);
 	 zDelta_x_coord =  (rayDirection.x * zDelta_multiplier);
 	 zDelta_y_coord =  (rayDirection.y * zDelta_multiplier);
 	 zDelta_z_coord =  (rayDirection.z * zDelta_multiplier);
-	 zDelta_x_pow = pow(zDelta_x_coord, 2.0);
-	 zDelta_y_pow = pow(zDelta_y_coord, 2.0);
-	 zDelta_z_pow = pow(zDelta_z_coord, 2.0);
+	 zDelta_x_pow = pow(zDelta_x_coord, 2.0f);
+	 zDelta_y_pow = pow(zDelta_y_coord, 2.0f);
+	 zDelta_z_pow = pow(zDelta_z_coord, 2.0f);
 	 float zDeltaDistance = sqrt(zDelta_x_pow + zDelta_y_pow + zDelta_z_pow);
 
 
@@ -1759,17 +1759,17 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 	
 	
 	// set keys
-	CameraCollectionKey.x = x_container.CollectionCoord;
-	CameraCollectionKey.y = y_container.CollectionCoord;
-	CameraCollectionKey.z = z_container.CollectionCoord;
+	CameraCollectionKey.x = int(x_container.CollectionCoord);
+	CameraCollectionKey.y = int(y_container.CollectionCoord);
+	CameraCollectionKey.z = int(z_container.CollectionCoord);
 
-	CameraChunkKey.x = x_container.ChunkCoord;
-	CameraChunkKey.y = y_container.ChunkCoord;
-	CameraChunkKey.z = z_container.ChunkCoord;
+	CameraChunkKey.x = int(x_container.ChunkCoord);
+	CameraChunkKey.y = int(y_container.ChunkCoord);
+	CameraChunkKey.z = int(z_container.ChunkCoord);
 
-	CameraBlockKey.x = x_container.BlockCoord;
-	CameraBlockKey.y = y_container.BlockCoord;
-	CameraBlockKey.z = z_container.BlockCoord;
+	CameraBlockKey.x = int(x_container.BlockCoord);
+	CameraBlockKey.y = int(y_container.BlockCoord);
+	CameraBlockKey.z = int(z_container.BlockCoord);
 
 	// get the current key for the collection, and put it into the temp value
 	newCollectionKey.x = CameraCollectionKey.x;
@@ -1860,9 +1860,9 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 		border_point.z = temp_origin.z + (rayDirection.z*time_to_complete_x_traversal);				// add slope*time to temp_origin.z
 
 		distance_between_points_x = border_point - temp_origin;			// get the difference between the border point and the origin point
-		float squared_x = pow(distance_between_points_x.x, 2.0);		// calculate squared values for x/y/z
-		float squared_y = pow(distance_between_points_x.y, 2.0);
-		float squared_z = pow(distance_between_points_x.z, 2.0);
+		float squared_x = float(pow(distance_between_points_x.x, 2.0f));		// calculate squared values for x/y/z
+		float squared_y = float(pow(distance_between_points_x.y, 2.0f));
+		float squared_z = float(pow(distance_between_points_x.z, 2.0f));
 		//cout << "temp_origin.x: " << temp_origin.x << endl;
 		//cout << "rayDirection.x: " << rayDirection.x << endl;
 		initial_xMax = (1.0f - temp_origin.x) / rayDirection.x;			// get the time it takes to get to 1.0f from the origin
@@ -1888,9 +1888,9 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 		border_point.z = temp_origin.z + abs(rayDirection.z*time_to_complete_x_traversal);
 
 		distance_between_points_x = border_point - temp_origin;			// get the difference between the border point and the origin point
-		float squared_x = pow(distance_between_points_x.x, 2.0);		// calculate squared values for x/y/z
-		float squared_y = pow(distance_between_points_x.y, 2.0);
-		float squared_z = pow(distance_between_points_x.z, 2.0);
+		float squared_x = float(pow(distance_between_points_x.x, 2.0f));		// calculate squared values for x/y/z
+		float squared_y = float(pow(distance_between_points_x.y, 2.0f));
+		float squared_z = float(pow(distance_between_points_x.z, 2.0f));
 		initial_xMax = abs((origin_to_border_x_diff) / rayDirection.x);	// get the time it takes to get to 1.0f from the origin
 		initial_xLength = sqrt(squared_x + squared_y + squared_z);		// calculate the initial length
 		normal_xMax = abs(1.0f / rayDirection.x);						// the normal amount of time it takes to traverse a distance of exactly 1.0f
@@ -1916,9 +1916,9 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 		border_point.z = temp_origin.z + (rayDirection.z*time_to_complete_y_traversal);				// add slope*time to temp_origin.z
 
 		distance_between_points_y = border_point - temp_origin;			// get the difference between the border point and the origin point
-		float squared_x = pow(distance_between_points_y.x, 2.0);		// calculate squared values for x/y/z
-		float squared_y = pow(distance_between_points_y.y, 2.0);
-		float squared_z = pow(distance_between_points_y.z, 2.0);
+		float squared_x = float(pow(distance_between_points_y.x, 2.0f));		// calculate squared values for x/y/z
+		float squared_y = float(pow(distance_between_points_y.y, 2.0f));
+		float squared_z = float(pow(distance_between_points_y.z, 2.0f));
 		initial_yMax = (1.0f - temp_origin.y) / rayDirection.y;			// get the time it takes to get to 1.0f from the origin
 		initial_yLength = sqrt(squared_x + squared_y + squared_z);		// calculate the initial length
 		normal_yMax = 1.0f / rayDirection.y;							// the normal amount of time it takes to traverse a distance of exactly 1.0f
@@ -1940,9 +1940,9 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 		border_point.z = temp_origin.z + abs(rayDirection.z*time_to_complete_y_traversal);			// add slope*time to temp_origin.z
 
 		distance_between_points_y = border_point - temp_origin;			// get the difference between the border point and the origin point
-		float squared_x = pow(distance_between_points_y.x, 2.0);		// calculate squared values for x/y/z
-		float squared_y = pow(distance_between_points_y.y, 2.0);
-		float squared_z = pow(distance_between_points_y.z, 2.0);
+		float squared_x = float(pow(distance_between_points_y.x, 2.0f));		// calculate squared values for x/y/z
+		float squared_y = float(pow(distance_between_points_y.y, 2.0f));
+		float squared_z = float(pow(distance_between_points_y.z, 2.0f));
 		initial_yMax = abs((origin_to_border_y_diff) / rayDirection.y);	// get the time it takes to get to 1.0f from the origin
 		initial_yLength = sqrt(squared_x + squared_y + squared_z);		// calculate the initial length
 		normal_yMax = abs(1.0f / rayDirection.y);						// the normal amount of time it takes to traverse a distance of exactly 1.0f
@@ -1970,9 +1970,9 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 		border_point.z = 1.0f;
 
 		distance_between_points_z = border_point - temp_origin;			// get the difference between the border point and the origin point
-		float squared_x = pow(distance_between_points_z.x, 2.0);
-		float squared_y = pow(distance_between_points_z.y, 2.0);
-		float squared_z = pow(distance_between_points_z.z, 2.0);
+		float squared_x = float(pow(distance_between_points_z.x, 2.0f));
+		float squared_y = float(pow(distance_between_points_z.y, 2.0f));
+		float squared_z = float(pow(distance_between_points_z.z, 2.0f));
 
 		//cout << "temp_origin.z: " << temp_origin.z << endl;
 		//cout << "rayDirection.z: " << rayDirection.z << endl;
@@ -1999,9 +1999,9 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 		border_point.z = 1.0f;
 
 		distance_between_points_z = border_point - temp_origin;			// get the difference between the border point and the origin point
-		float squared_x = pow(distance_between_points_z.x, 2.0);
-		float squared_y = pow(distance_between_points_z.y, 2.0);
-		float squared_z = pow(distance_between_points_z.z, 2.0);
+		float squared_x = float(pow(distance_between_points_z.x, 2.0f));
+		float squared_y = float(pow(distance_between_points_z.y, 2.0f));
+		float squared_z = float(pow(distance_between_points_z.z, 2.0f));
 		initial_zMax = abs((origin_to_border_z_diff) / rayDirection.z);	// get the time it takes to get to 1.0f
 		initial_zLength = sqrt(squared_x + squared_y + squared_z);
 		normal_zMax = abs(1.0f / rayDirection.z);
@@ -2029,9 +2029,9 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 	
 
 	//cout << "|| pre y-multiplier, distance between points: " << distance_between_points_y.y << endl;
-	float xDelta_multiplier = abs(1.0 / distance_between_points_x.x);			// value to multiply to get the Delta for x between point 0.0f and 1.0f
-	float yDelta_multiplier = abs(1.0 / distance_between_points_y.y);			// value to multiply to get the Delta for y between point 0.0f and 1.0f	
-	float zDelta_multiplier = abs(1.0 / distance_between_points_z.z);			// value to multiply to get the Delta for z between point 0.0f and 1.0f
+	float xDelta_multiplier = abs(1.0f / distance_between_points_x.x);			// value to multiply to get the Delta for x between point 0.0f and 1.0f
+	float yDelta_multiplier = abs(1.0f / distance_between_points_y.y);			// value to multiply to get the Delta for y between point 0.0f and 1.0f	
+	float zDelta_multiplier = abs(1.0f / distance_between_points_z.z);			// value to multiply to get the Delta for z between point 0.0f and 1.0f
 	float xDelta_final = initial_xMax * xDelta_multiplier;						// xDelta_final is the true delta distance to traverse for a start value of x = 0.0, and end value of 1.0 on this ray
 	float yDelta_final = initial_yMax * yDelta_multiplier;						// yDelta_final is the true delta distance to traverse for a start value of y = 0.0, and end value of 1.0 on this ray
 	float zDelta_final = initial_zMax * zDelta_multiplier;						// zDelta_final is the true delta distance to traverse for a start value of z = 0.0, and end value of 1.0 on this ray
@@ -2041,9 +2041,9 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 	//cout << "zDelta final: " << zDelta_final << endl;
 
 
-	float x_pow = pow(rayDirection.x, 2.0);		// square difference in x, that is between two points
-	float y_pow = pow(rayDirection.y, 2.0);		// square difference in y, that is between two points
-	float z_pow = pow(rayDirection.z, 2.0);		// square difference in z, that is between two points
+	float x_pow = float(pow(rayDirection.x, 2.0f));		// square difference in x, that is between two points
+	float y_pow = float(pow(rayDirection.y, 2.0f));		// square difference in y, that is between two points
+	float z_pow = float(pow(rayDirection.z, 2.0f));		// square difference in z, that is between two points
 	float rayLength = sqrt(x_pow + y_pow + z_pow);		// use ray length to determine end of while loop
 	//cout << "Ray Length: " << rayLength << endl;
 
@@ -2684,7 +2684,7 @@ void OrganicSystem::WaitForPhase2Promises()
 		heapmutex.lock();
 		//cout << "T2 size greater than 0, proceeding..." << "(size is " << FL_T2CollectionsProcessed.size() << ") " << endl;
 		T2_futureListIterator = FL_T2CollectionsProcessed.begin();
-		int collectionsToProcess = FL_T2CollectionsProcessed.size();
+		int collectionsToProcess = int(FL_T2CollectionsProcessed.size());
 		heapmutex.unlock();
 		for (int x = 0; x < collectionsToProcess; x++)
 		{
@@ -2704,7 +2704,7 @@ void OrganicSystem::WaitForPhase2Promises()
 		//cout << "T1 size greater than 0, proceeding..." << "(size is " << FL_T1CollectionsProcessed.size() << ") " << endl;
 		heapmutex.unlock();
 		T1_futureListIterator = FL_T1CollectionsProcessed.begin();
-		int collectionsToProcess = FL_T1CollectionsProcessed.size();
+		int collectionsToProcess = int(FL_T1CollectionsProcessed.size());
 		for (int x = 0; x < collectionsToProcess; x++)
 		{
 			T1_futureListIterator->wait();
@@ -2796,8 +2796,8 @@ void OrganicSystem::CheckProcessingQueue()
 	ManifestCollection *passManifestPtrNew;
 
 	// >>>>>>>>>>>>>>>>>>> PHASE 1: prepare variables
-	int numberOfThreads1 = OCManager.t1CellMap.size();											// get the size of the T1 terrain cell list
-	int numberOfThreads2 = OCManager.t2CellMap.size();											// get the size of the T2 terrain cell list
+	int numberOfThreads1 = int(OCManager.t1CellMap.size());											// get the size of the T1 terrain cell list
+	int numberOfThreads2 = int(OCManager.t2CellMap.size());											// get the size of the T2 terrain cell list
 	std::map<int, OrganicCell*>::iterator T1terrainCellMapIter = OCManager.t1CellMap.begin();
 	std::map<int, OrganicCell*>::iterator T2terrainCellMapIter = OCManager.t2CellMap.begin();	// create and assign an iterator for the T2 cells
 

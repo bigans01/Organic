@@ -676,7 +676,7 @@ int main()
 
 
 
-	int choice, in_x, in_y, in_z, in_otherflags;
+	//int choice, in_x, in_y, in_z, in_otherflags;
 
 	// ------------------------------------BEGIN OPEN GL SET UP
 
@@ -726,13 +726,13 @@ int main()
 	std::chrono::duration<double> STARTUPduration = STARTUPend - STARTUPbegin;
 	std::cout << "Total pre-loop startup time: " << STARTUPduration.count() << endl;
 
-	int dummy = 1;
-	dummy <<= 0;
-	float dummyfloat = 11.36574;
-	int intnum = 43;
+	//int dummy = 1;
+	//dummy <<= 0;
+	//float dummyfloat = 11.36574;
+	//int intnum = 43;
 
-	float resultfloat = fmod(dummyfloat, 4);
-	int resultfloat2 = intnum / 32;
+	//float resultfloat = fmod(dummyfloat, 4);
+	//int resultfloat2 = intnum / 32;
 
 	//CursorPathTraceContainer containerResult = Organic.EnclaveCollections.GetCursorCoordTrace(37.3);
 	//cout << "collection: " << containerResult.CollectionCoord << endl;
