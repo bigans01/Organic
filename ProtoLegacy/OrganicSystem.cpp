@@ -2156,7 +2156,7 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 		}
 		if (trackResult == 1)
 		{
-			//cout << "Unveil block found: Enclave (" << rayTracker.enclaveKey.x << ", " << rayTracker.enclaveKey.y << ", " << rayTracker.enclaveKey.z << ") | Block: (" << rayTracker.blockKey.x << ", " << rayTracker.blockKey.y << ", " << rayTracker.blockKey.z << ") " <<  endl;
+			cout << "Unveil block found: Enclave (" << rayTracker.enclaveKey.x << ", " << rayTracker.enclaveKey.y << ", " << rayTracker.enclaveKey.z << ") | Block: (" << rayTracker.blockKey.x << ", " << rayTracker.blockKey.y << ", " << rayTracker.blockKey.z << ") " <<  endl;
 			//rayTracker.printOutTargetBlockHighlightData();
 		}
 
@@ -2193,21 +2193,21 @@ void OrganicSystem::SetupWorldArea(float x, float y, float z)
 	//cout << "Camera's current block in chunk: " << x_container.BlockCoord << ", " << y_container.BlockCoord << ", " << z_container.BlockCoord << endl;
 
 	// set values for Camera keys; old collection key + all "current" keys
-	PreviousCCKey.x = x_container.CollectionCoord;
-	PreviousCCKey.y = y_container.CollectionCoord;
-	PreviousCCKey.z = z_container.CollectionCoord;
+	PreviousCCKey.x = int(x_container.CollectionCoord);
+	PreviousCCKey.y = int(y_container.CollectionCoord);
+	PreviousCCKey.z = int(z_container.CollectionCoord);
 
-	CameraCollectionKey.x = x_container.CollectionCoord;
-	CameraCollectionKey.y = y_container.CollectionCoord;
-	CameraCollectionKey.z = z_container.CollectionCoord;
+	CameraCollectionKey.x = int(x_container.CollectionCoord);
+	CameraCollectionKey.y = int(y_container.CollectionCoord);
+	CameraCollectionKey.z = int(z_container.CollectionCoord);
 
-	CameraChunkKey.x = x_container.ChunkCoord;
-	CameraChunkKey.y = y_container.ChunkCoord;
-	CameraChunkKey.z = z_container.ChunkCoord;
+	CameraChunkKey.x = int(x_container.ChunkCoord);
+	CameraChunkKey.y = int(y_container.ChunkCoord);
+	CameraChunkKey.z = int(z_container.ChunkCoord);
 
-	CameraBlockKey.x = x_container.BlockCoord;
-	CameraBlockKey.y = y_container.BlockCoord;
-	CameraBlockKey.z = z_container.BlockCoord;
+	CameraBlockKey.x = int(x_container.BlockCoord);
+	CameraBlockKey.y = int(y_container.BlockCoord);
+	CameraBlockKey.z = int(z_container.BlockCoord);
 
 	// set up the center collection and its neighbors
 	EnclaveCollectionMatrix* matrixPtr = &EnclaveCollections;

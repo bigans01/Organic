@@ -610,7 +610,7 @@ void Enclave::UnveilMultipleAndNotifyNeighbors(EnclaveUnveilMeta metaArray, Encl
 	*/
 
 	std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveCollectionBlueprint, EnclaveKeyDef::KeyHasher>::iterator blueprintMapIterator;
-	EnclaveKeyDef::EnclaveKey tempKey;
+	//EnclaveKeyDef::EnclaveKey tempKey;
 	EnclaveNeighborMeta neighborMeta = GenerateNeighborMeta(collectionRefPtr, neighborList);
 	for (int x = 0; x < metaArray.numberOfBlocks; x++) // iterate for the number of blocks found in the metaArray
 	{
