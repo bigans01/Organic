@@ -18,7 +18,7 @@ private:
 	int centerCollectionStateOffset = 0;					// the offset needed to get to the center of the dynamicCollectionState array
 	int centerXYZsingle = 0;						// the center of the dyanmic collection matrix, converted from x/y/z to a single value
 	EnclaveCollectionState StateMatrix[3][3][3];	// stores up to 27 EnclaveCollectionStates
-	EnclaveCollectionState* StateMatrixPtr;
+	EnclaveCollectionState* StateMatrixPtr = NULL;
 
 	~EnclaveCollectionStateArray();
 

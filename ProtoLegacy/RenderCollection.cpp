@@ -26,12 +26,12 @@ void RenderCollection::CombineManifestArrays()
 
 
 
-	if (IsGLFloatPtrLoaded == 1)		// delete old array if it was previously set
-	{
-		delete[] GLFloatPtr;
-		delete[] VertexColorArrayPtr;
-	}
-	IsGLFloatPtrLoaded = 1;
+	//if (IsGLFloatPtrLoaded == 1)		// delete old array if it was previously set
+	//{
+	//delete[] GLFloatPtr;
+	//delete[] VertexColorArrayPtr;
+	//}
+	//IsGLFloatPtrLoaded = 1;
 
 	// 1))) First iterator pass: find number of manifests to attach to, create a temp array for this
 	std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveManifest, EnclaveKeyDef::KeyHasher>::iterator ManMatrixIter;
@@ -39,7 +39,7 @@ void RenderCollection::CombineManifestArrays()
 	int totaltrianglestorender = 0;
 	int totalenclavesfound = 0;
 	RenderableManifestMeta.EnclaveManifestCount = 0;
- 
+
 	auto teststart1 = std::chrono::high_resolution_clock::now();
 
 
@@ -92,9 +92,14 @@ void RenderCollection::CombineManifestArrays()
 	//GLfloat *glfloatptr;
 
 
-	GLFloatPtr = new GLfloat[totaltrianglestorender*9];	// 9 floats per triangle; stores vertex data
-	VertexColorArrayPtr = new GLfloat[totaltrianglestorender * 9];
+	//GLFloatPtr = new GLfloat[totaltrianglestorender*9];	// 9 floats per triangle; stores vertex data
+	//VertexColorArrayPtr = new GLfloat[totaltrianglestorender * 9];
 
+	//GLFloatPtr = make_unique<GLfloat[]>(totaltrianglestorender * 9);	// 9 floats per triangle; stores vertex data
+	//VertexColorArrayPtr = make_unique<GLfloat[]>(totaltrianglestorender * 9);
+
+	GLFloatPtr.reset(new GLfloat[totaltrianglestorender * 9]);
+	VertexColorArrayPtr.reset(new GLfloat[totaltrianglestorender * 9]);
 
 	RenderCollectionArraySize = totaltrianglestorender * 4 * 9;
 	//cout << "value of RenderCollectionArraySize: " << RenderCollectionArraySize << endl;
@@ -125,7 +130,7 @@ void RenderCollection::CombineManifestArrays()
 
 			GLFloatPtr[currentBegin + 2] = tempGLptr[pointedBegin + 2];									// for first coord, x
 			GLFloatPtr[currentBegin + 1] = tempGLptr[pointedBegin + 1];									// for first coord, x
-			GLFloatPtr[currentBegin] =     tempGLptr[pointedBegin];
+			GLFloatPtr[currentBegin] = tempGLptr[pointedBegin];
 
 			VertexColorArrayPtr[currentBegin + 2] = tempGLColorPtr[pointedBegin + 2];
 			VertexColorArrayPtr[currentBegin + 1] = tempGLColorPtr[pointedBegin + 1];
@@ -149,7 +154,7 @@ void RenderCollection::CombineManifestArrays()
 			//currentBegin -= 3;
 			currentBegin += 3;
 			pointedBegin += 3;
-			
+
 		}
 
 
@@ -161,26 +166,26 @@ void RenderCollection::CombineManifestArrays()
 	/*int index2 = 0;
 	for (int z = 0; z < totaltrianglestorender; z++)
 	{
-		for (int aa = 0; aa < 3; aa++)
-		{
-			cout << "Triangle ["<< z << "]: Point ["<< aa << "] "<< GLFloatPtr[index2++] << " " << GLFloatPtr[index2++] << " " << GLFloatPtr[index2++] << endl;
-		}
+	for (int aa = 0; aa < 3; aa++)
+	{
+	cout << "Triangle ["<< z << "]: Point ["<< aa << "] "<< GLFloatPtr[index2++] << " " << GLFloatPtr[index2++] << " " << GLFloatPtr[index2++] << endl;
+	}
 	}*/
-	
-	
-																
+
+
+
 }
 
 void RenderCollection::CombineManifestArrays(mutex& mutexval)
 {
-	mutexval.lock();
-	if (IsGLFloatPtrLoaded == 1)		// delete old array if it was previously set
-	{
-		delete[] GLFloatPtr;
-		delete[] VertexColorArrayPtr;
-	}
-	mutexval.unlock();
-	IsGLFloatPtrLoaded = 1;
+	//mutexval.lock();
+	//if (IsGLFloatPtrLoaded == 1)		// delete old array if it was previously set
+	//{
+	//delete[] GLFloatPtr;
+	//delete[] VertexColorArrayPtr;
+	//}
+	//mutexval.unlock();
+	//IsGLFloatPtrLoaded = 1;
 
 	// 1))) First iterator pass: find number of manifests to attach to, create a temp array for this
 	std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveManifest, EnclaveKeyDef::KeyHasher>::iterator ManMatrixIter;
@@ -214,8 +219,8 @@ void RenderCollection::CombineManifestArrays(mutex& mutexval)
 	auto finish3 = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> elapsed3 = finish3 - start3;
 	//std::cout << "Render Collection test, step 1 " << elapsed3.count() << "): "  << endl;
-	EnclaveKeyDef::EnclaveKey *tempManifestKeys = new EnclaveKeyDef::EnclaveKey[totalenclavesfound];
-
+	//EnclaveKeyDef::EnclaveKey *tempManifestKeys = new EnclaveKeyDef::EnclaveKey[totalenclavesfound];
+	//unique_ptr<EnclaveKeyDef::EnclaveKey[]> tempManifestKeys = make_unique<EnclaveKeyDef::EnclaveKey[]>(totalenclavesfound);
 
 
 
@@ -228,7 +233,7 @@ void RenderCollection::CombineManifestArrays(mutex& mutexval)
 	auto start4 = std::chrono::high_resolution_clock::now();
 	for (ManMatrixIter; ManMatrixIter != ManifestCollectionPtr->ManMatrix.end(); ++ManMatrixIter)
 	{
-		tempManifestKeys[beginindex] = ManMatrixIter->second.UniqueKey;
+		//tempManifestKeys[beginindex] = ManMatrixIter->second.UniqueKey;
 		//totaltrianglestorender += ManMatrixIter->second.TotalEnclaveTriangles;
 		//cout << "enclave found! (" << totaltrianglestorender << ")" <<  endl;
 		//totalenclavesfound++;
@@ -240,8 +245,15 @@ void RenderCollection::CombineManifestArrays(mutex& mutexval)
 	//GLfloat *glfloatptr;
 
 	mutexval.lock();
-	GLFloatPtr = new GLfloat[totaltrianglestorender * 9];	// 9 floats per triangle; stores vertex data
-	VertexColorArrayPtr = new GLfloat[totaltrianglestorender * 9];
+	//GLFloatPtr = new GLfloat[totaltrianglestorender * 9];	// 9 floats per triangle; stores vertex data
+	//VertexColorArrayPtr = new GLfloat[totaltrianglestorender * 9];
+
+	//GLFloatPtr = make_unique<GLfloat[]>(totaltrianglestorender * 9);
+	//VertexColorArrayPtr = make_unique<GLfloat[]>(totaltrianglestorender * 9);
+
+	GLFloatPtr.reset(new GLfloat[totaltrianglestorender * 9]);
+	VertexColorArrayPtr.reset(new GLfloat[totaltrianglestorender * 9]);
+
 	mutexval.unlock();
 
 	RenderCollectionArraySize = totaltrianglestorender * 4 * 9;
@@ -320,16 +332,21 @@ void RenderCollection::AllocateNewArraysViaLockGuard(int in_numberOfFloats, mute
 {
 	std::lock_guard<std::mutex> lock(mutexval);
 	//cout << "GL float check begin...; total floats is: " << totalfloats << "Total Enclaves is: " << TotalEnclavesInFactory << endl;
-	if (IsGLFloatPtrLoaded == 1)		// delete old array if it was previously set
-	{
-		//cout << "GL float is loaded; deleting..." << endl;
-		delete[] GLFloatPtr;
-		delete[] VertexColorArrayPtr;
-		//cout << "GL floats deleted..." << endl;
-	}
-	IsGLFloatPtrLoaded = 1;									// indicate that the pointer was loaded with data
-	GLFloatPtr = new GLfloat[in_numberOfFloats];	// 9 floats per triangle
-	VertexColorArrayPtr = new GLfloat[in_numberOfFloats];
+	//if (IsGLFloatPtrLoaded == 1)		// delete old array if it was previously set
+	//{
+	//cout << "GL float is loaded; deleting..." << endl;
+	//delete[] GLFloatPtr;
+	//delete[] VertexColorArrayPtr;
+	//cout << "GL floats deleted..." << endl;
+	//}
+	//IsGLFloatPtrLoaded = 1;									// indicate that the pointer was loaded with data
+	//GLFloatPtr = new GLfloat[in_numberOfFloats];	// 9 floats per triangle
+	//VertexColorArrayPtr = new GLfloat[in_numberOfFloats];
+
+	//GLFloatPtr = make_unique<GLfloat[]>(in_numberOfFloats);
+	//VertexColorArrayPtr = make_unique<GLfloat[]>(in_numberOfFloats);
+	GLFloatPtr.reset(new GLfloat[in_numberOfFloats]);
+	VertexColorArrayPtr.reset(new GLfloat[in_numberOfFloats]);
 	//cout << "GL float check end..." << endl;
 }
 
@@ -342,7 +359,7 @@ void RenderCollection::CombineManifestArraysFromT1Factory(EnclaveManifestFactory
 																	//cout << "total enclaves in factory will be: " << TotalEnclavesInFactory << endl;
 
 																	// STEP 1: get the size of the array
-	//cout << "total enclaves in factory: " << TotalEnclavesInFactory << endl;
+																	//cout << "total enclaves in factory: " << TotalEnclavesInFactory << endl;
 
 	for (int x = 0; x < TotalEnclavesInFactory; x++)
 	{
@@ -360,10 +377,10 @@ void RenderCollection::CombineManifestArraysFromT1Factory(EnclaveManifestFactory
 	//cout << "GL float check begin...; total floats is: " << totalfloats << "Total Enclaves is: " << TotalEnclavesInFactory << endl;
 	if (IsGLFloatPtrLoaded == 1)		// delete old array if it was previously set
 	{
-		//cout << "GL float is loaded; deleting..." << endl;
-		delete[] GLFloatPtr;
-		delete[] VertexColorArrayPtr;
-		//cout << "GL floats deleted..." << endl;
+	//cout << "GL float is loaded; deleting..." << endl;
+	delete[] GLFloatPtr;
+	delete[] VertexColorArrayPtr;
+	//cout << "GL floats deleted..." << endl;
 	}
 	IsGLFloatPtrLoaded = 1;									// indicate that the pointer was loaded with data
 	GLFloatPtr = new GLfloat[totalfloats];	// 9 floats per triangle
@@ -372,9 +389,9 @@ void RenderCollection::CombineManifestArraysFromT1Factory(EnclaveManifestFactory
 	mutexval.unlock();
 	*/
 
-	//cout << "Render 2 entry:" << endl;
+																			//cout << "Render 2 entry:" << endl;
 
-	// STEP 3: populate dynamic array(s)
+																			// STEP 3: populate dynamic array(s)
 	struct enclaveDataFinder
 	{
 		EnclaveKeyDef::EnclaveKey DFKey;
@@ -437,7 +454,7 @@ void RenderCollection::CombineManifestArraysFromT1Factory(EnclaveManifestFactory
 	}
 	RenderCollectionArraySize = totalfloats * 4;
 	//mutexval.unlock();
-	
+
 }
 
 
@@ -503,17 +520,17 @@ void RenderCollection::UpdateManifestArray(EnclaveKeyDef::EnclaveKey Key)	// upd
 		//cout << "Looped array copy  = " << test_elapsed1.count() << endl;
 		//for (int t = 0; t < 30; ++t)
 		//{
-			//cout << "test data: " << tempGLptr[t] << endl;
+		//cout << "test data: " << tempGLptr[t] << endl;
 		//}
 
-		auto test_start2 = std::chrono::high_resolution_clock::now();
-		std::copy(&*GLFloatPtr, (&*GLFloatPtr) + (ArrayOneLength * 9), &*tempGLptr00);
-		auto test_finish2 = std::chrono::high_resolution_clock::now();
-		std::chrono::duration<double> test_elapsed2 = test_finish2 - test_start2;
+		//auto test_start2 = std::chrono::high_resolution_clock::now();
+		//std::copy(&*GLFloatPtr.get(), (&*GLFloatPtr.get()) + (ArrayOneLength * 9), &*tempGLptr00);
+		//auto test_finish2 = std::chrono::high_resolution_clock::now();
+		//std::chrono::duration<double> test_elapsed2 = test_finish2 - test_start2;
 		//cout << "True array copy  = " << test_elapsed2.count() << endl;						// IMPORTANT NOTE: this is FASTER when dealing with large ranges of arrays, SLOWER when dealing with smaller.
 		//for (int t = 0; t < (ArrayOneLength * 9); t++) // ArrayOneLength * 9
 		//{
-			//cout << "test data2: " << tempGLptr00[t] << endl;
+		//cout << "test data2: " << tempGLptr00[t] << endl;
 		//}
 		delete[] tempGLptr00;
 
@@ -527,10 +544,10 @@ void RenderCollection::UpdateManifestArray(EnclaveKeyDef::EnclaveKey Key)	// upd
 		/*index2 = 0;
 		for (int z = 0; z < ArrayOneLength; z++)
 		{
-			for (int aa = 0; aa < 3; aa++)
-			{
-				//cout << "Array one Triangle ["<< z << "]: Point ["<< aa << "] "<< tempGLptr[index2++] << " " << tempGLptr[index2++] << " " << tempGLptr[index2++] << endl;
-			}
+		for (int aa = 0; aa < 3; aa++)
+		{
+		//cout << "Array one Triangle ["<< z << "]: Point ["<< aa << "] "<< tempGLptr[index2++] << " " << tempGLptr[index2++] << " " << tempGLptr[index2++] << endl;
+		}
 		}*/
 
 		// ASSEMBLE THIRD ARRAY
@@ -545,7 +562,7 @@ void RenderCollection::UpdateManifestArray(EnclaveKeyDef::EnclaveKey Key)	// upd
 		} while (aa != RenderableManifestMeta.EnclaveManifestCount);
 
 		GLfloat *tempGLptr3;
-		int startIndex = (ArrayOneLength *9) + (RenderableManifestMeta.MetaArray[FoundIndex].currentTriangleCount*9);						// start position of the 3rd array's scan of GLFloatPtr
+		int startIndex = (ArrayOneLength * 9) + (RenderableManifestMeta.MetaArray[FoundIndex].currentTriangleCount * 9);						// start position of the 3rd array's scan of GLFloatPtr
 		tempGLptr3 = new GLfloat[ArrayThreeLength * 9];
 		for (int cc = 0; cc < (ArrayThreeLength * 9); ++cc)
 		{
@@ -559,10 +576,10 @@ void RenderCollection::UpdateManifestArray(EnclaveKeyDef::EnclaveKey Key)	// upd
 		index2 = 0;
 		for (int z = 0; z < ArrayOneLength; z++)
 		{
-			for (int aa = 0; aa < 3; aa++)
-			{
-				//cout << "Array three Triangle [" << z << "]: Point [" << aa << "] " << tempGLptr3[index2++] << " " << tempGLptr3[index2++] << " " << tempGLptr3[index2++] << endl;
-			}
+		for (int aa = 0; aa < 3; aa++)
+		{
+		//cout << "Array three Triangle [" << z << "]: Point [" << aa << "] " << tempGLptr3[index2++] << " " << tempGLptr3[index2++] << " " << tempGLptr3[index2++] << endl;
+		}
 		}*/
 		auto finish5 = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<double> elapsed5 = finish5 - start5;
@@ -575,7 +592,7 @@ void RenderCollection::UpdateManifestArray(EnclaveKeyDef::EnclaveKey Key)	// upd
 		GLfloat *tempGLptr2;
 		GLfloat *array2ptr;
 		//tempGLptr2 = ManifestCollectionPtr->ManMatrix[Key].EnclaveGLPtr;
-		tempGLptr2 = new GLfloat[ArrayTwoLength*9];
+		tempGLptr2 = new GLfloat[ArrayTwoLength * 9];
 		array2ptr = ManifestCollectionPtr->ManMatrix[Key].EnclaveGLPtr;								// this pointer will not be deleted later; doing so would delete parts of the manifest.
 		int currentBegin = 0;
 		int pointedBegin = 0;
@@ -591,7 +608,7 @@ void RenderCollection::UpdateManifestArray(EnclaveKeyDef::EnclaveKey Key)	// upd
 			tempGLptr2[currentBegin + 2] = array2ptr[pointedBegin + 2];									// for first coord, x
 			tempGLptr2[currentBegin + 1] = array2ptr[pointedBegin + 1];									// for first coord, x
 			tempGLptr2[currentBegin] = array2ptr[pointedBegin];
-								// for first coord, x
+			// for first coord, x
 			//cout << "Triangle coord matching: (-2): " << GLFloatPtr[currentBegin - 2] << " (-1): " << GLFloatPtr[currentBegin - 1] << " (0):" << GLFloatPtr[currentBegin] << endl;
 			//currentBegin -= 3;
 			currentBegin += 3;
@@ -604,17 +621,17 @@ void RenderCollection::UpdateManifestArray(EnclaveKeyDef::EnclaveKey Key)	// upd
 		index2 = 0;
 		for (int z = 0; z < ArrayTwoLength; z++)
 		{
-			for (int aa = 0; aa < 3; aa++)
-			{
-				//cout << "Array two Triangle [" << z << "]: Point [" << aa << "] " << tempGLptr2[index2++] << " " << tempGLptr2[index2++] << " " << tempGLptr2[index2++] << endl;
-			}
+		for (int aa = 0; aa < 3; aa++)
+		{
+		//cout << "Array two Triangle [" << z << "]: Point [" << aa << "] " << tempGLptr2[index2++] << " " << tempGLptr2[index2++] << " " << tempGLptr2[index2++] << endl;
+		}
 		}
 		*/
 
 		auto finish6 = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<double> elapsed6 = finish6 - start6;
 		//cout << "Array 2 reassembly duration = " << elapsed6.count() << endl;
-	
+
 
 		// ASSEMBLE NEW RENDER ARRAY FROM PREVIOUS 3
 
@@ -622,7 +639,7 @@ void RenderCollection::UpdateManifestArray(EnclaveKeyDef::EnclaveKey Key)	// upd
 
 
 		int NewRenderArrayLength = (ArrayOneLength * 9) + (ArrayThreeLength * 9) + (ArrayTwoLength * 9);		// combine lengths of first, second, and third arrays.
-		//cout << "test final length: " << NewRenderArrayLength << endl;
+																												//cout << "test final length: " << NewRenderArrayLength << endl;
 		GLfloat *newRenderArray;
 		newRenderArray = new GLfloat[NewRenderArrayLength];
 		int newRenderArrayBeginIndex = 0;
@@ -639,22 +656,23 @@ void RenderCollection::UpdateManifestArray(EnclaveKeyDef::EnclaveKey Key)	// upd
 			newRenderArray[newRenderArrayBeginIndex++] = tempGLptr3[ee];
 		}
 
-		delete[] GLFloatPtr;
-		GLFloatPtr = newRenderArray;
+		//delete[] GLFloatPtr;
+		//GLFloatPtr = newRenderArray;
+		//GLFloatPtr = make_unique<GLfloat[]>;
 
 		//--------------------OUTPUT OF FINAL ARRAY
-		
-		
+
+
 		index2 = 0;
 		RenderCollectionArraySize = NewRenderArrayLength * 4;
 		//cout << "value of RenderCollectionArraySize: " << RenderCollectionArraySize << endl;
 		/*
 		for (int z = 0; z < (NewRenderArrayLength/9); z++)
 		{
-			for (int aa = 0; aa < 3; aa++)
-			{
-				//cout << "Final array; Triangle [" << z << "]: Point [" << aa << "] " << GLFloatPtr[index2++] << " " << GLFloatPtr[index2++] << " " << GLFloatPtr[index2++] << endl;
-			}
+		for (int aa = 0; aa < 3; aa++)
+		{
+		//cout << "Final array; Triangle [" << z << "]: Point [" << aa << "] " << GLFloatPtr[index2++] << " " << GLFloatPtr[index2++] << " " << GLFloatPtr[index2++] << endl;
+		}
 		}
 		*/
 
@@ -662,7 +680,7 @@ void RenderCollection::UpdateManifestArray(EnclaveKeyDef::EnclaveKey Key)	// upd
 
 
 
-		delete[] tempGLptr;				
+		delete[] tempGLptr;
 		delete[] tempGLptr2;
 		delete[] tempGLptr3;
 
@@ -672,7 +690,7 @@ void RenderCollection::UpdateManifestArray(EnclaveKeyDef::EnclaveKey Key)	// upd
 
 		auto finish7 = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<double> elapsed7 = finish7 - start7;
-		
+
 	}
 
 
@@ -691,12 +709,12 @@ RenderCollection::RenderCollection(int dummy)
 RenderCollection::~RenderCollection()
 {
 	/* Summary: removes dynamically allocated array, if it exists */
-	if (IsGLFloatPtrLoaded == 1)
-	{
-		//cout << "DELETING RENDER COLLECTION" << endl;
-		delete[] GLFloatPtr;
-		delete[] VertexColorArrayPtr;
-		IsGLFloatPtrLoaded = 0;
-		//cout << "DELETE COMPLETE" << endl;
-	}
+	//if (IsGLFloatPtrLoaded == 1)
+	//{
+	//cout << "DELETING RENDER COLLECTION" << endl;
+	//delete[] GLFloatPtr;
+	//delete[] VertexColorArrayPtr;
+	//IsGLFloatPtrLoaded = 0;
+	//cout << "DELETE COMPLETE" << endl;
+	//}
 }

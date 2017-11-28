@@ -18,9 +18,9 @@ private:
 	};
 
 
-	ManifestCollection *EnclaveManifestRef;							// points to the passed EnclaveManifest reference
-	GLfloat *RenderArrayPtr;									// points to the render array that is allocated on the heap
-	EnclaveDict *EnclaveDictArray;
+	ManifestCollection *EnclaveManifestRef = NULL;							// points to the passed EnclaveManifest reference
+	GLfloat *RenderArrayPtr = NULL;									// points to the render array that is allocated on the heap
+	EnclaveDict *EnclaveDictArray = NULL;
 	int EnclaveDictArrayElementPointer = 0;						// keeps track of number of elements in EnclaveDictArray
 	int TotalMeshTriangles = 0;
 

@@ -36,7 +36,7 @@ private:
 	friend class RenderCollectionMatrix;
 	std::unordered_map<EnclaveKeyDef::EnclaveKey, ManifestCollection, EnclaveKeyDef::KeyHasher> ManiCollectionMap;				// un unordered map which stores the ManifestCollections
 	std::unordered_map<EnclaveKeyDef::EnclaveKey, reference_wrapper<ManifestCollection>, EnclaveKeyDef::KeyHasher> ManiCollectionMapRef;
-	EnclaveCollectionMatrix *CollectionMatrixRef;																				// a reference to a valid EnclaveCollectionMatrix
+	EnclaveCollectionMatrix *CollectionMatrixRef = NULL;																				// a reference to a valid EnclaveCollectionMatrix
 
 	ManifestCollectionMatrix(EnclaveCollectionMatrix *collectionmatrixref);														// constructor which takes in a valid reference to an EnclaveCollectionMatrix
 	ManifestCollectionMatrix();																									// constructor used when creating this object in an OrganicSystem.

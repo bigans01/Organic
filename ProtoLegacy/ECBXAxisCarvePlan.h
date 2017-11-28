@@ -23,7 +23,7 @@ class ECBXAxisCarvePlan
 {
 private:
 	friend class  EnclaveCollectionBlueprint;
-	unsigned char CPArray[32][32];			// first dimension is x, second is z
+	unsigned char CPArray[32][32] = { 0 };			// first dimension is x, second is z
 
 };
 

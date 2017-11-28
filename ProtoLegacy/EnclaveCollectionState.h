@@ -15,7 +15,7 @@ private:
 	friend class EnclaveBlockRayTracker;
 	EnclaveKeyDef::EnclaveKey ActualCollectionKey;
 	int isActive = 0;
-	EnclaveCollection* collectionPtr;
+	EnclaveCollection* collectionPtr = NULL;
 	EnclaveCollectionState();
 };
 

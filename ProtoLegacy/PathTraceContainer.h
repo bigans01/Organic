@@ -20,9 +20,9 @@ class PathTraceContainer {
 private:
 	friend class OrganicSystem;
 	friend class EnclaveCollectionMatrix;
-	int CollectionCoord;			// x, y, or z coordinate of the Collection of Enclaves
-	int ChunkCoord;					// x, y, or z coordinate of the chunk within the Collection
-	int BlockCoord;					// x, y, or z coordinate of the block within the chunk
+	int CollectionCoord = 0;			// x, y, or z coordinate of the Collection of Enclaves
+	int ChunkCoord = 0;					// x, y, or z coordinate of the chunk within the Collection
+	int BlockCoord = 0;					// x, y, or z coordinate of the block within the chunk
 };
 
 #endif

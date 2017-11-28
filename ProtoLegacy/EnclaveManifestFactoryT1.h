@@ -35,11 +35,11 @@ class EnclaveManifestFactoryT1
 private:
 	friend class OrganicSystem;
 	friend class RenderCollection;
-	EnclaveCollection *EnclaveCollectionPtr;												// pointer to a valid EnclaveCollection
+	EnclaveCollection *EnclaveCollectionPtr = NULL;												// pointer to a valid EnclaveCollection
 	std::map<int, EnclaveCollection> FactoryCollections;									// map that contains one or more personal, or "localized" EnclaveCollections designed for use specifically by the Factory.
-	Enclave::EnclavePolyArray *EnclavePolyArrayPtr;											// pointer to an EnclavePolyArray within previous EnclaveCollection
-	OrganicTextureDictionary *TextureDictionaryRef;											// pointer to a valid OrganicTextureDictionary contained within an OrganicSystem instance
-	OrganicVtxColorDictionary *VertexColorDictionaryRef;									// pointer to a valid OrganicVtxColorDictionary contained within an OrganicSystem instance
+	Enclave::EnclavePolyArray *EnclavePolyArrayPtr = NULL;											// pointer to an EnclavePolyArray within previous EnclaveCollection
+	OrganicTextureDictionary *TextureDictionaryRef = NULL;											// pointer to a valid OrganicTextureDictionary contained within an OrganicSystem instance
+	OrganicVtxColorDictionary *VertexColorDictionaryRef = NULL;									// pointer to a valid OrganicVtxColorDictionary contained within an OrganicSystem instance
 	EnclaveManifestFactoryT1Storage StorageArray[512];										// an array of 512 storage units 
 	int CurrentStorage = 0;																	// a member variable that stores the current number of stored Enclaves
 	int StorageArrayCount = 0;																// ""

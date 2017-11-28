@@ -46,7 +46,7 @@ private:
 	friend class EnclaveCollectionStateArray;
 	friend class ManifestCollection;
 	typedef unsigned char(&ElevationMapRef)[8][8];																					// typedef for returning an array of 8x8 chars
-	OrganicSystem *OrganicPointer;
+	OrganicSystem *OrganicPointer = NULL;
 	std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveCollection, EnclaveKeyDef::KeyHasher> EnclaveCollectionMap;				// unordered map which stores the collections
 
 	void AddNewCollection(int x, int y, int z);																						// adds a new collection, with the members of its key value being equivalent to x/y/z

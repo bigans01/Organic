@@ -34,26 +34,26 @@ class OGLMBufferManager;
 class OrganicGLManager
 {
 public:
-	glm::vec3* directionVecPtr;
-	glm::vec3* positionVecPtr;													// a pointer the position vector.
-		GLFWwindow*  GLwindow;														// OpenGL: pointer/handle to the OpenGL window (context?)
+	glm::vec3* directionVecPtr = NULL;
+	glm::vec3* positionVecPtr = NULL;													// a pointer the position vector.
+	GLFWwindow* GLwindow = NULL;														// OpenGL: pointer/handle to the OpenGL window (context?)
 private:
 	friend class OrganicSystem;
 	friend class OGLMBufferManager;
 	int renderMode = 0;
-	GLuint OrganicGLprogramID;													// OpenGL: pointer/handle to the program used for shading	
-	GLuint OrganicGLVCprogramID;
+	GLuint OrganicGLprogramID = 0;													// OpenGL: pointer/handle to the program used for shading	
+	GLuint OrganicGLVCprogramID = 0;
 
-	GLuint OrganicGLVertexArrayID;												// OpenGL: pointer/handle to the vertex array handler
-	GLuint OrganicGLVertexBufferID;												// OpenGL: pointer/handle to the vertex buffer handler (single buffer)
+	GLuint OrganicGLVertexArrayID = 0;												// OpenGL: pointer/handle to the vertex array handler
+	GLuint OrganicGLVertexBufferID = 0;												// OpenGL: pointer/handle to the vertex buffer handler (single buffer)
 
-	GLuint OrganicGLVertexColorBufferID;										// OpenGL: pointer/handle to the vertex color buffer handler (single buffer)
-	GLuint OrganicGLLightingBufferID;											// OpenGL: third potential single buffer; currently in testing only. (not being generated as of (10/11/2017))
-	GLuint OrganicGLLightingBufferID2;											// OpenGL: third potential single buffer; currently in testing only. (not being generated as of (10/11/2017))
+	GLuint OrganicGLVertexColorBufferID = 0;										// OpenGL: pointer/handle to the vertex color buffer handler (single buffer)
+	GLuint OrganicGLLightingBufferID = 0;											// OpenGL: third potential single buffer; currently in testing only. (not being generated as of (10/11/2017))
+	GLuint OrganicGLLightingBufferID2 = 0;											// OpenGL: third potential single buffer; currently in testing only. (not being generated as of (10/11/2017))
 	GLuint OrganicGLVertexBufferArray[10];										// OpenGL: array of potential buffers
-	GLuint OrganicMVPHandle;													// OpenGL: pointer/handle to the MVP matrix result
+	GLuint OrganicMVPHandle = 0;													// OpenGL: pointer/handle to the MVP matrix result
 	OGLMBufferManager OrganicBufferManager;										// the instance of OGLMBufferManager that this OrganicGLManager object will use
-	GLfloat *OrganicGLarrayPTR;													// (temporary) OpenGL: used to point to a dynamic array containing vertex data
+	GLfloat *OrganicGLarrayPTR = NULL;													// (temporary) OpenGL: used to point to a dynamic array containing vertex data
 	//const int CollectionBufferSize = 1024 * 1024;								// the size of the data buffer for each RenderCollection; 
 	const int CollectionBufferSize = 589824;										//alternate = 73728   , 147456, 294912, 589824, 1179648
 	int numberOfBuffers = 0;													// initial value is 0, but will be reset

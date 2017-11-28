@@ -36,11 +36,11 @@ private:
 	int T1_cubesize = 0;					// determines the x, y, and z axis lengths of the T1 dynamic array (cube)
 	int T2_cubesize = 0;					// determines the x, y, and z axis lengths of the T2 dynamic array (cube)
 	int arraysSet = 0;
-	OrganicGLManager* OGLMPtr;
+	OrganicGLManager* OGLMPtr = NULL;
 	OGLMRenderMetaContainer OGLMRMC;		// RMC = render meta container
-	OGLMDrawCallMeta* DCMPtr;
-	OrganicSystem* organicSystemPtr;
-	EnclaveCollectionBlueprintMatrix* blueprintMatrixPtr;						// pointer to the OrganicSystem's blueprint matrix
+	OGLMDrawCallMeta* DCMPtr = NULL;
+	OrganicSystem* organicSystemPtr = NULL;
+	EnclaveCollectionBlueprintMatrix* blueprintMatrixPtr = NULL;						// pointer to the OrganicSystem's blueprint matrix
 	EnclaveKeyDef::EnclaveKey oldCenterCollectionKey;							// sets the key before the array morph
 	EnclaveKeyDef::EnclaveKey currentCenterCollectionKey;						// sets the current key after morph
 	int shiftFlag = 0;															// determines if a morph needs to occur; 0 = false, 1 = true

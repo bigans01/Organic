@@ -32,12 +32,12 @@ public:
 private:
 	friend class OrganicSystem;
 	EnclaveKeyDef::EnclaveKey MDKey;								// the unique key of the collection that will be processed
-	EnclaveCollectionBlueprintMatrix* MDBlueprintMatrixRef;			// a pointer to the blueprint matrix
-	EnclaveCollectionMatrix* MDEnclaveCollectionsRef;				// a pointer to the enclave collection matrix
-	ManifestCollectionMatrix* MDManifestCollectionsRef;				// a pointer to the manifest collection matrix; this is not used with Factories but is included anyway
-	RenderCollectionMatrix* MDRenderCollectionsRef;					// a pointer to the render collection list
-	EnclaveCollection* MDEnclaveCollectionPtr;						// a pointer to a valid enclave collection
-	ManifestCollection* MDManifestCollectionPtr;					// a pointer to a valid manifest collection; this is not used with factories but is included anyway
+	EnclaveCollectionBlueprintMatrix* MDBlueprintMatrixRef = NULL;			// a pointer to the blueprint matrix
+	EnclaveCollectionMatrix* MDEnclaveCollectionsRef = NULL;				// a pointer to the enclave collection matrix
+	ManifestCollectionMatrix* MDManifestCollectionsRef = NULL;				// a pointer to the manifest collection matrix; this is not used with Factories but is included anyway
+	RenderCollectionMatrix* MDRenderCollectionsRef = NULL;					// a pointer to the render collection list
+	EnclaveCollection* MDEnclaveCollectionPtr = NULL;						// a pointer to a valid enclave collection
+	ManifestCollection* MDManifestCollectionPtr = NULL;					// a pointer to a valid manifest collection; this is not used with factories but is included anyway
 
 
 	MDJobMaterializeCollection(																					/* the only non-constructor function, 

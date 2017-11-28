@@ -67,14 +67,14 @@ private:
 	EnclaveKeyDef::EnclaveKey UniqueKey, CollectionKey;						// the unique Key identifying the Enclave, and the key of the Collection that this enclave belongs to; 
 																			// CollectionKey is used when an EnclaveManifest is attached to an enclave, in order to get the exact x/y/z coords of the polygon in a chunk.
 	struct EnclaveVertex {													// this struct stores "compressed" values of the xyz.
-		char x, y, z;														// for use in compressed data below...values will be multiplied by a matrix of floats, in order to produce appropriate values for OpenGL. This is to save data.
+		unsigned char x, y, z;														// for use in compressed data below...values will be multiplied by a matrix of floats, in order to produce appropriate values for OpenGL. This is to save data.
 	};
 	struct EnclavePolyArray {							/* ----Total size: 52 bytes---- */
 		int readorder = 0;								// unused, reserverd for future use
 		int otherflags = 0;								// is block air, is block solid, is block set to render, etc
 		short blockid = 0;								// the type of block 
-		char t1_flags = 0;								// flags for t1 type objects
-		char t2_flags = 0;								// flags for t2 type objects; currently unused but reserved for later use
+		unsigned char t1_flags = 0;								// flags for t1 type objects
+		unsigned char t2_flags = 0;								// flags for t2 type objects; currently unused but reserved for later use
 		EnclaveVertex structarray[16];					// 12 bytes per vertex, (16 vertexes = 192)
 														/* First 8 vertexes [indexes 0 to 7] = for T1 types
 														Next 8 vertexes [indexes 8 to 15] = for T2 types (reserved for later use) */

@@ -18,8 +18,8 @@ class OrganicGLRenderCollectionMeta
 {
 	private:
 		friend class OrganicGLManager;
-		int MetaIndex;			 // potentially unused variable
-		int ArraySize;			 // stores the size of the array, in bytes
+		int MetaIndex = 0;			 // potentially unused variable
+		int ArraySize = 0;			 // stores the size of the array, in bytes
 };
 
 #endif

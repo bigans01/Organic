@@ -29,11 +29,11 @@ class EnclaveBlockRayTracker
 {
 private:
 	friend class OrganicSystem;
-	EnclaveCollection* currentCollectionPtr;	// pointer to the current collection that the ray is traversing across; the ray can potentially traverse across multiple collections
-	Enclave* enclavePtr;
-	EnclaveCollectionState* currentCollectionState;
-	EnclaveCollectionStateArray* currentCollectionStateArray;
-	OrganicBlockTarget* targetVertexData;
+	EnclaveCollection* currentCollectionPtr = NULL;	// pointer to the current collection that the ray is traversing across; the ray can potentially traverse across multiple collections
+	Enclave* enclavePtr = NULL;
+	EnclaveCollectionState* currentCollectionState = NULL;
+	EnclaveCollectionStateArray* currentCollectionStateArray = NULL;
+	OrganicBlockTarget* targetVertexData = NULL;
 	int isCurrentCollectionActive = 0;
 	EnclaveKeyDef::EnclaveKey collectionKey;	// actual key of the current collection being traversed by the ray
 	EnclaveKeyDef::EnclaveKey enclaveKey;		// the current enclave the ray is traversing

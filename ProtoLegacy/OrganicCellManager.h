@@ -29,8 +29,8 @@ private:
 	std::map<int, OrganicCell*> availableCellMap;		// a map containing available cells
 	std::map<int, OrganicCell*> t2CellMap;				// a map containing all worker threads that can work as T2 terrain cells
 	std::map<int, OrganicCell*> t1CellMap;				// a map containing all worker threads that can work as T1 terrain cells
-	OrganicCellLimitsList* organicCellLimitsListPtr;	// a pointer to the OrganicSystem's instance of OrganicCellLimitsList
-	OrganicSystem* organicSystemPtr;					// a pointer ot the OrganicSystem that this instance belongs to
+	OrganicCellLimitsList* organicCellLimitsListPtr = NULL;	// a pointer to the OrganicSystem's instance of OrganicCellLimitsList
+	OrganicSystem* organicSystemPtr = NULL;					// a pointer ot the OrganicSystem that this instance belongs to
 	void setOrganicCellLimitsListPtr(OrganicCellLimitsList* in_OrganicCellLimitsListPtr);
 	void setOrganicSystemPtr(OrganicSystem* in_organicSystemPtr);
 	void populateCellMapsOnEngineStart();

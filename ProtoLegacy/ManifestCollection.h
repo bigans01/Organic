@@ -40,8 +40,8 @@ private:
 	std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveManifest, EnclaveKeyDef::KeyHasher> ManMatrix;						// unordered map which stores the EnclaveManifests
 	std::unordered_map<EnclaveKeyDef::EnclaveKey, reference_wrapper<EnclaveManifest>, EnclaveKeyDef::KeyHasher> testmap2;
 	std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveManifest, EnclaveKeyDef::KeyHasher>::iterator ManMatrixIter;		// an iterator for the above unordered map
-	EnclaveMatrix *EnclaveMatrixRef;																						// a reference to the Enclave (currently unused, potentially reserverd for later)
-	EnclaveCollectionMatrix *CollectionMatrixRef;																			// a reference to a valid instance of EnclaveCollectionMatrix
+	EnclaveMatrix *EnclaveMatrixRef = NULL;																						// a reference to the Enclave (currently unused, potentially reserverd for later)
+	EnclaveCollectionMatrix *CollectionMatrixRef = NULL;																			// a reference to a valid instance of EnclaveCollectionMatrix
 
 	ManifestCollection(EnclaveMatrix *matrixref);																			// unused constructor; reserved for later use
 	ManifestCollection(EnclaveMatrix *matrixref, EnclaveCollectionMatrix *collectionref);									// unused constructor; reserved for later use

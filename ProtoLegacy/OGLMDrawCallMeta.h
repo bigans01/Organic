@@ -14,18 +14,18 @@ class OGLMDrawCallMeta
 		friend class OrganicGLManager;
 		friend class OrganicSystem;
 		// DCM delegator (DCMD) array pointers
-		int* DCMD_SubBufferContents;
-		int* DCMD_SubBufferLocation;
-		int* DCMD_RemainingVertexSpace;
-		int* DCMD_TT1_GL_BufferOffset;
-		int* DCMD_TT2_GL_BufferOffset;
+		int* DCMD_SubBufferContents = NULL;
+		int* DCMD_SubBufferLocation = NULL;
+		int* DCMD_RemainingVertexSpace = NULL;
+		int* DCMD_TT1_GL_BufferOffset = NULL;
+		int* DCMD_TT2_GL_BufferOffset = NULL;
 
 		// DCM primary terrain type 1 (TT1) array pointers
-		EnclaveKeyDef::EnclaveKey* TT1_CollectionKeys;
-		int* TT1_SubBufferContents;
-		int* TT1_SubBufferLocation;
-		GLint* TT1_GL_BufferOffset;
-		GLint* TT1_GL_VertexArraySize;
+		EnclaveKeyDef::EnclaveKey* TT1_CollectionKeys = NULL;
+		int* TT1_SubBufferContents = NULL;
+		int* TT1_SubBufferLocation = NULL;
+		GLint* TT1_GL_BufferOffset = NULL;
+		GLint* TT1_GL_VertexArraySize = NULL;
 		int indexValueOfFirstEmpty = 0;				// indicates which index in the arrays contains the first available empty buffer
 
 

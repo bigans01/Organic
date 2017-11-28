@@ -28,13 +28,13 @@ private:
 	int TopNeighborExists = 0;
 	int BottomNeighborExists = 0;
 
-	EnclaveCollectionBlueprint* originPtr;		// the origin blueprint
-	EnclaveCollectionBlueprint* westPtr;		// blueprint west of the origin 
-	EnclaveCollectionBlueprint* northPtr;		// blueprint north of the origin
-	EnclaveCollectionBlueprint* eastPtr;		// blueprint east of the origin
-	EnclaveCollectionBlueprint* southPtr;		// blueprint south of the origin
-	EnclaveCollectionBlueprint* topPtr;			// blueprint above the origin
-	EnclaveCollectionBlueprint* bottomPtr;		// blueprint below the origin
+	EnclaveCollectionBlueprint* originPtr = NULL;		// the origin blueprint
+	EnclaveCollectionBlueprint* westPtr = NULL;		// blueprint west of the origin 
+	EnclaveCollectionBlueprint* northPtr = NULL;		// blueprint north of the origin
+	EnclaveCollectionBlueprint* eastPtr = NULL;		// blueprint east of the origin
+	EnclaveCollectionBlueprint* southPtr = NULL;		// blueprint south of the origin
+	EnclaveCollectionBlueprint* topPtr = NULL;			// blueprint above the origin
+	EnclaveCollectionBlueprint* bottomPtr = NULL;		// blueprint below the origin
 
 
 };

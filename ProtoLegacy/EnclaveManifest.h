@@ -47,17 +47,17 @@ private:
 	int IsEnclaveGLPtrLoaded = 0;															// flag that determines whether or not an array of 3d data currently exists for this manifest									// currently unused
 	int RenderablePolyCount = 0;															// the number of currently "unveiled" polygons in the enclave
 	int TotalEnclaveTriangles = 0;															// the total number of triangles that will be rendered in this enclave manifest
-	GLfloat *EnclaveGLPtr;																	// pointer to the array of OpenGL floats, which will be used by an instnce of RenderCollection.
-	GLfloat *VertexColorGLPtr;
-	GLfloat *TextureGLPtr;																	// pointer to the array of texture data
-	RenderCollection *RenderCollectionRef;													// pointer to the RenderCollection that this EnclaveManifest belongs to; this is used to signal 
+	GLfloat *EnclaveGLPtr = NULL;																	// pointer to the array of OpenGL floats, which will be used by an instnce of RenderCollection.
+	GLfloat *VertexColorGLPtr = NULL;
+	GLfloat *TextureGLPtr = NULL;																	// pointer to the array of texture data
+	RenderCollection *RenderCollectionRef = NULL;													// pointer to the RenderCollection that this EnclaveManifest belongs to; this is used to signal 
 																							// the RenderCollection that this instance of EnclaveManifest has changed
-	OrganicTextureDictionary *TextureDictionaryRef;											// reference to the Organic system's OrganicTextureDictionary
-	OrganicVtxColorDictionary *VertexColorDictionaryRef;									// reference to the Organic system's OrganicVtxColorDictionary
+	OrganicTextureDictionary *TextureDictionaryRef = NULL;											// reference to the Organic system's OrganicTextureDictionary
+	OrganicVtxColorDictionary *VertexColorDictionaryRef = NULL;									// reference to the Organic system's OrganicVtxColorDictionary
 
 	int IsRenderCollectionRefSet = 0;														// determines whether or not the pointer RenderCollectionRef is set
 	Enclave EnclavePtr;																		// pointer to the enclave to gain data from
-	Enclave::EnclavePolyArray *EnclavePolyArrayPtr;											// pointer to the sorted array in the enclave. in the Sorted struct. (see Enclave.h)
+	Enclave::EnclavePolyArray *EnclavePolyArrayPtr = NULL;											// pointer to the sorted array in the enclave. in the Sorted struct. (see Enclave.h)
 	int polyfacebitmask = 32;																// bitmask for determining which faces of a polygon will be rendered
 
 	EnclaveKeyDef::EnclaveKey UniqueKey;													// the unique EnclaveKey of this manifest

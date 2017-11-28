@@ -29,9 +29,9 @@ public:
 	// forms the structure of the Key itself.
 	struct EnclaveKey
 	{
-		int x;
-		int y;
-		int z;
+		int x = 0;
+		int y = 0;
+		int z = 0;
 
 		// operator overloading (required)
 		bool operator==(const EnclaveKey &other) const
@@ -46,8 +46,8 @@ public:
 
 	struct Enclave2DKey			// for use with EnclaveUnveilMeta only (subject to change later)
 	{
-		int a;
-		int b;
+		int a = 0;
+		int b = 0;
 	};
 
 

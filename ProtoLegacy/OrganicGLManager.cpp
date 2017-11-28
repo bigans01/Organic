@@ -30,9 +30,9 @@ void OrganicGLManager::InitializeOpenGL()
 {
 
 	/* ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-	
+
 	BEGIN CONTEXT/PREREQUISITE TESTS
-	
+
 	|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| */
 
 	if (!glfwInit())
@@ -86,7 +86,7 @@ void OrganicGLManager::InitializeOpenGL()
 	glGenVertexArrays(1, &OrganicGLVertexArrayID);
 	glBindVertexArray(OrganicGLVertexArrayID);			// sets this as the current VAO to use
 
-	// Setup programID
+														// Setup programID
 	OrganicGLprogramID = LoadShaders("SimpleTransform.vertexshader", "SimpleFragmentShader.fragmentshader");		/* NOTE: these shaders need to be in the same directory as the .exe file;
 																													How to put these in another directory should be investigated. (8/19/2017) */
 	OrganicGLVCprogramID = LoadShaders("TransformVertexShader.vertexshader", "ColorFragmentShader.fragmentshader");
@@ -105,13 +105,11 @@ void OrganicGLManager::InitializeOpenGL()
 	Model = glm::mat4(1.0f);												// Model matrix
 	MVP = Projection * View * Model; // Remember, matrix multiplication is the other way around
 
-	/* ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+									 /* ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
-	END CONTEXT/PREREQUISITE TESTS
+									 END CONTEXT/PREREQUISITE TESTS
 
-	|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| */
-
-
+									 |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| */
 
 
 
@@ -120,46 +118,48 @@ void OrganicGLManager::InitializeOpenGL()
 
 
 
-	/* ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-
-	BEGIN BUFFER SETUP
-
-	|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| */
 
 
+									 /* ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+									 BEGIN BUFFER SETUP
+
+									 |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| */
 
 
-	// ::::::::::::::::MULTI BUFFER STYLE::::::::::::::::::
-	//glGenBuffers(10, OrganicGLVertexBufferArray);								// generates 10 buffers, and puts their refrences into the OrganicGLVertexBufferArray
-	//glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexBufferArray[0]);				// binds the array at index 0 to be the currently referenced buffer
 
-	// ::::::::::::::::SINGLE BUFFER STYLE::::::::::::::::::
-	//glGenBuffers(1, &OrganicGLVertexBufferID);								// generate 1 single buffer, bind it to OrganicGLVertexBufferID; this is different from the above line.
-	//glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexBufferID);					// binds the previously created buffer to be a GL_ARRAY_BUFFER
+
+									 // ::::::::::::::::MULTI BUFFER STYLE::::::::::::::::::
+									 //glGenBuffers(10, OrganicGLVertexBufferArray);								// generates 10 buffers, and puts their refrences into the OrganicGLVertexBufferArray
+									 //glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexBufferArray[0]);				// binds the array at index 0 to be the currently referenced buffer
+
+									 // ::::::::::::::::SINGLE BUFFER STYLE::::::::::::::::::
+									 //glGenBuffers(1, &OrganicGLVertexBufferID);								// generate 1 single buffer, bind it to OrganicGLVertexBufferID; this is different from the above line.
+									 //glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexBufferID);					// binds the previously created buffer to be a GL_ARRAY_BUFFER
 
 	glGenBuffers(1, &OrganicGLVertexBufferID);								// generate 10 buffers, bind it to the arrayOrganicGLVertexBufferArray
 	glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexBufferID);					// binds the previously created buffer to be a GL_ARRAY_BUFFER
 
-	//glBufferData(GL_ARRAY_BUFFER, 1024, OrganicGLarrayPTR, GL_DYNAMIC_DRAW);		// Old method; no longer utilized.
-	// 3000000000
+																			//glBufferData(GL_ARRAY_BUFFER, 1024, OrganicGLarrayPTR, GL_DYNAMIC_DRAW);		// Old method; no longer utilized.
+																			// 3000000000
 	unsigned long int bufferSize = CollectionBufferSize * numberOfBuffers;
 	//cout << "Total buffer size: " << CollectionBufferSize * numberOfBuffers << endl;
 	//cout << "Total buffer size: " << bufferSize << endl;
 	glBufferStorage(GL_ARRAY_BUFFER, CollectionBufferSize * numberOfBuffers, NULL, GL_DYNAMIC_STORAGE_BIT);	/* REQUIRED: pre-allocates memory for the buffer, to any desired amount; this is so
-																					   that the buffer doesn't need to be resized in the future.
-																					
-																						Parameters:
-																						-first argument: target -> buffer binding target. Set to GL_ARRAY_BUFFER in this case;
-																												   see official documentation for more details.
+																											that the buffer doesn't need to be resized in the future.
 
-																						-second argument: buffer size -> size of the buffer.
+																											Parameters:
+																											-first argument: target -> buffer binding target. Set to GL_ARRAY_BUFFER in this case;
+																											see official documentation for more details.
 
-																						-third argument: pointer to data to copy -> will copy data specified by the pointer; can use NULL
-																																	if no data is to be copied (such as in this case)
-																						-fourth argument: flags -> sets the flags that will be needed for this buffer; GL_DYNAMIC_STORAGE_BIT 
-																													 is required to use glBufferSubData in this buffer.
+																											-second argument: buffer size -> size of the buffer.
 
-																					*/
+																											-third argument: pointer to data to copy -> will copy data specified by the pointer; can use NULL
+																											if no data is to be copied (such as in this case)
+																											-fourth argument: flags -> sets the flags that will be needed for this buffer; GL_DYNAMIC_STORAGE_BIT
+																											is required to use glBufferSubData in this buffer.
+
+																											*/
 	glGenBuffers(1, &OrganicGLVertexColorBufferID);
 	glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexColorBufferID);
 	glBufferStorage(GL_ARRAY_BUFFER, CollectionBufferSize * numberOfBuffers, NULL, GL_DYNAMIC_STORAGE_BIT);
@@ -185,37 +185,37 @@ void OrganicGLManager::InitializeOpenGL()
 
 void OrganicGLManager::RenderReadyArrays()
 {
-	auto GLstart = std::chrono::high_resolution_clock::now();	
+	auto GLstart = std::chrono::high_resolution_clock::now();
 	//glClear(GL_COLOR_BUFFER_BIT);										// clear the screen?
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	//glUseProgram(OrganicGLprogramID);									// select the already compiled program	(::::SENT TO BE USED IN selectDefaultShader() ::::)
 	computeMatricesFromInputs();											// gather inputs from keyboard
-	// Send our transformation to the currently bound shader, 
-	// in the "MVP" uniform -- 
-	//glUseProgram(OrganicGLprogramID);
-	//glUseProgram(OrganicGLVCprogramID);
+																			// Send our transformation to the currently bound shader, 
+																			// in the "MVP" uniform -- 
+																			//glUseProgram(OrganicGLprogramID);
+																			//glUseProgram(OrganicGLVCprogramID);
 
 	glUniformMatrix4fv(OrganicMVPHandle, 1, GL_FALSE, &MVP[0][0]);		// select the matrix to use.
 
 
-	
-	//for (int y = 0; y < 64; y++)
-	//{
-	/*
-		for (int x = 0; x < RMContainer.TotalRenderable; x++)
-		{
-			// summary:
-			// first argument: GL_TRIANGLES
-			// second argument: vertex offset, so if byte begins at 73728, offset is 6144. (One vertex = 12 bytes)
-			// last argument of glDrawArrays = number of vertices; 6144 for an entire collection face
-			//glUniformMatrix4fv(OrganicMVPHandle, 1, GL_FALSE, &MVP[0][0]);		// select the matrix to use.
-			//cout << "array size: " << RMContainer.RenderMetaArray[x].ArraySize << endl;
-			glDrawArrays(GL_TRIANGLES, x*(CollectionBufferSize / 12), ((RMContainer.RenderMetaArray[x].ArraySize) / 12));
 
-		}
-	*/
-	//}
-	
+																		//for (int y = 0; y < 64; y++)
+																		//{
+																		/*
+																		for (int x = 0; x < RMContainer.TotalRenderable; x++)
+																		{
+																		// summary:
+																		// first argument: GL_TRIANGLES
+																		// second argument: vertex offset, so if byte begins at 73728, offset is 6144. (One vertex = 12 bytes)
+																		// last argument of glDrawArrays = number of vertices; 6144 for an entire collection face
+																		//glUniformMatrix4fv(OrganicMVPHandle, 1, GL_FALSE, &MVP[0][0]);		// select the matrix to use.
+																		//cout << "array size: " << RMContainer.RenderMetaArray[x].ArraySize << endl;
+																		glDrawArrays(GL_TRIANGLES, x*(CollectionBufferSize / 12), ((RMContainer.RenderMetaArray[x].ArraySize) / 12));
+
+																		}
+																		*/
+																		//}
+
 	glMultiDrawArrays(GL_TRIANGLES, renderableCollectionList.TT1_GL_BufferOffset, renderableCollectionList.TT1_GL_VertexArraySize, renderableCollectionList.numberOfRenderableCollections);
 
 
@@ -236,7 +236,7 @@ void OrganicGLManager::ShutdownOpenGL()
 	if (renderMode == 0)
 	{
 		// Cleanup VBOs for renderMode 0
-		glDeleteBuffers(1, &OrganicGLVertexBufferID);			
+		glDeleteBuffers(1, &OrganicGLVertexBufferID);
 		//glDeleteBuffers(1, &OrganicGLVertexBufferArray[1]);	// OrganicGLVertexBufferArray[0], OrganicGLVertexBufferID
 		glDeleteVertexArrays(1, &OrganicGLVertexArrayID);
 		glDeleteProgram(OrganicGLprogramID);
@@ -319,7 +319,7 @@ void OrganicGLManager::computeMatricesFromInputs()
 
 	float FoV = initialFoV;// - 5 * glfwGetMouseWheel(); // Now GLFW 3 requires setting up a callback for this. It's a bit too complicated for this beginner's tutorial, so it's disabled instead.
 
-	// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
+						   // Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
 	Projection = glm::perspective(FoV, 4.0f / 3.0f, 0.1f, 400.0f);
 	// Camera matrix
 	View = glm::lookAt(
@@ -341,7 +341,7 @@ void OrganicGLManager::computeMatricesFromInputs()
 void OrganicGLManager::sendRenderCollectionDataToBuffer(OrganicMorphMeta inMorphMeta, RenderCollection* renderCollPtr)
 {
 	glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexBufferID);
-	glBufferSubData(GL_ARRAY_BUFFER, inMorphMeta.subBufferIndex*CollectionBufferSize, renderCollPtr->RenderCollectionArraySize, renderCollPtr->GLFloatPtr);
+	glBufferSubData(GL_ARRAY_BUFFER, inMorphMeta.subBufferIndex*CollectionBufferSize, renderCollPtr->RenderCollectionArraySize, renderCollPtr->GLFloatPtr.get());
 	renderableCollectionList.sendTerrainT1RequestToDelegator(inMorphMeta.collectionKey, inMorphMeta.subBufferIndex, renderCollPtr->RenderCollectionArraySize, CollectionBufferSize);
 	//cout << "collection sent to buffer..." << inMorphMeta.collectionKey.x << ", " << inMorphMeta.collectionKey.y << ", " << inMorphMeta.collectionKey.z << endl;
 	//cout << "size: " << renderCollPtr->RenderCollectionArraySize << endl;
@@ -362,9 +362,9 @@ void OrganicGLManager::sendRenderCollectionDataToBufferOnGameLoad(RenderCollecti
 	EnclaveKeyDef::EnclaveKey collectionKey = renderCollPtr->EnclaveCollectionPtr->EnclaveArray[firstRenderableEnclaveKey.x][firstRenderableEnclaveKey.y][firstRenderableEnclaveKey.z].CollectionKey;	// get the collection key from the first renderable enclave
 	int subBufferIndex = OrganicBufferManager.determineRenderDataSubBufferKey(collectionKey);					// use this collection key to determine which sub-buffer the data will go to
 
-	// new glBufferSubData would go here...
+																												// new glBufferSubData would go here...
 	glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexBufferID);
-	glBufferSubData(GL_ARRAY_BUFFER, subBufferIndex*CollectionBufferSize, renderCollPtr->RenderCollectionArraySize, renderCollPtr->GLFloatPtr);
+	glBufferSubData(GL_ARRAY_BUFFER, subBufferIndex*CollectionBufferSize, renderCollPtr->RenderCollectionArraySize, renderCollPtr->GLFloatPtr.get());
 	//OrganicBufferManager.OGLMRMC.T2_renderMetaContainerArray[subBufferIndex].ElementRenderCollectionMeta.ArraySize = renderCollPtr->RenderCollectionArraySize;		// set the array size of this collection (in bytes; need to divide by 12 later on), in the appropriate element in OGLMRMC's dynamic array (T2_renderMetaContainerArray)
 	OrganicBufferManager.OGLMRMC.T2_renderMetaContainerArray[subBufferIndex].ElementSingularXYZValue = subBufferIndex;		// set the initial sub buffer index for this element (needed for when this sub buffer needs to be recycled during a morph)
 	renderableCollectionList.sendTerrainT1RequestToDelegator(collectionKey, subBufferIndex, renderCollPtr->RenderCollectionArraySize, CollectionBufferSize);	// add this to the renderable collection list
@@ -377,7 +377,7 @@ void OrganicGLManager::sendRenderCollectionDataToBufferOnGameLoad(RenderCollecti
 void OrganicGLManager::sendRenderCollectionVCDataToBuffer(OrganicMorphMeta inMorphMeta, RenderCollection* renderCollPtr)
 {
 	glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexColorBufferID);
-	glBufferSubData(GL_ARRAY_BUFFER, inMorphMeta.subBufferIndex*CollectionBufferSize, renderCollPtr->RenderCollectionArraySize, renderCollPtr->VertexColorArrayPtr);
+	glBufferSubData(GL_ARRAY_BUFFER, inMorphMeta.subBufferIndex*CollectionBufferSize, renderCollPtr->RenderCollectionArraySize, renderCollPtr->VertexColorArrayPtr.get());
 	//glBufferSubData(GL_ARRAY_BUFFER, subBufferIndex*CollectionBufferSize, renderCollPtr->RenderCollectionArraySize, renderCollPtr->VertexColorArrayPtr);
 	//glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexColorBufferID);
 	//glBufferSubData(GL_ARRAY_BUFFER, RMContainer.CurrentIndex*CollectionBufferSize, renderCollPtr->RenderCollectionArraySize, renderCollPtr->VertexColorArrayPtr);
@@ -393,7 +393,7 @@ void OrganicGLManager::sendRenderCollectionVCDataTOBufferOnGameLoad(RenderCollec
 	EnclaveKeyDef::EnclaveKey collectionKey = renderCollPtr->EnclaveCollectionPtr->EnclaveArray[firstRenderableEnclaveKey.x][firstRenderableEnclaveKey.y][firstRenderableEnclaveKey.z].CollectionKey;	// get the collection key from the first renderable enclave
 	int subBufferIndex = OrganicBufferManager.determineRenderDataSubBufferKey(collectionKey);
 	glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexColorBufferID);
-	glBufferSubData(GL_ARRAY_BUFFER, subBufferIndex*CollectionBufferSize, renderCollPtr->RenderCollectionArraySize, renderCollPtr->VertexColorArrayPtr);
+	glBufferSubData(GL_ARRAY_BUFFER, subBufferIndex*CollectionBufferSize, renderCollPtr->RenderCollectionArraySize, renderCollPtr->VertexColorArrayPtr.get());
 }
 
 
@@ -412,10 +412,10 @@ void OrganicGLManager::selectShader()
 			GL_FALSE,           // normalized?
 			0,                  // stride
 			(void*)0            /* array buffer offset. Number following (void*) indicates offset point to begin reading from in the pointed-to buffer, measured in bytes;
-								   For instance, if the data begins at byte 10000, you would put (void*)10000 in the array you are reading.
+								For instance, if the data begins at byte 10000, you would put (void*)10000 in the array you are reading.
 								*/
 		);
-	}	
+	}
 
 	if (renderMode == 1)
 	{

@@ -5,10 +5,10 @@
 Description: Header file for RenderCollection.cpp.
 
 Summary: A RenderCollection is a object that contains the dynamically-created GLfloat arrays that will be rendered by OpenGL during draw calls. The RenderCollection interfaces with a corresponding ManifestCollection;
-the RenderCollection uses the ManifestCollection's prepared 3d data (from all its contained EnclaveManifests) to create one massive array for rendering. It also supports operations for changing one Enclave's manifest, versus 
-rebuilding the entire array from scratch; the intent of this is to edit only a small portion of the array to save compute times. The RenderCollection also contains a list of EnclaveKeys that determine the order of EnclaveManifests to be read 
-in the RenderCollection's related ManifestCollection; This is done due to the fact that the order of elements in the unordered map contained within the ManifestCollection may be different than the order of the elements found in the RenderCollection, 
-which would lead to strange behavior when rendering texture data. 
+the RenderCollection uses the ManifestCollection's prepared 3d data (from all its contained EnclaveManifests) to create one massive array for rendering. It also supports operations for changing one Enclave's manifest, versus
+rebuilding the entire array from scratch; the intent of this is to edit only a small portion of the array to save compute times. The RenderCollection also contains a list of EnclaveKeys that determine the order of EnclaveManifests to be read
+in the RenderCollection's related ManifestCollection; This is done due to the fact that the order of elements in the unordered map contained within the ManifestCollection may be different than the order of the elements found in the RenderCollection,
+which would lead to strange behavior when rendering texture data.
 
 Dependents: -a valid instance of a ManifestCollection (preferably with the same EnclaveKey)
 
@@ -25,6 +25,7 @@ Dependents: -a valid instance of a ManifestCollection (preferably with the same 
 #include "ManifestCollection.h"
 #include "EnclaveManifestFactoryT1.h"
 #include "EnclaveDataFinder.h"
+#include <memory>
 #include <mutex>
 
 class RenderCollection {
@@ -40,8 +41,10 @@ private:
 	EnclaveDataFinder enclaveDataStart[64];
 	ManifestCollection *ManifestCollectionPtr;															// the pointer to the related ManifestCollection.
 	EnclaveCollection *EnclaveCollectionPtr;															// pointer to the associated EnclaveCollection.
-	GLfloat *GLFloatPtr;																				// the pointer to this RenderCollection's dynamically created 3d array.
-	GLfloat *VertexColorArrayPtr;
+	//GLfloat *GLFloatPtr;																				// the pointer to this RenderCollection's dynamically created 3d array.
+	//GLfloat *VertexColorArrayPtr;
+	unique_ptr<GLfloat[]> GLFloatPtr;
+	unique_ptr<GLfloat[]> VertexColorArrayPtr;
 	int IsGLFloatPtrLoaded = 0;																			// indicates whether or not there is a valid dynamic array pointed to by GLFloatPtr.
 	int LastCollectionTriangleCount = 0;																// potentially unused?
 	int RenderCollectionArraySize = 0;																	// indicates the size of the dynamic array in bytes (required for OpenGL glBufferData)
@@ -65,6 +68,6 @@ private:
 	void SetEnclaveCollectionPtr(EnclaveCollection *enclavecollectionref);								// sets the pointer to the corresponding EnclaveCollection that this RenderCollection will be associated with.
 	void AllocateNewArraysViaLockGuard(int in_numberOfFloats, mutex& mutexval);
 
-	
+
 };
 #endif
