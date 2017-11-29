@@ -16,7 +16,7 @@ OrganicSystem::OrganicSystem(int numberOfFactories, int T1_bufferCubeSize, int T
 {
 	/* Summary: default constructor for the OrganicSystem */
 	InterlockBaseCollections();
-	int numOfFactoriesToCreate = CreateThreads();		// creates the worker threads, returns the number of factories to create (will be equal to number of worker threads)
+	int numOfFactoriesToCreate = CreateThreads(numberOfFactories);		// creates the worker threads, returns the number of factories to create (will be equal to number of worker threads)
 	AllocateFactories(numOfFactoriesToCreate);			// setup the factories
 	OrganicGLManager* tempGLManagerPtr = &OGLM;			// get a pointer to the OrganicSystem's OGLM instance, and set the reference.
 	OGLM.SendPointerToBufferManager(tempGLManagerPtr);	// send the pointer to the buffer manager, so that it may use it to set up its buffer arrays
@@ -55,10 +55,11 @@ OrganicSystem::~OrganicSystem()
 	}
 }
 
-int OrganicSystem::CreateThreads()
+int OrganicSystem::CreateThreads(int in_numberOfThreads)
 {
 	isThreadIndexInitialized = 1;
-	int numberOfThreads = std::thread::hardware_concurrency() - 1;
+	//int numberOfThreads = std::thread::hardware_concurrency() - 1;
+	int numberOfThreads = in_numberOfThreads;
 	threadIndexAmount = numberOfThreads;				// set the thread index amount, for when we need to properly delete the threads.
 	for (int x = 0; x < numberOfThreads; x++)
 	{
@@ -458,10 +459,11 @@ void OrganicSystem::MaterializeAllCollectionsInRenderList()
 	for (collectionListIter; collectionListIter != renderCollectionList.KeyVector.end(); ++collectionListIter)		// loop through each key
 	{
 		EnclaveKeyDef::EnclaveKey listKey = *collectionListIter;	// set the temp listKey
-
+		
 		// Type 1 (T1) terrain checks...add the key to the list of of T1 keys to be rendered, if the key exists within the T1 field
 		if (abs(listKey.x - centerKey.x) <= T1_axis_size		&&		abs(listKey.y - centerKey.y) <= T1_axis_size		&&		abs(listKey.z - centerKey.z) <= T1_axis_size)	// if the absolute difference between the listKey and the CenterKey is <= the T1_size, it will go into the T1 dynamic array (condition must be met for x y AND z).
 		{
+			//cout << "Crash test 0 (T1)" << endl;
 			// part A: perform updates in T1 dynamic array
 			SetupFutureCollectionMM(listKey);
 			int currentT1BufferElement = OGLM.OrganicBufferManager.T1_translateXYZToSingle(T1_centerElementIndexValue.x + (listKey.x - centerKey.x),	// get the currentBufferElement
@@ -483,10 +485,11 @@ void OrganicSystem::MaterializeAllCollectionsInRenderList()
 			T1CollectionProcessingQueue.push(tempMorphMeta);					// add to the T1 processing queue
 			//cout << "Terrain type 1 (T1) List key added! " << listKey.x << ", " << listKey.y << ", " << listKey.z << endl;
 		}
-
+		
 		// Type 2 (T2) terrain checks
 		else
 		{
+			//cout << "Crash test 0 (T2)" << endl;
 			// part A: perform updates in T1 dynamic array
 			int currentT2BufferElement = OGLM.OrganicBufferManager.T2_translateXYZToSingle(T2_centerElementIndexValue.x + (listKey.x - centerKey.x),
 																						   T2_centerElementIndexValue.y + (listKey.y - centerKey.y),
@@ -519,6 +522,7 @@ void OrganicSystem::MaterializeAllCollectionsInRenderList()
 		DivideTickWork();			// split work for the tick here
 		CheckProcessingQueue();		// check for work in collection processing queue(s)
 		WaitForPhase2Promises();	// finish by waiting for promises to be fulfilled
+		//cout << "aww snap" << endl;
 	}
 	//cout << "T1 queue size (after loop): " << T1CollectionProcessingQueue.size() << endl;
 	//cout << "T2 queue size (after loop): " << T2CollectionProcessingQueue.size() << endl;
@@ -2813,6 +2817,7 @@ void OrganicSystem::CheckProcessingQueue()
 	// >>>>>>>>>>>>>>>>>>> PHASE 2: set up work vectors
 
 	// Type 1 set up
+	//cout << "numberOfThreads1: " << numberOfThreads1 << ", numberOfThreads2: " << numberOfThreads2 << endl;
 	for (int x = 0; x < numberOfThreads1; x++)
 	{
 		if (!T1CollectionProcessingQueue.empty())

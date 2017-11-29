@@ -426,6 +426,34 @@ int main()
 	Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, flatBlueprint);
 
 	
+	/* Non-central blueprints (should be tested with release mode only, in 2/3 threads mode) */
+	
+	for (int x = 2; x < 7; x++)
+	{
+		for (int z = -2; z >= -7; z--)
+		{
+			flatKeyToAdd.x = x;
+			flatKeyToAdd.y = 0;
+			flatKeyToAdd.z = z;
+			Organic.AddKeyToRenderList(flatKeyToAdd);
+			Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, flatBlueprint);
+		}
+	}
+
+
+	for (int x = -2; x >= -4; x--)
+	{
+		for (int z = -2; z >= -7; z--)
+		{
+			flatKeyToAdd.x = x;
+			flatKeyToAdd.y = 0;
+			flatKeyToAdd.z = z;
+			Organic.AddKeyToRenderList(flatKeyToAdd);
+			Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, flatBlueprint);
+		}
+	}
+	
+
 	
 	// add blueprint for morph testing
 	flatKeyToAdd.x = -7;

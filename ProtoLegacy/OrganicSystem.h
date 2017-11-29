@@ -137,7 +137,7 @@ private:
 
 
 	void SetupCellMeta();														// cycles through each cell and adds the appropriate factory pointer to each
-	int CreateThreads();
+	int CreateThreads(int in_numberOfThreads);
 	void AllocateFactories(int noOfFactories);													// sets up Factories for future use. 
 	void AddOrganicCell(thread_pool* thread_pool_ref);
 	void InterlockBaseCollections();															// connects the 3 base collections together -- EnclaveCollections, ManifestCollections, RenderCollections.

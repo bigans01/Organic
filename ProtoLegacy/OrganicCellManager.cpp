@@ -52,6 +52,43 @@ void OrganicCellManager::ReleaseT1TerrainCells()
 
 void OrganicCellManager::populateCellMapsOnEngineStart()
 {
+	if (organicCellLimitsListPtr->maxCellLimit == 2)
+	{
+		// if the priority on start up is 0, do the following
+		if (organicSystemPtr->workPriority == 0)
+		{
+			std::map<int, OrganicCell*>::iterator availableCellMapIter = availableCellMap.begin();		// start at beginning of available Cells
+			std::vector<int> availablesToErase;															// used to remove from available cells
+
+																										// assign 1 T1 cell
+			int numberOfT1Cells = organicCellLimitsListPtr->cellLimitsArray[0].limitArray[0];		// get the number of T1 cells to allocate
+			for (int x = 0; x < numberOfT1Cells; x++)
+			{
+				int cellID = availableCellMapIter->first;					// get the OrganicCell's ID
+				t1CellMap[cellID] = availableCellMap[cellID];			// copy the value into terrainCellMap
+				availablesToErase.push_back(cellID);						// add the element to the eraseable list
+				++availableCellMapIter;
+			}
+
+			// assign 2 T2 cells
+			int numberOFT2Cells = organicCellLimitsListPtr->cellLimitsArray[0].limitArray[1];		// get the number of T2 cells to allocate
+			for (int x = 0; x < numberOFT2Cells; x++)
+			{
+				int cellID = availableCellMapIter->first;					// get the OrganicCell's ID
+				t2CellMap[cellID] = availableCellMap[cellID];			// copy the value into terrainCellMap
+				availablesToErase.push_back(cellID);						// add the element to the eraseable list
+				++availableCellMapIter;
+			}
+
+			for (std::vector<int>::iterator availablesToEraseIter = availablesToErase.begin(); availablesToEraseIter != availablesToErase.end(); ++availablesToEraseIter)
+			{
+				availableCellMap.erase(*availablesToEraseIter);	// erase the value
+			}
+			cout << ">>>> Cell Assignment on engine start complete, (assigned with priority " << organicSystemPtr->workPriority << ")" << endl;
+
+		}
+	}
+
 	// if the cell limit is 3, do the following
 	if (organicCellLimitsListPtr->maxCellLimit == 3)
 	{
