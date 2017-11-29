@@ -43,8 +43,8 @@ private:
 	EnclaveCollection *EnclaveCollectionPtr;															// pointer to the associated EnclaveCollection.
 	//GLfloat *GLFloatPtr;																				// the pointer to this RenderCollection's dynamically created 3d array.
 	//GLfloat *VertexColorArrayPtr;
-	unique_ptr<GLfloat[]> GLFloatPtr;
-	unique_ptr<GLfloat[]> VertexColorArrayPtr;
+	unique_ptr<GLfloat[]> GLFloatPtr;																	// Smart pointer rework(s), of above two comments (old dynamic arrays)
+	unique_ptr<GLfloat[]> VertexColorArrayPtr;															// ""
 	int IsGLFloatPtrLoaded = 0;																			// indicates whether or not there is a valid dynamic array pointed to by GLFloatPtr.
 	int LastCollectionTriangleCount = 0;																// potentially unused?
 	int RenderCollectionArraySize = 0;																	// indicates the size of the dynamic array in bytes (required for OpenGL glBufferData)

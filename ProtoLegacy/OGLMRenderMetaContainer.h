@@ -22,6 +22,7 @@ Notes:	this will very likely be modified continuously throughout development.
 
 #include "OGLMRenderMetaContainerElementT1.h"
 #include "OGLMRenderMetaContainerElementT2.h"
+#include <memory>
 
 class OrganicGLManager;
 class OrganicSystem;
@@ -36,9 +37,12 @@ private:
 	friend class OrganicSystem;
 	friend class OrganicBufferManager;
 	friend class OGLMBufferManager;
-	OGLMRenderMetaContainerElementT1* T1_renderMetaContainerArray;
-	OGLMRenderMetaContainerElementT2* T2_renderMetaContainerArray;	// a pointer to the T2 dynamic array
-	int isDynamicArrayCreated = 0;									// determines if the current dynamic array is being used
+	//OGLMRenderMetaContainerElementT1* T1_renderMetaContainerArray;
+	//OGLMRenderMetaContainerElementT2* T2_renderMetaContainerArray;	// a pointer to the T2 dynamic array
+	std::unique_ptr<OGLMRenderMetaContainerElementT1[]> T1_renderMetaContainerArray;
+	std::unique_ptr<OGLMRenderMetaContainerElementT2[]> T2_renderMetaContainerArray;
+
+	//int isDynamicArrayCreated = 0;									// determines if the current dynamic array is being used
 	void createContainerArrays(int T1_inCubesize, int T2_cubesize);	// creates the dynamic arrays for T1 and T2 
 
 };

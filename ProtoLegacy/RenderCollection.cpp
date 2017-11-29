@@ -244,17 +244,20 @@ void RenderCollection::CombineManifestArrays(mutex& mutexval)
 	//std::cout << "Render Collection test, step 2 " << elapsed4.count() << "): " <<  endl;
 	//GLfloat *glfloatptr;
 
-	mutexval.lock();
+	
+	
+	//mutexval.lock();
 	//GLFloatPtr = new GLfloat[totaltrianglestorender * 9];	// 9 floats per triangle; stores vertex data
 	//VertexColorArrayPtr = new GLfloat[totaltrianglestorender * 9];
 
 	//GLFloatPtr = make_unique<GLfloat[]>(totaltrianglestorender * 9);
 	//VertexColorArrayPtr = make_unique<GLfloat[]>(totaltrianglestorender * 9);
 
-	GLFloatPtr.reset(new GLfloat[totaltrianglestorender * 9]);
-	VertexColorArrayPtr.reset(new GLfloat[totaltrianglestorender * 9]);
+	//GLFloatPtr.reset(new GLfloat[totaltrianglestorender * 9]);
+	//VertexColorArrayPtr.reset(new GLfloat[totaltrianglestorender * 9]);
 
-	mutexval.unlock();
+	//mutexval.unlock();
+	AllocateNewArraysViaLockGuard(totaltrianglestorender * 9, std::ref(mutexval));
 
 	RenderCollectionArraySize = totaltrianglestorender * 4 * 9;
 	//cout << "value of RenderCollectionArraySize: " << RenderCollectionArraySize << endl;
