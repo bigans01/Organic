@@ -2754,7 +2754,7 @@ void OrganicSystem::WaitForPhase2Promises()
 		phase2end = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<double> phaseelapsed = phase2end - phase2begin;
 		heapmutex.lock();
-		cout << "Phase 2 completion time: " << phaseelapsed.count() << endl;
+		//cout << "Phase 2 completion time: " << phaseelapsed.count() << endl;
 		heapmutex.unlock();
 	}
 
