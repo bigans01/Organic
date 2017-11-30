@@ -10,45 +10,27 @@ void OGLMDrawCallMeta::setGLintDynamicArrays(int in_cubeSize, int in_subBufferSi
 
 	//EnclaveKeyDef::EnclaveKey* DCM_CollectionKeys;
 	//int* DCM_SubBufferLocation;
+
 	//DCMD (delegator) arrays
-	DCMD_SubBufferContents = new int[in_cubeSize*in_cubeSize*in_cubeSize];
-	DCMD_SubBufferLocation = new int[in_cubeSize*in_cubeSize*in_cubeSize];
-	DCMD_RemainingVertexSpace = new int[in_cubeSize*in_cubeSize*in_cubeSize];
-	DCMD_TT1_GL_BufferOffset = new int[in_cubeSize*in_cubeSize*in_cubeSize];
-	DCMD_TT2_GL_BufferOffset = new int[in_cubeSize*in_cubeSize*in_cubeSize];
+	DCMD_SubBufferContents.reset(new int[in_cubeSize*in_cubeSize*in_cubeSize]);
+	DCMD_SubBufferLocation.reset(new int[in_cubeSize*in_cubeSize*in_cubeSize]);
+	DCMD_RemainingVertexSpace.reset(new int[in_cubeSize*in_cubeSize*in_cubeSize]);
+	DCMD_TT1_GL_BufferOffset.reset(new int[in_cubeSize*in_cubeSize*in_cubeSize]);
+	DCMD_TT2_GL_BufferOffset.reset(new int[in_cubeSize*in_cubeSize*in_cubeSize]);
 
 	//TT1 arrays
-	TT1_SubBufferContents = new int[in_cubeSize*in_cubeSize*in_cubeSize];
-	TT1_CollectionKeys = new EnclaveKeyDef::EnclaveKey[in_cubeSize*in_cubeSize*in_cubeSize];
-	TT1_SubBufferLocation = new int[in_cubeSize*in_cubeSize*in_cubeSize];
-	TT1_GL_BufferOffset = new GLint[in_cubeSize*in_cubeSize*in_cubeSize];
-	TT1_GL_VertexArraySize = new GLint[in_cubeSize*in_cubeSize*in_cubeSize];
+	TT1_SubBufferContents.reset(new int[in_cubeSize*in_cubeSize*in_cubeSize]);
+	TT1_CollectionKeys.reset(new EnclaveKeyDef::EnclaveKey[in_cubeSize*in_cubeSize*in_cubeSize]);
+	TT1_SubBufferLocation.reset(new int[in_cubeSize*in_cubeSize*in_cubeSize]);
+	TT1_GL_BufferOffset.reset(new GLint[in_cubeSize*in_cubeSize*in_cubeSize]);
+	TT1_GL_VertexArraySize.reset(new GLint[in_cubeSize*in_cubeSize*in_cubeSize]);
 
 	array_cubesize = in_cubeSize;
 	array_length = in_cubeSize*in_cubeSize*in_cubeSize;
 	subBufferByteSize = in_subBufferSize;
-	areDynamicArraysSet = 1;
 }
 
-OGLMDrawCallMeta::~OGLMDrawCallMeta()
-{
-	if (areDynamicArraysSet == 1)
-	{
-		// delegator buffers (DCMD)
-		delete[] DCMD_SubBufferContents;
-		delete[] DCMD_SubBufferLocation;
-		delete[] DCMD_RemainingVertexSpace;
-		delete[] DCMD_TT1_GL_BufferOffset;
-		delete[] DCMD_TT2_GL_BufferOffset;
 
-		// terrain type 1 buffers (TT1)
-		delete[] TT1_SubBufferContents;
-		delete[] TT1_CollectionKeys;
-		delete[] TT1_SubBufferLocation;
-		delete[] TT1_GL_BufferOffset;
-		delete[] TT1_GL_VertexArraySize;
-	}
-}
 
 void OGLMDrawCallMeta::addToListAndSort(EnclaveKeyDef::EnclaveKey in_key, int in_subBufferIndex, int in_vertexArrayByteSize, int in_subBufferByteSize)
 {

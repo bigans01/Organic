@@ -46,6 +46,7 @@ private:
 
 	GLuint OrganicGLVertexArrayID = 0;												// OpenGL: pointer/handle to the vertex array handler
 	GLuint OrganicGLVertexBufferID = 0;												// OpenGL: pointer/handle to the vertex buffer handler (single buffer)
+	GLuint OrganicGLVertexNormalID = 0;
 
 	GLuint OrganicGLVertexColorBufferID = 0;										// OpenGL: pointer/handle to the vertex color buffer handler (single buffer)
 	GLuint OrganicGLLightingBufferID = 0;											// OpenGL: third potential single buffer; currently in testing only. (not being generated as of (10/11/2017))

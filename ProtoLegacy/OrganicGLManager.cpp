@@ -142,7 +142,7 @@ void OrganicGLManager::InitializeOpenGL()
 
 																			//glBufferData(GL_ARRAY_BUFFER, 1024, OrganicGLarrayPTR, GL_DYNAMIC_DRAW);		// Old method; no longer utilized.
 																			// 3000000000
-	unsigned long int bufferSize = CollectionBufferSize * numberOfBuffers;
+	//unsigned long int bufferSize = CollectionBufferSize * numberOfBuffers;
 	//cout << "Total buffer size: " << CollectionBufferSize * numberOfBuffers << endl;
 	//cout << "Total buffer size: " << bufferSize << endl;
 	glBufferStorage(GL_ARRAY_BUFFER, CollectionBufferSize * numberOfBuffers, NULL, GL_DYNAMIC_STORAGE_BIT);	/* REQUIRED: pre-allocates memory for the buffer, to any desired amount; this is so
@@ -163,6 +163,12 @@ void OrganicGLManager::InitializeOpenGL()
 	glGenBuffers(1, &OrganicGLVertexColorBufferID);
 	glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexColorBufferID);
 	glBufferStorage(GL_ARRAY_BUFFER, CollectionBufferSize * numberOfBuffers, NULL, GL_DYNAMIC_STORAGE_BIT);
+
+	//glGenBuffers(1, &OrganicGLVertexNormalID);
+	//glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexNormalID);
+	//glBufferStorage(GL_ARRAY_BUFFER, CollectionBufferSize * numberOfBuffers, NULL, GL_DYNAMIC_STORAGE_BIT);
+
+
 
 	/* ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
@@ -216,7 +222,7 @@ void OrganicGLManager::RenderReadyArrays()
 																		*/
 																		//}
 
-	glMultiDrawArrays(GL_TRIANGLES, renderableCollectionList.TT1_GL_BufferOffset, renderableCollectionList.TT1_GL_VertexArraySize, renderableCollectionList.numberOfRenderableCollections);
+	glMultiDrawArrays(GL_TRIANGLES, renderableCollectionList.TT1_GL_BufferOffset.get(), renderableCollectionList.TT1_GL_VertexArraySize.get(), renderableCollectionList.numberOfRenderableCollections);
 
 
 	auto GLend = std::chrono::high_resolution_clock::now();	// optional performance testing values

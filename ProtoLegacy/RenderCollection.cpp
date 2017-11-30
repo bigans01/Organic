@@ -66,7 +66,7 @@ void RenderCollection::CombineManifestArrays()
 	auto finish3 = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> elapsed3 = finish3 - start3;
 	//std::cout << "Render Collection test, step 1 " << elapsed3.count() << "): "  << endl;
-	EnclaveKeyDef::EnclaveKey *tempManifestKeys = new EnclaveKeyDef::EnclaveKey[totalenclavesfound];
+	//EnclaveKeyDef::EnclaveKey *tempManifestKeys = new EnclaveKeyDef::EnclaveKey[totalenclavesfound];
 
 
 
@@ -75,19 +75,19 @@ void RenderCollection::CombineManifestArrays()
 
 
 	// 2))) create the new array, based on length from previous step.
-	ManMatrixIter = ManifestCollectionPtr->ManMatrix.begin();
-	int beginindex = 0;
-	auto start4 = std::chrono::high_resolution_clock::now();
-	for (ManMatrixIter; ManMatrixIter != ManifestCollectionPtr->ManMatrix.end(); ++ManMatrixIter)
-	{
-		tempManifestKeys[beginindex] = ManMatrixIter->second.UniqueKey;
+	//ManMatrixIter = ManifestCollectionPtr->ManMatrix.begin();
+	//int beginindex = 0;
+	//auto start4 = std::chrono::high_resolution_clock::now();
+	//for (ManMatrixIter; ManMatrixIter != ManifestCollectionPtr->ManMatrix.end(); ++ManMatrixIter)
+	//{
+		//tempManifestKeys[beginindex] = ManMatrixIter->second.UniqueKey;
 		//totaltrianglestorender += ManMatrixIter->second.TotalEnclaveTriangles;
 		//cout << "enclave found! (" << totaltrianglestorender << ")" <<  endl;
 		//totalenclavesfound++;
-		beginindex++;
-	}
-	auto finish4 = std::chrono::high_resolution_clock::now();
-	std::chrono::duration<double> elapsed4 = finish4 - start4;
+		//beginindex++;
+	//}
+	//auto finish4 = std::chrono::high_resolution_clock::now();
+	//std::chrono::duration<double> elapsed4 = finish4 - start4;
 	//std::cout << "Render Collection test, step 2 " << elapsed4.count() << "): " <<  endl;
 	//GLfloat *glfloatptr;
 
@@ -228,19 +228,19 @@ void RenderCollection::CombineManifestArrays(mutex& mutexval)
 
 
 	// 2))) create the new array, based on length from previous step.
-	ManMatrixIter = ManifestCollectionPtr->ManMatrix.begin();
-	int beginindex = 0;
-	auto start4 = std::chrono::high_resolution_clock::now();
-	for (ManMatrixIter; ManMatrixIter != ManifestCollectionPtr->ManMatrix.end(); ++ManMatrixIter)
-	{
+	//ManMatrixIter = ManifestCollectionPtr->ManMatrix.begin();
+	//int beginindex = 0;
+	//auto start4 = std::chrono::high_resolution_clock::now();
+	//for (ManMatrixIter; ManMatrixIter != ManifestCollectionPtr->ManMatrix.end(); ++ManMatrixIter)
+	//{
 		//tempManifestKeys[beginindex] = ManMatrixIter->second.UniqueKey;
 		//totaltrianglestorender += ManMatrixIter->second.TotalEnclaveTriangles;
 		//cout << "enclave found! (" << totaltrianglestorender << ")" <<  endl;
 		//totalenclavesfound++;
-		beginindex++;
-	}
-	auto finish4 = std::chrono::high_resolution_clock::now();
-	std::chrono::duration<double> elapsed4 = finish4 - start4;
+		//beginindex++;
+	//}
+	//auto finish4 = std::chrono::high_resolution_clock::now();
+	//std::chrono::duration<double> elapsed4 = finish4 - start4;
 	//std::cout << "Render Collection test, step 2 " << elapsed4.count() << "): " <<  endl;
 	//GLfloat *glfloatptr;
 
@@ -507,10 +507,11 @@ void RenderCollection::UpdateManifestArray(EnclaveKeyDef::EnclaveKey Key)	// upd
 			aa++;
 		} while (aa != FoundIndex);
 		//cout << "Triangle count of first array will be: " << ArrayOneLength << endl;
-		GLfloat *tempGLptr;
-		GLfloat *tempGLptr00;
-		tempGLptr = new GLfloat[ArrayOneLength * 9];
-		tempGLptr00 = new GLfloat[ArrayOneLength * 9];
+		//GLfloat *tempGLptr;
+		unique_ptr<GLfloat[]> tempGLptr(new GLfloat[ArrayOneLength * 9]);
+		//GLfloat *tempGLptr00;
+		//tempGLptr = new GLfloat[ArrayOneLength * 9];
+		//tempGLptr00 = new GLfloat[ArrayOneLength * 9];
 
 		auto test_start1 = std::chrono::high_resolution_clock::now();
 		for (int bb = 0; bb < (ArrayOneLength * 9); bb++)
@@ -535,7 +536,7 @@ void RenderCollection::UpdateManifestArray(EnclaveKeyDef::EnclaveKey Key)	// upd
 		//{
 		//cout << "test data2: " << tempGLptr00[t] << endl;
 		//}
-		delete[] tempGLptr00;
+		//delete[] tempGLptr00;
 
 		int index2 = 0;
 		//EnclavePtr->UnveilSinglePolyWithMtrl(in_x, in_y, in_z, 0, in_otherflags, 0, 40, 0); // reveal the polygon to the world	
@@ -564,9 +565,11 @@ void RenderCollection::UpdateManifestArray(EnclaveKeyDef::EnclaveKey Key)	// upd
 			aa++;
 		} while (aa != RenderableManifestMeta.EnclaveManifestCount);
 
-		GLfloat *tempGLptr3;
+		//GLfloat *tempGLptr3;
+
 		int startIndex = (ArrayOneLength * 9) + (RenderableManifestMeta.MetaArray[FoundIndex].currentTriangleCount * 9);						// start position of the 3rd array's scan of GLFloatPtr
-		tempGLptr3 = new GLfloat[ArrayThreeLength * 9];
+		unique_ptr<GLfloat[]> tempGLptr3(new GLfloat[ArrayThreeLength * 9]);
+		//tempGLptr3 = new GLfloat[ArrayThreeLength * 9];
 		for (int cc = 0; cc < (ArrayThreeLength * 9); ++cc)
 		{
 			tempGLptr3[cc] = GLFloatPtr[startIndex++];
@@ -592,10 +595,12 @@ void RenderCollection::UpdateManifestArray(EnclaveKeyDef::EnclaveKey Key)	// upd
 		// ASSEMBLE SECOND ARRAY (targeted manifest)
 		auto start6 = std::chrono::high_resolution_clock::now();
 		int ArrayTwoLength = (ManifestCollectionPtr->ManMatrix[Key].TotalEnclaveTriangles);
-		GLfloat *tempGLptr2;
+		//GLfloat *tempGLptr2;
+
 		GLfloat *array2ptr;
 		//tempGLptr2 = ManifestCollectionPtr->ManMatrix[Key].EnclaveGLPtr;
-		tempGLptr2 = new GLfloat[ArrayTwoLength * 9];
+		unique_ptr<GLfloat[]> tempGLptr2(new GLfloat[ArrayTwoLength * 9]);
+		//tempGLptr2 = new GLfloat[ArrayTwoLength * 9];
 		array2ptr = ManifestCollectionPtr->ManMatrix[Key].EnclaveGLPtr;								// this pointer will not be deleted later; doing so would delete parts of the manifest.
 		int currentBegin = 0;
 		int pointedBegin = 0;
@@ -643,8 +648,9 @@ void RenderCollection::UpdateManifestArray(EnclaveKeyDef::EnclaveKey Key)	// upd
 
 		int NewRenderArrayLength = (ArrayOneLength * 9) + (ArrayThreeLength * 9) + (ArrayTwoLength * 9);		// combine lengths of first, second, and third arrays.
 																												//cout << "test final length: " << NewRenderArrayLength << endl;
-		GLfloat *newRenderArray;
-		newRenderArray = new GLfloat[NewRenderArrayLength];
+		//GLfloat *newRenderArray;
+		//newRenderArray = new GLfloat[NewRenderArrayLength];
+		unique_ptr<GLfloat[]> newRenderArray(new GLfloat[NewRenderArrayLength]);
 		int newRenderArrayBeginIndex = 0;
 		for (int cc = 0; cc < (ArrayOneLength * 9); ++cc)	// insert array one.
 		{
@@ -683,9 +689,9 @@ void RenderCollection::UpdateManifestArray(EnclaveKeyDef::EnclaveKey Key)	// upd
 
 
 
-		delete[] tempGLptr;
-		delete[] tempGLptr2;
-		delete[] tempGLptr3;
+		//delete[] tempGLptr;
+		//delete[] tempGLptr2;
+		//delete[] tempGLptr3;
 
 		auto true_end = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<double> true_elapsed = true_end - true_start;
