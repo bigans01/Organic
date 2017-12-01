@@ -36,6 +36,7 @@ class EnclaveCollectionMesh;
 class EnclaveManifest {
 
 public:
+	//EnclaveManifest(EnclaveManifest& EMa) : dumbval(5), testint(std::move(EMa.testint)) {};
 	//EnclaveManifest(EnclaveManifest& EMa) : dumbval(5) {};
 	EnclaveManifest::~EnclaveManifest();									// required destructor for memory management
 	EnclaveManifest(int x, int y, int z);													// constructor which sets the value of the EnclaveManifest's UniqueKey
@@ -45,13 +46,13 @@ public:
 
 	
 	
-	/*
+	
 	EnclaveManifest& operator=(EnclaveManifest& manifest_a)
 	{
 		//testint = std::move(manifest_a.testint);
 		return *this;
 	}
-	*/
+	
 	
 private:
 	friend class ManifestCollection;
