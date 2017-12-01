@@ -170,7 +170,7 @@ void EnclaveManifest::AttachToEnclave(Enclave &in_ptr, mutex& heapmutex)
 			delete[] TextureGLPtr;
 			heapmutex.unlock();
 		}
-
+		in_heapmutex = &heapmutex;					// set for when delete of arrays is needed on destruction
 		IsEnclaveGLPtrLoaded = 1;
 		//cout << "Enclave Attach call..." << endl;
 		//EnclavePtr = in_ptr;													// set the pointer equal to the reference of the input parameter
@@ -396,10 +396,12 @@ EnclaveManifest::~EnclaveManifest()
 	//cout << "destructor call.... (Enclave Manifest): " << IsEnclaveGLPtrLoaded << endl;
 	if (IsEnclaveGLPtrLoaded == 1)
 	{
+		in_heapmutex->lock();
 		//cout << "delete flag entry in destructor..." << endl;
 		delete[] EnclaveGLPtr;
 		delete[] VertexColorGLPtr;
 		delete[] TextureGLPtr;
+		in_heapmutex->unlock();
 		IsEnclaveGLPtrLoaded = 0;
 	}
 }

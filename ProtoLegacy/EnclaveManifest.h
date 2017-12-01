@@ -77,7 +77,7 @@ private:
 	EnclaveKeyDef::EnclaveKey UniqueKey;													// the unique EnclaveKey of this manifest
 
 	FloatTupleXYZ EnclaveManifestOffset, TempTuple;	// EnclaveManifestOffset: a tuple of x/y/z values that determines the block's offset from the beginning of the Enclave's 0,0 point.
-
+	mutex* in_heapmutex;
 
 
 																			// TempTuple: temporarily stores the x/y/z tuple that contains the final values for a block's representation in 3d space
