@@ -59,6 +59,7 @@ private:
 		int EnclaveManifestCount = 0;
 		EnclaveManifestMeta MetaArray[512];
 	};
+	mutex* heapmutexref;																				// required for clean deletes
 	CollectionMeta RenderableManifestMeta;
 	void CombineManifestArrays();																		// iterates through all elements found in the ManifestCollection, and generates a dynamic array that is pointed to by GLFloatPtr.
 	void CombineManifestArrays(mutex& mutexval);														// iterates through all elements found in the ManifestCollection, and generates a dynamic array that is pointed to by GLFloatPtr. (uses a mutex)

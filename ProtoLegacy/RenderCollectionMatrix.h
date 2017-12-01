@@ -44,6 +44,7 @@ class RenderCollectionMatrix
 																																		 by iterating through all elements of the ManifestCollection that has a value of Key.*/
 		void SetManifestCollectionMatrixPtr(ManifestCollectionMatrix *manifestcollectionmatrixref);						// sets the ManifestCollectionMatrix pointer
 		void SetEnclaveCollectionMatrixPtr(EnclaveCollectionMatrix *enclavecollectionmatrixref);						// sets the EnclaveCollectionMatrix pointer
+		void AllocateRenderCollectionViaLockGuard(EnclaveKeyDef::EnclaveKey Key, mutex& mutexRef);
 		
 };
 

@@ -80,11 +80,11 @@ void RenderCollection::CombineManifestArrays()
 	//auto start4 = std::chrono::high_resolution_clock::now();
 	//for (ManMatrixIter; ManMatrixIter != ManifestCollectionPtr->ManMatrix.end(); ++ManMatrixIter)
 	//{
-		//tempManifestKeys[beginindex] = ManMatrixIter->second.UniqueKey;
-		//totaltrianglestorender += ManMatrixIter->second.TotalEnclaveTriangles;
-		//cout << "enclave found! (" << totaltrianglestorender << ")" <<  endl;
-		//totalenclavesfound++;
-		//beginindex++;
+	//tempManifestKeys[beginindex] = ManMatrixIter->second.UniqueKey;
+	//totaltrianglestorender += ManMatrixIter->second.TotalEnclaveTriangles;
+	//cout << "enclave found! (" << totaltrianglestorender << ")" <<  endl;
+	//totalenclavesfound++;
+	//beginindex++;
 	//}
 	//auto finish4 = std::chrono::high_resolution_clock::now();
 	//std::chrono::duration<double> elapsed4 = finish4 - start4;
@@ -114,11 +114,11 @@ void RenderCollection::CombineManifestArrays()
 	{
 
 
-		GLfloat *tempGLptr;																// temp pointer to the vertex data array
-		tempGLptr = ManMatrixIter->second.EnclaveGLPtr;									// set tempGLptr equivalent to the EnclaveGLPtr in the currently found manifest
+		//GLfloat *tempGLptr;																// temp pointer to the vertex data array
+		//tempGLptr = ManMatrixIter->second.EnclaveGLPtr;									// set tempGLptr equivalent to the EnclaveGLPtr in the currently found manifest
 
-		GLfloat *tempGLColorPtr;
-		tempGLColorPtr = ManMatrixIter->second.VertexColorGLPtr;
+		//GLfloat *tempGLColorPtr;
+		//tempGLColorPtr = ManMatrixIter->second.VertexColorGLPtr;
 
 		int pointedBegin = 0;
 		for (int bb = 0; bb < (ManMatrixIter->second.TotalEnclaveTriangles) * 3; bb++)
@@ -128,13 +128,13 @@ void RenderCollection::CombineManifestArrays()
 			//GLFloatPtr[currentBegin - 1] = tempGLptr[pointedBegin + 1];									// for first coord, x
 			//GLFloatPtr[currentBegin - 2 ] = tempGLptr[pointedBegin];
 
-			GLFloatPtr[currentBegin + 2] = tempGLptr[pointedBegin + 2];									// for first coord, x
-			GLFloatPtr[currentBegin + 1] = tempGLptr[pointedBegin + 1];									// for first coord, x
-			GLFloatPtr[currentBegin] = tempGLptr[pointedBegin];
+			GLFloatPtr[currentBegin + 2] = ManMatrixIter->second.EnclaveGLPtr[pointedBegin + 2];									// for first coord, x
+			GLFloatPtr[currentBegin + 1] = ManMatrixIter->second.EnclaveGLPtr[pointedBegin + 1];									// for first coord, x
+			GLFloatPtr[currentBegin] = ManMatrixIter->second.EnclaveGLPtr[pointedBegin];
 
-			VertexColorArrayPtr[currentBegin + 2] = tempGLColorPtr[pointedBegin + 2];
-			VertexColorArrayPtr[currentBegin + 1] = tempGLColorPtr[pointedBegin + 1];
-			VertexColorArrayPtr[currentBegin] = tempGLColorPtr[pointedBegin];
+			VertexColorArrayPtr[currentBegin + 2] = ManMatrixIter->second.VertexColorGLPtr[pointedBegin + 2];
+			VertexColorArrayPtr[currentBegin + 1] = ManMatrixIter->second.VertexColorGLPtr[pointedBegin + 1];
+			VertexColorArrayPtr[currentBegin] = ManMatrixIter->second.VertexColorGLPtr[pointedBegin];
 
 			// NOTE: current begin should be 0...check this!
 			// currentBegin = end index of currently checked enclave manifest....
@@ -233,19 +233,19 @@ void RenderCollection::CombineManifestArrays(mutex& mutexval)
 	//auto start4 = std::chrono::high_resolution_clock::now();
 	//for (ManMatrixIter; ManMatrixIter != ManifestCollectionPtr->ManMatrix.end(); ++ManMatrixIter)
 	//{
-		//tempManifestKeys[beginindex] = ManMatrixIter->second.UniqueKey;
-		//totaltrianglestorender += ManMatrixIter->second.TotalEnclaveTriangles;
-		//cout << "enclave found! (" << totaltrianglestorender << ")" <<  endl;
-		//totalenclavesfound++;
-		//beginindex++;
+	//tempManifestKeys[beginindex] = ManMatrixIter->second.UniqueKey;
+	//totaltrianglestorender += ManMatrixIter->second.TotalEnclaveTriangles;
+	//cout << "enclave found! (" << totaltrianglestorender << ")" <<  endl;
+	//totalenclavesfound++;
+	//beginindex++;
 	//}
 	//auto finish4 = std::chrono::high_resolution_clock::now();
 	//std::chrono::duration<double> elapsed4 = finish4 - start4;
 	//std::cout << "Render Collection test, step 2 " << elapsed4.count() << "): " <<  endl;
 	//GLfloat *glfloatptr;
 
-	
-	
+
+
 	//mutexval.lock();
 	//GLFloatPtr = new GLfloat[totaltrianglestorender * 9];	// 9 floats per triangle; stores vertex data
 	//VertexColorArrayPtr = new GLfloat[totaltrianglestorender * 9];
@@ -272,11 +272,11 @@ void RenderCollection::CombineManifestArrays(mutex& mutexval)
 	{
 
 
-		GLfloat *tempGLptr;																// temp pointer to the vertex data array
-		tempGLptr = ManMatrixIter->second.EnclaveGLPtr;									// set tempGLptr equivalent to the EnclaveGLPtr in the currently found manifest
+		//GLfloat *tempGLptr;																// temp pointer to the vertex data array
+		//tempGLptr = ManMatrixIter->second.EnclaveGLPtr;									// set tempGLptr equivalent to the EnclaveGLPtr in the currently found manifest
 
-		GLfloat *tempGLColorPtr;
-		tempGLColorPtr = ManMatrixIter->second.VertexColorGLPtr;
+		//GLfloat *tempGLColorPtr;
+		//tempGLColorPtr = ManMatrixIter->second.VertexColorGLPtr;
 
 		int pointedBegin = 0;
 		for (int bb = 0; bb < (ManMatrixIter->second.TotalEnclaveTriangles) * 3; bb++)
@@ -286,13 +286,13 @@ void RenderCollection::CombineManifestArrays(mutex& mutexval)
 			//GLFloatPtr[currentBegin - 1] = tempGLptr[pointedBegin + 1];									// for first coord, x
 			//GLFloatPtr[currentBegin - 2 ] = tempGLptr[pointedBegin];
 
-			GLFloatPtr[currentBegin + 2] = tempGLptr[pointedBegin + 2];									// for first coord, x
-			GLFloatPtr[currentBegin + 1] = tempGLptr[pointedBegin + 1];									// for first coord, x
-			GLFloatPtr[currentBegin] = tempGLptr[pointedBegin];
+			GLFloatPtr[currentBegin + 2] = ManMatrixIter->second.EnclaveGLPtr[pointedBegin + 2];									// for first coord, x
+			GLFloatPtr[currentBegin + 1] = ManMatrixIter->second.EnclaveGLPtr[pointedBegin + 1];									// for first coord, x
+			GLFloatPtr[currentBegin] = ManMatrixIter->second.EnclaveGLPtr[pointedBegin];
 
-			VertexColorArrayPtr[currentBegin + 2] = tempGLColorPtr[pointedBegin + 2];
-			VertexColorArrayPtr[currentBegin + 1] = tempGLColorPtr[pointedBegin + 1];
-			VertexColorArrayPtr[currentBegin] = tempGLColorPtr[pointedBegin];
+			VertexColorArrayPtr[currentBegin + 2] = ManMatrixIter->second.VertexColorGLPtr[pointedBegin + 2];
+			VertexColorArrayPtr[currentBegin + 1] = ManMatrixIter->second.VertexColorGLPtr[pointedBegin + 1];
+			VertexColorArrayPtr[currentBegin] = ManMatrixIter->second.VertexColorGLPtr[pointedBegin];
 
 			// NOTE: current begin should be 0...check this!
 			// currentBegin = end index of currently checked enclave manifest....
@@ -374,23 +374,23 @@ void RenderCollection::CombineManifestArraysFromT1Factory(EnclaveManifestFactory
 
 	AllocateNewArraysViaLockGuard(totalfloats, std::ref(mutexval));			// new code from (11/2/2017)
 
-	/*
-	// STEP 2: create the dynamic array, acquire heap lock while doing so
-	mutexval.lock();
-	//cout << "GL float check begin...; total floats is: " << totalfloats << "Total Enclaves is: " << TotalEnclavesInFactory << endl;
-	if (IsGLFloatPtrLoaded == 1)		// delete old array if it was previously set
-	{
-	//cout << "GL float is loaded; deleting..." << endl;
-	delete[] GLFloatPtr;
-	delete[] VertexColorArrayPtr;
-	//cout << "GL floats deleted..." << endl;
-	}
-	IsGLFloatPtrLoaded = 1;									// indicate that the pointer was loaded with data
-	GLFloatPtr = new GLfloat[totalfloats];	// 9 floats per triangle
-	VertexColorArrayPtr = new GLfloat[totalfloats];
-	//cout << "GL float check end..." << endl;
-	mutexval.unlock();
-	*/
+																			/*
+																			// STEP 2: create the dynamic array, acquire heap lock while doing so
+																			mutexval.lock();
+																			//cout << "GL float check begin...; total floats is: " << totalfloats << "Total Enclaves is: " << TotalEnclavesInFactory << endl;
+																			if (IsGLFloatPtrLoaded == 1)		// delete old array if it was previously set
+																			{
+																			//cout << "GL float is loaded; deleting..." << endl;
+																			delete[] GLFloatPtr;
+																			delete[] VertexColorArrayPtr;
+																			//cout << "GL floats deleted..." << endl;
+																			}
+																			IsGLFloatPtrLoaded = 1;									// indicate that the pointer was loaded with data
+																			GLFloatPtr = new GLfloat[totalfloats];	// 9 floats per triangle
+																			VertexColorArrayPtr = new GLfloat[totalfloats];
+																			//cout << "GL float check end..." << endl;
+																			mutexval.unlock();
+																			*/
 
 																			//cout << "Render 2 entry:" << endl;
 
@@ -601,7 +601,7 @@ void RenderCollection::UpdateManifestArray(EnclaveKeyDef::EnclaveKey Key)	// upd
 		//tempGLptr2 = ManifestCollectionPtr->ManMatrix[Key].EnclaveGLPtr;
 		unique_ptr<GLfloat[]> tempGLptr2(new GLfloat[ArrayTwoLength * 9]);
 		//tempGLptr2 = new GLfloat[ArrayTwoLength * 9];
-		array2ptr = ManifestCollectionPtr->ManMatrix[Key].EnclaveGLPtr;								// this pointer will not be deleted later; doing so would delete parts of the manifest.
+		//array2ptr = ManifestCollectionPtr->ManMatrix[Key].EnclaveGLPtr;								// this pointer will not be deleted later; doing so would delete parts of the manifest.
 		int currentBegin = 0;
 		int pointedBegin = 0;
 		//auto finish6 = std::chrono::high_resolution_clock::now();
@@ -613,9 +613,9 @@ void RenderCollection::UpdateManifestArray(EnclaveKeyDef::EnclaveKey Key)	// upd
 			//GLFloatPtr[currentBegin + 1] = tempGLptr[pointedBegin + 1];									// for first coord, x
 			//GLFloatPtr[currentBegin + 2] = tempGLptr[pointedBegin];
 
-			tempGLptr2[currentBegin + 2] = array2ptr[pointedBegin + 2];									// for first coord, x
-			tempGLptr2[currentBegin + 1] = array2ptr[pointedBegin + 1];									// for first coord, x
-			tempGLptr2[currentBegin] = array2ptr[pointedBegin];
+			tempGLptr2[currentBegin + 2] = ManifestCollectionPtr->ManMatrix[Key].EnclaveGLPtr[pointedBegin + 2];									// for first coord, x
+			tempGLptr2[currentBegin + 1] = ManifestCollectionPtr->ManMatrix[Key].EnclaveGLPtr[pointedBegin + 1];									// for first coord, x
+			tempGLptr2[currentBegin] = ManifestCollectionPtr->ManMatrix[Key].EnclaveGLPtr[pointedBegin];
 			// for first coord, x
 			//cout << "Triangle coord matching: (-2): " << GLFloatPtr[currentBegin - 2] << " (-1): " << GLFloatPtr[currentBegin - 1] << " (0):" << GLFloatPtr[currentBegin] << endl;
 			//currentBegin -= 3;
@@ -648,8 +648,8 @@ void RenderCollection::UpdateManifestArray(EnclaveKeyDef::EnclaveKey Key)	// upd
 
 		int NewRenderArrayLength = (ArrayOneLength * 9) + (ArrayThreeLength * 9) + (ArrayTwoLength * 9);		// combine lengths of first, second, and third arrays.
 																												//cout << "test final length: " << NewRenderArrayLength << endl;
-		//GLfloat *newRenderArray;
-		//newRenderArray = new GLfloat[NewRenderArrayLength];
+																												//GLfloat *newRenderArray;
+																												//newRenderArray = new GLfloat[NewRenderArrayLength];
 		unique_ptr<GLfloat[]> newRenderArray(new GLfloat[NewRenderArrayLength]);
 		int newRenderArrayBeginIndex = 0;
 		for (int cc = 0; cc < (ArrayOneLength * 9); ++cc)	// insert array one.
@@ -726,4 +726,7 @@ RenderCollection::~RenderCollection()
 	//IsGLFloatPtrLoaded = 0;
 	//cout << "DELETE COMPLETE" << endl;
 	//}
+	std::lock_guard<std::mutex> lock(*heapmutexref);
+	GLFloatPtr = nullptr;
+	VertexColorArrayPtr = nullptr;
 }

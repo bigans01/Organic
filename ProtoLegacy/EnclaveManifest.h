@@ -49,7 +49,10 @@ public:
 	
 	EnclaveManifest& operator=(EnclaveManifest&& manifest_a)
 	{
-		testint = std::move(manifest_a.testint);
+		//testint = std::move(manifest_a.testint);
+		EnclaveGLPtr = std::move(manifest_a.EnclaveGLPtr);
+		VertexColorGLPtr = std::move(manifest_a.VertexColorGLPtr);
+		TextureGLPtr = std::move(manifest_a.TextureGLPtr);
 		TextureDictionaryRef = manifest_a.TextureDictionaryRef;
 		VertexColorDictionaryRef = manifest_a.VertexColorDictionaryRef;
 		return *this;
@@ -72,12 +75,17 @@ private:
 	int IsEnclaveGLPtrLoaded = 0;															// flag that determines whether or not an array of 3d data currently exists for this manifest									// currently unused
 	int RenderablePolyCount = 0;															// the number of currently "unveiled" polygons in the enclave
 	int TotalEnclaveTriangles = 0;															// the total number of triangles that will be rendered in this enclave manifest
-	GLfloat *EnclaveGLPtr = NULL;																	// pointer to the array of OpenGL floats, which will be used by an instnce of RenderCollection.
-	GLfloat *VertexColorGLPtr = NULL;
-	GLfloat *TextureGLPtr = NULL;																	// pointer to the array of texture data
+																							//GLfloat *EnclaveGLPtr = NULL;																	// pointer to the array of OpenGL floats, which will be used by an instnce of RenderCollection.
+																							//GLfloat *VertexColorGLPtr = NULL;
+																							//GLfloat *TextureGLPtr = NULL;																	// pointer to the array of texture data
+
+	unique_ptr<GLfloat[]> EnclaveGLPtr;
+	unique_ptr<GLfloat[]> VertexColorGLPtr;
+	unique_ptr<GLfloat[]> TextureGLPtr;
+
 	RenderCollection *RenderCollectionRef = NULL;													// pointer to the RenderCollection that this EnclaveManifest belongs to; this is used to signal 
 																							// the RenderCollection that this instance of EnclaveManifest has changed
-	unique_ptr<int> testint;
+	//unique_ptr<int> testint;
 	OrganicTextureDictionary *TextureDictionaryRef = NULL;											// reference to the Organic system's OrganicTextureDictionary
 	OrganicVtxColorDictionary *VertexColorDictionaryRef = NULL;									// reference to the Organic system's OrganicVtxColorDictionary
 	int dumbval = 0;
@@ -89,7 +97,7 @@ private:
 	EnclaveKeyDef::EnclaveKey UniqueKey;													// the unique EnclaveKey of this manifest
 
 	FloatTupleXYZ EnclaveManifestOffset, TempTuple;	// EnclaveManifestOffset: a tuple of x/y/z values that determines the block's offset from the beginning of the Enclave's 0,0 point.
-	mutex* in_heapmutex;
+	mutex* heapmutexref;							// required mutex hold when deleting during destructor call
 
 
 																			// TempTuple: temporarily stores the x/y/z tuple that contains the final values for a block's representation in 3d space
@@ -97,7 +105,7 @@ private:
 	void AttachToEnclave(Enclave &in_ptr, mutex& heapmutex);				// Same as AttachToEnclave(Enclave &in_ptr), but passes in a mutex for finer-grained control and release of the mutex.
 	int ReturnEnclaveTriangles();											// returns the total number of triangles rendered in this manifest. This will be used by a RenderCollection.
 	FloatTupleXYZ SingleToMulti(int input);							// takes in a single value, from 0 to 63, and returns a chunk-level x/y/z offset or coordinate
-	
+	void AllocateDynamicArraysViaLockGuard(int in_numberOfVertexFloats, int in_numberOfColorFloats, int in_numberOfTextureFloats, mutex& mutexval);
 };
 
 #endif

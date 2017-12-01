@@ -27,7 +27,7 @@ void  ManifestCollectionMatrix::AddNewCollection(EnclaveKeyDef::EnclaveKey Key)
 	//ManifestCollection tempmanifestmatrix(ECMCollectionMatrixRef);
 	//ManiCollectionMap[Key] = tempmanifestmatrix;
 	//ManiCollectionMap.emplace(Key, ManifestCollection(ECMCollectionMatrixRef));
-	cout << "pre crashy-crash" << endl;
+	//cout << "pre crashy-crash" << endl;
 	ManiCollectionMap[Key].CollectionMatrixRef = ECMCollectionMatrixRef;
 }
 
