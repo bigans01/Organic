@@ -23,6 +23,7 @@ Dependents: a valid instance of ManifestCollectionMatrix
 #include "OrganicVtxColorDictionary.h"
 #include <functional>
 #include <mutex>
+#include "dummyManifest.h"
 
 class OrganicSystem;
 class ManifestCollectionMatrix;
@@ -39,10 +40,12 @@ private:
 	friend class RenderCollection;
 	std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveManifest, EnclaveKeyDef::KeyHasher> ManMatrix;						// unordered map which stores the EnclaveManifests
 	std::unordered_map<EnclaveKeyDef::EnclaveKey, reference_wrapper<EnclaveManifest>, EnclaveKeyDef::KeyHasher> testmap2;
+	//std::unordered_map<EnclaveKeyDef::EnclaveKey, dummyManifest, EnclaveKeyDef::KeyHasher> dummyMatrix;
+	std::vector<dummyManifest> dummyMatrix;
 	std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveManifest, EnclaveKeyDef::KeyHasher>::iterator ManMatrixIter;		// an iterator for the above unordered map
 	EnclaveMatrix *EnclaveMatrixRef = NULL;																						// a reference to the Enclave (currently unused, potentially reserverd for later)
 	EnclaveCollectionMatrix *CollectionMatrixRef = NULL;																			// a reference to a valid instance of EnclaveCollectionMatrix
-
+	int insertdummy = 0;
 	ManifestCollection(EnclaveMatrix *matrixref);																			// unused constructor; reserved for later use
 	ManifestCollection(EnclaveMatrix *matrixref, EnclaveCollectionMatrix *collectionref);									// unused constructor; reserved for later use
 	ManifestCollection(EnclaveCollectionMatrix *collectionref);																// currently used constructor;  takes in a valid EnclaveCollectionMatrix, to set the corresponding public member for this class

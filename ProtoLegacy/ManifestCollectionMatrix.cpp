@@ -8,7 +8,7 @@ mutex cmutex2;
 ManifestCollectionMatrix::ManifestCollectionMatrix(EnclaveCollectionMatrix *collectionmatrixref)
 {
 	/* Summary: primary constructor which sets the value of CollectionMatrixRef */
-	CollectionMatrixRef = collectionmatrixref;
+	ECMCollectionMatrixRef = collectionmatrixref;
 }
 
 ManifestCollectionMatrix::ManifestCollectionMatrix()
@@ -18,14 +18,17 @@ ManifestCollectionMatrix::ManifestCollectionMatrix()
 
 void ManifestCollectionMatrix::SetCollectionMatrixRef(EnclaveCollectionMatrix *collectionmatrixref)
 {
-	CollectionMatrixRef = collectionmatrixref;
+	ECMCollectionMatrixRef = collectionmatrixref;
 }
 
 void  ManifestCollectionMatrix::AddNewCollection(EnclaveKeyDef::EnclaveKey Key)
 {
 	/* Summary: adds a new collection that has a value of Key, and has a reference to CollectionMatrixRef */
-	ManifestCollection tempmanifestmatrix(CollectionMatrixRef);
-	ManiCollectionMap[Key] = tempmanifestmatrix;
+	//ManifestCollection tempmanifestmatrix(ECMCollectionMatrixRef);
+	//ManiCollectionMap[Key] = tempmanifestmatrix;
+	//ManiCollectionMap.emplace(Key, ManifestCollection(ECMCollectionMatrixRef));
+	cout << "pre crashy-crash" << endl;
+	ManiCollectionMap[Key].CollectionMatrixRef = ECMCollectionMatrixRef;
 }
 
 void ManifestCollectionMatrix::AttachManifestToCollectedEnclave(EnclaveKeyDef::EnclaveKey CollectionKey, int target_x, int target_y, int target_z)
@@ -74,6 +77,7 @@ ManifestCollection& ManifestCollectionMatrix::GetRefManiCollectionMap(EnclaveKey
 {
 	std::unordered_map<EnclaveKeyDef::EnclaveKey, reference_wrapper<ManifestCollection>, EnclaveKeyDef::KeyHasher>::iterator temp_iter;
 	temp_iter = ManiCollectionMapRef.find(FindKey);
-	ManifestCollection manicollPtr = temp_iter->second;
-	return std::ref(manicollPtr);
+	//ManifestCollection manicollPtr = temp_iter->second;
+	//return std::ref(manicollPtr);
+	return std::ref(temp_iter->second);
 }

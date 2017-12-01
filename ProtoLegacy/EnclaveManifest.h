@@ -36,10 +36,22 @@ class EnclaveCollectionMesh;
 class EnclaveManifest {
 
 public:
+	//EnclaveManifest(EnclaveManifest& EMa) : dumbval(5) {};
 	EnclaveManifest::~EnclaveManifest();									// required destructor for memory management
 	EnclaveManifest(int x, int y, int z);													// constructor which sets the value of the EnclaveManifest's UniqueKey
 	EnclaveManifest(int x, int y, int z, OrganicTextureDictionary *texturedictionaryptr, OrganicVtxColorDictionary *vertexcolordictionaryptr);
 	EnclaveManifest();																		// potentially unused
+
+
+	
+	/*
+	EnclaveManifest& operator=(EnclaveManifest& manifest_a)
+	{
+		//testint = std::move(manifest_a.testint);
+		return *this;
+	}
+	*/
+	
 private:
 	friend class ManifestCollection;
 	friend class RenderCollection;
@@ -52,9 +64,10 @@ private:
 	GLfloat *TextureGLPtr = NULL;																	// pointer to the array of texture data
 	RenderCollection *RenderCollectionRef = NULL;													// pointer to the RenderCollection that this EnclaveManifest belongs to; this is used to signal 
 																							// the RenderCollection that this instance of EnclaveManifest has changed
+	//unique_ptr<int> testint;
 	OrganicTextureDictionary *TextureDictionaryRef = NULL;											// reference to the Organic system's OrganicTextureDictionary
 	OrganicVtxColorDictionary *VertexColorDictionaryRef = NULL;									// reference to the Organic system's OrganicVtxColorDictionary
-
+	int dumbval = 0;
 	int IsRenderCollectionRefSet = 0;														// determines whether or not the pointer RenderCollectionRef is set
 	Enclave EnclavePtr;																		// pointer to the enclave to gain data from
 	Enclave::EnclavePolyArray *EnclavePolyArrayPtr = NULL;											// pointer to the sorted array in the enclave. in the Sorted struct. (see Enclave.h)

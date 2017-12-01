@@ -164,6 +164,7 @@
     <ClInclude Include="common\shader.hpp" />
     <ClInclude Include="CursorPathTraceContainer.h" />
     <ClInclude Include="dummwrapper.h" />
+    <ClInclude Include="dummyManifest.h" />
     <ClInclude Include="ECBCollectionPainter.h" />
     <ClInclude Include="ECBOutwardFaceFlags.h" />
     <ClInclude Include="ECBXAxisCarvePlan.h" />
@@ -245,6 +246,7 @@
     <ClInclude Include="VertexReadingOrder.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="dummyManifest.cpp" />
     <ClCompile Include="EnclaveBlockRayTracker.cpp" />
     <ClCompile Include="EnclaveCollection.cpp" />
     <ClCompile Include="EnclaveCollectionBlueprint.cpp" />
