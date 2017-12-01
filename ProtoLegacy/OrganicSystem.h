@@ -167,6 +167,10 @@ private:
 		ManifestCollection *ManifestCollectionRef
 	);
 
+	void SubmitT1TerrainJob(OrganicMorphMeta in_popKey, std::map<int, OrganicCell*>::iterator in_iterator, MDJobMaterializeCollection* in_tempMDJobRef);						// RAII enforced function for submitting a T! terrain job
+	void SubmitT2TerrainJob(OrganicMorphMeta in_popKey, std::map<int, OrganicCell*>::iterator in_iterator, MDJobMaterializeCollection* in_tempMDJobRef);
+	void PopOrganicMorphMetaQueue();
+
 };
 
 #endif

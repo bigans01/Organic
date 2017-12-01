@@ -163,16 +163,6 @@ void EnclaveManifest::AttachToEnclave(Enclave &in_ptr, mutex& heapmutex)
 	if (EnclavePtr.GetTotalTrianglesInEnclave() != 0)
 	{
 		/* Summary: Attaches to an existing, valid instance of an Enclave. 3d point data is generated based on the contents of the Enclave. */
-
-		//if (IsEnclaveGLPtrLoaded == 1)						// check to see if it was loaded already, on a previous call
-		//{
-		//heapmutex.lock();
-		//delete[] EnclaveGLPtr;							// delete old array
-		//delete[] VertexColorGLPtr;
-		//delete[] TextureGLPtr;
-		//heapmutex.unlock();
-		//}
-
 		IsEnclaveGLPtrLoaded = 1;
 		//cout << "Enclave Attach call..." << endl;
 		//EnclavePtr = in_ptr;													// set the pointer equal to the reference of the input parameter
@@ -212,11 +202,11 @@ void EnclaveManifest::AttachToEnclave(Enclave &in_ptr, mutex& heapmutex)
 		//auto orgstart = std::chrono::high_resolution_clock::now();
 		AllocateDynamicArraysViaLockGuard((EnclavePtr.GetTotalTrianglesInEnclave()) * 9, (EnclavePtr.GetTotalTrianglesInEnclave()) * 9, (EnclavePtr.GetTotalTrianglesInEnclave()) * 6, std::ref(heapmutex));
 
-		//heapmutex.lock();
 		//EnclaveGLPtr = new GLfloat[(EnclavePtr.GetTotalTrianglesInEnclave()) * 9];
 		//VertexColorGLPtr = new GLfloat[(EnclavePtr.GetTotalTrianglesInEnclave()) * 9];
 		//TextureGLPtr = new GLfloat[(EnclavePtr.GetTotalTrianglesInEnclave()) * 6];						// new array would be GetTotalTrianglesInEnclave*6 (a pair of UV coordinates per vertex)
-		//heapmutex.unlock();																								//auto orgend = std::chrono::high_resolution_clock::now();
+
+		//auto orgend = std::chrono::high_resolution_clock::now();
 		//std::chrono::duration<double> orgelapsed = orgend - orgstart;
 		EnclaveGLPtr[0] = 1;																				//std::cout << "Elapsed time (2x dynamic array allocation time): " << orgelapsed.count() << endl;
 																											//cout << "after new (2)..." << endl;

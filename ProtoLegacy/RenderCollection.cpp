@@ -178,14 +178,6 @@ void RenderCollection::CombineManifestArrays()
 
 void RenderCollection::CombineManifestArrays(mutex& mutexval)
 {
-	//mutexval.lock();
-	//if (IsGLFloatPtrLoaded == 1)		// delete old array if it was previously set
-	//{
-	//delete[] GLFloatPtr;
-	//delete[] VertexColorArrayPtr;
-	//}
-	//mutexval.unlock();
-	//IsGLFloatPtrLoaded = 1;
 
 	// 1))) First iterator pass: find number of manifests to attach to, create a temp array for this
 	std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveManifest, EnclaveKeyDef::KeyHasher>::iterator ManMatrixIter;
@@ -244,19 +236,6 @@ void RenderCollection::CombineManifestArrays(mutex& mutexval)
 	//std::cout << "Render Collection test, step 2 " << elapsed4.count() << "): " <<  endl;
 	//GLfloat *glfloatptr;
 
-
-
-	//mutexval.lock();
-	//GLFloatPtr = new GLfloat[totaltrianglestorender * 9];	// 9 floats per triangle; stores vertex data
-	//VertexColorArrayPtr = new GLfloat[totaltrianglestorender * 9];
-
-	//GLFloatPtr = make_unique<GLfloat[]>(totaltrianglestorender * 9);
-	//VertexColorArrayPtr = make_unique<GLfloat[]>(totaltrianglestorender * 9);
-
-	//GLFloatPtr.reset(new GLfloat[totaltrianglestorender * 9]);
-	//VertexColorArrayPtr.reset(new GLfloat[totaltrianglestorender * 9]);
-
-	//mutexval.unlock();
 	AllocateNewArraysViaLockGuard(totaltrianglestorender * 9, std::ref(mutexval));
 
 	RenderCollectionArraySize = totaltrianglestorender * 4 * 9;
@@ -335,27 +314,12 @@ void RenderCollection::AllocateNewArraysViaLockGuard(int in_numberOfFloats, mute
 {
 	std::lock_guard<std::mutex> lock(mutexval);
 	//cout << "GL float check begin...; total floats is: " << totalfloats << "Total Enclaves is: " << TotalEnclavesInFactory << endl;
-	//if (IsGLFloatPtrLoaded == 1)		// delete old array if it was previously set
-	//{
-	//cout << "GL float is loaded; deleting..." << endl;
-	//delete[] GLFloatPtr;
-	//delete[] VertexColorArrayPtr;
-	//cout << "GL floats deleted..." << endl;
-	//}
-	//IsGLFloatPtrLoaded = 1;									// indicate that the pointer was loaded with data
-	//GLFloatPtr = new GLfloat[in_numberOfFloats];	// 9 floats per triangle
-	//VertexColorArrayPtr = new GLfloat[in_numberOfFloats];
-
-	//GLFloatPtr = make_unique<GLfloat[]>(in_numberOfFloats);
-	//VertexColorArrayPtr = make_unique<GLfloat[]>(in_numberOfFloats);
 	GLFloatPtr.reset(new GLfloat[in_numberOfFloats]);
 	VertexColorArrayPtr.reset(new GLfloat[in_numberOfFloats]);
-	//cout << "GL float check end..." << endl;
 }
 
 void RenderCollection::CombineManifestArraysFromT1Factory(EnclaveManifestFactoryT1 *factoryRef, mutex& mutexval)
 {
-	//mutexval.lock();
 	int totalfloats = 0;												// the total number of floats that will need be stored.
 	int totalenclavesfound = 0;
 	int TotalEnclavesInFactory = factoryRef->StorageArrayCount;		// get the number of enclaves to iterate through
@@ -374,23 +338,7 @@ void RenderCollection::CombineManifestArraysFromT1Factory(EnclaveManifestFactory
 
 	AllocateNewArraysViaLockGuard(totalfloats, std::ref(mutexval));			// new code from (11/2/2017)
 
-																			/*
-																			// STEP 2: create the dynamic array, acquire heap lock while doing so
-																			mutexval.lock();
-																			//cout << "GL float check begin...; total floats is: " << totalfloats << "Total Enclaves is: " << TotalEnclavesInFactory << endl;
-																			if (IsGLFloatPtrLoaded == 1)		// delete old array if it was previously set
-																			{
-																			//cout << "GL float is loaded; deleting..." << endl;
-																			delete[] GLFloatPtr;
-																			delete[] VertexColorArrayPtr;
-																			//cout << "GL floats deleted..." << endl;
-																			}
-																			IsGLFloatPtrLoaded = 1;									// indicate that the pointer was loaded with data
-																			GLFloatPtr = new GLfloat[totalfloats];	// 9 floats per triangle
-																			VertexColorArrayPtr = new GLfloat[totalfloats];
-																			//cout << "GL float check end..." << endl;
-																			mutexval.unlock();
-																			*/
+																			
 
 																			//cout << "Render 2 entry:" << endl;
 

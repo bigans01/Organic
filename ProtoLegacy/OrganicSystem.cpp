@@ -856,11 +856,10 @@ void OrganicSystem::JobMaterializeMultiCollectionFromMM(MDListJobMaterializeColl
 	EnclaveCollectionMatrix *EnclaveCollectionsRef = JobIterator->second.MDEnclaveCollectionsRef;		// set a ref to the EnclaveCollection matrix		
 	RenderCollectionMatrix *RenderCollectionsRef = JobIterator->second.MDRenderCollectionsRef;			// set a ref to the RenderCollection matrix
 
-	//mutexval.lock();
 	auto lockstart = std::chrono::high_resolution_clock::now();				// performance testing timestamps (optional use, only used for debugging; disable at will)
 	auto lockend = std::chrono::high_resolution_clock::now();				// ""
 	auto truestart = std::chrono::high_resolution_clock::now();				// ""
-	//mutexval.unlock();
+
 
 	for (JobIterator = mdjob->ListMatrix.begin(); JobIterator != JobIteratorEnd; ++JobIterator)			// begin iterator looping
 	{
@@ -875,15 +874,13 @@ void OrganicSystem::JobMaterializeMultiCollectionFromMM(MDListJobMaterializeColl
 		mutexval.unlock();																					// unlock when finished
 
 
-		//mutexval.lock();																					// potentially unneeded lock (lock is disabled for now)
+
 		auto initend = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<double> initelapsed = initend - initstart;
-		//mutexval.unlock();																				// potentially unneeded lock (lock is disabled for now)
 
 		EnclaveCollectionActivateListT2 listT2_1;																									// creation an activation list for instantiating the enclaves
 		//EnclaveCollectionsRef->JobInstantiateAndPopulateEnclaveAlpha(0, 7 + 1, std::ref(*CollectionRef), Key1, blueprintptr, std::ref(listT2_1));	// run the instantiation job on this thread (all 512 enclaves)
 		mutexval.lock();
-	
 		EnclaveCollectionsRef->JobInstantiateAndPopulateEnclaveAlpha2(0, 7 + 1, std::ref(*CollectionRef), Key1, std::ref(blueprintptr), std::ref(BlueprintMatrixRef), std::ref(listT2_1), std::ref(mutexval));	// run the instantiation job on this thread (all 512 enclaves) //EnclaveCollectionMap[Key]
 		mutexval.unlock();
 		int chunkbitmask = 1;		// set the chunk bit mask used below
@@ -922,7 +919,6 @@ void OrganicSystem::JobMaterializeMultiCollectionFromMM(MDListJobMaterializeColl
 
 
 		// Phase 2: ManifestCollection set up
-		//mutexval.lock();
 		if (Key1.x == 0 && Key1.y == 0 && Key1.z == 0)
 		{
 			Enclave testEnclavePtr = CollectionRef->EnclaveArray[2][1][0];
@@ -949,24 +945,17 @@ void OrganicSystem::JobMaterializeMultiCollectionFromMM(MDListJobMaterializeColl
 		auto finish5 = std::chrono::high_resolution_clock::now();									// optional, for debugging
 		std::chrono::duration<double> elapsed5 = finish5 - start5;									// ""
 																									
-		//mutexval.unlock();	
 		//cout << "HOO BOY!" << ManifestCollectionRef->ManMatrix[innerTempKey].TotalEnclaveTriangles << endl;				// RENAME THIS TO SOMETHING ELSE! (ManifestCollectionRef)
-		// Phase 3: Render collection set up
-		//mutexval.lock();														
+		// Phase 3: Render collection set up													
 		RenderCollectionsRef->CreateRenderArrayFromManifestCollection(Key1, std::ref(mutexval));						// creates the to-be rendered array, from a MM
-		//mutexval.unlock();
+
 		
 		totalprocessed++;
 		
 	}
 
 	// below: completely optional performance testing
-	mutexval.lock();
-	std::chrono::duration<double> truelocktime = lockstart - lockend;
-	auto trueend = std::chrono::high_resolution_clock::now();
-	std::chrono::duration<double> trueelapsed = trueend - truestart;
-	cout << "Total time: (" << totalprocessed << ") " <<  trueelapsed.count() << endl;
-	mutexval.unlock();
+
 }
 
 void OrganicSystem::JobMaterializeMultiCollectionFromFactory(MDListJobMaterializeCollection mdjob, mutex& mutexval, EnclaveManifestFactoryT1 *FactoryRef, int ThreadID)
@@ -1056,21 +1045,13 @@ void OrganicSystem::JobMaterializeMultiCollectionFromFactory(MDListJobMaterializ
 
 	}
 	trueend = std::chrono::high_resolution_clock::now();
-	mutexval.lock();
-	//std::chrono::duration<double> truelocktime = lockstart - lockend;
-	//auto trueend = std::chrono::high_resolution_clock::now();
-	std::chrono::duration<double> trueelapsed = trueend - truestart;
-	//std::chrono::duration<double> unordered_elapsed = unordered_end - unordered_start;
 
-	//cout << "Total time: " << trueelapsed.count() << endl;
-	mutexval.unlock();
 }
 
 void OrganicSystem::JobMaterializeMultiCollectionFromFactory2(MDListJobMaterializeCollection* mdjob, mutex& mutexval, EnclaveManifestFactoryT1 *FactoryRef, int ThreadID)
 {
 	int totalProcessed = 0;
 	/* Summary: this method materializes one or more EnclaveCollections, by using a Factory */
-	//mutexval.lock();
 	auto truestart = std::chrono::high_resolution_clock::now();		// optional, for performance testing only																										
 	std::unordered_map<EnclaveKeyDef::EnclaveKey, MDJobMaterializeCollection, EnclaveKeyDef::KeyHasher>::iterator JobIterator;			// set up an iterator to point to the beginning of the job list
 	std::unordered_map<EnclaveKeyDef::EnclaveKey, MDJobMaterializeCollection, EnclaveKeyDef::KeyHasher>::iterator JobIteratorEnd;		// set up an iterator to point to the end of the job list
@@ -1147,9 +1128,7 @@ void OrganicSystem::JobMaterializeMultiCollectionFromFactory2(MDListJobMateriali
 
 		// Phase 3: Render actual collection
 		//cout << "Phase 3 beginning..." << endl;
-		//mutexval.lock();
 		RenderCollectionsRef->CreateRenderArrayFromFactory(Key1, FactoryRef, std::ref(mutexval));		// call function to add data into array; pass mutex to use
-		//mutexval.unlock();
 		//RenderCollection* collPtr = &RenderCollectionsRef->RenderMatrix[Key1];
 		//cout << "Total renderables for Key (" << Key1.x << ", " << Key1.y << ", " << Key1.z << ") :" << tempdumbcount << ": " << collPtr->RenderCollectionArraySize << endl;
 		//trueend = std::chrono::high_resolution_clock::now();
@@ -1157,14 +1136,7 @@ void OrganicSystem::JobMaterializeMultiCollectionFromFactory2(MDListJobMateriali
 		totalProcessed++;
 	}
 	trueend = std::chrono::high_resolution_clock::now();
-	mutexval.lock();
-	//std::chrono::duration<double> truelocktime = lockstart - lockend;
-	//auto trueend = std::chrono::high_resolution_clock::now();
-	std::chrono::duration<double> trueelapsed = trueend - truestart;
-	//std::chrono::duration<double> unordered_elapsed = unordered_end - unordered_start;
 
-	cout << "Total time, " << totalProcessed << " collections: (" << ThreadID << ") " << trueelapsed.count() << endl;
-	mutexval.unlock();
 }
 
 void OrganicSystem::JobMaterializeCollectionFromFactoryViaMorph(MDJobMaterializeCollection* mdjob, mutex& mutexval, EnclaveManifestFactoryT1 *FactoryRef)
@@ -1191,9 +1163,6 @@ void OrganicSystem::JobMaterializeCollectionFromFactoryViaMorph(MDJobMaterialize
 	
 	//auto trueend2 = std::chrono::high_resolution_clock::now();		// optional, for performance testing only	
 	//std::chrono::duration<double> trueelapsed2 = trueend2 - truestart2;
-	//mutexval.lock();
-	//cout << "TEST, instantiation speed: " << trueelapsed2.count() << endl;
-	//mutexval.unlock();
 
 	int chunkbitmask = 1;	// set the chunk bit mask used below
 	int bitmaskval = 0;		// ""
@@ -1233,9 +1202,6 @@ void OrganicSystem::JobMaterializeCollectionFromFactoryViaMorph(MDJobMaterialize
 	
 	// Phase 2: Factory work
 	int manifestCounter = CollectionRef->totalRenderableEnclaves;
-	//mutexval.lock();
-	//cout << "MORPH FUNCTION CALL KEY: " << mdjob->MDKey.x << ", " << mdjob->MDKey.y << ", " << mdjob->MDKey.z << "| Renderable enclave number is: " << manifestCounter << endl;
-	//mutexval.unlock();
 	//auto start5 = std::chrono::high_resolution_clock::now();
 	EnclaveKeyDef::EnclaveKey innerTempKey;
 	FactoryRef->CurrentStorage = 0;					// reset storage location.
@@ -1252,34 +1218,21 @@ void OrganicSystem::JobMaterializeCollectionFromFactoryViaMorph(MDJobMaterialize
 
 	// Phase 3: Render actual collection
 	//cout << "Phase 3 beginning..." << endl;
-	//mutexval.lock();
-
-	//mutexval.lock();
 	//cout << "FACTORY WORK COMPLETE PASS..." << mdjob->MDKey.x << ", " << mdjob->MDKey.y << ", " << mdjob->MDKey.z << endl;
-	//mutexval.unlock();
 	RenderCollectionsRef->CreateRenderArrayFromFactoryMorph(mdjob->MDKey, FactoryRef, std::ref(mutexval));		// call function to add data into array; pass mutex to use
-	//mutexval.unlock();
-																									//mutexval.unlock();
+
+
 																									//RenderCollection* collPtr = &RenderCollectionsRef->RenderMatrix[Key1];
 																									//cout << "Total renderables for Key (" << Key1.x << ", " << Key1.y << ", " << Key1.z << ") :" << tempdumbcount << ": " << collPtr->RenderCollectionArraySize << endl;
 																									//trueend = std::chrono::high_resolution_clock::now();
-	//mutexval.lock();
-	//cout << "CREATE RENDER ARRAY COMPLETE PASS..." << mdjob->MDKey.x << ", " << mdjob->MDKey.y << ", " << mdjob->MDKey.z << endl;
-	//mutexval.unlock();
+
 	auto trueend = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> trueelapsed = trueend - truestart;
 	//std::chrono::duration<double> unordered_elapsed = unordered_end - unordered_start;
 
-	
-	//mutexval.lock();
-	//cout << "test output of morphed render size: (Key is " << mdjob->MDKey.x << ", " << mdjob->MDKey.y << ", " << mdjob->MDKey.z << ", || " << RenderCollectionsRef->RenderMatrix[mdjob->MDKey].RenderCollectionArraySize << ")" << endl;
-	//cout << "Total time, terrain morph: " << trueelapsed.count() << endl;
-	//mutexval.unlock();
 	auto trueend2 = std::chrono::high_resolution_clock::now();		// optional, for performance testing only	
 	std::chrono::duration<double> trueelapsed2 = trueend2 - truestart2;
-	//mutexval.lock();
-	//cout << "TEST, instantiation speed: " << trueelapsed2.count() << endl;
-	//mutexval.unlock();
+
 }
 
 void OrganicSystem::JobMaterializeCollectionFromMM(MDJobMaterializeCollection* mdjob, mutex& mutexval)
@@ -1297,10 +1250,7 @@ void OrganicSystem::JobMaterializeCollectionFromMM(MDJobMaterializeCollection* m
 	ManifestCollection *ManifestCollectionRef = mdjob->MDManifestCollectionPtr;			// set pointer in thread-safe code
 	mutexval.unlock();																					// unlock when finished
 
-
-																										//mutexval.lock();																					// potentially unneeded lock (lock is disabled for now)
 	
-
 	EnclaveCollectionActivateListT2 listT2_1;																									// creation an activation list for instantiating the enclaves
 																																				//EnclaveCollectionsRef->JobInstantiateAndPopulateEnclaveAlpha(0, 7 + 1, std::ref(*CollectionRef), Key1, blueprintptr, std::ref(listT2_1));	// run the instantiation job on this thread (all 512 enclaves)
 	mutexval.lock();
@@ -1338,25 +1288,12 @@ void OrganicSystem::JobMaterializeCollectionFromMM(MDJobMaterializeCollection* m
 			bitmaskval++;			// increment bitmask val
 		}
 	}
-	//mutexval.lock();
-	//cout << "New: Phase 1 pass" << endl;
-	//mutexval.unlock();
-	// Phase 2: ManifestCollection set up
-	//mutexval.lock();
-	/*
-	if (Key1.x == 0 && Key1.y == 0 && Key1.z == 0)
-	{
-		Enclave testEnclavePtr = CollectionRef->EnclaveArray[2][1][0];
-		cout << "TEST: " << testEnclavePtr.GetTotalTrianglesInEnclave() << endl;
-	}
-	*/
+
 
 	int manifestCounter = CollectionRef->totalRenderableEnclaves;	// set the manifestCounter equal to the number of renderable manifests from the EnclaveCollection ref
 	auto start5 = std::chrono::high_resolution_clock::now();	// optional performance testing values
 	EnclaveKeyDef::EnclaveKey innerTempKey;		// create a variable to store a temporary key
-	//mutexval.lock();
-	//cout << "New: Phase 1 post-pass" << endl;
-	//mutexval.unlock();
+
 	//cout << "collection key value: " << Key1.x << ", " << Key1.y << ", " << Key1.z << endl;
 	for (int a = 0; a < manifestCounter; a++)	// loop count is equal to the number of manifests to be rendered 
 	{
@@ -1377,16 +1314,13 @@ void OrganicSystem::JobMaterializeCollectionFromMM(MDJobMaterializeCollection* m
 	auto finish5 = std::chrono::high_resolution_clock::now();									// optional, for debugging
 	std::chrono::duration<double> elapsed5 = finish5 - start5;									// ""
 
-																								//mutexval.unlock();	
 																								//cout << "HOO BOY!" << ManifestCollectionRef->ManMatrix[innerTempKey].TotalEnclaveTriangles << endl;				// RENAME THIS TO SOMETHING ELSE! (ManifestCollectionRef)
 																								// Phase 3: Render collection set up
-																								//mutexval.lock();								
-	//mutexval.lock();
-	//cout << "New: Phase 2 pass" << endl;
-	//mutexval.unlock();
+																											
+
 	// Phase 3: create render array
 	RenderCollectionsRef->CreateRenderArrayFromManifestCollection(Key1, std::ref(mutexval));						// creates the to-be rendered array, from a MM
-																													//mutexval.unlock();
+																									
 
 }
 
@@ -2444,9 +2378,7 @@ void OrganicSystem::MaterializeRenderablesByMM()
 		mdListVector++;															// increment the list iterator
 
 		//std::future<void> futureToMove = OCList.cellList[x].threadPtr->submit5(&OrganicSystem::JobMaterializeMultiCollectionFromFactory2, this, std::ref(tempListPtr), std::ref(heapmutex), std::ref(tempFactoryPtr), 1);		// submit the job
-		//heapmutex.lock();
 		//futureList.push_back(std::move(futureToMove));			// push_back the future via move
-		//heapmutex.unlock();
 		//cout << "thread push complete, " << x << endl;
 	}
 
@@ -2704,9 +2636,7 @@ void OrganicSystem::WaitForPhase2Promises()
 	// cout << "checking t1 promises..." << endl;
 	if (FL_T1CollectionsProcessed.size() > 0)
 	{	
-		heapmutex.lock();
 		//cout << "T1 size greater than 0, proceeding..." << "(size is " << FL_T1CollectionsProcessed.size() << ") " << endl;
-		heapmutex.unlock();
 		T1_futureListIterator = FL_T1CollectionsProcessed.begin();
 		int collectionsToProcess = int(FL_T1CollectionsProcessed.size());
 		for (int x = 0; x < collectionsToProcess; x++)
@@ -2725,9 +2655,7 @@ void OrganicSystem::WaitForPhase2Promises()
 	//cout << "queue size acquired..." << endl;
 	if (organicMorphMetaQueueSize > 0)
 	{
-		heapmutex.lock();
 		//cout << "MorphMetaQueueSize contains elements..." << endl;
-		heapmutex.unlock();
 		for (int x = 0; x < organicMorphMetaQueueSize; x++)
 		{
 			//cout << "attempting send to buffer..." << endl;
@@ -2735,10 +2663,8 @@ void OrganicSystem::WaitForPhase2Promises()
 			RenderCollection* renderCollectionPtr = &RenderCollections.RenderMatrix[metaToSend.collectionKey];
 			//cout << "Sending key:" << metaToSend.collectionKey.x << ", " << metaToSend.collectionKey.y << ", " << metaToSend.collectionKey.z << endl;
 			OGLM.sendRenderCollectionDataToBuffer(metaToSend, renderCollectionPtr);				// send the vertex data to buffer
-			OGLM.sendRenderCollectionVCDataToBuffer(metaToSend, renderCollectionPtr);			// send the vertex color data to buffer
-			heapmutex.lock();																	// acquire lock for critical section safety (other threads may be performing actions at this point in time)
-			OrganicMorphMetaToSendToBuffer.pop();
-			heapmutex.unlock();																	
+			OGLM.sendRenderCollectionVCDataToBuffer(metaToSend, renderCollectionPtr);			// send the vertex color data to buffer						
+			PopOrganicMorphMetaQueue();															// RAII, lock_guard pop
 		}
 	}
 
@@ -2753,9 +2679,7 @@ void OrganicSystem::WaitForPhase2Promises()
 		OrganicMDJobVectorT2.clear();
 		phase2end = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<double> phaseelapsed = phase2end - phase2begin;
-		heapmutex.lock();
 		//cout << "Phase 2 completion time: " << phaseelapsed.count() << endl;
-		heapmutex.unlock();
 	}
 
 
@@ -2770,6 +2694,12 @@ void OrganicSystem::WaitForPhase2Promises()
 
 	
 
+}
+
+void OrganicSystem::PopOrganicMorphMetaQueue()
+{
+	std::lock_guard<std::mutex> lock(heapmutex);
+	OrganicMorphMetaToSendToBuffer.pop();
 }
 
 void OrganicSystem::CheckProcessingQueue()
@@ -2858,24 +2788,16 @@ void OrganicSystem::CheckProcessingQueue()
 	
 	if (T1_jobCount > 0)
 	{
-		std::map<int, OrganicCell*>::iterator T1CellIterator = OCManager.t1CellMap.begin();		// set the T1 cell iterator to be the beginning of the list.
 		T1_OMMVectorIterator = T1_OMMVector.begin();
 		T1_MDJobVectorIterator = OrganicMDJobVectorT1.begin();
 		for (int x = 0; x < T1_jobCount; x++)
 		{
 			OrganicMorphMeta popKey = *T1_OMMVectorIterator;						// get a copy of the element this iterator points to
 			MDJobMaterializeCollection* tempMDJobRef = &*T1_MDJobVectorIterator;	// get a pointer to the current element this iterator points to
-			heapmutex.lock();
-			OrganicMorphMetaToSendToBuffer.push(popKey);	// insert a value into the buffer work queue
-			heapmutex.unlock();
-			std::future<void> pop_1 = T1CellIterator->second->threadPtr->submit5(&OrganicSystem::JobMaterializeCollectionFromMM, this, tempMDJobRef, std::ref(heapmutex));
-			heapmutex.lock();
-			FL_T1CollectionsProcessed.push_back(std::move(pop_1));
-			heapmutex.unlock();
+			SubmitT1TerrainJob(popKey, T1terrainCellMapIter, tempMDJobRef);
 			T1_OMMVectorIterator++;
 			T1_MDJobVectorIterator++;
 			T1terrainCellMapIter++;
-			T1CellIterator++;
 		}
 
 		//cout << ">>>> T1 CheckProcessingQueue end (1)..." << endl;
@@ -2886,98 +2808,38 @@ void OrganicSystem::CheckProcessingQueue()
 	if (T2_jobCount > 0)
 	{
 		//cout << ">>>> CheckProcessingQueue begin (1)..." << endl;
-		std::map<int, OrganicCell*>::iterator T2CellIterator = OCManager.t2CellMap.begin();		// set the T2 cell iterator to be the beginning of the list.
 		T2_OMMVectorIterator = T2_OMMVector.begin();
 		T2_MDJobVectorIterator = OrganicMDJobVectorT2.begin();
 		for (int x = 0; x < T2_jobCount; x++)
 		{
 			OrganicMorphMeta popKey = *T2_OMMVectorIterator;						// get a copy of the element this iterator points to
 			MDJobMaterializeCollection* tempMDJobRef = &*T2_MDJobVectorIterator;	// get a pointer to the current element this iterator points to
-			heapmutex.lock();
-			OrganicMorphMetaToSendToBuffer.push(popKey);	// insert a value into the buffer work queue
-			heapmutex.unlock();
-			//cout << "popKey of new loop is: " << popKey.collectionKey.x << ", " << popKey.collectionKey.y << ", " << popKey.collectionKey.z << endl;
-			//T2CellIterator->second->threadPtr->
-			//std::future<void> pop_1 = OCList.cellList[x].threadPtr->submit5(&OrganicSystem::JobMaterializeCollectionFromFactoryViaMorph, this, tempMDJobRef, std::ref(heapmutex), std::ref(terrainCellMapIter->second->factoryPtr));		// SOLUTION TO THIS (10/22/2017): changed input parameter, "tempMDJobRef" to not use std::ref() || std::ref(*manifestFactoryPtrVectorIterator)
-			std::future<void> pop_1 = T2CellIterator->second->threadPtr->submit5(&OrganicSystem::JobMaterializeCollectionFromFactoryViaMorph, this, tempMDJobRef, std::ref(heapmutex), std::ref(T2terrainCellMapIter->second->factoryPtr));		// SOLUTION TO THIS (10/22/2017): changed input parameter, "tempMDJobRef" to not use std::ref() || std::ref(*manifestFactoryPtrVectorIterator)
-			heapmutex.lock();
-			FL_T2CollectionsProcessed.push_back(std::move(pop_1));
-			heapmutex.unlock();
+			SubmitT2TerrainJob(popKey, T2terrainCellMapIter, tempMDJobRef);
 			T2_OMMVectorIterator++;
 			T2_MDJobVectorIterator++;
 			T2terrainCellMapIter++;
-			T2CellIterator++;
 			//cout << "work added for collection: " << x << endl;
 		}
 		//cout << ">>>> T2 CheckProcessingQueue end (1)..." << endl;
 	}
 
 
-	// if there were collections to be processed, size will be > 0...check for promises
+}
 
-	
-	/*
-	heapmutex.lock();
-	//futureListIterator = futureList.begin();
-	futureListIterator = FL_T2CollectionsProcessed.begin();
-	heapmutex.unlock();
-	//int listSize = futureList.size();
-	int listSize = FL_T2CollectionsProcessed.size();
-	
-	if (listSize > 0)
-	{
-		//cout << ">>>> CheckProcessingQueue post-future list begin (1)...; future list size is: " << futureList.size() << endl;
-		int numberOfPromises = listSize;
-		for (int x = 0; x < numberOfPromises; x++)	// numberOfPromises
-		{
-			//heapmutex.lock();
-			//std::future<void>* futurePtr = &*futureListIterator;	// get a pointer to the future
-			//heapmutex.unlock();
-			//cout << "pre-wait call..." << endl;
-			futureListIterator->wait();
-			//futurePtr->wait();										// wait for the future to be done
-			//cout << "waiting for future..." << endl;
-			futureListIterator++;									// increment the futureList iterator
-		}
-		//cout << "number of promises: " << numberOfPromises << endl;
-		//cout << ">>>> CheckProcessingQueue post-future list end (1)..." << endl;
-	}
+void OrganicSystem::SubmitT1TerrainJob(OrganicMorphMeta in_popKey, std::map<int, OrganicCell*>::iterator in_iterator, MDJobMaterializeCollection* in_tempMDJobRef)
+{
+	std::lock_guard<std::mutex> lock(heapmutex);
+	OrganicMorphMetaToSendToBuffer.push(in_popKey);	// insert a value into the buffer work queue
+	std::future<void> pop_1 = in_iterator->second->threadPtr->submit5(&OrganicSystem::JobMaterializeCollectionFromMM, this, in_tempMDJobRef, std::ref(heapmutex));
+	FL_T1CollectionsProcessed.push_back(std::move(pop_1));
+}
 
-
-	// send OrganicMorphMeta pairs to the OrganicGLManager for processing
-	int morphMetaQueueSize = morphMetaToSendToBuffer.size();
-	if (morphMetaQueueSize > 0) // do this only if there is data in morphMetaToSendToBuffer
-	{
-		for (int x = 0; x < morphMetaQueueSize; x++)
-		{
-			OrganicMorphMeta metaToSend = morphMetaToSendToBuffer.front();	// copy the value at the front
-			RenderCollection* renderCollectionPtr = &RenderCollections.RenderMatrix[metaToSend.collectionKey];
-			OGLM.sendRenderCollectionDataToBuffer(metaToSend, renderCollectionPtr);				// send the vertex data to buffer
-			OGLM.sendRenderCollectionVCDataToBuffer(metaToSend, renderCollectionPtr);			// send the vertex color data to buffer
-			morphMetaToSendToBuffer.pop();
-		}
-
-		auto factoryend = std::chrono::high_resolution_clock::now();
-		std::chrono::duration<double> factorytime = factoryend - factorystart;
-		cout << "Terrain Cell work time: " << factorytime.count() << endl;
-	}
-
-	if (FL_T2CollectionsProcessed.size() > 0)
-	{
-		heapmutex.lock();
-		//cout << "clearing future vector..." << endl;
-		FL_T2CollectionsProcessed.clear();
-		heapmutex.unlock();
-	}
-
-	if (OrganicMDJobVector.size() > 0)
-	{
-		heapmutex.lock();
-		OrganicMDJobVector.clear();
-		heapmutex.unlock();
-	}
-	*/
-
+void OrganicSystem::SubmitT2TerrainJob(OrganicMorphMeta in_popKey, std::map<int, OrganicCell*>::iterator in_iterator, MDJobMaterializeCollection* in_tempMDJobRef)
+{
+	std::lock_guard<std::mutex> lock(heapmutex);
+	OrganicMorphMetaToSendToBuffer.push(in_popKey);	// insert a value into the buffer work queue
+	std::future<void> pop_1 = in_iterator->second->threadPtr->submit5(&OrganicSystem::JobMaterializeCollectionFromFactoryViaMorph, this, in_tempMDJobRef, std::ref(heapmutex), std::ref(in_iterator->second->factoryPtr));		// SOLUTION TO THIS (10/22/2017): changed input parameter, "tempMDJobRef" to not use std::ref() || std::ref(*manifestFactoryPtrVectorIterator)
+	FL_T2CollectionsProcessed.push_back(std::move(pop_1));
 }
 
 void OrganicSystem::DivideTickWork()
