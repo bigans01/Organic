@@ -44,6 +44,7 @@ public:
 
 
 	
+	
 	/*
 	EnclaveManifest& operator=(EnclaveManifest& manifest_a)
 	{
