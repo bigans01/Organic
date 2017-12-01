@@ -47,9 +47,20 @@ public:
 	
 	
 	
-	EnclaveManifest& operator=(EnclaveManifest& manifest_a)
+	EnclaveManifest& operator=(EnclaveManifest&& manifest_a)
+	{
+		testint = std::move(manifest_a.testint);
+		TextureDictionaryRef = manifest_a.TextureDictionaryRef;
+		VertexColorDictionaryRef = manifest_a.VertexColorDictionaryRef;
+		return *this;
+	}
+
+	
+	EnclaveManifest& operator=(const EnclaveManifest& manifest_a)
 	{
 		//testint = std::move(manifest_a.testint);
+		TextureDictionaryRef = manifest_a.TextureDictionaryRef;
+		VertexColorDictionaryRef = manifest_a.VertexColorDictionaryRef;
 		return *this;
 	}
 	
@@ -66,7 +77,7 @@ private:
 	GLfloat *TextureGLPtr = NULL;																	// pointer to the array of texture data
 	RenderCollection *RenderCollectionRef = NULL;													// pointer to the RenderCollection that this EnclaveManifest belongs to; this is used to signal 
 																							// the RenderCollection that this instance of EnclaveManifest has changed
-	//unique_ptr<int> testint;
+	unique_ptr<int> testint;
 	OrganicTextureDictionary *TextureDictionaryRef = NULL;											// reference to the Organic system's OrganicTextureDictionary
 	OrganicVtxColorDictionary *VertexColorDictionaryRef = NULL;									// reference to the Organic system's OrganicVtxColorDictionary
 	int dumbval = 0;

@@ -22,10 +22,10 @@ void ManifestCollection::AddManifestToMatrix(int x, int y, int z)
 
 	EnclaveManifest tempmanifest(x, y, z);
 	
-	//ManMatrix[tempkey] = tempmanifest;
+	ManMatrix[tempkey] = tempmanifest;
 	//EnclaveManifest *tptr;
 	//tptr = &ManMatrix[tempkey];
-	ManMatrix.emplace(tempkey,EnclaveManifest (x, y, z));
+	//ManMatrix.emplace(tempkey,EnclaveManifest (x, y, z));
 
 	//cout << "test AddManifestTomatrix: " << EnclaveMatrixRef->GetEnclaveFromMatrix(x, y, z).GetTotalTrianglesInEnclave() << endl;
 	ManMatrix[tempkey].AttachToEnclave(EnclaveMatrixRef->GetEnclaveFromMatrix(x, y, z));
@@ -47,12 +47,12 @@ void ManifestCollection::AddManifestToMatrix(int x, int y, int z, EnclaveKeyDef:
 	OrganicVtxColorDictionary *tempColorDictionaryRef = &CollectionMatrixRef->OrganicPointer->VertexColorDictionary;
 	EnclaveManifest tempmanifest(x, y, z, tempDictionaryRef, tempColorDictionaryRef);
 
-	//ManMatrix[tempkey] = tempmanifest;
+	ManMatrix[tempkey] = tempmanifest;
 	//EnclaveManifest *tptr;
 	//tptr = &ManMatrix[tempkey];
-	ManMatrix.emplace(tempkey,EnclaveManifest (x, y, z));
-	ManMatrix[tempkey].TextureDictionaryRef = tempDictionaryRef;
-	ManMatrix[tempkey].VertexColorDictionaryRef = tempColorDictionaryRef;
+	//ManMatrix.emplace(tempkey,EnclaveManifest (x, y, z));
+	//ManMatrix[tempkey].TextureDictionaryRef = tempDictionaryRef;
+	//ManMatrix[tempkey].VertexColorDictionaryRef = tempColorDictionaryRef;
 	//cout << "test AddManifestTomatrix: " << EnclaveMatrixRef->GetEnclaveFromMatrix(x, y, z).GetTotalTrianglesInEnclave() << endl;
 	ManMatrix[tempkey].AttachToEnclave(CollectionMatrixRef->GetEnclaveFromCollection(Key, x, y, z));
 	//cout << "test call2 " << endl;
@@ -74,12 +74,12 @@ void ManifestCollection::AddManifestToMatrix(int x, int y, int z, EnclaveKeyDef:
 	OrganicVtxColorDictionary *tempColorDictionaryRef = &CollectionMatrixRef->OrganicPointer->VertexColorDictionary;
 	EnclaveManifest tempmanifest(x, y, z, tempDictionaryRef, tempColorDictionaryRef);
 
-	//ManMatrix[tempkey] = tempmanifest;
+	ManMatrix[tempkey] = tempmanifest;
 	//EnclaveManifest *tptr;
 	//tptr = &ManMatrix[tempkey];
-	ManMatrix.emplace(tempkey,EnclaveManifest (x, y, z));
-	ManMatrix[tempkey].TextureDictionaryRef = tempDictionaryRef;
-	ManMatrix[tempkey].VertexColorDictionaryRef = tempColorDictionaryRef;
+	//ManMatrix.emplace(tempkey,EnclaveManifest (x, y, z));
+	//ManMatrix[tempkey].TextureDictionaryRef = tempDictionaryRef;
+	//ManMatrix[tempkey].VertexColorDictionaryRef = tempColorDictionaryRef;
 	//cout << "test AddManifestTomatrix: " << EnclaveMatrixRef->GetEnclaveFromMatrix(x, y, z).GetTotalTrianglesInEnclave() << endl;
 	ManMatrix[tempkey].AttachToEnclave(CollectionMatrixRef->GetEnclaveFromCollection(Key, x, y, z));
 	//cout << "test call: " << outputdebug << endl;
@@ -106,11 +106,11 @@ void ManifestCollection::AddManifestToMatrix(int x, int y, int z, EnclaveKeyDef:
 	//cout << "temp array ref pass" << endl;
 
 	HeapMutex.lock();
-	//ManMatrix[tempkey] = tempmanifest;
+	ManMatrix[tempkey] = tempmanifest;
 	//cout << "manifest lock OK" << endl;
-	ManMatrix.emplace(tempkey,EnclaveManifest (x, y, z));
-	ManMatrix[tempkey].TextureDictionaryRef = tempDictionaryRef;
-	ManMatrix[tempkey].VertexColorDictionaryRef = tempColorDictionaryRef;
+	//ManMatrix.emplace(tempkey,EnclaveManifest (x, y, z));
+	//ManMatrix[tempkey].TextureDictionaryRef = tempDictionaryRef;
+	//ManMatrix[tempkey].VertexColorDictionaryRef = tempColorDictionaryRef;
 	HeapMutex.unlock();
 	//EnclaveManifest *tptr;
 	//tptr = &ManMatrix[tempkey];
