@@ -183,6 +183,7 @@
     <ClInclude Include="EnclaveDataFinder.h" />
     <ClInclude Include="EnclaveKeyContainer.h" />
     <ClInclude Include="EnclaveKeyDef.h" />
+    <ClInclude Include="EnclaveKeyT1Meta.h" />
     <ClInclude Include="EnclaveManifest.h" />
     <ClInclude Include="EnclaveManifestFactoryT1.h" />
     <ClInclude Include="EnclaveManifestFactoryT1Index.h" />

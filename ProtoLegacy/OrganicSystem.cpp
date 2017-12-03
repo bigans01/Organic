@@ -55,6 +55,7 @@ OrganicSystem::~OrganicSystem()
 			delete organicThreadIndex[x];		// thread cleanup, don't allow threads to run rampant in OS
 		}
 	}
+
 }
 
 int OrganicSystem::CreateThreads(int in_numberOfThreads)
@@ -542,7 +543,7 @@ void OrganicSystem::SetupFutureCollectionMM(int x, int y, int z)
 	*/
 
 	//cout << "future collection call: " << endl;
-
+	
 	EnclaveKeyDef::EnclaveKey tempKey;		// temporary key used to uniquely identify the collections about to be added
 	tempKey.x = x;
 	tempKey.y = y;
@@ -557,12 +558,17 @@ void OrganicSystem::SetupFutureCollectionMM(int x, int y, int z)
 
 void OrganicSystem::SetupFutureCollectionMM(EnclaveKeyDef::EnclaveKey tempKey)
 {
+	
 	EnclaveCollections.AddNewCollectionSkeleton(tempKey);							// adds a new EnclaveCollection to the OrganicSystem's EnclaveCollection matrix.
+	auto setupstart = std::chrono::high_resolution_clock::now();
 	ManifestCollections.AddNewCollection(tempKey);									// adds a new ManifestCollection to the OrganicSystem's MM
 	ManifestCollection& tempRef = ManifestCollections.ManiCollectionMap[tempKey];	// unknown, possibly obsolete (test later)
 	ManifestCollections.ManiCollectionMapRef.emplace(tempKey, tempRef);				// unknown, possibly obsolete (test later)
 
 	RenderCollections.RenderMatrix[tempKey].LastCollectionTriangleCount = 0;	// set up some value in the map
+	auto setupend = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> setupduration = setupend - setupstart;
+	cout << "Future MM setup time: " << setupduration.count() << endl;
 }
 
 void OrganicSystem::ChangeSingleBlockMaterialAtXYZ(int x, int y, int z, int newmaterial)
@@ -1249,15 +1255,15 @@ void OrganicSystem::JobMaterializeCollectionFromMM(MDJobMaterializeCollection* m
 
 
 	mutexval.lock();																					/*thread safety:		*/
-	ManifestCollection *ManifestCollectionRef = mdjob->MDManifestCollectionPtr;			// set pointer in thread-safe code
+	ManifestCollection *ManifestCollectionRef = mdjob->MDManifestCollectionPtr;			// set pointer in thread-safe code; another ManifestCollection could be allocating an EnclaveManifest on heap at same time.
 	mutexval.unlock();																					// unlock when finished
 
 	
 	EnclaveCollectionActivateListT2 listT2_1;																									// creation an activation list for instantiating the enclaves
 																																				//EnclaveCollectionsRef->JobInstantiateAndPopulateEnclaveAlpha(0, 7 + 1, std::ref(*CollectionRef), Key1, blueprintptr, std::ref(listT2_1));	// run the instantiation job on this thread (all 512 enclaves)
-	mutexval.lock();
+	//mutexval.lock();
 	EnclaveCollectionsRef->JobInstantiateAndPopulateEnclaveAlpha2(0, 7 + 1, std::ref(*CollectionRef), Key1, std::ref(blueprintptr), std::ref(BlueprintMatrixRef), std::ref(listT2_1), std::ref(mutexval));	// run the instantiation job on this thread (all 512 enclaves) //EnclaveCollectionMap[Key]
-	mutexval.unlock();
+	//mutexval.unlock();
 	int chunkbitmask = 1;		// set the chunk bit mask used below
 	int bitmaskval = 0;			// ""
 
@@ -2635,6 +2641,11 @@ void OrganicSystem::CheckForMorphing()
 	}
 }
 
+void OrganicSystem::CheckForT1CollectionPrep()
+{
+
+}
+
 void OrganicSystem::WaitForPhase2Promises()
 {
 	std::vector<std::future<void>>::iterator T1_futureListIterator;								// iterator for the list of futures
@@ -2644,12 +2655,10 @@ void OrganicSystem::WaitForPhase2Promises()
 	//cout << "checking t2 promises..." << endl;
 	if (FL_T2CollectionsProcessed.size() > 0)	// check if there are any futures to wait for
 	{
-		
-		heapmutex.lock();
+	
 		//cout << "T2 size greater than 0, proceeding..." << "(size is " << FL_T2CollectionsProcessed.size() << ") " << endl;
 		T2_futureListIterator = FL_T2CollectionsProcessed.begin();
 		int collectionsToProcess = int(FL_T2CollectionsProcessed.size());
-		heapmutex.unlock();
 		for (int x = 0; x < collectionsToProcess; x++)
 		{
 			//cout << "waiting for future..." << endl;

@@ -34,6 +34,7 @@ OrganicSystem object contains all objects necessary to preserve information on t
 #include "EnclaveManifestFactoryT1.h"
 #include "OrganicGLManager.h"
 #include "EnclaveKeyDef.h"
+#include "EnclaveKeyT1Meta.h"
 #include "EnclaveManifestFactoryT1Index.h"
 #include "EnclaveKeyContainer.h"
 #include "CursorPathTraceContainer.h"
@@ -86,8 +87,6 @@ public:
 	void ChangeSingleBlockMaterialAtXYZ(int x, int y, int z, int newmaterial);					// changes the material block at an x/y/z location
 	void AddBlueprint(int x, int y, int z, EnclaveCollectionBlueprint blueprint);				// adds a blueprint to the OrganicSystem's blueprint matrix.
 	void AddKeyToRenderList(EnclaveKeyDef::EnclaveKey tempKey);									// adds 1 key to the renderCollectionList.
-	void SetupFutureCollectionMM(int x, int y, int z);											// sets up all future data structures that will be needed for an EnclaveCollection that is produced using a ManifestMatrix
-	void SetupFutureCollectionMM(EnclaveKeyDef::EnclaveKey tempKey);							// does the same as SetupFuturecollectionMM, but uses an EnclaveKey as input.
 	void AddOrganicTextureMetaArray(string mapname);											// adds a new texture meta array, which is a list that is used to map block IDs to texture UV coordinates.
 	void AddOrganicVtxColorMetaArray(string mapname);											// adds a new vertex color meta array, which is a list that is used to color individual vertexes.
 	void SetGraphicsAPI();																		// sets up initial data for OpenGL functionality						
@@ -102,6 +101,7 @@ public:
 	void SetupWorldArea(float x, float y, float z);
 	void SetWorldCameraPosition(float x, float y, float z);
 	void CheckForMorphing();																																					// checks to see if there is any buffer morphing to be done
+	void CheckForT1CollectionPrep();																																			// checks to see if there are any T1 collections that will be processed, and prepares the Enclave, Manifest, and Render collections for that particular collection before the multithreading job phase.
 	void CheckProcessingQueue();																																				// checks to see if there are any collections to process
 	void SetWorldCoordinates(float x, float y, float z);
 	void DivideTickWork();																																						// determines how to divide the work among worker threads for this game tick
@@ -130,6 +130,7 @@ private:
 	std::vector<std::future<void>> FL_T2CollectionsProcessed;					// a vector of futures for any processed (completed) T2 collections
 	std::vector<MDJobMaterializeCollection> OrganicMDJobVectorT1;				// contains a list of T1 materialize collection jobs
 	std::vector<MDJobMaterializeCollection> OrganicMDJobVectorT2;				// contains a list of T2 materialize collection jobs
+	std::vector<EnclaveKeyT1Meta> T1_ProcessingBacklog;							// contains a list of T1 enclaves that still need to be processed; used to determine which collections should be processed for the current game loop tick
 	std::queue<OrganicMorphMeta> OrganicMorphMetaToSendToBuffer;				// stores a list of OrganicMorphMeta that are ready to send to buffer
 	std::chrono::high_resolution_clock::time_point phase2begin, phase2end;		// used to determine amount of time for Phase 2 run completion time
 	int workPriority = 0;														// work priority mode for per-tick splitting up of jobs for OrganicCells
@@ -146,6 +147,8 @@ private:
 	void MaterializeRenderablesByFactory();					// this function  will attempt to render all RenderCollections having keys found in this list, regardless of their status, by using one or more Factories. (EnclaveManifestFactoryT1)
 	void AddAndMaterializeSingleCollectionMM(int x, int y, int z);								/* adds a single new MM-based collection, and renders all top faces in all 64 top level chunks;
 																								this task will run on the same thread on which it is called (will not utilize thread pool)*/
+	void SetupFutureCollectionMM(int x, int y, int z);											// sets up all future data structures that will be needed for an EnclaveCollection that is produced using a ManifestMatrix
+	void SetupFutureCollectionMM(EnclaveKeyDef::EnclaveKey tempKey);							// does the same as SetupFuturecollectionMM, but uses an EnclaveKey as input.
 
 	// multithreading Job declarations begin here
 	void JobMaterializeMultiCollectionFromMM(MDListJobMaterializeCollection* mdjob, mutex& mutexval, int ThreadID);																// materializes multiple collections from the ground up, utilizing a manifest matrix.

@@ -835,12 +835,13 @@ int main()
 	//std::cout << "Elapsed time (Terrain targeting): " << targetselapsed.count() << endl;
 
 	cout << "-----------------------collection list: " << endl;
-	Organic.ListEnclaveCollectionsInMatrix();
+	//Organic.ListEnclaveCollectionsInMatrix();
 
 	do {
 		auto start3 = std::chrono::high_resolution_clock::now();
 		// |||||||||||||||||||||| PHASE 1 operations: work division
 		Organic.CheckForMorphing();			// determine if there were any OGLM buffer shifts that needed to be done.
+		Organic.CheckForT1CollectionPrep();	// checks to see if any T1 collections need to be prepared
 		Organic.DivideTickWork();			// split work for the tick here
 
 		// |||||||||||||||||||||| PHASE 2 operations: run terrain jobs in queues
