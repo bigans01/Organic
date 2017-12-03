@@ -545,7 +545,6 @@ void RenderCollection::UpdateManifestArray(EnclaveKeyDef::EnclaveKey Key)	// upd
 		int ArrayTwoLength = (ManifestCollectionPtr->ManMatrix[Key].TotalEnclaveTriangles);
 		//GLfloat *tempGLptr2;
 
-		GLfloat *array2ptr;
 		//tempGLptr2 = ManifestCollectionPtr->ManMatrix[Key].EnclaveGLPtr;
 		unique_ptr<GLfloat[]> tempGLptr2(new GLfloat[ArrayTwoLength * 9]);
 		//tempGLptr2 = new GLfloat[ArrayTwoLength * 9];

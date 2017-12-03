@@ -106,7 +106,7 @@ public:
 	void SetWorldCoordinates(float x, float y, float z);
 	void DivideTickWork();																																						// determines how to divide the work among worker threads for this game tick
 	void WaitForPhase2Promises();																																				// waits for promises to finish in phase 2
-
+	void ListEnclaveCollectionsInMatrix();
 private:
 
 	thread_pool* organicThreadIndex[16];										// contains an array of up to 16 thread pool pointers
@@ -134,7 +134,8 @@ private:
 	std::chrono::high_resolution_clock::time_point phase2begin, phase2end;		// used to determine amount of time for Phase 2 run completion time
 	int workPriority = 0;														// work priority mode for per-tick splitting up of jobs for OrganicCells
 	int oldWorkPriority = 0;													// the last priority mode that was set
-
+	int T1_OGLMcubesize = 0;													// determines the size, in radius of cubes, of T1 and T2 OGLM arrays
+	int T2_OGLMcubesize = 0;
 
 	void SetupCellMeta();														// cycles through each cell and adds the appropriate factory pointer to each
 	int CreateThreads(int in_numberOfThreads);
@@ -146,7 +147,7 @@ private:
 	void AddAndMaterializeSingleCollectionMM(int x, int y, int z);								/* adds a single new MM-based collection, and renders all top faces in all 64 top level chunks;
 																								this task will run on the same thread on which it is called (will not utilize thread pool)*/
 
-	// Job declarations begin here
+	// multithreading Job declarations begin here
 	void JobMaterializeMultiCollectionFromMM(MDListJobMaterializeCollection* mdjob, mutex& mutexval, int ThreadID);																// materializes multiple collections from the ground up, utilizing a manifest matrix.
 	void JobMaterializeMultiCollectionFromFactory(MDListJobMaterializeCollection mdjob, mutex& mutexval, EnclaveManifestFactoryT1 *FactoryRef, int ThreadID);					// materializes multiple collections from the ground up, utilizing a factory.
 	void JobMaterializeMultiCollectionFromFactory2(MDListJobMaterializeCollection* mdjob, mutex& mutexval, EnclaveManifestFactoryT1 *FactoryRef, int ThreadID);					// materializes multiple collections from the ground up, utilizing a factory. (testing only, may be erased)
@@ -167,9 +168,11 @@ private:
 		ManifestCollection *ManifestCollectionRef
 	);
 
+	// other declarations
 	void SubmitT1TerrainJob(OrganicMorphMeta in_popKey, std::map<int, OrganicCell*>::iterator in_iterator, MDJobMaterializeCollection* in_tempMDJobRef);						// RAII enforced function for submitting a T! terrain job
 	void SubmitT2TerrainJob(OrganicMorphMeta in_popKey, std::map<int, OrganicCell*>::iterator in_iterator, MDJobMaterializeCollection* in_tempMDJobRef);
 	void PopOrganicMorphMetaQueue();
+	
 
 };
 

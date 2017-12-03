@@ -40,6 +40,7 @@ EnclaveBlockRayTracker::EnclaveBlockRayTracker(CursorPathTraceContainer xContain
 	//	currentCollectionState = &collectionStatePtr[collectionStatePtr->]
 	if (currentCollectionState->isActive == 1)							// check if its active
 	{
+		//cout << "active!" << endl;
 		currentCollectionPtr = currentCollectionState->collectionPtr;	// if it is active, set the pointer
 		enclavePtr = &currentCollectionPtr->EnclaveArray[enclaveKey.x][enclaveKey.y][enclaveKey.z];
 		isCurrentCollectionActive = 1;
@@ -118,7 +119,7 @@ int EnclaveBlockRayTracker::MoveEast()
 			//int tempIndexVal = currentCollectionStateArray->translateXYZToSingle(currentCollectionStateArray->centerCollectionStateOffset + 1, currentCollectionStateArray->centerCollectionStateOffset, currentCollectionStateArray->centerCollectionStateOffset); // determine value for x + 1
 			arrayKey.x += 1;
 			int tempIndexVal = currentCollectionStateArray->translateXYZToSingle(arrayKey.x, arrayKey.y, arrayKey.z);
-			currentCollectionState = &currentCollectionStateArray->StateMatrixPtr[tempIndexVal];																																									// get the state at x + 1
+			currentCollectionState = &currentCollectionStateArray->StateMtxPtr[tempIndexVal];																																									// get the state at x + 1
 			if (currentCollectionState->isActive == 1)													// check if its active
 			{
 				currentCollectionPtr = currentCollectionState->collectionPtr;							// if it is active, set the pointer
@@ -216,7 +217,7 @@ int EnclaveBlockRayTracker::MoveWest()
 			//int tempIndexVal = currentCollectionStateArray->translateXYZToSingle(currentCollectionStateArray->centerCollectionStateOffset - 1, currentCollectionStateArray->centerCollectionStateOffset, currentCollectionStateArray->centerCollectionStateOffset); // determine value for x - 1
 			arrayKey.x -= 1;
 			int tempIndexVal = currentCollectionStateArray->translateXYZToSingle(arrayKey.x, arrayKey.y, arrayKey.z);
-			currentCollectionState = &currentCollectionStateArray->StateMatrixPtr[tempIndexVal];
+			currentCollectionState = &currentCollectionStateArray->StateMtxPtr[tempIndexVal];
 			if (currentCollectionState->isActive == 1)															// check if its active
 			{
 				currentCollectionPtr = currentCollectionState->collectionPtr;									// if it is active, set the pointer
@@ -314,7 +315,7 @@ int EnclaveBlockRayTracker::MoveNorth()
 			//int tempIndexVal = currentCollectionStateArray->translateXYZToSingle(currentCollectionStateArray->centerCollectionStateOffset, currentCollectionStateArray->centerCollectionStateOffset, currentCollectionStateArray->centerCollectionStateOffset - 1); // determine value for z - 1
 			arrayKey.z -= 1;
 			int tempIndexVal = currentCollectionStateArray->translateXYZToSingle(arrayKey.x, arrayKey.y, arrayKey.z);
-			currentCollectionState = &currentCollectionStateArray->StateMatrixPtr[tempIndexVal];
+			currentCollectionState = &currentCollectionStateArray->StateMtxPtr[tempIndexVal];
 			if (currentCollectionState->isActive == 1)															// check if its active
 			{
 				currentCollectionPtr = currentCollectionState->collectionPtr;									// if it is active, set the pointer
@@ -412,7 +413,7 @@ int EnclaveBlockRayTracker::MoveSouth()
 			//int tempIndexVal = currentCollectionStateArray->translateXYZToSingle(currentCollectionStateArray->centerCollectionStateOffset, currentCollectionStateArray->centerCollectionStateOffset, currentCollectionStateArray->centerCollectionStateOffset + 1); // determine value for z + 1
 			arrayKey.z += 1;
 			int tempIndexVal = currentCollectionStateArray->translateXYZToSingle(arrayKey.x, arrayKey.y, arrayKey.z);
-			currentCollectionState = &currentCollectionStateArray->StateMatrixPtr[tempIndexVal];
+			currentCollectionState = &currentCollectionStateArray->StateMtxPtr[tempIndexVal];
 			if (currentCollectionState->isActive == 1)													// check if its active
 			{
 				currentCollectionPtr = currentCollectionState->collectionPtr;							// if it is active, set the pointer
@@ -511,7 +512,7 @@ int EnclaveBlockRayTracker::MoveAbove()
 			//int tempIndexVal = currentCollectionStateArray->translateXYZToSingle(currentCollectionStateArray->centerCollectionStateOffset, currentCollectionStateArray->centerCollectionStateOffset + 1, currentCollectionStateArray->centerCollectionStateOffset); // determine value for y + 1
 			arrayKey.y += 1;
 			int tempIndexVal = currentCollectionStateArray->translateXYZToSingle(arrayKey.x, arrayKey.y, arrayKey.z);
-			currentCollectionState = &currentCollectionStateArray->StateMatrixPtr[tempIndexVal];
+			currentCollectionState = &currentCollectionStateArray->StateMtxPtr[tempIndexVal];
 			if (currentCollectionState->isActive == 1)													// check if its active
 			{
 				currentCollectionPtr = currentCollectionState->collectionPtr;							// if it is active, set the pointer
@@ -608,7 +609,7 @@ int EnclaveBlockRayTracker::MoveBelow()
 			//int tempIndexVal = currentCollectionStateArray->translateXYZToSingle(currentCollectionStateArray->centerCollectionStateOffset, currentCollectionStateArray->centerCollectionStateOffset - 1, currentCollectionStateArray->centerCollectionStateOffset); // determine value for y - 1
 			arrayKey.y -= 1;
 			int tempIndexVal = currentCollectionStateArray->translateXYZToSingle(arrayKey.x, arrayKey.y, arrayKey.z);
-			currentCollectionState = &currentCollectionStateArray->StateMatrixPtr[tempIndexVal];
+			currentCollectionState = &currentCollectionStateArray->StateMtxPtr[tempIndexVal];
 			if (currentCollectionState->isActive == 1)													// check if its active
 			{
 				currentCollectionPtr = currentCollectionState->collectionPtr;							// if it is active, set the pointer

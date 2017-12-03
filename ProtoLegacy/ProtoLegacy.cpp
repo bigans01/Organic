@@ -825,6 +825,9 @@ int main()
 
 	//std::cout << "Elapsed time (Terrain targeting): " << targetselapsed.count() << endl;
 
+	cout << "-----------------------collection list: " << endl;
+	Organic.ListEnclaveCollectionsInMatrix();
+
 	do {
 		auto start3 = std::chrono::high_resolution_clock::now();
 		// |||||||||||||||||||||| PHASE 1 operations: work division

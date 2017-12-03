@@ -17,6 +17,8 @@ OrganicSystem::OrganicSystem(int numberOfFactories, int T1_bufferCubeSize, int T
 	/* Summary: default constructor for the OrganicSystem */
 	InterlockBaseCollections();
 	int numOfFactoriesToCreate = CreateThreads(numberOfFactories);		// creates the worker threads, returns the number of factories to create (will be equal to number of worker threads)
+	T1_OGLMcubesize = T1_bufferCubeSize;
+	T2_OGLMcubesize = T2_bufferCubeSize;
 	AllocateFactories(numOfFactoriesToCreate);			// setup the factories
 	OrganicGLManager* tempGLManagerPtr = &OGLM;			// get a pointer to the OrganicSystem's OGLM instance, and set the reference.
 	OGLM.SendPointerToBufferManager(tempGLManagerPtr);	// send the pointer to the buffer manager, so that it may use it to set up its buffer arrays
@@ -1720,7 +1722,7 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 		// CollectionStateArray.? (? == placeholder for function name)
 		CollectionStateArray.ShiftCenterCollection(PreviousCCKey, CameraCollectionKey, ECMPointer);			// shift the collection state array
 		OGLM.OrganicBufferManager.setShiftedCollectionKeys(lastCollectionKey, newCollectionKey);									// send the shifted keys to the OGLM
-		//cout << "collection has changed! Old: (" << lastCollectionKey.x << ", " << lastCollectionKey.y << " , " << lastCollectionKey.z << ") " << endl;
+		//cout << "collection has changed! Old: (" << lastCollectionKey.x << ", " << lastCollectionKey.y << " , " << lastCollectionKey.z << ") || New: (" << newCollectionKey.x << ", " << newCollectionKey.y << ", " << newCollectionKey.z << ") " << endl;
 	}
 
 	// set PreviousCCKey to new key
@@ -2004,7 +2006,7 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 	int indexval = CollectionStateArray.translateXYZToSingle(CollectionStateArray.centerCollectionStateOffset, CollectionStateArray.centerCollectionStateOffset, CollectionStateArray.centerCollectionStateOffset);	// get the center of the dynamic array
 	EnclaveCollectionStateArray* stateArrayPtr = &CollectionStateArray;
 	OrganicBlockTarget* blockTargetPtr = &blockTargetMeta;
-	EnclaveBlockRayTracker rayTracker(x_container, y_container, z_container, CollectionStateArray.StateMatrixPtr, stateArrayPtr, indexval, blockTargetPtr);
+	EnclaveBlockRayTracker rayTracker(x_container, y_container, z_container, CollectionStateArray.StateMtxPtr, stateArrayPtr, indexval, blockTargetPtr);
 	//cout << "traverse pass" << endl;
 	int maxTravelAttempts = length;		// set travel (traversal) attempts to 10
 	int travelAttempts = 0;				// set counter to 0
@@ -2094,15 +2096,28 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 		}
 		if (trackResult == 1)
 		{
-			cout << "Unveil block found: Enclave (" << rayTracker.enclaveKey.x << ", " << rayTracker.enclaveKey.y << ", " << rayTracker.enclaveKey.z << ") | Block: (" << rayTracker.blockKey.x << ", " << rayTracker.blockKey.y << ", " << rayTracker.blockKey.z << ") " <<  endl;
+			cout << "Unveil block found: Collection (" << rayTracker.collectionKey.x << ", " << rayTracker.collectionKey.y << ", " << rayTracker.collectionKey.z << ") | Enclave (" << rayTracker.enclaveKey.x << ", " << rayTracker.enclaveKey.y << ", " << rayTracker.enclaveKey.z << ") | Block: (" << rayTracker.blockKey.x << ", " << rayTracker.blockKey.y << ", " << rayTracker.blockKey.z << ") " <<  endl;
 			//rayTracker.printOutTargetBlockHighlightData();
 		}
+		if (trackResult == 0)
+		{
+			//cout << "----track attempt end----" << endl;
+			//cout << "Unveil block NOT found: Collection (" << rayTracker.collectionKey.x << ", " << rayTracker.collectionKey.y << ", " << rayTracker.collectionKey.z << ") | Enclave (" << rayTracker.enclaveKey.x << ", " << rayTracker.enclaveKey.y << ", " << rayTracker.enclaveKey.z << ") | Block: (" << rayTracker.blockKey.x << ", " << rayTracker.blockKey.y << ", " << rayTracker.blockKey.z << ") " << endl;
+		}
+
+
 
 		travelAttempts++;
 		if (travelAttempts == length)
 		{
 			//cout << "attempt limit reached." << endl;
 		}
+	}
+	
+	if (trackResult == 0)
+	{
+		//cout << "----track attempt end----" << endl;
+		//cout << "Unveil block NOT found: Collection (" << rayTracker.collectionKey.x << ", " << rayTracker.collectionKey.y << ", " << rayTracker.collectionKey.z << ") | Enclave (" << rayTracker.enclaveKey.x << ", " << rayTracker.enclaveKey.y << ", " << rayTracker.enclaveKey.z << ") | Block: (" << rayTracker.blockKey.x << ", " << rayTracker.blockKey.y << ", " << rayTracker.blockKey.z << ") " << endl;
 	}
 
 	//cout << "number of x traversals: " << block_traverse_x << endl;
@@ -2112,6 +2127,17 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 
 
 
+}
+
+void OrganicSystem::ListEnclaveCollectionsInMatrix()
+{
+	std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveCollection, EnclaveKeyDef::KeyHasher>::iterator collectionMatrixIterBegin = EnclaveCollections.EnclaveCollectionMap.begin();
+	std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveCollection, EnclaveKeyDef::KeyHasher>::iterator collectionMatrixIterEnd = EnclaveCollections.EnclaveCollectionMap.end();
+	for (collectionMatrixIterBegin; collectionMatrixIterBegin != collectionMatrixIterEnd; ++collectionMatrixIterBegin)
+	{
+		EnclaveKeyDef::EnclaveKey iterKey = collectionMatrixIterBegin->first;
+		cout << "Key found in matrix: " << iterKey.x << ", " << iterKey.y << ", " << iterKey.z << endl;
+	}
 }
 
 void OrganicSystem::SetupWorldArea(float x, float y, float z)
@@ -2149,7 +2175,7 @@ void OrganicSystem::SetupWorldArea(float x, float y, float z)
 
 	// set up the center collection and its neighbors
 	EnclaveCollectionMatrix* matrixPtr = &EnclaveCollections;
-	CollectionStateArray.CreateStateMatrix(5);
+	CollectionStateArray.CreateStateMatrix(T1_OGLMcubesize);		// ensure the state matrix is equal to the appropriate size (do not hardcode!)
 	CollectionStateArray.SetCenterCollectionDynamic(CameraCollectionKey, matrixPtr);
 	CollectionStateArray.SetCenterCollection(CameraCollectionKey, matrixPtr);
 
