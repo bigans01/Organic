@@ -4,7 +4,6 @@
 #include "ManifestCollectionMatrix.h"
 //#include <mutex>
 
-mutex cmutex2;
 ManifestCollectionMatrix::ManifestCollectionMatrix(EnclaveCollectionMatrix *collectionmatrixref)
 {
 	/* Summary: primary constructor which sets the value of CollectionMatrixRef */
@@ -43,9 +42,7 @@ void ManifestCollectionMatrix::AttachManifestToCollectedEnclave2(EnclaveKeyDef::
 {
 	/* Summary: attaches a manifest to an already collected enclave */
 	//EnclaveKeyDef::EnclaveKey tempkey;					// this key is for the exact enclave contained within each collection, not the key of the collections itself
-	cmutex2.lock();
 	ManifestCollectionRef->AddManifestToMatrix(target_x, target_y, target_z, CollectionKey);
-	cmutex2.unlock();
 
 }
 
@@ -53,9 +50,7 @@ void ManifestCollectionMatrix::AttachManifestToCollectedEnclave2(EnclaveKeyDef::
 {
 	/* Summary: attaches a manifest to an already collected enclave */
 	//EnclaveKeyDef::EnclaveKey tempkey;					// this key is for the exact enclave contained within each collection, not the key of the collections itself
-	cmutex2.lock();
 	ManifestCollectionRef->AddManifestToMatrix(target_x, target_y, target_z, CollectionKey, outputdebug);
-	cmutex2.unlock();
 
 }
 
