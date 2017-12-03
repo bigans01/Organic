@@ -1164,9 +1164,9 @@ Enclave& EnclaveCollectionMatrix::GetEnclaveFromCollection(EnclaveKeyDef::Enclav
 Enclave& EnclaveCollectionMatrix::GetEnclaveFromXYZ(int x, int y, int z)
 {
 	EnclaveKeyDef::EnclaveKey tempkey;
-	PathTraceContainer XPathTrace = GetCoordTrace(x);
-	PathTraceContainer YPathTrace = GetCoordTrace(y);
-	PathTraceContainer ZPathTrace = GetCoordTrace(z);
+	PathTraceContainer XPathTrace = GetCoordTrace(float(x));
+	PathTraceContainer YPathTrace = GetCoordTrace(float(y));
+	PathTraceContainer ZPathTrace = GetCoordTrace(float(z));
 	tempkey.x = XPathTrace.CollectionCoord;
 	tempkey.y = YPathTrace.CollectionCoord;
 	tempkey.z = ZPathTrace.CollectionCoord;
@@ -1178,9 +1178,9 @@ void EnclaveCollectionMatrix::TracePathToBlock(int x, int y, int z)
 {
 	/* Summary: outputs the xyz of a block at the world coordinate x/y/z, as well as the x/y/z of the collection it is found within, and the x/y/z of the chunk within the collection it is found in. */
 
-	PathTraceContainer XPathTrace = GetCoordTrace(x);
-	PathTraceContainer YPathTrace = GetCoordTrace(y);
-	PathTraceContainer ZPathTrace = GetCoordTrace(z);
+	PathTraceContainer XPathTrace = GetCoordTrace(float(x));
+	PathTraceContainer YPathTrace = GetCoordTrace(float(y));
+	PathTraceContainer ZPathTrace = GetCoordTrace(float(z));
 
 	//cout << "Path results for block: " << endl;
 	//cout << "Collection XYZ = " << XPathTrace.CollectionCoord << ", " << YPathTrace.CollectionCoord << ", " << ZPathTrace.CollectionCoord << endl;
@@ -1231,7 +1231,7 @@ PathTraceContainer EnclaveCollectionMatrix::GetCoordTrace(float x)
 		//cout << "collection_x: " << collection_x << endl;
 		chunk_x = 7 - abs(int(fmod(x, 32) / 4));
 		//cout << "chunk_x: " << chunk_x << endl;
-		block_x = 3 - abs(fmod(ceil(fmod(x, 32)), 4));
+		block_x = 3 - int(abs(fmod(ceil(fmod(x, 32)), 4)));
 		//cout << "block_x: " << block_x << endl;
 
 	}
@@ -1242,7 +1242,7 @@ PathTraceContainer EnclaveCollectionMatrix::GetCoordTrace(float x)
 		{
 			if (fmod(x, 32) != 0)
 			{
-				collection_x = x_divide;  // collection_x = (x_divide + 1);
+				collection_x = int(x_divide);  // collection_x = (x_divide + 1);
 			}
 			//else
 			//{
@@ -1254,9 +1254,9 @@ PathTraceContainer EnclaveCollectionMatrix::GetCoordTrace(float x)
 		//collection_x = 1;
 		//}
 		//cout << "collection_x: " << collection_x << endl;
-		chunk_x = (fmod(x, 32) / 4);					// old:  chunk_x = ((x % 32) / 4);
+		chunk_x = int((fmod(x, 32) / 4));					// old:  chunk_x = ((x % 32) / 4);
 														//cout << "chunk_x: " << chunk_x << endl;
-		block_x = (fmod(fmod(x, 32), 4));				// old : block_x = ((x % 32) % 4);
+		block_x = int((fmod(fmod(x, 32), 4)));				// old : block_x = ((x % 32) % 4);
 	}
 	tempPathTrace.CollectionCoord = collection_x;		// set the return value for the Collection coordinate
 	tempPathTrace.ChunkCoord = chunk_x;					// set the return value for the Chunk coordinate
@@ -1304,21 +1304,21 @@ CursorPathTraceContainer EnclaveCollectionMatrix::GetCursorCoordTrace(float x)
 		//cout << "ABS 2: " <<  floor(fmod(fmod(x, 32), 4)) << endl;
 		//cout << "ABS block: " << abs(fmod(ceil(fmod(x, 32)), 4)) << endl;
 		//cout << "Dist to pos a: " << fmod(fmod(x, 32), 4) << endl;
-		chunk_x = 7 - abs(int(fmod(x, 32) / 4));				// old:  chunk_x = ((x % 32) / 4);
+		chunk_x = 7 - int(abs(int(fmod(x, 32) / 4)));				// old:  chunk_x = ((x % 32) / 4);
 		//cout << "chunk_x: " << chunk_x << endl;
-		block_x = 3 - abs(fmod(ceil(fmod(x, 32)), 4));									//block_x = abs(fmod(fmod(x, 32), 4));				// old : block_x = ((x % 32) % 4);
+		block_x = 3 - int(abs(fmod(ceil(fmod(x, 32)), 4)));									//block_x = abs(fmod(fmod(x, 32), 4));				// old : block_x = ((x % 32) % 4);
 		//cout << "block_x: " << block_x << endl;
-		float enclaveBorderCoord = abs(fmod(floor(fmod(x, 32)), 4));
+		float enclaveBorderCoord = float(abs(fmod(floor(fmod(x, 32)), 4)));
 
 
-		dist_to_pos = abs((fmod(fmod(x, 32), 4)) + abs(fmod(ceil(fmod(x, 32)), 4)));			// distance from the camera's point to the east border of the block 
+		dist_to_pos = float(abs((fmod(fmod(x, 32), 4)) + abs(fmod(ceil(fmod(x, 32)), 4))));			// distance from the camera's point to the east border of the block 
 		if (enclaveBorderCoord == 0)
 		{
-			dist_to_neg = 4.0f - abs((fmod(fmod(x, 32), 4)));
+			dist_to_neg = float(4.0f - abs((fmod(fmod(x, 32), 4))));
 		}
 		else
 		{
-			dist_to_neg = abs(fmod(floor(fmod(x, 32)), 4)) - abs((fmod(fmod(x, 32), 4)));
+			dist_to_neg = float(abs(fmod(floor(fmod(x, 32)), 4)) - abs((fmod(fmod(x, 32), 4))));
 		}
 		//cout << "abs value 1: " << abs(fmod(floor(fmod(x, 32)), 4)) << endl;
 		//cout << "abs value 2: " << abs((fmod(fmod(x, 32), 4))) << endl;
@@ -1335,7 +1335,7 @@ CursorPathTraceContainer EnclaveCollectionMatrix::GetCursorCoordTrace(float x)
 		{
 			if (fmod(x, 32) != 0)
 			{
-				collection_x = x_divide;  // collection_x = (x_divide + 1);
+				collection_x = int(x_divide);  // collection_x = (x_divide + 1);
 			}
 			//else
 			//{
@@ -1347,14 +1347,14 @@ CursorPathTraceContainer EnclaveCollectionMatrix::GetCursorCoordTrace(float x)
 			//collection_x = 1;
 		//}
 		//cout << "collection_x: " << collection_x << endl;
-		chunk_x = (fmod(x, 32) / 4);					// old:  chunk_x = ((x % 32) / 4);
+		chunk_x = int((fmod(x, 32) / 4));					// old:  chunk_x = ((x % 32) / 4);
 		//cout << "chunk_x: " << chunk_x << endl;
-		block_x = (fmod(fmod(x, 32), 4));				// old : block_x = ((x % 32) % 4);
+		block_x = int((fmod(fmod(x, 32), 4)));				// old : block_x = ((x % 32) % 4);
 		//cout << "block_x: " << block_x << endl;
 
-		dist_to_pos = ceil(fmod(fmod(x, 32), 4)) - (fmod(fmod(x, 32), 4));
-		dist_to_neg = (fmod(fmod(x, 32), 4)) - block_x;
-		exact_xyz = 0.0f + fmod(fmod(fmod(x, 32), 4), 1);									// set the exact point in the block to be 1.0f - the distance to get to 1.0f. // OLD: exact_xyz = 1.0f - dist_to_pos;
+		dist_to_pos = float(ceil(fmod(fmod(x, 32), 4)) - (fmod(fmod(x, 32), 4)));
+		dist_to_neg = float((fmod(fmod(x, 32), 4)) - block_x);
+		exact_xyz = 0.0f + float(fmod(fmod(fmod(x, 32), 4), 1));									// set the exact point in the block to be 1.0f - the distance to get to 1.0f. // OLD: exact_xyz = 1.0f - dist_to_pos;
 		//cout << "ceil of fmod x2: " << ceil(fmod(fmod(x, 32), 4)) << endl;
 		//cout << "without ceil: " << fmod(fmod(x, 32), 4) << endl;
 		//cout << "fmod test 1: " << fmod(x, 32) << endl;
@@ -1363,9 +1363,9 @@ CursorPathTraceContainer EnclaveCollectionMatrix::GetCursorCoordTrace(float x)
 
 		//cout << "NoOfCollections passed: " << NoOfCollections << endl;
 	}
-	tempPathTrace.CollectionCoord = collection_x;		// set the return value for the Collection coordinate
-	tempPathTrace.ChunkCoord = chunk_x;					// set the return value for the Chunk coordinate
-	tempPathTrace.BlockCoord = block_x;					// set the return value for the block coordinate
+	tempPathTrace.CollectionCoord = float(collection_x);		// set the return value for the Collection coordinate
+	tempPathTrace.ChunkCoord = float(chunk_x);					// set the return value for the Chunk coordinate
+	tempPathTrace.BlockCoord = float(block_x);					// set the return value for the block coordinate
 	tempPathTrace.distance_to_pos = dist_to_pos;
 	tempPathTrace.distance_to_neg = dist_to_neg;
 	tempPathTrace.ExactBlockCoord = exact_xyz;				// the exact block coord

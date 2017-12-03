@@ -367,14 +367,14 @@ void EnclaveCollectionStateArray::ShiftCenterCollection(EnclaveKeyDef::EnclaveKe
 						newState.ActualCollectionKey = tempFindKey;
 						newState.isActive = 1;
 						newState.collectionPtr = &collectionIterator->second;
-						cout << "Key was found to exist via SOUTH move! (" << tempFindKey.x << ", " << tempFindKey.y << ", " << tempFindKey.z << ") " << endl;
+						//cout << "Key was found to exist via SOUTH move! (" << tempFindKey.x << ", " << tempFindKey.y << ", " << tempFindKey.z << ") " << endl;
 						StateMtxPtr[translateXYZToSingle(x, y, cubesize - 1)] = newState;					// replace the end of the x row with stateToReplace; stateToReplace is x = 0, which is the part of the matrix that has been "recycled"
 					}
 					else
 					{
 						EnclaveCollectionState newState;
 						newState.ActualCollectionKey = tempFindKey;
-						cout << ">>> Key was not found via SOUTH move. " <<  tempFindKey.x << ", " << tempFindKey.y << ", " << tempFindKey.z << ") " << endl;
+						//cout << ">>> Key was not found via SOUTH move. " <<  tempFindKey.x << ", " << tempFindKey.y << ", " << tempFindKey.z << ") " << endl;
 						//cout << "cube coord: (" << cubesize - 1 << ", " << y << ", " << z << ") | " << " tempFindKey is: " << tempFindKey.x << ", " << tempFindKey.y << ", " << tempFindKey.z << endl;
 						newState.isActive = 0;
 						StateMtxPtr[translateXYZToSingle(x, y, cubesize - 1)] = newState;					// replace the end of the x row with stateToReplace; stateToReplace is x = 0, which is the part of the matrix that has been "recycled"
@@ -414,14 +414,14 @@ void EnclaveCollectionStateArray::ShiftCenterCollection(EnclaveKeyDef::EnclaveKe
 						newState.ActualCollectionKey = tempFindKey;
 						newState.isActive = 1;
 						newState.collectionPtr = &collectionIterator->second;
-						cout << "Key was found to exist via NORTH move! (" << tempFindKey.x << ", " << tempFindKey.y << ", " << tempFindKey.z << ") " << endl;
+						//cout << "Key was found to exist via NORTH move! (" << tempFindKey.x << ", " << tempFindKey.y << ", " << tempFindKey.z << ") " << endl;
 						StateMtxPtr[translateXYZToSingle(x, y, 0)] = newState;					// replace the end of the x row with stateToReplace; stateToReplace is x = 0, which is the part of the matrix that has been "recycled"
 					}
 					else
 					{
 						EnclaveCollectionState newState;
 						newState.ActualCollectionKey = tempFindKey;
-						cout << ">>> Key was not found via NORTH move. " << tempFindKey.x << ", " << tempFindKey.y << ", " << tempFindKey.z << ") " << endl;
+						//cout << ">>> Key was not found via NORTH move. " << tempFindKey.x << ", " << tempFindKey.y << ", " << tempFindKey.z << ") " << endl;
 						newState.isActive = 0;
 						StateMtxPtr[translateXYZToSingle(x, y, 0)] = newState;
 

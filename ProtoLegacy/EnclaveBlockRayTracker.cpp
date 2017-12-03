@@ -16,19 +16,19 @@ EnclaveBlockRayTracker::EnclaveBlockRayTracker(CursorPathTraceContainer xContain
 	// set up coordinates
 
 	// colllection
-	collectionKey.x = xContainer.CollectionCoord;
-	collectionKey.y = yContainer.CollectionCoord;
-	collectionKey.z = zContainer.CollectionCoord;
+	collectionKey.x = int(xContainer.CollectionCoord);
+	collectionKey.y = int(yContainer.CollectionCoord);
+	collectionKey.z = int(zContainer.CollectionCoord);
 
 	// chunk
-	enclaveKey.x = xContainer.ChunkCoord;
-	enclaveKey.y = yContainer.ChunkCoord;
-	enclaveKey.z = zContainer.ChunkCoord;
+	enclaveKey.x = int(xContainer.ChunkCoord);
+	enclaveKey.y = int(yContainer.ChunkCoord);
+	enclaveKey.z = int(zContainer.ChunkCoord);
 
 	// block
-	blockKey.x = xContainer.BlockCoord;
-	blockKey.y = yContainer.BlockCoord;
-	blockKey.z = zContainer.BlockCoord;
+	blockKey.x = int(xContainer.BlockCoord);
+	blockKey.y = int(yContainer.BlockCoord);
+	blockKey.z = int(zContainer.BlockCoord);
 
 	// array key; set the initial values of arrayKey to be the center
 	arrayKey.x = currentCollectionStateArray->centerCollectionStateOffset;
@@ -704,9 +704,9 @@ FloatTupleXYZ EnclaveBlockRayTracker::SingleToMulti(int input)
 
 	//cout << x << " " << y << " " << z << " " << endl;
 
-	ReturnTuple.x = x;
-	ReturnTuple.y = y;
-	ReturnTuple.z = z;
+	ReturnTuple.x = GLfloat(x);
+	ReturnTuple.y = GLfloat(y);
+	ReturnTuple.z = GLfloat(z);
 
 	return ReturnTuple;
 }

@@ -128,9 +128,9 @@ FloatTupleXYZ EnclaveManifestFactoryT1::SingleToMulti(int input) //EnclaveManife
 
 	//cout << x << " " << y << " " << z << " " << endl;
 
-	ReturnTuple.x = x;
-	ReturnTuple.y = y;
-	ReturnTuple.z = z;
+	ReturnTuple.x = GLfloat(x);
+	ReturnTuple.y = GLfloat(y);
+	ReturnTuple.z = GLfloat(z);
 
 	return ReturnTuple;
 }

@@ -569,9 +569,9 @@ void OrganicSystem::ChangeSingleBlockMaterialAtXYZ(int x, int y, int z, int newm
 {
 	/* Summary: changes the material of a block at the absolute world x/y/z */
 	EnclaveKeyDef::EnclaveKey CollectionKey, EnclaveKey;
-	PathTraceContainer XPathTrace = EnclaveCollections.GetCoordTrace(x);	// get x coords for collection/chunk/block
-	PathTraceContainer YPathTrace = EnclaveCollections.GetCoordTrace(y);	// get y coords	for collection/chunk/block
-	PathTraceContainer ZPathTrace = EnclaveCollections.GetCoordTrace(z);	// get z coords for collection/chunk/block
+	PathTraceContainer XPathTrace = EnclaveCollections.GetCoordTrace(float(x));	// get x coords for collection/chunk/block
+	PathTraceContainer YPathTrace = EnclaveCollections.GetCoordTrace(float(y));	// get y coords	for collection/chunk/block
+	PathTraceContainer ZPathTrace = EnclaveCollections.GetCoordTrace(float(z));	// get z coords for collection/chunk/block
 	CollectionKey.x = XPathTrace.CollectionCoord;					// set coords for the Enclave Collection
 	CollectionKey.y = YPathTrace.CollectionCoord;
 	CollectionKey.z = ZPathTrace.CollectionCoord;
@@ -2099,12 +2099,13 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 			cout << "Unveil block found: Collection (" << rayTracker.collectionKey.x << ", " << rayTracker.collectionKey.y << ", " << rayTracker.collectionKey.z << ") | Enclave (" << rayTracker.enclaveKey.x << ", " << rayTracker.enclaveKey.y << ", " << rayTracker.enclaveKey.z << ") | Block: (" << rayTracker.blockKey.x << ", " << rayTracker.blockKey.y << ", " << rayTracker.blockKey.z << ") " <<  endl;
 			//rayTracker.printOutTargetBlockHighlightData();
 		}
+		/*
 		if (trackResult == 0)
 		{
 			//cout << "----track attempt end----" << endl;
 			//cout << "Unveil block NOT found: Collection (" << rayTracker.collectionKey.x << ", " << rayTracker.collectionKey.y << ", " << rayTracker.collectionKey.z << ") | Enclave (" << rayTracker.enclaveKey.x << ", " << rayTracker.enclaveKey.y << ", " << rayTracker.enclaveKey.z << ") | Block: (" << rayTracker.blockKey.x << ", " << rayTracker.blockKey.y << ", " << rayTracker.blockKey.z << ") " << endl;
 		}
-
+		*/
 
 
 		travelAttempts++;
@@ -2114,12 +2115,13 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 		}
 	}
 	
+	/*
 	if (trackResult == 0)
 	{
 		//cout << "----track attempt end----" << endl;
 		//cout << "Unveil block NOT found: Collection (" << rayTracker.collectionKey.x << ", " << rayTracker.collectionKey.y << ", " << rayTracker.collectionKey.z << ") | Enclave (" << rayTracker.enclaveKey.x << ", " << rayTracker.enclaveKey.y << ", " << rayTracker.enclaveKey.z << ") | Block: (" << rayTracker.blockKey.x << ", " << rayTracker.blockKey.y << ", " << rayTracker.blockKey.z << ") " << endl;
 	}
-
+	*/
 	//cout << "number of x traversals: " << block_traverse_x << endl;
 	//cout << "number of y traversals: " << block_traverse_y << endl;
 	//cout << "number of z traversals: " << block_traverse_z << endl;
@@ -2677,7 +2679,7 @@ void OrganicSystem::WaitForPhase2Promises()
 
 	// send data to OGLM, after waiting for all futures to complete
 	//cout << "before queue size acquired..." << endl;
-	int organicMorphMetaQueueSize = OrganicMorphMetaToSendToBuffer.size();
+	int organicMorphMetaQueueSize = int(OrganicMorphMetaToSendToBuffer.size());
 	//cout << "queue size acquired..." << endl;
 	if (organicMorphMetaQueueSize > 0)
 	{
