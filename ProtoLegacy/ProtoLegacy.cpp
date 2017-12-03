@@ -441,7 +441,7 @@ int main()
 	}
 
 
-	for (int x = 1; x >= -4; x--)
+	for (int x = 1; x >= -6; x--)
 	{
 		for (int z = -2; z >= -7; z--)
 		{
@@ -453,6 +453,15 @@ int main()
 		}
 	}
 	
+	for (int z = -1; z <= 0; z++)
+	{
+		flatKeyToAdd.x = -6;
+		flatKeyToAdd.y = 0;
+		flatKeyToAdd.z = z;
+		Organic.AddKeyToRenderList(flatKeyToAdd);
+		Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, flatBlueprint);
+	}
+
 
 	
 	// add blueprint for morph testing
