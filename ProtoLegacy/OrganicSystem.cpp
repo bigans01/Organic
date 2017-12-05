@@ -558,9 +558,8 @@ void OrganicSystem::SetupFutureCollectionMM(int x, int y, int z)
 
 void OrganicSystem::SetupFutureCollectionMM(EnclaveKeyDef::EnclaveKey tempKey)
 {
-	
-	EnclaveCollections.AddNewCollectionSkeleton(tempKey);							// adds a new EnclaveCollection to the OrganicSystem's EnclaveCollection matrix.
 	auto setupstart = std::chrono::high_resolution_clock::now();
+	EnclaveCollections.AddNewCollectionSkeleton(tempKey);							// adds a new EnclaveCollection to the OrganicSystem's EnclaveCollection matrix.
 	ManifestCollections.AddNewCollection(tempKey);									// adds a new ManifestCollection to the OrganicSystem's MM
 	ManifestCollection& tempRef = ManifestCollections.ManiCollectionMap[tempKey];	// unknown, possibly obsolete (test later)
 	ManifestCollections.ManiCollectionMapRef.emplace(tempKey, tempRef);				// unknown, possibly obsolete (test later)

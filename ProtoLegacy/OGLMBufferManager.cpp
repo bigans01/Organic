@@ -30,37 +30,12 @@ void OGLMBufferManager::PopulateOGLMRMCArrays(EnclaveKeyDef::EnclaveKey centerCo
 {
 	cout << "OGLMRMC key is: " << centerCollectionKey.x << ", " << centerCollectionKey.y << ", " << centerCollectionKey.z << endl;
 
-	// T1 dynamic array setup
-	int centerCollectionOffset = T1_cubesize / 2;			// if T1_cubesize is 13, this would be equal to 6; element location 6 on any x/y/z access would be the center
+
+
+	// T2 dynamic array setup -- T2 array must be set up first, because it is a superset of the T1 array.
+	int centerCollectionOffset = T2_cubesize / 2;				// if T2_cubesize is 13, this would be equal to 6; element location 6 on any x/y/z access would be the center
 	currentCenterCollectionKey = centerCollectionKey;
 	EnclaveKeyDef::EnclaveKey lowerNWCornerKey = centerCollectionKey;				// the key of the collection that would be in the lower most corner; it is initiually set to the input value
-	lowerNWCornerKey.x -= centerCollectionOffset;			// subtract the key's x value by the offset
-	lowerNWCornerKey.y -= centerCollectionOffset;			// subtract the key's y value by the offset
-	lowerNWCornerKey.z -= centerCollectionOffset;			// subtract the key's z value by the offset
-	for (int x = 0; x < T1_cubesize; x++)
-	{
-		for (int y = 0; y < T1_cubesize; y++)
-		{
-			for (int z = 0; z < T1_cubesize; z++)
-			{
-				int currentBufferElement = T1_translateXYZToSingle(x, y, z);
-				EnclaveKeyDef::EnclaveKey elementCollectionKey = lowerNWCornerKey;
-				elementCollectionKey.x += x;
-				elementCollectionKey.y += y;
-				elementCollectionKey.z += z;
-				OGLMRMC.T1_renderMetaContainerArray[currentBufferElement].ElementCollectionKey = elementCollectionKey;		// set the collection key
-				OGLMRMC.T1_renderMetaContainerArray[currentBufferElement].ElementSingularXYZValue = currentBufferElement;	// set the singular element value 
-				OGLMRMC.T1_renderMetaContainerArray[currentBufferElement].ContainsUsedT1Key = 0;							// set the used key flag
-				//cout << "T1 element key value: " << elementCollectionKey.x << ", " << elementCollectionKey.y << ", " << elementCollectionKey.z << endl;
-			}
-		}
-	}
-
-
-	// T2 dynamic array setup
-	centerCollectionOffset = T2_cubesize / 2;				// if T2_cubesize is 13, this would be equal to 6; element location 6 on any x/y/z access would be the center
-	currentCenterCollectionKey = centerCollectionKey;
-	lowerNWCornerKey = centerCollectionKey;				// the key of the collection that would be in the lower most corner; it is initiually set to the input value
 	lowerNWCornerKey.x -= centerCollectionOffset;			// subtract the key's x value by the offset
 	lowerNWCornerKey.y -= centerCollectionOffset;			// subtract the key's y value by the offset
 	lowerNWCornerKey.z -= centerCollectionOffset;			// subtract the key's z value by the offset
@@ -83,9 +58,52 @@ void OGLMBufferManager::PopulateOGLMRMCArrays(EnclaveKeyDef::EnclaveKey centerCo
 	}
 	EnclaveKeyDef::EnclaveKey testKey = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(centerCollectionOffset, centerCollectionOffset, centerCollectionOffset)].ElementCollectionKey;
 	cout << "center key after work is: " << testKey.x << ", " << testKey.y << ", " << testKey.z << endl;
-	EnclaveKeyDef::EnclaveKey testKey2 = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(0,0,0)].ElementCollectionKey;
+	EnclaveKeyDef::EnclaveKey testKey2 = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(0, 0, 0)].ElementCollectionKey;
 	cout << "test of lower corner key: " << testKey2.x << ", " << testKey2.y << ", " << testKey2.z << endl;
 	cout << "test of SingularXYZ of 12, 0, 0: " << OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(12, 0, 0)].ElementSingularXYZValue << endl;
+
+
+
+
+
+	// T1 dynamic array setup -- contents must be populated as a subset of the T1 superset (populated above)
+	centerCollectionOffset = T1_cubesize / 2;			// if T1_cubesize is 13, this would be equal to 6; element location 6 on any x/y/z access would be the center
+	currentCenterCollectionKey = centerCollectionKey;
+	lowerNWCornerKey = centerCollectionKey;				// reset the center collection key
+	lowerNWCornerKey.x -= centerCollectionOffset;			// subtract the key's x value by the offset
+	lowerNWCornerKey.y -= centerCollectionOffset;			// subtract the key's y value by the offset
+	lowerNWCornerKey.z -= centerCollectionOffset;			// subtract the key's z value by the offset
+
+	cout << "Begin new T1 population test..." << endl;
+	// for the next 3 values, we must get the values of the X, Y, Z coordinate of the lower NW Element in the T1 buffer. 
+	int LowerNWLocation = (T2_cubesize / 2) - (T1_cubesize / 2); // I.E: If T2 size is 13, and T1 size is 3; it means T1's distance from center to any perpendicular edge is 1, and T2's distance is 6. Subtracting 1 from 6 will give us the location of the lower NW edge.
+	cout << "LowerNWLocation is: " << LowerNWLocation << endl;
+	int T2_lowerNWBufferXValue = LowerNWLocation;
+	int T2_lowerNWBufferYValue = LowerNWLocation;
+	int T2_lowerNWBufferZValue = LowerNWLocation;
+	for (int x = 0; x < T1_cubesize; x++)
+	{
+		for (int y = 0; y < T1_cubesize; y++)
+		{
+			for (int z = 0; z < T1_cubesize; z++)
+			{
+				int currentBufferElement = T1_translateXYZToSingle(x, y, z);
+				int T2ElementCopy = T2_translateXYZToSingle(T2_lowerNWBufferXValue + x, T2_lowerNWBufferYValue + y, T2_lowerNWBufferZValue + z);
+				EnclaveKeyDef::EnclaveKey elementCollectionKey = lowerNWCornerKey;
+				elementCollectionKey.x += x;
+				elementCollectionKey.y += y;
+				elementCollectionKey.z += z;
+				OGLMRMC.T1_renderMetaContainerArray[currentBufferElement].ElementCollectionKey = elementCollectionKey;		// set the collection key
+				OGLMRMC.T1_renderMetaContainerArray[currentBufferElement].ElementSingularXYZValue = T2ElementCopy;	        // set the singular element value, based on the value from the T2 dynamic array
+				OGLMRMC.T1_renderMetaContainerArray[currentBufferElement].ContainsUsedT1Key = 0;							// set the used key flag
+				//cout << "T1 element key value: " << elementCollectionKey.x << ", " << elementCollectionKey.y << ", " << elementCollectionKey.z << endl;
+			}
+		}
+	}
+
+	//cout << "Test: T1 lower NW value is: " << OGLMRMC.T1_renderMetaContainerArray[T1_translateXYZToSingle(0, 0, 0)].ElementSingularXYZValue << endl;
+	//cout << "Test: T2 -1 from center value is: " << OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(T2_lowerNWBufferXValue, T2_lowerNWBufferYValue, T2_lowerNWBufferZValue)].ElementSingularXYZValue << endl;
+
 }
 
 OGLMBufferManager::~OGLMBufferManager()
@@ -144,37 +162,37 @@ void OGLMBufferManager::MorphTerrainBuffers()
 	// NEGATIVE X BUFFER MORPH (WEST)
 	if (currentCenterCollectionKey.x < oldCenterCollectionKey.x)
 	{
-		MorphTerrainBufferWest();		
+		MorphT2TerrainBufferWest();		
 	}
 
 	// POSITIVE X BUFFER MORPH (EAST)
 	if (currentCenterCollectionKey.x > oldCenterCollectionKey.x)
 	{
-		MorphTerrainBufferEast();
+		MorphT2TerrainBufferEast();
 	}
 
 	// NEGATIVE Y BUFFER MORPH (BELOW)
 	if (currentCenterCollectionKey.y < oldCenterCollectionKey.y)
 	{
-		MorphTerrainBufferBelow();
+		MorphT2TerrainBufferBelow();
 	}
 
 	// POSITIVE Y BUFFER MORPH (ABOVE)
 	if (currentCenterCollectionKey.y > oldCenterCollectionKey.y)
 	{
-		MorphTerrainBufferAbove();
+		MorphT2TerrainBufferAbove();
 	}
 
 	// NEGATIVE Z BUFFER MORPH (NORTH)
 	if (currentCenterCollectionKey.z < oldCenterCollectionKey.z)
 	{
-		MorphTerrainBufferNorth();
+		MorphT2TerrainBufferNorth();
 	}
 
 	// POSITIVE Z BUFFER MORPH (SOUTH)
 	if (currentCenterCollectionKey.z > oldCenterCollectionKey.z)
 	{
-		MorphTerrainBufferSouth();
+		MorphT2TerrainBufferSouth();
 	}
 
 
@@ -183,7 +201,7 @@ void OGLMBufferManager::MorphTerrainBuffers()
 	std::cout << "Elapsed time: (matrix shift + blueprint search (" << T2_cubesize*T2_cubesize << "): " << carveelapsed.count() << endl;
 }
 
-void OGLMBufferManager::MorphTerrainBufferWest()
+void OGLMBufferManager::MorphT2TerrainBufferWest()
 {
 	EnclaveKeyDef::EnclaveKey currentFirstKeyInRow = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(0, 0, 0)].ElementCollectionKey;		// get the enclave collection key of the first element in the row
 	cout << "(Moving WEST) test old key value for -x shift is: " << currentFirstKeyInRow.x << ", " << currentFirstKeyInRow.y << ", " << currentFirstKeyInRow.z << " T2_cubesize: " << T2_cubesize << endl;
@@ -248,7 +266,7 @@ void OGLMBufferManager::MorphTerrainBufferWest()
 	//cout << "(Moving WEST): SingularXYZValue after shift: " << OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(0, 0, 0)].ElementSingularXYZValue << endl;
 	//cout << "(Moving WEST): SingularXYZValue after shift of last element in row: " << OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(T2_cubesize - 1, 0, 0)].ElementSingularXYZValue << endl;
 }
-void OGLMBufferManager::MorphTerrainBufferEast()
+void OGLMBufferManager::MorphT2TerrainBufferEast()
 {
 	//cout << "current key: " << currentCenterCollectionKey.x << ", " << currentCenterCollectionKey.y << ", " << currentCenterCollectionKey.z << endl;
 	//cout << "old key: " << oldCenterCollectionKey.x << ", " << oldCenterCollectionKey.y << ", " << oldCenterCollectionKey.z << endl;
@@ -319,7 +337,7 @@ void OGLMBufferManager::MorphTerrainBufferEast()
 	//cout << "(Moving EAST): SingularXYZValue after shift: " << OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(0, 0, 0)].ElementSingularXYZValue << endl;
 	//cout << "(Moving EAST): SingularXYZValue after shift of last element in row: " << OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(T2_cubesize - 1, 0, 0)].ElementSingularXYZValue << endl;
 }
-void OGLMBufferManager::MorphTerrainBufferBelow()
+void OGLMBufferManager::MorphT2TerrainBufferBelow()
 {
 	//cout << "current key: " << currentCenterCollectionKey.x << ", " << currentCenterCollectionKey.y << ", " << currentCenterCollectionKey.z << endl;
 	//cout << "old key: " << oldCenterCollectionKey.x << ", " << oldCenterCollectionKey.y << ", " << oldCenterCollectionKey.z << endl;
@@ -385,7 +403,7 @@ void OGLMBufferManager::MorphTerrainBufferBelow()
 	currentFirstKeyInRow = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(0, 0, 0)].ElementCollectionKey;		// get the enclave collection key of the first element in the row
 	cout << "(Moving BELOW) test NEW key value for -y shift is: " << currentFirstKeyInRow.x << ", " << currentFirstKeyInRow.y << ", " << currentFirstKeyInRow.z << " T2_cubesize: " << T2_cubesize << endl;
 }
-void OGLMBufferManager::MorphTerrainBufferAbove()
+void OGLMBufferManager::MorphT2TerrainBufferAbove()
 {
 	EnclaveKeyDef::EnclaveKey currentFirstKeyInRow = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(0, T2_cubesize - 1, 0)].ElementCollectionKey;		// get the enclave collection key of the first element in the row
 	cout << "(Moving ABOVE) test old key value for -y shift is: " << currentFirstKeyInRow.x << ", " << currentFirstKeyInRow.y << ", " << currentFirstKeyInRow.z << " T2_cubesize: " << T2_cubesize << endl;
@@ -442,7 +460,7 @@ void OGLMBufferManager::MorphTerrainBufferAbove()
 	currentFirstKeyInRow = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(0, T2_cubesize - 1, 0)].ElementCollectionKey;		// get the enclave collection key of the first element in the row
 	cout << "(Moving ABOVE) test NEW key value for +y shift is: " << currentFirstKeyInRow.x << ", " << currentFirstKeyInRow.y << ", " << currentFirstKeyInRow.z << " T2_cubesize: " << T2_cubesize << endl;
 }
-void OGLMBufferManager::MorphTerrainBufferNorth()
+void OGLMBufferManager::MorphT2TerrainBufferNorth()
 {
 	EnclaveKeyDef::EnclaveKey currentFirstKeyInRow = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(0, 0, 0)].ElementCollectionKey;		// get the enclave collection key of the first element in the row
 	cout << "(Moving NORTH) test old key value for -z shift is: " << currentFirstKeyInRow.x << ", " << currentFirstKeyInRow.y << ", " << currentFirstKeyInRow.z << " T2_cubesize: " << T2_cubesize << endl;
@@ -498,7 +516,7 @@ void OGLMBufferManager::MorphTerrainBufferNorth()
 	currentFirstKeyInRow = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(0, 0, 0)].ElementCollectionKey;		// get the enclave collection key of the first element in the row
 	cout << "(Moving NORTH) test NEW key value for -z POST shift is: " << currentFirstKeyInRow.x << ", " << currentFirstKeyInRow.y << ", " << currentFirstKeyInRow.z << " T2_cubesize: " << T2_cubesize << endl;
 }
-void OGLMBufferManager::MorphTerrainBufferSouth()
+void OGLMBufferManager::MorphT2TerrainBufferSouth()
 {
 	EnclaveKeyDef::EnclaveKey currentFirstKeyInRow = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(0, 0, 0)].ElementCollectionKey;		// get the enclave collection key of the first element in the row
 																																				//EnclaveKeyDef::EnclaveKey testKey = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(6, 6, 0)].ElementCollectionKey;
@@ -562,6 +580,40 @@ void OGLMBufferManager::MorphTerrainBufferSouth()
 	currentFirstKeyInRow = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(0, 0, 0)].ElementCollectionKey;		// get the enclave collection key of the first element in the row
 	cout << "(Moving SOUTH) test NEW key value for +z POST shift is: " << currentFirstKeyInRow.x << ", " << currentFirstKeyInRow.y << ", " << currentFirstKeyInRow.z << " T2_cubesize: " << T2_cubesize << endl;
 }
+
+void OGLMBufferManager::MorphT1TerrainBufferWest()
+{
+
+}
+
+void OGLMBufferManager::MorphT1TerrainBufferEast()
+{
+
+}
+
+void OGLMBufferManager::MorphT1TerrainBufferBelow()
+{
+
+}
+
+void OGLMBufferManager::MorphT1TerrainBufferAbove()
+{
+
+}
+
+void OGLMBufferManager::MorphT1TerrainBufferNorth()
+{
+
+}
+
+void OGLMBufferManager::MorphT1TerrainBufferSouth()
+{
+
+}
+
+
+
+
 
 
 int OGLMBufferManager::determineRenderDataSubBufferKey(EnclaveKeyDef::EnclaveKey renderCollectionKey)
