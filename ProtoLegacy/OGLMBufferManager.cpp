@@ -162,7 +162,8 @@ void OGLMBufferManager::MorphTerrainBuffers()
 	// NEGATIVE X BUFFER MORPH (WEST)
 	if (currentCenterCollectionKey.x < oldCenterCollectionKey.x)
 	{
-		MorphT2TerrainBufferWest();		
+		MorphT2TerrainBufferWest();	
+		MorphT1TerrainBufferWest();
 	}
 
 	// POSITIVE X BUFFER MORPH (EAST)
@@ -583,7 +584,42 @@ void OGLMBufferManager::MorphT2TerrainBufferSouth()
 
 void OGLMBufferManager::MorphT1TerrainBufferWest()
 {
+	std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveCollectionBlueprint, EnclaveKeyDef::KeyHasher>::iterator blueprintMapIterator;			// iterator for blueprint checking
+	int T2_LowerNWLocation = (T2_cubesize / 2) - (T1_cubesize / 2); // get the T2 lower NW location, to begin appropriate incrementing of index to find below
+	for (int y = 0; y < T1_cubesize; y++)
+	{
+		for (int z = 0; z < T1_cubesize; z++)
+		{
+			for (int x = T1_cubesize - 1; x > 0; x--)
+			{
+				// part 1 -- shift to the east
+				EnclaveKeyDef::EnclaveKey keyToShift = OGLMRMC.T1_renderMetaContainerArray[T1_translateXYZToSingle(x - 1, y, z)].ElementCollectionKey;	// get the value of the collection key at x,y,z
+				OGLMRMC.T1_renderMetaContainerArray[T1_translateXYZToSingle(x, y, z)].ElementCollectionKey = keyToShift;							// replace element at x + 1 with this collection key
 
+				int valueToShift = OGLMRMC.T1_renderMetaContainerArray[T1_translateXYZToSingle(x - 1, y, z)].ElementSingularXYZValue;
+				OGLMRMC.T1_renderMetaContainerArray[T1_translateXYZToSingle(x, y, z)].ElementSingularXYZValue = valueToShift;
+
+				int ContainsUsedT2KeyValueToShift = OGLMRMC.T1_renderMetaContainerArray[T1_translateXYZToSingle(x - 1, y, z)].ContainsUsedT1Key;
+				OGLMRMC.T1_renderMetaContainerArray[T1_translateXYZToSingle(x, y, z)].ContainsUsedT1Key = ContainsUsedT2KeyValueToShift;
+			}
+			// part 2 -- replace element that wasn't shifted, with the appropriate values from the T1 array
+			OGLMRenderMetaContainerElementT2 currentT2Element = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(T2_LowerNWLocation, T2_LowerNWLocation + y, T2_LowerNWLocation + z)];
+			OGLMRMC.T1_renderMetaContainerArray[T1_translateXYZToSingle(0, y, z)].ElementCollectionKey = currentT2Element.ElementCollectionKey;			// transfer copies from  T2 to T1
+			OGLMRMC.T1_renderMetaContainerArray[T1_translateXYZToSingle(0, y, z)].ElementSingularXYZValue = currentT2Element.ElementSingularXYZValue;	// ""
+			OGLMRMC.T1_renderMetaContainerArray[T1_translateXYZToSingle(0, y, z)].ContainsUsedT1Key = currentT2Element.ContainsUsedT2Key;				// ""
+
+			// part 3 -- check blueprint map
+			blueprintMapIterator = blueprintMatrixPtr->BlueprintMap.find(currentT2Element.ElementCollectionKey);		// attempt to find the blueprint
+			if (blueprintMapIterator != blueprintMatrixPtr->BlueprintMap.end())					// if it isn't equal to end, it was found.
+			{
+				cout << "blueprint found! (T1 shift) " << endl;
+			}
+			else
+			{
+
+			}
+		}
+	}
 }
 
 void OGLMBufferManager::MorphT1TerrainBufferEast()
