@@ -409,16 +409,16 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\x64\Debug\SimpleFragmentShader.fragmentshader">
+    <None Include="..\x64\Debug\Mode0_VertexShader.vertexshader">
       <Filter>shaders</Filter>
     </None>
-    <None Include="..\x64\Debug\SimpleTransform.vertexshader">
+    <None Include="..\x64\Debug\Mode0_FragmentShader.fragmentshader">
       <Filter>shaders</Filter>
     </None>
-    <None Include="..\x64\Debug\TransformVertexShader.vertexshader">
+    <None Include="..\x64\Debug\Mode1_VertexShader.vertexshader">
       <Filter>shaders</Filter>
     </None>
-    <None Include="..\x64\Debug\ColorFragmentShader.fragmentshader">
+    <None Include="..\x64\Debug\Mode1_FragmentShader.fragmentshader">
       <Filter>shaders</Filter>
     </None>
   </ItemGroup>

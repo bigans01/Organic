@@ -41,8 +41,8 @@ private:
 	friend class OrganicSystem;
 	friend class OGLMBufferManager;
 	int renderMode = 0;
-	GLuint OrganicGLprogramID = 0;													// OpenGL: pointer/handle to the program used for shading	
-	GLuint OrganicGLVCprogramID = 0;
+	GLuint OrganicMode0ProgramID = 0;													// OpenGL: pointer/handle to the program used for shading	
+	GLuint OrganicMode1ProgramID = 0;
 
 	GLuint OrganicGLVertexArrayID = 0;												// OpenGL: pointer/handle to the vertex array handler
 	GLuint OrganicGLVertexCoordVBOID = 0;										// OpenGL: pointer/handle to the vertex coordinate VBO buffer handler (single buffer)
@@ -79,6 +79,7 @@ private:
 
 
 	*/
+	//const int OGLMVertexSubBufferSize = cltnFaceStorageCount * ((cltnFaceVertexCoordTotalBytes*2)+ cltnFaceVertexCoordTotalBytes);	// size of all vertex data for a sub element = number of collection faces * 73728;
 	const int OGLMVertexSubBufferSize = cltnFaceStorageCount * cltnFaceVertexCoordTotalBytes;	// size of all vertex data for a sub element = number of collection faces * 73728;
 	const int OGLMTexUVSubBufferSize = cltnFaceStorageCount * cltnFaceTextureCoordTotalBytes;	// size of all UV texture coordinate data for a sub element = number of collection faces * 49152
 

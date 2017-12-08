@@ -85,13 +85,13 @@ void OrganicGLManager::InitializeOpenGL()
 
 
 														// Setup programID
-	OrganicGLprogramID = LoadShaders("SimpleTransform.vertexshader", "SimpleFragmentShader.fragmentshader");		/* NOTE: these shaders need to be in the same directory as the .exe file;
+	OrganicMode0ProgramID = LoadShaders("Mode0_VertexShader.vertexshader", "Mode0_FragmentShader.fragmentshader");		/* NOTE: these shaders need to be in the same directory as the .exe file;
 																													How to put these in another directory should be investigated. (8/19/2017) */
-	OrganicGLVCprogramID = LoadShaders("TransformVertexShader.vertexshader", "ColorFragmentShader.fragmentshader");
+	OrganicMode1ProgramID = LoadShaders("Mode1_VertexShader.vertexshader", "Mode1_FragmentShader.fragmentshader");
 
 
 	// Setup OpenGL matrices
-	OrganicMVPHandle = glGetUniformLocation(OrganicGLprogramID, "MVP");
+	OrganicMVPHandle = glGetUniformLocation(OrganicMode0ProgramID, "MVP");
 	Projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);		// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
 
 	View = glm::lookAt(													// Camera matrix
@@ -256,12 +256,12 @@ void OrganicGLManager::RenderReadyArrays()
 	
 	//glClear(GL_COLOR_BUFFER_BIT);										// clear the screen?
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//glUseProgram(OrganicGLprogramID);									// select the already compiled program	(::::SENT TO BE USED IN selectDefaultShader() ::::)
+	//glUseProgram(OrganicMode0ProgramID);									// select the already compiled program	(::::SENT TO BE USED IN selectDefaultShader() ::::)
 	computeMatricesFromInputs();											// gather inputs from keyboard
 																			// Send our transformation to the currently bound shader, 
 																			// in the "MVP" uniform -- 
-																			//glUseProgram(OrganicGLprogramID);
-																			//glUseProgram(OrganicGLVCprogramID);
+																			//glUseProgram(OrganicMode0ProgramID);
+																			//glUseProgram(OrganicMode1ProgramID);
 
 	glUniformMatrix4fv(OrganicMVPHandle, 1, GL_FALSE, &MVP[0][0]);		// select the matrix to use.
 
@@ -343,7 +343,7 @@ void OrganicGLManager::ShutdownOpenGL()
 		glDeleteBuffers(1, &OrganicGLVertexCoordVBOID);
 		//glDeleteBuffers(1, &OrganicGLVertexBufferArray[1]);	// OrganicGLVertexBufferArray[0], OrganicGLVertexCoordVBOID
 		glDeleteVertexArrays(1, &OrganicGLVertexArrayID);
-		glDeleteProgram(OrganicGLprogramID);
+		glDeleteProgram(OrganicMode0ProgramID);
 		glDisableVertexAttribArray(0);
 		glfwTerminate();										// Close OpenGL window and terminate GLFW
 	}
@@ -356,8 +356,8 @@ void OrganicGLManager::ShutdownOpenGL()
 		//glDeleteBuffers(1, &OrganicGLVertexBufferArray[1]);	// OrganicGLVertexBufferArray[0], OrganicGLVertexCoordVBOID
 		glDeleteVertexArrays(1, &OrganicGLVertexArrayID);
 
-		glDeleteProgram(OrganicGLprogramID);
-		glDeleteProgram(OrganicGLVCprogramID);
+		glDeleteProgram(OrganicMode0ProgramID);
+		glDeleteProgram(OrganicMode1ProgramID);
 
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
@@ -512,7 +512,7 @@ void OrganicGLManager::selectShader()
 {
 	if (renderMode == 0)										// Default terrain shader program: only puts colors on fragments.
 	{
-		glUseProgram(OrganicGLprogramID);
+		glUseProgram(OrganicMode0ProgramID);
 
 		glEnableVertexAttribArray(0);										//select the buffer we will be using
 		glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexCoordVBOID);				// OrganicGLVertexBufferArray[0], OrganicGLVertexCoordVBOID
@@ -530,7 +530,7 @@ void OrganicGLManager::selectShader()
 
 	if (renderMode == 1)
 	{
-		glUseProgram(OrganicGLVCprogramID);
+		glUseProgram(OrganicMode1ProgramID);
 
 		glEnableVertexAttribArray(0);										//select the buffer we will be using
 		glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexCoordVBOID);				// OrganicGLVertexBufferArray[0], OrganicGLVertexCoordVBOID
