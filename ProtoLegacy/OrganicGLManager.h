@@ -47,6 +47,7 @@ private:
 	GLuint OrganicGLVertexArrayID = 0;												// OpenGL: pointer/handle to the vertex array handler
 	GLuint OrganicGLVertexBufferID = 0;												// OpenGL: pointer/handle to the vertex buffer handler (single buffer)
 	GLuint OrganicGLVertexNormalID = 0;
+	GLuint OrganicGLIndirectBufferID = 0;
 
 	GLuint OrganicGLVertexColorBufferID = 0;										// OpenGL: pointer/handle to the vertex color buffer handler (single buffer)
 	GLuint OrganicGLLightingBufferID = 0;											// OpenGL: third potential single buffer; currently in testing only. (not being generated as of (10/11/2017))
@@ -57,6 +58,18 @@ private:
 	GLfloat *OrganicGLarrayPTR = NULL;													// (temporary) OpenGL: used to point to a dynamic array containing vertex data
 	//const int CollectionBufferSize = 1024 * 1024;								// the size of the data buffer for each RenderCollection; 
 	const int CollectionBufferSize = 589824;										//alternate = 73728   , 147456, 294912, 589824, 1179648
+																					/* A Note on CollectionBufferSize value: 
+																						73728 = the total byte size of all vertices that can exist on one collection's face. It is equivalent to one collection face, which iscalculated by:
+																						        18 floats per cube face		X    16 faces	X	64 chunks	X size of float (4 bytes)
+
+																						So, a size of 589824 is equivalent to the total size of all vertices in 8 collection faces.
+																					*/
+	const GLbitfield bufferStorageflags = GL_DYNAMIC_STORAGE_BIT | GL_MAP_WRITE_BIT | GL_MAP_READ_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;	// mandatory flags for glBufferStorage
+	const GLbitfield mapFlags = GL_MAP_READ_BIT | GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
+	glm::vec3* bufferMap1;
+	glm::vec3* bufferMap2;
+
+
 	int numberOfBuffers = 0;													// initial value is 0, but will be reset
 	int window_width = 0;														// width in pixels of the OpenGL window
 	int window_height = 0;														// height in pixels of the OpenGL window

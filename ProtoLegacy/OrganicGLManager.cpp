@@ -145,7 +145,13 @@ void OrganicGLManager::InitializeOpenGL()
 	//unsigned long int bufferSize = CollectionBufferSize * numberOfBuffers;
 	//cout << "Total buffer size: " << CollectionBufferSize * numberOfBuffers << endl;
 	//cout << "Total buffer size: " << bufferSize << endl;
-	glBufferStorage(GL_ARRAY_BUFFER, CollectionBufferSize * numberOfBuffers, NULL, GL_DYNAMIC_STORAGE_BIT);	/* REQUIRED: pre-allocates memory for the buffer, to any desired amount; this is so
+	//GLbitfield flags = GL_DYNAMIC_STORAGE_BIT;
+	//GLbitfield flags = GL_DYNAMIC_STORAGE_BIT | GL_MAP_PERSISTENT_BIT;
+	//GLbitfield flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
+	//GLbitfield flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT | GL_DYNAMIC_STORAGE_BIT;
+	//GLbitfield flags = GL_DYNAMIC_STORAGE_BIT | GL_MAP_WRITE_BIT | GL_MAP_READ_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
+
+	glBufferStorage(GL_ARRAY_BUFFER, CollectionBufferSize * numberOfBuffers, NULL, bufferStorageflags);	/* REQUIRED: pre-allocates memory for the buffer, to any desired amount; this is so
 																											that the buffer doesn't need to be resized in the future.
 
 																											Parameters:
@@ -159,10 +165,33 @@ void OrganicGLManager::InitializeOpenGL()
 																											-fourth argument: flags -> sets the flags that will be needed for this buffer; GL_DYNAMIC_STORAGE_BIT
 																											is required to use glBufferSubData in this buffer.
 
-																											*/
+															
+																										*/
+
+	/*-----RESERVED FOR LATER USE-----
+	bufferMap1 = reinterpret_cast<glm::vec3*>
+		(
+			glMapBufferRange(GL_ARRAY_BUFFER, 0, sizeof(glm::vec3) * 1, mapFlags)
+			);
+
+	bufferMap2 = reinterpret_cast<glm::vec3*>
+		(
+			glMapBufferRange(GL_ARRAY_BUFFER, 10, sizeof(glm::vec3) * 1, mapFlags)
+			);
+	*/
+
+
+	//GLenum err;
+	//err = glGetError();
+	//cout << "potential error is: " << err << endl;
+
 	glGenBuffers(1, &OrganicGLVertexColorBufferID);
 	glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexColorBufferID);
-	glBufferStorage(GL_ARRAY_BUFFER, CollectionBufferSize * numberOfBuffers, NULL, GL_DYNAMIC_STORAGE_BIT);
+	glBufferStorage(GL_ARRAY_BUFFER, CollectionBufferSize * numberOfBuffers, NULL, bufferStorageflags);
+
+	glGenBuffers(1, &OrganicGLIndirectBufferID);
+	glBindBuffer(GL_DRAW_INDIRECT_BUFFER, OrganicGLIndirectBufferID);
+
 
 	//glGenBuffers(1, &OrganicGLVertexNormalID);
 	//glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexNormalID);
@@ -223,6 +252,29 @@ void OrganicGLManager::RenderReadyArrays()
 																		//}
 
 	glMultiDrawArrays(GL_TRIANGLES, renderableCollectionList.TT1_GL_BufferOffset.get(), renderableCollectionList.TT1_GL_VertexArraySize.get(), renderableCollectionList.numberOfRenderableCollections);
+
+	// test struct
+	struct DETest
+	{
+		GLuint vertexCount;				// number of vertexex to render
+		GLuint instanceCount;			// should be 1
+		GLuint firstIndex;				// first index to render
+		GLuint baseInstance;
+	};
+
+	DETest testingStruct[5];
+	for (int i = 0; i < 5; i++)
+	{
+		testingStruct[i].vertexCount = renderableCollectionList.TT1_GL_VertexArraySize[i];
+		testingStruct[i].instanceCount = 1;
+		testingStruct[i].firstIndex = renderableCollectionList.TT1_GL_BufferOffset[i];
+		testingStruct[i].baseInstance = i;
+	}
+	glBindBuffer(GL_DRAW_INDIRECT_BUFFER, OrganicGLIndirectBufferID);
+	glBufferData(GL_DRAW_INDIRECT_BUFFER, sizeof(testingStruct), testingStruct, GL_DYNAMIC_DRAW);
+	//glEnableVertexAttribArray(2);
+	//glVertexAttribIPointer(2, 1, GL_UNSIGNED_INT, 0, (GLvoid*)0);
+	//glMultiDrawArraysIndirect(GL_TRIANGLES, (GLvoid*)0, 5, 0);
 
 
 	auto GLend = std::chrono::high_resolution_clock::now();	// optional performance testing values
@@ -346,9 +398,10 @@ void OrganicGLManager::computeMatricesFromInputs()
 
 void OrganicGLManager::sendRenderCollectionDataToBuffer(OrganicMorphMeta inMorphMeta, RenderCollection* renderCollPtr)
 {
+	renderableCollectionList.sendTerrainT1RequestToDelegator(inMorphMeta.collectionKey, inMorphMeta.subBufferIndex, renderCollPtr->RenderCollectionArraySize, CollectionBufferSize);	// send to T1 delegator; delegator will move any occupied data in the sub buffer to another appropriate location
 	glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexBufferID);
 	glBufferSubData(GL_ARRAY_BUFFER, inMorphMeta.subBufferIndex*CollectionBufferSize, renderCollPtr->RenderCollectionArraySize, renderCollPtr->GLFloatPtr.get());
-	renderableCollectionList.sendTerrainT1RequestToDelegator(inMorphMeta.collectionKey, inMorphMeta.subBufferIndex, renderCollPtr->RenderCollectionArraySize, CollectionBufferSize);
+	//renderableCollectionList.sendTerrainT1RequestToDelegator(inMorphMeta.collectionKey, inMorphMeta.subBufferIndex, renderCollPtr->RenderCollectionArraySize, CollectionBufferSize);
 	//cout << "collection sent to buffer..." << inMorphMeta.collectionKey.x << ", " << inMorphMeta.collectionKey.y << ", " << inMorphMeta.collectionKey.z << endl;
 	//cout << "size: " << renderCollPtr->RenderCollectionArraySize << endl;
 	//EnclaveKeyDef::EnclaveKey firstRenderableEnclaveKey = renderCollPtr->EnclaveCollectionPtr->RenderableEnclaves[0];		// use for the below
