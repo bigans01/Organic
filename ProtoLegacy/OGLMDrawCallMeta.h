@@ -11,6 +11,8 @@ class OrganicGLManager;
 class OrganicSystem;
 class OGLMDrawCallMeta
 {
+	public:
+		int someval = 50;
 	private:
 		friend class OrganicGLManager;
 		friend class OrganicSystem;

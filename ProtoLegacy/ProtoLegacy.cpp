@@ -428,6 +428,7 @@ int main()
 	
 	/* Non-central blueprints (should be tested with release mode only, in 2/3 threads mode) */
 	
+	
 	for (int x = 2; x < 7; x++)
 	{
 		for (int z = -2; z >= -7; z--)
@@ -461,7 +462,7 @@ int main()
 		Organic.AddKeyToRenderList(flatKeyToAdd);
 		Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, flatBlueprint);
 	}
-
+	
 
 	
 	// add blueprint for morph testing
@@ -849,12 +850,15 @@ int main()
 		Organic.CheckProcessingQueue();		// check for work in collection processing queue(s)
 		Organic.WaitForPhase2Promises();
 		// |||||||||||||||||||||| PHASE 3: Render terrain and targeted blocks
-		Organic.RenderGLTerrain();																				// Step 1 (?): perform render frame work	// Step 2: check if camera has moved to another collection; if so shift the OrganicCollectionPointerMatrix(?)
+
+		
+		Organic.RenderGLTerrain();		
+		// Step 1 (?): perform render frame work	// Step 2: check if camera has moved to another collection; if so shift the OrganicCollectionPointerMatrix(?)
 		Organic.DetermineMouseCursorTargets2(Organic.OGLM.positionVecPtr, Organic.OGLM.directionVecPtr, 14);	// Step 3: determine targetable blocks 
 
 		auto finish3 = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<double> elapsed3 = finish3 - start3;
-		// std::cout << "Frame render time: " << elapsed3.count() << endl;
+		//std::cout << "Frame render time (without draw call) : " << elapsed3.count() << endl;
 	} 
 	while (glfwGetKey(Organic.OGLM.GLwindow, GLFW_KEY_ESCAPE) != GLFW_PRESS &&	// loop until escape key is pressed in OpenGL window
 		glfwWindowShouldClose(Organic.OGLM.GLwindow) == 0);

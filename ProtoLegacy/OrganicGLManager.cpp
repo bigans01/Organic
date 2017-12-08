@@ -220,7 +220,7 @@ void OrganicGLManager::InitializeOpenGL()
 
 void OrganicGLManager::RenderReadyArrays()
 {
-	auto GLstart = std::chrono::high_resolution_clock::now();
+	
 	//glClear(GL_COLOR_BUFFER_BIT);										// clear the screen?
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	//glUseProgram(OrganicGLprogramID);									// select the already compiled program	(::::SENT TO BE USED IN selectDefaultShader() ::::)
@@ -250,9 +250,19 @@ void OrganicGLManager::RenderReadyArrays()
 																		}
 																		*/
 																		//}
-
+	//----> OPTION 1: traditional multi draw
 	glMultiDrawArrays(GL_TRIANGLES, renderableCollectionList.TT1_GL_BufferOffset.get(), renderableCollectionList.TT1_GL_VertexArraySize.get(), renderableCollectionList.numberOfRenderableCollections);
 
+
+
+	//cout << renderableCollectionList.numberOfRenderableCollections << endl;
+
+
+
+
+	//----> OPTION 2: use multidraw arrays
+	
+	/*
 	// test struct
 	struct DETest
 	{
@@ -261,9 +271,9 @@ void OrganicGLManager::RenderReadyArrays()
 		GLuint firstIndex;				// first index to render
 		GLuint baseInstance;
 	};
-
-	DETest testingStruct[5];
-	for (int i = 0; i < 5; i++)
+	unique_ptr<DETest[]> testingStruct;
+	testingStruct.reset(new DETest[renderableCollectionList.numberOfRenderableCollections]);
+	for (int i = 0; i < renderableCollectionList.numberOfRenderableCollections; i++)
 	{
 		testingStruct[i].vertexCount = renderableCollectionList.TT1_GL_VertexArraySize[i];
 		testingStruct[i].instanceCount = 1;
@@ -271,22 +281,25 @@ void OrganicGLManager::RenderReadyArrays()
 		testingStruct[i].baseInstance = i;
 	}
 	glBindBuffer(GL_DRAW_INDIRECT_BUFFER, OrganicGLIndirectBufferID);
-	glBufferData(GL_DRAW_INDIRECT_BUFFER, sizeof(testingStruct), testingStruct, GL_DYNAMIC_DRAW);
-	//glEnableVertexAttribArray(2);
-	//glVertexAttribIPointer(2, 1, GL_UNSIGNED_INT, 0, (GLvoid*)0);
-	//glMultiDrawArraysIndirect(GL_TRIANGLES, (GLvoid*)0, 5, 0);
+	glBufferData(GL_DRAW_INDIRECT_BUFFER, sizeof(GLuint)*4* renderableCollectionList.numberOfRenderableCollections, testingStruct.get(), GL_DYNAMIC_DRAW);		// important note: size of struct is actually 8 (4 x 2) bytes, not 16 (4 x 4) like normal ints
+	glMultiDrawArraysIndirect(GL_TRIANGLES, (GLvoid*)0, renderableCollectionList.numberOfRenderableCollections, 0);
+	*/
 
 
-	auto GLend = std::chrono::high_resolution_clock::now();	// optional performance testing values
-	std::chrono::duration<double> GLelapsed = GLend - GLstart;
-	//std::cout << "Frame render Time: " << GLelapsed.count() << std::endl;
+	
+
+	
 	//std::cout << "RUN MULTI JOB 1 ELAPSED ITERATOR TIME: " << elapsed4.count() << std::endl;
 
 	//glDisableVertexAttribArray(0);										// disable the array that was just used. (::::SENT TO BE USED IN ShutdownOpenGL() ::::)
 
+	auto GLstart = std::chrono::high_resolution_clock::now();
 	glfwSwapBuffers(GLwindow);											// ??
+	auto GLend = std::chrono::high_resolution_clock::now();	// optional performance testing values
 	glfwPollEvents();													// listen for input to the current OpenGL context window
 
+	std::chrono::duration<double> GLelapsed = GLend - GLstart;
+	//std::cout << "Frame render Time: (actual draw call call) " << GLelapsed.count() << std::endl;
 }
 
 void OrganicGLManager::ShutdownOpenGL()
