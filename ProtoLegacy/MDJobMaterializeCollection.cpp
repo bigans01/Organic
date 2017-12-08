@@ -10,7 +10,8 @@ MDJobMaterializeCollection::MDJobMaterializeCollection(
 	ManifestCollectionMatrix* p_MDManifestCollectionsRef,
 	RenderCollectionMatrix* p_MDRenderCollectionsRef,
 	EnclaveCollection *p_MDEnclaveCollectionPtr,
-	ManifestCollection *p_MDManifestCollectionPtr
+	ManifestCollection *p_MDManifestCollectionPtr,
+	int in_renderMode
 )
 {
 	MDKey = p_MDKey;

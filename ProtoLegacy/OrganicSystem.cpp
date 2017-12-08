@@ -288,22 +288,22 @@ void OrganicSystem::MaterializeCollection(EnclaveKeyDef::EnclaveKey Key1, Enclav
 
 	passCollectionPtrNew = &EnclaveCollections.EnclaveCollectionMap[Key1];
 	passManifestPtrNew = &ManifestCollections.ManiCollectionMap[Key1];
-	MDJobMaterializeCollection NewMDJob1(Key1, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew));
+	MDJobMaterializeCollection NewMDJob1(Key1, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew), OGLM.renderMode);
 	newJobList.ListMatrix[Key1] = NewMDJob1;
 
 	passCollectionPtrNew = &EnclaveCollections.EnclaveCollectionMap[Key2];
 	passManifestPtrNew = &ManifestCollections.ManiCollectionMap[Key2];
-	MDJobMaterializeCollection NewMDJob2(Key2, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew));
+	MDJobMaterializeCollection NewMDJob2(Key2, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew), OGLM.renderMode);
 	newJobList.ListMatrix[Key2] = NewMDJob2;
 
 	passCollectionPtrNew = &EnclaveCollections.EnclaveCollectionMap[key5];
 	passManifestPtrNew = &ManifestCollections.ManiCollectionMap[key5];
-	MDJobMaterializeCollection NewMDJob3(key5, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew));
+	MDJobMaterializeCollection NewMDJob3(key5, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew), OGLM.renderMode);
 	newJobList.ListMatrix[key5] = NewMDJob3;
 
 	passCollectionPtrNew = &EnclaveCollections.EnclaveCollectionMap[key6];
 	passManifestPtrNew = &ManifestCollections.ManiCollectionMap[key6];
-	MDJobMaterializeCollection NewMDJob4(key6, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew));
+	MDJobMaterializeCollection NewMDJob4(key6, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew), OGLM.renderMode);
 	newJobList.ListMatrix[key6] = NewMDJob4;
 
 
@@ -311,22 +311,22 @@ void OrganicSystem::MaterializeCollection(EnclaveKeyDef::EnclaveKey Key1, Enclav
 
 	passCollectionPtrNew = &EnclaveCollections.EnclaveCollectionMap[key3];
 	passManifestPtrNew = &ManifestCollections.ManiCollectionMap[key3];
-	MDJobMaterializeCollection NewMDJob5(key3, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew));
+	MDJobMaterializeCollection NewMDJob5(key3, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew), OGLM.renderMode);
 	newJobList2.ListMatrix[key3] = NewMDJob5;
 
 	passCollectionPtrNew = &EnclaveCollections.EnclaveCollectionMap[key4];
 	passManifestPtrNew = &ManifestCollections.ManiCollectionMap[key4];
-	MDJobMaterializeCollection NewMDJob6(key4, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew));
+	MDJobMaterializeCollection NewMDJob6(key4, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew), OGLM.renderMode);
 	newJobList2.ListMatrix[key4] = NewMDJob6;
 
 	passCollectionPtrNew = &EnclaveCollections.EnclaveCollectionMap[key7];
 	passManifestPtrNew = &ManifestCollections.ManiCollectionMap[key7];
-	MDJobMaterializeCollection NewMDJob7(key7, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew));
+	MDJobMaterializeCollection NewMDJob7(key7, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew), OGLM.renderMode);
 	newJobList2.ListMatrix[key7] = NewMDJob7;
 
 	passCollectionPtrNew = &EnclaveCollections.EnclaveCollectionMap[key8];
 	passManifestPtrNew = &ManifestCollections.ManiCollectionMap[key8];
-	MDJobMaterializeCollection NewMDJob8(key8, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew));
+	MDJobMaterializeCollection NewMDJob8(key8, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew), OGLM.renderMode);
 	newJobList2.ListMatrix[key8] = NewMDJob8;
 
 	// END NEW JOB STYLE TASKS
@@ -412,7 +412,7 @@ void OrganicSystem::MaterializeCollection(EnclaveKeyDef::EnclaveKey Key1, Enclav
 	{
 		EnclaveKeyDef::EnclaveKey tempKey = T2CollectionRef->RenderableEnclaves[x];
 		Enclave *tempEnclavePtr = &T2CollectionRef->GetEnclaveByKey(tempKey);
-		FactoryPtr->AttachManifestToEnclave(tempEnclavePtr);
+		FactoryPtr->AttachManifestToEnclave(tempEnclavePtr, 1);	// last argument is NEW PROTOTYPE DUMB VALUE
 		FactoryPtr->StorageArray[x].VertexArrayCount = 2;
 
 	}
@@ -1042,7 +1042,7 @@ void OrganicSystem::JobMaterializeMultiCollectionFromFactory(MDListJobMaterializ
 		{
 			innerTempKey = CollectionRef->RenderableEnclaves[a];
 			Enclave *tempEnclavePtr = &CollectionRef->GetEnclaveByKey(innerTempKey);
-			FactoryRef->AttachManifestToEnclave(tempEnclavePtr);
+			FactoryRef->AttachManifestToEnclave(tempEnclavePtr, 1);		// last argument is NEW PROTOTYPE DUMB VALUE
 		}
 
 		// Phase 3: Render actual collection
@@ -1131,7 +1131,7 @@ void OrganicSystem::JobMaterializeMultiCollectionFromFactory2(MDListJobMateriali
 			innerTempKey = CollectionRef->RenderableEnclaves[a];
 			//cout << "Renderable key: " << innerTempKey.x << ", " << innerTempKey.y << ", " << innerTempKey.z << endl;
 			Enclave *tempEnclavePtr = &CollectionRef->GetEnclaveByKey(innerTempKey);
-			FactoryRef->AttachManifestToEnclave(tempEnclavePtr);
+			FactoryRef->AttachManifestToEnclave(tempEnclavePtr, 1);		// last argument is NEW PROTOTYPE DUMB VALUE
 		}
 
 		// Phase 3: Render actual collection
@@ -1153,7 +1153,7 @@ void OrganicSystem::JobMaterializeCollectionFromFactoryViaMorph(MDJobMaterialize
 	auto truestart = std::chrono::high_resolution_clock::now();		// optional, for performance testing only	
 	Enclave tempEnclave;
 	FactoryRef->FactoryCollections[0].EnclaveArray[0][0][0] = tempEnclave;
-
+	int mdjobRenderMode = mdjob->currentRenderMode;
 	// get a pointer to above collection
 	EnclaveCollection* CollectionRef = &FactoryRef->FactoryCollections[0];
 
@@ -1220,7 +1220,7 @@ void OrganicSystem::JobMaterializeCollectionFromFactoryViaMorph(MDJobMaterialize
 		//cout << "Renderable key: " << innerTempKey.x << ", " << innerTempKey.y << ", " << innerTempKey.z << endl;
 		Enclave *tempEnclavePtr = &CollectionRef->GetEnclaveByKey(innerTempKey);
 		//cout << "manifestCounter loop pass" << endl;
-		FactoryRef->AttachManifestToEnclave(tempEnclavePtr);
+		FactoryRef->AttachManifestToEnclave(tempEnclavePtr, mdjobRenderMode);
 	}
 	
 
@@ -1252,7 +1252,7 @@ void OrganicSystem::JobMaterializeCollectionFromMM(MDJobMaterializeCollection* m
 	EnclaveKeyDef::EnclaveKey Key1 = mdjob->MDKey;												// set the EnclaveKey for this loop iteration	
 	EnclaveCollectionBlueprint *blueprintptr = &BlueprintMatrixRef->BlueprintMap[Key1];						// set a pointer to the appropriate blueprint
 	EnclaveCollection *CollectionRef = mdjob->MDEnclaveCollectionPtr;							// set a pointer to the actual EnclaveCollection
-
+	int mdjobRenderMode = mdjob->currentRenderMode;					// NEW
 
 	mutexval.lock();																					/*thread safety:		*/
 	ManifestCollection *ManifestCollectionRef = mdjob->MDManifestCollectionPtr;			// set pointer in thread-safe code; another ManifestCollection could be allocating an EnclaveManifest on heap at same time.
@@ -1317,7 +1317,7 @@ void OrganicSystem::JobMaterializeCollectionFromMM(MDJobMaterializeCollection* m
 		}
 		*/
 		//cout << "innerTempKey: " << innerTempKey.x << ", " << innerTempKey.y << ", " << innerTempKey.z << endl;
-		ManifestCollectionRef->AddManifestToMatrix(innerTempKey.x, innerTempKey.y, innerTempKey.z, Key1, 3, std::ref(mutexval));
+		ManifestCollectionRef->AddManifestToMatrix(innerTempKey.x, innerTempKey.y, innerTempKey.z, Key1, mdjobRenderMode, std::ref(mutexval));
 	}
 	auto finish5 = std::chrono::high_resolution_clock::now();									// optional, for debugging
 	std::chrono::duration<double> elapsed5 = finish5 - start5;									// ""
@@ -1388,7 +1388,7 @@ void OrganicSystem::JobRematerializeSingleExistingCollectionFromFactory(EnclaveK
 		//cout << "test of key values: [" << innerTempKey.x << ", " << innerTempKey.y << ", " << innerTempKey.z << "]" << endl;
 		//ManifestCollectionsRef.AttachManifestToCollectedEnclave2(Key1, innerTempKey.x, innerTempKey.y, innerTempKey.z, ManifestCollectionRef, dumboutput);
 		Enclave *tempEnclavePtr = &CollectionRef->GetEnclaveByKey(innerTempKey);
-		FactoryRef->AttachManifestToEnclave(tempEnclavePtr);
+		FactoryRef->AttachManifestToEnclave(tempEnclavePtr, 1);		// last argument is NEW PROTOTYPE DUMB VALUE
 
 	}
 
@@ -2367,7 +2367,7 @@ void OrganicSystem::MaterializeRenderablesByMM()
 			EnclaveKeyDef::EnclaveKey tempKey = *collectionListIter2;
 			passCollectionPtrNew = &EnclaveCollections.EnclaveCollectionMap[tempKey];
 			passManifestPtrNew = &ManifestCollections.ManiCollectionMap[tempKey];
-			MDJobMaterializeCollection tempMDJob(tempKey, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew));
+			MDJobMaterializeCollection tempMDJob(tempKey, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew), OGLM.renderMode);
 			++collectionListIter2;
 			tempMatCollListRef->ListMatrix[tempKey] = tempMDJob;
 
@@ -2385,7 +2385,7 @@ void OrganicSystem::MaterializeRenderablesByMM()
 			EnclaveKeyDef::EnclaveKey tempKey = *collectionListIter2;
 			passCollectionPtrNew = &EnclaveCollections.EnclaveCollectionMap[tempKey];
 			passManifestPtrNew = &ManifestCollections.ManiCollectionMap[tempKey];
-			MDJobMaterializeCollection tempMDJob(tempKey, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew));
+			MDJobMaterializeCollection tempMDJob(tempKey, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew), OGLM.renderMode);
 			tempMatCollListRef->ListMatrix[tempKey] = tempMDJob;
 			listJobIterator++;
 			collectionListIter2++;
@@ -2515,7 +2515,7 @@ void OrganicSystem::MaterializeRenderablesByFactory()
 			EnclaveKeyDef::EnclaveKey tempKey = *collectionListIter2;
 			passCollectionPtrNew = &EnclaveCollections.EnclaveCollectionMap[tempKey];
 			passManifestPtrNew = &ManifestCollections.ManiCollectionMap[tempKey];
-			MDJobMaterializeCollection tempMDJob(tempKey, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew));
+			MDJobMaterializeCollection tempMDJob(tempKey, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew), OGLM.renderMode);
 			++collectionListIter2;
 			tempMatCollListRef->ListMatrix[tempKey] = tempMDJob;
 		}
@@ -2532,7 +2532,7 @@ void OrganicSystem::MaterializeRenderablesByFactory()
 			EnclaveKeyDef::EnclaveKey tempKey = *collectionListIter2;
 			passCollectionPtrNew = &EnclaveCollections.EnclaveCollectionMap[tempKey];
 			passManifestPtrNew = &ManifestCollections.ManiCollectionMap[tempKey];
-			MDJobMaterializeCollection tempMDJob(tempKey, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew));
+			MDJobMaterializeCollection tempMDJob(tempKey, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew), OGLM.renderMode);
 			tempMatCollListRef->ListMatrix[tempKey] = tempMDJob;
 			listJobIterator++;
 			collectionListIter2++;
@@ -2801,7 +2801,7 @@ void OrganicSystem::CheckProcessingQueue()
 			EnclaveKeyDef::EnclaveKey tempKey = popKey.collectionKey;		// get the collection key of the popKey
 			passCollectionPtrNew = &EnclaveCollections.EnclaveCollectionMap[tempKey];
 			passManifestPtrNew = &ManifestCollections.ManiCollectionMap[tempKey];	// get the manifest collection pointer to pass (instantiates a new instance of a ManifestCollection if it doesn't exist already)
-			MDJobMaterializeCollection tempMDJob(tempKey, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew));	//... use it to make a temp MDJob
+			MDJobMaterializeCollection tempMDJob(tempKey, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew), OGLM.renderMode);	//... use it to make a temp MDJob
 			OrganicMDJobVectorT1.push_back(tempMDJob);
 			T1_jobCount++;
 			//cout << "T1 job added!" << endl;
@@ -2820,7 +2820,7 @@ void OrganicSystem::CheckProcessingQueue()
 			T2CollectionProcessingQueue.pop();								// pop the queue
 			T2_OMMVector.push_back(popKey);									// push it to OMMVector
 			EnclaveKeyDef::EnclaveKey tempKey = popKey.collectionKey;		// get the collection key of the popKey
-			MDJobMaterializeCollection tempMDJob(tempKey, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew));	//... use it to make a temp MDJob
+			MDJobMaterializeCollection tempMDJob(tempKey, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew), OGLM.renderMode);	//... use it to make a temp MDJob
 			OrganicMDJobVectorT2.push_back(tempMDJob);
 			T2_jobCount++;							// increment workable task counter
 			//cout << "T2 job added!" << endl;

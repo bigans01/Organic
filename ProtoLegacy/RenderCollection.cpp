@@ -292,6 +292,24 @@ void RenderCollection::CombineManifestArrays(mutex& mutexval)
 			currentBegin += 3;
 			pointedBegin += 3;
 
+
+			// NEW PROTOTYPE TESTING -- create appropriate array size
+			/*
+			if (currentRenderMode == 1)
+			{
+				GLFloatPtr[currentBegin + 2] = ManMatrixIter->second.EnclaveGLPtr[pointedBegin + 2];									// for first coord, x
+				GLFloatPtr[currentBegin + 1] = ManMatrixIter->second.EnclaveGLPtr[pointedBegin + 1];									// for first coord, x
+				GLFloatPtr[currentBegin] = ManMatrixIter->second.EnclaveGLPtr[pointedBegin];
+
+				GLFloatPtr[currentBegin + 5] = ManMatrixIter->second.VertexColorGLPtr[pointedBegin + 2];
+				GLFloatPtr[currentBegin + 4] = ManMatrixIter->second.VertexColorGLPtr[pointedBegin + 1];
+				GLFloatPtr[currentBegin + 3] = ManMatrixIter->second.VertexColorGLPtr[pointedBegin];
+
+				currentBegin += 6;
+				pointedBegin += 6;
+			}
+			*/
+
 		}
 
 
@@ -310,12 +328,25 @@ void RenderCollection::CombineManifestArrays(mutex& mutexval)
 	}*/
 }
 
-void RenderCollection::AllocateNewArraysViaLockGuard(int in_numberOfFloats, mutex& mutexval)
+void RenderCollection::AllocateNewArraysViaLockGuard(int in_totalSizeOfVertexFloats, mutex& mutexval)
 {
 	std::lock_guard<std::mutex> lock(mutexval);
 	//cout << "GL float check begin...; total floats is: " << totalfloats << "Total Enclaves is: " << TotalEnclavesInFactory << endl;
-	GLFloatPtr.reset(new GLfloat[in_numberOfFloats]);
-	VertexColorArrayPtr.reset(new GLfloat[in_numberOfFloats]);
+	GLFloatPtr.reset(new GLfloat[in_totalSizeOfVertexFloats]);
+	VertexColorArrayPtr.reset(new GLfloat[in_totalSizeOfVertexFloats]);
+
+	// NEW PROTOTYPE TESTING:	Step 3: create appropriate array size
+
+	//cout << "Testing: (vertex attribute total size) " << in_totalSizeOfVertexFloats << endl;
+	//cout << "Testing: (vertex attribute total size) " << (in_totalSizeOfVertexFloats/3)*2 << endl;
+	/*
+	if (currentRenderMode == 1)
+	{
+		int modeVertexTupleWidth = in_totalSizeOfVertexFloats * 2;
+		GLFloatPtr.reset(new GLfloat[modeVertexTupleWidth]);
+	}
+	*/
+
 }
 
 void RenderCollection::CombineManifestArraysFromT1Factory(EnclaveManifestFactoryT1 *factoryRef, mutex& mutexval)
@@ -377,12 +408,31 @@ void RenderCollection::CombineManifestArraysFromT1Factory(EnclaveManifestFactory
 			GLFloatPtr[currentBegin + 1] = StoragePtr->VertexArray[pointedBegin + 1];
 			GLFloatPtr[currentBegin + 2] = StoragePtr->VertexArray[pointedBegin + 2];
 
-			VertexColorArrayPtr[currentBegin] = StoragePtr->VertexColorArray[pointedBegin];
+			VertexColorArrayPtr[currentBegin] =		StoragePtr->VertexColorArray[pointedBegin];
 			VertexColorArrayPtr[currentBegin + 1] = StoragePtr->VertexColorArray[pointedBegin + 1];
 			VertexColorArrayPtr[currentBegin + 2] = StoragePtr->VertexColorArray[pointedBegin + 2];
 
 			currentBegin += 3;
 			pointedBegin += 3;
+
+
+			// NEW PROTOTYPE TESTING -- create appropriate array size
+			/*
+			if (currentRenderMode == 1)
+			{
+				GLFloatPtr[currentBegin] = StoragePtr->VertexArray[pointedBegin];
+				GLFloatPtr[currentBegin + 1] = StoragePtr->VertexArray[pointedBegin + 1];
+				GLFloatPtr[currentBegin + 2] = StoragePtr->VertexArray[pointedBegin + 2];
+
+				GLFloatPtr[currentBegin + 3] = StoragePtr->VertexColorArray[pointedBegin];
+				GLFloatPtr[currentBegin + 4] = StoragePtr->VertexColorArray[pointedBegin + 1];
+				GLFloatPtr[currentBegin + 5] = StoragePtr->VertexColorArray[pointedBegin + 2];
+
+				currentBegin += 6;
+				pointedBegin += 6;
+			}
+			*/
+
 		}
 
 

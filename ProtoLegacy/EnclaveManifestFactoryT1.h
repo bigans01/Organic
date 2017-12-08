@@ -47,7 +47,7 @@ private:
 
 	FloatTupleXYZ EnclaveManifestOffset, TempTuple;		// two EnclaveManifestTuples that are used during the iteration through the Factory's storage units
 
-	void AttachManifestToEnclave(Enclave *in_ptr);											// attaches a manifest (contained within this Factory) to a valid Enclave
+	void AttachManifestToEnclave(Enclave *in_ptr, int in_renderMode);											// attaches a manifest (contained within this Factory) to a valid Enclave
 	void SetEnclaveCollectionPtr(EnclaveCollection *InPtr);									// sets the pointer to a valid EnclaveCollection
 	void InsertEnclaveCollectionIntoFactory();
 	FloatTupleXYZ SingleToMulti(int input);											// EnclaveManifestTuple

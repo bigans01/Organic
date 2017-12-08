@@ -559,6 +559,15 @@ void OrganicGLManager::selectShader()
 								For instance, if the data begins at byte 10000, you would put (void*)10000 in the array you are reading.
 								*/
 		);
+
+		/*
+		// NEW PROTOTYPE TESTING -- Step 1, set appropriate vertex attributess
+		glUseProgram(OrganicMode1ProgramID);	// use appropriate program
+		glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexCoordVBOID); // bind to primary VBO
+		// interleaving, total stride amount is 24 bytes
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*6, (void*)0);	// vertex point data: begins at 0
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*6, (void*)12 ); // color point data: begins at byte 12
+		*/
 	}
 
 	if (renderMode == 2)

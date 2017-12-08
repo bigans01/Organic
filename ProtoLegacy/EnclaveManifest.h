@@ -40,7 +40,7 @@ public:
 	//EnclaveManifest(EnclaveManifest& EMa) : dumbval(5) {};
 	EnclaveManifest::~EnclaveManifest();									// required destructor for memory management
 	EnclaveManifest(int x, int y, int z);													// constructor which sets the value of the EnclaveManifest's UniqueKey
-	EnclaveManifest(int x, int y, int z, OrganicTextureDictionary *texturedictionaryptr, OrganicVtxColorDictionary *vertexcolordictionaryptr);
+	EnclaveManifest(int x, int y, int z, OrganicTextureDictionary *texturedictionaryptr, OrganicVtxColorDictionary *vertexcolordictionaryptr, int in_renderMode);
 	EnclaveManifest();																		// potentially unused
 
 
@@ -55,6 +55,7 @@ public:
 		TextureGLPtr = std::move(manifest_a.TextureGLPtr);
 		TextureDictionaryRef = manifest_a.TextureDictionaryRef;
 		VertexColorDictionaryRef = manifest_a.VertexColorDictionaryRef;
+		manifestRenderMode = manifest_a.manifestRenderMode;
 		return *this;
 	}
 
@@ -64,6 +65,7 @@ public:
 		//testint = std::move(manifest_a.testint);
 		TextureDictionaryRef = manifest_a.TextureDictionaryRef;
 		VertexColorDictionaryRef = manifest_a.VertexColorDictionaryRef;
+		manifestRenderMode = manifest_a.manifestRenderMode;
 		return *this;
 	}
 	
@@ -78,7 +80,7 @@ private:
 																							//GLfloat *EnclaveGLPtr = NULL;																	// pointer to the array of OpenGL floats, which will be used by an instnce of RenderCollection.
 																							//GLfloat *VertexColorGLPtr = NULL;
 																							//GLfloat *TextureGLPtr = NULL;																	// pointer to the array of texture data
-
+	int manifestRenderMode = 0;
 	unique_ptr<GLfloat[]> EnclaveGLPtr;
 	unique_ptr<GLfloat[]> VertexColorGLPtr;
 	unique_ptr<GLfloat[]> TextureGLPtr;

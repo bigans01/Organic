@@ -32,6 +32,7 @@ private:
 	EnclaveKeyDef::EnclaveKey StorageKey;		// an EnclaveKey used to represent the proper EnclaveKey value of a stored Enclave
 	int TotalEnclaveTriangles = 0;				// total triangles to be rendered, stored within this enclave; equivalent of the same variable in EnclaveManifest
 	int VertexArrayCount = 0;					// the count of actual vertexes used in the VertexArray below (increments by one with each element added into VertexArray)
+	int currentRenderMode = 0;
 	GLfloat VertexArray[13824];					// 108 GLfloats per cube, x 64 = 6912.   (alternate: 13824)		(other alternate: 3456) // 6912 / 8 = 864
 	int VertexColorArrayCount = 0;				// the count of actual texture data used in the VertexColorArray below (increments by one with each element added into VertexColorArray)
 	GLfloat VertexColorArray[13824];			// 108 GLfloats per cube, x 64 = 6912.

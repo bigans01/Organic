@@ -382,13 +382,14 @@ EnclaveManifest::EnclaveManifest(int x, int y, int z)		// declares the enclave's
 	//SortRenderArray();
 }
 
-EnclaveManifest::EnclaveManifest(int x, int y, int z, OrganicTextureDictionary *texturedictionaryptr, OrganicVtxColorDictionary *vertexcolordictionaryptr)
+EnclaveManifest::EnclaveManifest(int x, int y, int z, OrganicTextureDictionary *texturedictionaryptr, OrganicVtxColorDictionary *vertexcolordictionaryptr, int in_renderMode)
 {
 	this->UniqueKey.x = x;
 	this->UniqueKey.y = y;
 	this->UniqueKey.z = z;
 	this->TextureDictionaryRef = texturedictionaryptr;
 	this->VertexColorDictionaryRef = vertexcolordictionaryptr;
+	manifestRenderMode = in_renderMode;
 }
 
 EnclaveManifest::~EnclaveManifest()

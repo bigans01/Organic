@@ -49,6 +49,7 @@ private:
 	int LastCollectionTriangleCount = 0;																// potentially unused?
 	int RenderCollectionArraySize = 0;																	// indicates the size of the dynamic array in bytes (required for OpenGL glBufferData)
 	int instantiatorFlag = 0;																			// has no purpose other than to instantiate this render collection on the heap (used with an OrganicSystem's heapMutex)
+	int currentRenderMode = 0;																			// the current render mode the engine is running in 
 	struct EnclaveManifestMeta {																		// stores meta data about a single EnclaveManifest
 		EnclaveKeyDef::EnclaveKey EnclaveManifestKey;
 		int currentTriangleCount = 0;

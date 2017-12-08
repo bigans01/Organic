@@ -38,6 +38,7 @@ private:
 	RenderCollectionMatrix* MDRenderCollectionsRef = NULL;					// a pointer to the render collection list
 	EnclaveCollection* MDEnclaveCollectionPtr = NULL;						// a pointer to a valid enclave collection
 	ManifestCollection* MDManifestCollectionPtr = NULL;					// a pointer to a valid manifest collection; this is not used with factories but is included anyway
+	int currentRenderMode = 0;
 
 
 	MDJobMaterializeCollection(																					/* the only non-constructor function, 
@@ -49,7 +50,8 @@ private:
 									ManifestCollectionMatrix* p_MDManifestCollectionsRef,
 									RenderCollectionMatrix* p_MDRenderCollectionsRef,
 									EnclaveCollection* p_MDEnclaveCollectionPtr,
-									ManifestCollection* p_MDManifestCollectionPtr
+									ManifestCollection* p_MDManifestCollectionPtr,
+									int in_renderMode
 											);
 
 };

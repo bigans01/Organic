@@ -34,13 +34,13 @@ void ManifestCollection::AddManifestToMatrix(int x, int y, int z, EnclaveKeyDef:
 	tempkey.z = z;
 	OrganicTextureDictionary *tempDictionaryRef = &CollectionMatrixRef->OrganicPointer->TextureDictionary;
 	OrganicVtxColorDictionary *tempColorDictionaryRef = &CollectionMatrixRef->OrganicPointer->VertexColorDictionary;
-	EnclaveManifest tempmanifest(x, y, z, tempDictionaryRef, tempColorDictionaryRef);
+	EnclaveManifest tempmanifest(x, y, z, tempDictionaryRef, tempColorDictionaryRef, 1);		// last argument is NEW PROTOTYPE DUMB VALUE
 	ManMatrix[tempkey] = tempmanifest;
 	ManMatrix[tempkey].AttachToEnclave(CollectionMatrixRef->GetEnclaveFromCollection(Key, x, y, z));
 	//cout << "test value of triangles:: (" << tempkey.x << ", " << tempkey.y << ", " << tempkey.z << ") " << ManMatrix[tempkey].TotalEnclaveTriangles << endl;
 }
 
-void ManifestCollection::AddManifestToMatrix(int x, int y, int z, EnclaveKeyDef::EnclaveKey Key, int outputdebug)
+void ManifestCollection::AddManifestToMatrix(int x, int y, int z, EnclaveKeyDef::EnclaveKey Key, int renderMode)
 {
 	/* Summary: adds a newly instanced manifest to the matrix; the manifest will correspond to the Enclave at x/y/z within the EnclaveCollection having a key value of Key */
 	//cout << "test call" << endl;
@@ -50,7 +50,7 @@ void ManifestCollection::AddManifestToMatrix(int x, int y, int z, EnclaveKeyDef:
 	tempkey.z = z;
 	OrganicTextureDictionary *tempDictionaryRef = &CollectionMatrixRef->OrganicPointer->TextureDictionary;
 	OrganicVtxColorDictionary *tempColorDictionaryRef = &CollectionMatrixRef->OrganicPointer->VertexColorDictionary;
-	EnclaveManifest tempmanifest(x, y, z, tempDictionaryRef, tempColorDictionaryRef);
+	EnclaveManifest tempmanifest(x, y, z, tempDictionaryRef, tempColorDictionaryRef, renderMode);
 	ManMatrix[tempkey] = tempmanifest;
 	ManMatrix[tempkey].AttachToEnclave(CollectionMatrixRef->GetEnclaveFromCollection(Key, x, y, z));
 	//cout << "test call: " << outputdebug << endl;
@@ -58,7 +58,7 @@ void ManifestCollection::AddManifestToMatrix(int x, int y, int z, EnclaveKeyDef:
 	//cout << "test value of triangles:: (" << tempkey.x << ", " << tempkey.y << ", " << tempkey.z << ") " << ManMatrix[tempkey].TotalEnclaveTriangles << endl;
 }
 
-void ManifestCollection::AddManifestToMatrix(int x, int y, int z, EnclaveKeyDef::EnclaveKey Key, int outputdebug, mutex& HeapMutex)
+void ManifestCollection::AddManifestToMatrix(int x, int y, int z, EnclaveKeyDef::EnclaveKey Key, int renderMode, mutex& HeapMutex)
 {
 	/* Summary: adds a newly instanced manifest to the matrix; the manifest will correspond to the Enclave at x/y/z within the EnclaveCollection having a key value of Key */
 	//cout << "test call" << endl;
@@ -68,7 +68,7 @@ void ManifestCollection::AddManifestToMatrix(int x, int y, int z, EnclaveKeyDef:
 	tempkey.z = z;
 	OrganicTextureDictionary *tempDictionaryRef = &CollectionMatrixRef->OrganicPointer->TextureDictionary;
 	OrganicVtxColorDictionary *tempColorDictionaryRef = &CollectionMatrixRef->OrganicPointer->VertexColorDictionary;
-	EnclaveManifest tempmanifest(x, y, z, tempDictionaryRef, tempColorDictionaryRef);
+	EnclaveManifest tempmanifest(x, y, z, tempDictionaryRef, tempColorDictionaryRef, renderMode);
 	AllocateManifestViaLockGuard(tempkey, &tempmanifest, HeapMutex);
 	ManMatrix[tempkey].AttachToEnclave(CollectionMatrixRef->GetEnclaveFromCollection(Key, x, y, z), HeapMutex);
 	//cout << "test value of triangles:: (" << tempkey.x << ", " << tempkey.y << ", " << tempkey.z << ") " << ManMatrix[tempkey].TotalEnclaveTriangles << endl;
