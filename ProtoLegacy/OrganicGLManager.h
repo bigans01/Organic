@@ -45,25 +45,44 @@ private:
 	GLuint OrganicGLVCprogramID = 0;
 
 	GLuint OrganicGLVertexArrayID = 0;												// OpenGL: pointer/handle to the vertex array handler
-	GLuint OrganicGLVertexBufferID = 0;												// OpenGL: pointer/handle to the vertex buffer handler (single buffer)
+	GLuint OrganicGLVertexCoordVBOID = 0;										// OpenGL: pointer/handle to the vertex coordinate VBO buffer handler (single buffer)
 	GLuint OrganicGLVertexNormalID = 0;
 	GLuint OrganicGLIndirectBufferID = 0;
 
-	GLuint OrganicGLVertexColorBufferID = 0;										// OpenGL: pointer/handle to the vertex color buffer handler (single buffer)
+	GLuint OrganicGLVertexSecondaryVBOID = 0;									// OpenGL: pointer/handle to the secondary buffer; depending on mode, this will store either colors or texture coordinates
 	GLuint OrganicGLLightingBufferID = 0;											// OpenGL: third potential single buffer; currently in testing only. (not being generated as of (10/11/2017))
 	GLuint OrganicGLLightingBufferID2 = 0;											// OpenGL: third potential single buffer; currently in testing only. (not being generated as of (10/11/2017))
 	GLuint OrganicGLVertexBufferArray[10];										// OpenGL: array of potential buffers
 	GLuint OrganicMVPHandle = 0;													// OpenGL: pointer/handle to the MVP matrix result
 	OGLMBufferManager OrganicBufferManager;										// the instance of OGLMBufferManager that this OrganicGLManager object will use
 	GLfloat *OrganicGLarrayPTR = NULL;													// (temporary) OpenGL: used to point to a dynamic array containing vertex data
-	//const int CollectionBufferSize = 1024 * 1024;								// the size of the data buffer for each RenderCollection; 
-	const int CollectionBufferSize = 589824;										//alternate = 73728   , 147456, 294912, 589824, 1179648
-																					/* A Note on CollectionBufferSize value: 
-																						73728 = the total byte size of all vertices that can exist on one collection's face. It is equivalent to one collection face, which iscalculated by:
-																						        18 floats per cube face		X    16 faces	X	64 chunks	X size of float (4 bytes)
+	//const int OGLMVertexSubBufferSize = 1024 * 1024;								// the size of the data buffer for each RenderCollection; 
+	const int cltnFaceVertexCoordTotalBytes = 73728;
+	const int cltnFaceTextureCoordTotalBytes = 49152;
+	const int cltnFaceStorageCount = 8;
 
-																						So, a size of 589824 is equivalent to the total size of all vertices in 8 collection faces.
-																					*/
+
+
+	/* A Note on OGLMVertexSubBufferSize (and similiar members) values:
+		73728 = the total byte size of all vertices that can exist on one collection's face. It is equivalent to one collection face, which iscalculated by:
+		18 floats per cube face (6 vertexes)		X    16 faces	X	64 chunks	X size of float (4 bytes)
+
+		So, a size of 589824 is equivalent to the total size of all vertices in 8 collection faces.
+		1 collection face:		73,728
+		2 collecion faces:		147,456
+		3 collection faces:		221,184
+		4 collection faces:		294,912
+		5 collection faces:		368,640
+		6 collection faces:		442,368
+		7 collection faces:		516,096
+		8 collection faces:		589,824
+
+
+	*/
+	const int OGLMVertexSubBufferSize = cltnFaceStorageCount * cltnFaceVertexCoordTotalBytes;	// size of all vertex data for a sub element = number of collection faces * 73728;
+	const int OGLMTexUVSubBufferSize = cltnFaceStorageCount * cltnFaceTextureCoordTotalBytes;	// size of all UV texture coordinate data for a sub element = number of collection faces * 49152
+
+
 	const GLbitfield bufferStorageflags = GL_DYNAMIC_STORAGE_BIT | GL_MAP_WRITE_BIT | GL_MAP_READ_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;	// mandatory flags for glBufferStorage
 	const GLbitfield mapFlags = GL_MAP_READ_BIT | GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
 	glm::vec3* bufferMap1;

@@ -91,10 +91,10 @@ public:
 	void AddOrganicVtxColorMetaArray(string mapname);											// adds a new vertex color meta array, which is a list that is used to color individual vertexes.
 	void SetGraphicsAPI();																		// sets up initial data for OpenGL functionality						
 	RenderCollection* GetRenderCollectionPtr(int x, int y, int z);								// returns a pointer to a RenderCollection
-	void SendDataFromRenderPtrToGLBuffer(RenderCollection* renderCollectionPtr);				// sends all vertex data from the RenderCollection to the OGLM's OpenGL vertex data buffer (data buffer name: OrganicGLVertexBufferID)
-	void LoadVCDataToGLBuffer(RenderCollection* renderCollectionPtr);							// sends all vertex color data from the RenderCollection to the OGLM's OpenGL vertex color data buffer (data buffer name: OrganicGLVertexColorBufferID)
+	void SendDataFromRenderPtrToGLBuffer(RenderCollection* renderCollectionPtr);				// sends all vertex data from the RenderCollection to the OGLM's OpenGL vertex data buffer (data buffer name: OrganicGLVertexCoordVBOID)
+	void LoadVCDataToGLBuffer(RenderCollection* renderCollectionPtr);							// sends all vertex color data from the RenderCollection to the OGLM's OpenGL vertex color data buffer (data buffer name: OrganicGLVertexSecondaryVBOID)
 	void AnalyzeRenderArray(int x, int y, int z, int xyz);										// reserved for future use.
-	void SetRenderMode(int x);																																					// sets the RenderMode variable in the OGLM object
+	
 	void RenderGLTerrain();																																						// renders everything in the Terrain buffer
 	void GLCleanup();																																							// for deallocating and/or turning off OpenGL components
 	void SendRenderListToGLTerrainBuffer();																																		// will send all renderable enclaves listed in the renderCollectionList to the OpenGL buffer																																				// currently for testing: "moves the world" by preparing buffers to load data for RenderCollections +1 chunk NW of current camera position
@@ -137,7 +137,8 @@ private:
 	int oldWorkPriority = 0;													// the last priority mode that was set
 	int T1_OGLMcubesize = 0;													// determines the size, in radius of cubes, of T1 and T2 OGLM arrays
 	int T2_OGLMcubesize = 0;
-
+	void SetRenderMode(int x);																																					// sets the RenderMode variable in the OGLM object
+	void SelectShader();														// selects shaders in OGLM, based on OGLM's currently set render mode
 	void SetupCellMeta();														// cycles through each cell and adds the appropriate factory pointer to each
 	int CreateThreads(int in_numberOfThreads);
 	void AllocateFactories(int noOfFactories);													// sets up Factories for future use. 
