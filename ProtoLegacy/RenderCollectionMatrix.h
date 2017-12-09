@@ -37,10 +37,10 @@ class RenderCollectionMatrix
 																														
 		void CreateRenderArrayFromManifestCollection(EnclaveKeyDef::EnclaveKey Key);												/* creates a new 3d vertex data array, for the RenderCollection having a value of Key, 																													
 																																	 by iterating through all elements of the ManifestCollection that has a value of Key.*/
-		void CreateRenderArrayFromManifestCollection(EnclaveKeyDef::EnclaveKey Key, mutex& mutexRef);
-		void CreateRenderArrayFromFactory(EnclaveKeyDef::EnclaveKey Key, EnclaveManifestFactoryT1 *factoryRef, mutex& mutexRef);	/* creates a new 3d vertex data array, for the Factory having a value of Key, 	
+		void CreateRenderArrayFromManifestCollection(EnclaveKeyDef::EnclaveKey Key, mutex& mutexRef, int in_renderMode);
+		void CreateRenderArrayFromFactory(EnclaveKeyDef::EnclaveKey Key, EnclaveManifestFactoryT1 *factoryRef, mutex& mutexRef, int in_renderMode);	/* creates a new 3d vertex data array, for the Factory having a value of Key,
 																																	 by iterating through all elements of the ManifestCollection that has a value of Key.*/
-		void CreateRenderArrayFromFactoryMorph(EnclaveKeyDef::EnclaveKey Key, EnclaveManifestFactoryT1 *factoryRef, mutex& mutexRef);	/* creates a new 3d vertex data array, for the Factory having a value of Key,
+		void CreateRenderArrayFromFactoryMorph(EnclaveKeyDef::EnclaveKey Key, EnclaveManifestFactoryT1 *factoryRef, mutex& mutexRef, int in_renderMode);	/* creates a new 3d vertex data array, for the Factory having a value of Key,
 																																		 by iterating through all elements of the ManifestCollection that has a value of Key.*/
 		void SetManifestCollectionMatrixPtr(ManifestCollectionMatrix *manifestcollectionmatrixref);						// sets the ManifestCollectionMatrix pointer
 		void SetEnclaveCollectionMatrixPtr(EnclaveCollectionMatrix *enclavecollectionmatrixref);						// sets the EnclaveCollectionMatrix pointer

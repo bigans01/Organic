@@ -955,7 +955,7 @@ void OrganicSystem::JobMaterializeMultiCollectionFromMM(MDListJobMaterializeColl
 																									
 		//cout << "HOO BOY!" << ManifestCollectionRef->ManMatrix[innerTempKey].TotalEnclaveTriangles << endl;				// RENAME THIS TO SOMETHING ELSE! (ManifestCollectionRef)
 		// Phase 3: Render collection set up													
-		RenderCollectionsRef->CreateRenderArrayFromManifestCollection(Key1, std::ref(mutexval));						// creates the to-be rendered array, from a MM
+		RenderCollectionsRef->CreateRenderArrayFromManifestCollection(Key1, std::ref(mutexval), 1);						// creates the to-be rendered array, from a MM;;; // last argument is NEW PROTOTYPE DUMB VALUE
 
 		
 		totalprocessed++;
@@ -1046,7 +1046,7 @@ void OrganicSystem::JobMaterializeMultiCollectionFromFactory(MDListJobMaterializ
 		}
 
 		// Phase 3: Render actual collection
-		RenderCollectionsRef->CreateRenderArrayFromFactory(Key1, FactoryRef, std::ref(mutexval));		// call function to add data into array; pass mutex to use
+		RenderCollectionsRef->CreateRenderArrayFromFactory(Key1, FactoryRef, std::ref(mutexval), 1);		// call function to add data into array; pass mutex to use;; // last argument is NEW PROTOTYPE DUMB VALUE
 		RenderCollection* collPtr = &RenderCollectionsRef->RenderMatrix[Key1];
 		//cout << "Total renderables for Key (" << Key1.x << ", " << Key1.y << ", " << Key1.z << ") :" << tempdumbcount << ": " << collPtr->RenderCollectionArraySize << endl;
 		//trueend = std::chrono::high_resolution_clock::now();
@@ -1136,7 +1136,7 @@ void OrganicSystem::JobMaterializeMultiCollectionFromFactory2(MDListJobMateriali
 
 		// Phase 3: Render actual collection
 		//cout << "Phase 3 beginning..." << endl;
-		RenderCollectionsRef->CreateRenderArrayFromFactory(Key1, FactoryRef, std::ref(mutexval));		// call function to add data into array; pass mutex to use
+		RenderCollectionsRef->CreateRenderArrayFromFactory(Key1, FactoryRef, std::ref(mutexval), 1);		// call function to add data into array; pass mutex to use;; // last argument is NEW PROTOTYPE DUMB VALUE
 		//RenderCollection* collPtr = &RenderCollectionsRef->RenderMatrix[Key1];
 		//cout << "Total renderables for Key (" << Key1.x << ", " << Key1.y << ", " << Key1.z << ") :" << tempdumbcount << ": " << collPtr->RenderCollectionArraySize << endl;
 		//trueend = std::chrono::high_resolution_clock::now();
@@ -1228,7 +1228,7 @@ void OrganicSystem::JobMaterializeCollectionFromFactoryViaMorph(MDJobMaterialize
 	// Phase 3: Render actual collection
 	//cout << "Phase 3 beginning..." << endl;
 	//cout << "FACTORY WORK COMPLETE PASS..." << mdjob->MDKey.x << ", " << mdjob->MDKey.y << ", " << mdjob->MDKey.z << endl;
-	RenderCollectionsRef->CreateRenderArrayFromFactoryMorph(mdjob->MDKey, FactoryRef, std::ref(mutexval));		// call function to add data into array; pass mutex to use
+	RenderCollectionsRef->CreateRenderArrayFromFactoryMorph(mdjob->MDKey, FactoryRef, std::ref(mutexval), mdjobRenderMode);		// call function to add data into array; pass mutex to use
 
 
 																									//RenderCollection* collPtr = &RenderCollectionsRef->RenderMatrix[Key1];
@@ -1328,7 +1328,7 @@ void OrganicSystem::JobMaterializeCollectionFromMM(MDJobMaterializeCollection* m
 																											
 
 	// Phase 3: create render array
-	RenderCollectionsRef->CreateRenderArrayFromManifestCollection(Key1, std::ref(mutexval));						// creates the to-be rendered array, from a MM
+	RenderCollectionsRef->CreateRenderArrayFromManifestCollection(Key1, std::ref(mutexval), mdjobRenderMode);						// creates the to-be rendered array, from a MM
 																									
 
 }
@@ -1394,7 +1394,7 @@ void OrganicSystem::JobRematerializeSingleExistingCollectionFromFactory(EnclaveK
 	}
 
 	// Phase 3: Render actual collection
-	RenderCollectionsRef->CreateRenderArrayFromFactory(Key1, FactoryRef, std::ref(mutexval));		// call function to add data into array; pass mutex to use
+	RenderCollectionsRef->CreateRenderArrayFromFactory(Key1, FactoryRef, std::ref(mutexval), 1);		// call function to add data into array; pass mutex to use ;; // last argument is NEW PROTOTYPE DUMB VALUE
 }
 
 void OrganicSystem::SetGraphicsAPI()

@@ -155,23 +155,20 @@ void OrganicGLManager::InitializeOpenGL()
 	glGenVertexArrays(1, &OrganicGLVertexArrayID);
 	glBindVertexArray(OrganicGLVertexArrayID);			// sets this as the current VAO to use
 
-	// bufferStorage for vertexes
-	glGenBuffers(1, &OrganicGLVertexCoordVBOID);								// generate 10 buffers, bind it to the arrayOrganicGLVertexBufferArray
-	glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexCoordVBOID);					// binds the previously created buffer to be a GL_ARRAY_BUFFER
-	glBufferStorage(GL_ARRAY_BUFFER, OGLMVertexSubBufferSize * numberOfBuffers, NULL, bufferStorageflags);	/* REQUIRED: pre-allocates memory for the buffer, to any desired amount; this is so
-																											that the buffer doesn't need to be resized in the future.
+																										
+																										
 
-																											Parameters:
-																											-first argument: target -> buffer binding target. Set to GL_ARRAY_BUFFER in this case;
-																											see official documentation for more details.
+																										
+																										
+																										
 
-																											-second argument: buffer size -> size of the buffer.
+																										
 
-																											-third argument: pointer to data to copy -> will copy data specified by the pointer; can use NULL
-																											if no data is to be copied (such as in this case)
-																											-fourth argument: flags -> sets the flags that will be needed for this buffer; GL_DYNAMIC_STORAGE_BIT
-																											is required to use glBufferSubData in this buffer.	
-																										*/
+																										
+																										
+																										
+																										
+																										
 	// indirect draw buffer
 	glGenBuffers(1, &OrganicGLIndirectBufferID);
 	glBindBuffer(GL_DRAW_INDIRECT_BUFFER, OrganicGLIndirectBufferID);
@@ -180,16 +177,74 @@ void OrganicGLManager::InitializeOpenGL()
 	// --- RENDER MODE BASED -- 
 
 	// MODE 0
+	if (renderMode == 0)
+	{
+		// bufferStorage for vertexes
+		glGenBuffers(1, &OrganicGLVertexCoordVBOID);								// generate 10 buffers, bind it to the arrayOrganicGLVertexBufferArray
+		glEnableVertexAttribArray(0);												// enable vertex attrib array for attribute 0
+		glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexCoordVBOID);					// binds the previously created buffer to be a GL_ARRAY_BUFFER
+		glBufferStorage(GL_ARRAY_BUFFER, OGLMVertexSubBufferSize * numberOfBuffers, NULL, bufferStorageflags);	
+		//glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexCoordVBOID);				// OrganicGLVertexBufferArray[0], OrganicGLVertexCoordVBOID
+		glVertexAttribPointer(
+			0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+			3,                  // size
+			GL_FLOAT,           // type
+			GL_FALSE,           // normalized?
+			0,                  // stride
+			(void*)0            /* array buffer offset. Number following (void*) indicates offset point to begin reading from in the pointed-to buffer, measured in bytes;
+								For instance, if the data begins at byte 10000, you would put (void*)10000 in the array you are reading.
+								*/
+		);
+	}
 
 	// MODE 1
 	if (renderMode == 1)
 	{
+		// bufferStorage for vertexes
+		glGenBuffers(1, &OrganicGLVertexCoordVBOID);								// generate 10 buffers, bind it to the arrayOrganicGLVertexBufferArray
+		glEnableVertexAttribArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexCoordVBOID);					// binds the previously created buffer to be a GL_ARRAY_BUFFER
+		glBufferStorage(GL_ARRAY_BUFFER, OGLMVertexSubBufferSize * numberOfBuffers, NULL, bufferStorageflags);	
+		//glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexCoordVBOID);				// OrganicGLVertexBufferArray[0], OrganicGLVertexCoordVBOID
+		glVertexAttribPointer(
+			0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+			3,                  // size
+			GL_FLOAT,           // type
+			GL_FALSE,           // normalized?
+			0,                  // stride
+			(void*)0            /* array buffer offset. Number following (void*) indicates offset point to begin reading from in the pointed-to buffer, measured in bytes;
+								For instance, if the data begins at byte 10000, you would put (void*)10000 in the array you are reading.
+								*/
+		);
+
 		// set secondary buffer to store colors per vertex
 		glGenBuffers(1, &OrganicGLVertexSecondaryVBOID);
+		glEnableVertexAttribArray(1);
 		glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexSecondaryVBOID);				
 		glBufferStorage(GL_ARRAY_BUFFER, OGLMVertexSubBufferSize * numberOfBuffers, NULL, bufferStorageflags);
+		glVertexAttribPointer(
+			1,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+			3,                  // size
+			GL_FLOAT,           // type
+			GL_FALSE,           // normalized?
+			0,                  // stride
+			(void*)0            /* array buffer offset. Number following (void*) indicates offset point to begin reading from in the pointed-to buffer, measured in bytes;
+								For instance, if the data begins at byte 10000, you would put (void*)10000 in the array you are reading.
+								*/
+		);
+
+		/*
+		// NEW PROTOTYPE TESTING -- Step 1, set appropriate vertex attributess
+		glUseProgram(OrganicMode1ProgramID);	// use appropriate program
+		glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexCoordVBOID); // bind to primary VBO
+		// interleaving, total stride amount is 24 bytes
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*6, (void*)0);	// vertex point data: begins at 0
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*6, (void*)12 ); // color point data: begins at byte 12
+		*/
+
 	}
 
+	// MODE 2
 	if (renderMode == 2)
 	{
 		// set secondary buffer to store UV coordinates per vertex
@@ -199,8 +254,7 @@ void OrganicGLManager::InitializeOpenGL()
 
 	}
 
-	// MODE 2
-
+	// MODE 3
 
 
 	/*-----RESERVED FOR LATER USE-----
@@ -516,6 +570,7 @@ void OrganicGLManager::selectShader()
 	{
 		glUseProgram(OrganicMode0ProgramID);
 
+		/*
 		glEnableVertexAttribArray(0);										//select the buffer we will be using
 		glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexCoordVBOID);				// OrganicGLVertexBufferArray[0], OrganicGLVertexCoordVBOID
 		glVertexAttribPointer(
@@ -524,16 +579,19 @@ void OrganicGLManager::selectShader()
 			GL_FLOAT,           // type
 			GL_FALSE,           // normalized?
 			0,                  // stride
-			(void*)0            /* array buffer offset. Number following (void*) indicates offset point to begin reading from in the pointed-to buffer, measured in bytes;
-								For instance, if the data begins at byte 10000, you would put (void*)10000 in the array you are reading.
-								*/
+			(void*)0            // array buffer offset. Number following (void*) indicates offset point to begin reading from in the pointed-to buffer, measured in bytes;
+								// For instance, if the data begins at byte 10000, you would put (void*)10000 in the array you are reading.
+								
 		);
+		*/
 	}
 
 	if (renderMode == 1)
 	{
 		glUseProgram(OrganicMode1ProgramID);
 
+
+		/*
 		glEnableVertexAttribArray(0);										//select the buffer we will be using
 		glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexCoordVBOID);				// OrganicGLVertexBufferArray[0], OrganicGLVertexCoordVBOID
 		glVertexAttribPointer(
@@ -542,9 +600,9 @@ void OrganicGLManager::selectShader()
 			GL_FLOAT,           // type
 			GL_FALSE,           // normalized?
 			0,                  // stride
-			(void*)0            /* array buffer offset. Number following (void*) indicates offset point to begin reading from in the pointed-to buffer, measured in bytes;
-								For instance, if the data begins at byte 10000, you would put (void*)10000 in the array you are reading.
-								*/
+			(void*)0            // array buffer offset. Number following (void*) indicates offset point to begin reading from in the pointed-to buffer, measured in bytes;
+								//For instance, if the data begins at byte 10000, you would put (void*)10000 in the array you are reading.
+								
 		);
 
 
@@ -557,10 +615,11 @@ void OrganicGLManager::selectShader()
 			GL_FLOAT,           // type
 			GL_FALSE,           // normalized?
 			0,                  // stride
-			(void*)0            /* array buffer offset. Number following (void*) indicates offset point to begin reading from in the pointed-to buffer, measured in bytes;
-								For instance, if the data begins at byte 10000, you would put (void*)10000 in the array you are reading.
-								*/
+			(void*)0            // array buffer offset. Number following (void*) indicates offset point to begin reading from in the pointed-to buffer, measured in bytes;
+								//For instance, if the data begins at byte 10000, you would put (void*)10000 in the array you are reading.
+								
 		);
+		*/
 
 		/*
 		// NEW PROTOTYPE TESTING -- Step 1, set appropriate vertex attributess

@@ -31,32 +31,35 @@ void RenderCollectionMatrix::CreateRenderArrayFromManifestCollection(EnclaveKeyD
 	
 }
 
-void RenderCollectionMatrix::CreateRenderArrayFromManifestCollection(EnclaveKeyDef::EnclaveKey Key, mutex& mutexRef)
+void RenderCollectionMatrix::CreateRenderArrayFromManifestCollection(EnclaveKeyDef::EnclaveKey Key, mutex& mutexRef, int in_renderMode)
 {
 
 	AllocateRenderCollectionViaLockGuard(Key, mutexRef);
 	RenderMatrix[Key].SetManifestCollectionPtr(&ManifestCollectionMatrixPtr->ManiCollectionMap[Key]);	// set the pointer in the temp value
 	RenderMatrix[Key].SetEnclaveCollectionPtr(&EnclaveCollectionMatrixPtr->EnclaveCollectionMap[Key]);
+	RenderMatrix[Key].currentRenderMode = in_renderMode;
 	//auto finish3 = std::chrono::high_resolution_clock::now();
 	//std::chrono::duration<double> elapsed3 = finish3 - start3;
 	//cout << "---------------create render array from manifest call time: " << elapsed3.count() << endl;
 
 	RenderMatrix[Key].CombineManifestArrays(std::ref(mutexRef));
 }
-void RenderCollectionMatrix::CreateRenderArrayFromFactory(EnclaveKeyDef::EnclaveKey Key, EnclaveManifestFactoryT1 *factoryRef, mutex& mutexRef)
+void RenderCollectionMatrix::CreateRenderArrayFromFactory(EnclaveKeyDef::EnclaveKey Key, EnclaveManifestFactoryT1 *factoryRef, mutex& mutexRef, int in_renderMode)
 {
 	//RenderMatrix[Key].SetManifestCollectionPtr(&ManifestCollectionMatrixPtr->ManiCollectionMap[Key]);	// set the pointer in the temp value
 	AllocateRenderCollectionViaLockGuard(Key, mutexRef);
 	RenderMatrix[Key].SetEnclaveCollectionPtr(&EnclaveCollectionMatrixPtr->EnclaveCollectionMap[Key]);
 	RenderMatrix[Key].CombineManifestArraysFromT1Factory(factoryRef, std::ref(mutexRef));
+	RenderMatrix[Key].currentRenderMode = in_renderMode;
 }
 
-void RenderCollectionMatrix::CreateRenderArrayFromFactoryMorph(EnclaveKeyDef::EnclaveKey Key, EnclaveManifestFactoryT1 *factoryRef, mutex& mutexRef)
+void RenderCollectionMatrix::CreateRenderArrayFromFactoryMorph(EnclaveKeyDef::EnclaveKey Key, EnclaveManifestFactoryT1 *factoryRef, mutex& mutexRef, int in_renderMode)
 {
 	// &factoryRef->FactoryCollections[0]
 	//RenderMatrix[Key].SetEnclaveCollectionPtr(&EnclaveCollectionMatrixPtr->EnclaveCollectionMap[Key]);
 	AllocateRenderCollectionViaLockGuard(Key, mutexRef);
 	RenderMatrix[Key].CombineManifestArraysFromT1Factory(factoryRef, std::ref(mutexRef));
+	RenderMatrix[Key].currentRenderMode = in_renderMode;
 }
 
 void RenderCollectionMatrix::SetManifestCollectionMatrixPtr(ManifestCollectionMatrix *manifestcollectionmatrixref)
