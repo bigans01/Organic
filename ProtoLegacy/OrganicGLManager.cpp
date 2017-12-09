@@ -284,8 +284,10 @@ void OrganicGLManager::RenderReadyArrays()
 																		*/
 																		//}
 	//----> OPTION 1: traditional multi draw
-	glMultiDrawArrays(GL_TRIANGLES, renderableCollectionList.TT1_GL_BufferOffset.get(), renderableCollectionList.TT1_GL_VertexArraySize.get(), renderableCollectionList.numberOfRenderableCollections);
-
+	//for (int x = 0; x < 5; x++)
+	//{
+		glMultiDrawArrays(GL_TRIANGLES, renderableCollectionList.TT1_GL_BufferOffset.get(), renderableCollectionList.TT1_GL_VertexArraySize.get(), renderableCollectionList.numberOfRenderableCollections);
+	//}
 
 
 	//cout << renderableCollectionList.numberOfRenderableCollections << endl;

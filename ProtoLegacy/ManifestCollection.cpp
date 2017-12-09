@@ -79,6 +79,7 @@ void ManifestCollection::AllocateManifestViaLockGuard(EnclaveKeyDef::EnclaveKey 
 	/* Summary: thread-safe memory allocation when adding to heap*/
 	std::lock_guard<std::mutex> lock(HeapMutex);
 	ManMatrix[Key] = *manifestPtr;
+	//cout << "Manifest renderMode value is: " << ManMatrix[Key].manifestRenderMode << endl;
 }
 
 void ManifestCollection::UpdateManifest(int x, int y, int z, EnclaveKeyDef::EnclaveKey Key)

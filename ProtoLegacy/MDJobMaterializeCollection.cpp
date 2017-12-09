@@ -21,7 +21,7 @@ MDJobMaterializeCollection::MDJobMaterializeCollection(
 	MDRenderCollectionsRef = p_MDRenderCollectionsRef;
 	MDEnclaveCollectionPtr = p_MDEnclaveCollectionPtr;
 	MDManifestCollectionPtr = p_MDManifestCollectionPtr;
-
+	currentRenderMode = in_renderMode;
 
 }
 

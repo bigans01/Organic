@@ -18,7 +18,8 @@ void EnclaveManifestFactoryT1::AttachManifestToEnclave(Enclave *in_ptr, int in_r
 	//StorageArray[CurrentStorage].VertexArrayCount =	(in_ptr->GetTotalTrianglesInEnclave()) * 9;	// set the total amount of vertex data to store
 	//StorageArray[CurrentStorage].TextureArrayCount = (in_ptr->GetTotalTrianglesInEnclave()) * 6; // set the total amount of texture data to store
 	StorageArray[CurrentStorage].StorageKey = in_ptr->UniqueKey;
-	//StorageArray[CurrentStorage].currentRenderMode;
+	StorageArray[CurrentStorage].currentRenderMode = in_renderMode;
+	//cout << "TEST: Factory storage render mode is: " << StorageArray[CurrentStorage].currentRenderMode << endl;
 	//cout << "debug: first in_ptr pass (2)..." << endl;
 	StorageArray[CurrentStorage].VertexArrayCount = 0;			// set the total amount of vertex data to store
 	StorageArray[CurrentStorage].TextureArrayCount = 0;			// set the total amount of texture data to store

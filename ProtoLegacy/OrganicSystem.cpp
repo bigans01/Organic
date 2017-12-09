@@ -1154,6 +1154,7 @@ void OrganicSystem::JobMaterializeCollectionFromFactoryViaMorph(MDJobMaterialize
 	Enclave tempEnclave;
 	FactoryRef->FactoryCollections[0].EnclaveArray[0][0][0] = tempEnclave;
 	int mdjobRenderMode = mdjob->currentRenderMode;
+	// cout << "TEST: mdjobRenderMode is: " << mdjobRenderMode;
 	// get a pointer to above collection
 	EnclaveCollection* CollectionRef = &FactoryRef->FactoryCollections[0];
 
@@ -2820,6 +2821,7 @@ void OrganicSystem::CheckProcessingQueue()
 			T2CollectionProcessingQueue.pop();								// pop the queue
 			T2_OMMVector.push_back(popKey);									// push it to OMMVector
 			EnclaveKeyDef::EnclaveKey tempKey = popKey.collectionKey;		// get the collection key of the popKey
+			//cout << "  OGLM render mode is: " << OGLM.renderMode << endl;
 			MDJobMaterializeCollection tempMDJob(tempKey, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew), OGLM.renderMode);	//... use it to make a temp MDJob
 			OrganicMDJobVectorT2.push_back(tempMDJob);
 			T2_jobCount++;							// increment workable task counter
