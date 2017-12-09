@@ -37,7 +37,7 @@ private:
 	int VertexColorArrayCount = 0;				// the count of actual texture data used in the VertexColorArray below (increments by one with each element added into VertexColorArray)
 	GLfloat VertexColorArray[13824];			// 108 GLfloats per cube, x 64 = 6912.
 	int TextureArrayCount = 0;					// the count of actual texture data used in the TextureArray below (increments by one with each element added into TextureArray)
-	GLfloat TextureArray[13824];				// 108 GLfloats per cube, x 64 = 6912.
+	GLfloat TextureArray[9216];					// 72 GLfloats per cube, x 64 = 4608.
 	
 };
 
