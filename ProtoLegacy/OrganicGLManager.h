@@ -61,7 +61,7 @@ private:
 	const int cltnFaceVertexColorTotalBytes = 73728;
 	const int cltnFaceTextureCoordTotalBytes = 49152;
 	const int cltnFaceNormalCoordTotalBytes = 73728;
-	const int cltnFaceStorageCount = 8;
+	const int cltnFaceStorageCount = 8;					// NEW PROTOTYPE TESTING -- set this value to 4
 
 
 
