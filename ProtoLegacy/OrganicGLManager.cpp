@@ -201,6 +201,9 @@ void OrganicGLManager::InitializeOpenGL()
 	if (renderMode == 1)
 	{
 		// bufferStorage for vertexes
+
+
+
 		glGenBuffers(1, &OrganicGLVertexCoordVBOID);								// generate 10 buffers, bind it to the arrayOrganicGLVertexBufferArray
 		glEnableVertexAttribArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexCoordVBOID);					// binds the previously created buffer to be a GL_ARRAY_BUFFER
@@ -212,9 +215,9 @@ void OrganicGLManager::InitializeOpenGL()
 			GL_FLOAT,           // type
 			GL_FALSE,           // normalized?
 			0,                  // stride
-			(void*)0            /* array buffer offset. Number following (void*) indicates offset point to begin reading from in the pointed-to buffer, measured in bytes;
-								For instance, if the data begins at byte 10000, you would put (void*)10000 in the array you are reading.
-								*/
+			(void*)0            // array buffer offset. Number following (void*) indicates offset point to begin reading from in the pointed-to buffer, measured in bytes;
+								//For instance, if the data begins at byte 10000, you would put (void*)10000 in the array you are reading.
+								//
 		);
 
 		// set secondary buffer to store colors per vertex
@@ -228,10 +231,12 @@ void OrganicGLManager::InitializeOpenGL()
 			GL_FLOAT,           // type
 			GL_FALSE,           // normalized?
 			0,                  // stride
-			(void*)0            /* array buffer offset. Number following (void*) indicates offset point to begin reading from in the pointed-to buffer, measured in bytes;
-								For instance, if the data begins at byte 10000, you would put (void*)10000 in the array you are reading.
-								*/
+			(void*)0            // array buffer offset. Number following (void*) indicates offset point to begin reading from in the pointed-to buffer, measured in bytes;
+								//For instance, if the data begins at byte 10000, you would put (void*)10000 in the array you are reading.
+								//
 		);
+
+
 
 		/*
 		// NEW PROTOTYPE TESTING -- Step 1, set appropriate vertex attributess
