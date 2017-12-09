@@ -81,7 +81,11 @@ private:
 
 
 	*/
+
 	//const int OGLMVertexSubBufferSize = cltnFaceStorageCount * ((cltnFaceVertexCoordTotalBytes*2)+ cltnFaceVertexCoordTotalBytes);	// size of all vertex data for a sub element = number of collection faces * 73728;
+	// NEW PROTOTYPE TESTING -- set totalfloats to appropriate value
+	//int OGLMVertexSubBufferSize = cltnFaceStorageCount *  (cltnFaceVertexCoordTotalBytes * 2);
+
 	//int OGLMVertexSubBufferSize = cltnFaceStorageCount *  ((cltnFaceVertexCoordTotalBytes * 2) + cltnFaceTextureCoordTotalBytes);
 	int OGLMVertexSubBufferSize = cltnFaceStorageCount * cltnFaceVertexCoordTotalBytes;	// size of all vertex data for a sub element = number of collection faces * 73728;
 	int OGLMTexUVSubBufferSize = cltnFaceStorageCount * cltnFaceTextureCoordTotalBytes;	// size of all UV texture coordinate data for a sub element = number of collection faces * 49152

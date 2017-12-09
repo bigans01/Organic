@@ -408,7 +408,7 @@ void OrganicGLManager::ShutdownOpenGL()
 	{
 		// Cleanup VBOs for renderMode 0
 		glDeleteBuffers(1, &OrganicGLVertexCoordVBOID);
-		glDeleteBuffers(1, &OrganicGLVertexSecondaryVBOID);
+		glDeleteBuffers(1, &OrganicGLVertexSecondaryVBOID);		// NEW PROTOTYPE TESTING -- remove this line for testing 
 		//glDeleteBuffers(1, &OrganicGLVertexBufferArray[1]);	// OrganicGLVertexBufferArray[0], OrganicGLVertexCoordVBOID
 		glDeleteVertexArrays(1, &OrganicGLVertexArrayID);
 
@@ -416,7 +416,7 @@ void OrganicGLManager::ShutdownOpenGL()
 		glDeleteProgram(OrganicMode1ProgramID);
 
 		glDisableVertexAttribArray(0);
-		glDisableVertexAttribArray(1);
+		glDisableVertexAttribArray(1);							// NEW PROTOTYPE TESTING -- remove this line for testing
 		glfwTerminate();										// Close OpenGL window and terminate GLFW
 	}
 }

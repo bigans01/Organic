@@ -2707,6 +2707,7 @@ void OrganicSystem::WaitForPhase2Promises()
 			RenderCollection* renderCollectionPtr = &RenderCollections.RenderMatrix[metaToSend.collectionKey];
 			//cout << "Sending key:" << metaToSend.collectionKey.x << ", " << metaToSend.collectionKey.y << ", " << metaToSend.collectionKey.z << endl;
 			OGLM.sendRenderCollectionDataToBuffer(metaToSend, renderCollectionPtr);				// send the vertex data to buffer
+			// NEW PROTOTYPE TESTING -- VC data send needs to be disabled.
 			OGLM.sendRenderCollectionVCDataToBuffer(metaToSend, renderCollectionPtr);			// send the vertex color data to buffer						
 			PopOrganicMorphMetaQueue();															// RAII, lock_guard pop
 		}

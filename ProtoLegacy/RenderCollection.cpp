@@ -240,6 +240,7 @@ void RenderCollection::CombineManifestArrays(mutex& mutexval)
 	RenderCollectionArraySize = totaltrianglestorender * 4 * 9;
 
 	/*
+	// NEW PROTOTYPE TESTING -- pass appropriate array size to AllocateNewArraysViaLockGuard
 	if (currentRenderMode == 1)
 	{
 		AllocateNewArraysViaLockGuard((totaltrianglestorender * 9)*2, std::ref(mutexval));
@@ -350,7 +351,7 @@ void RenderCollection::AllocateNewArraysViaLockGuard(int in_totalSizeOfVertexFlo
 	/*
 	if (currentRenderMode == 1)
 	{
-		int modeVertexTupleWidth = in_totalSizeOfVertexFloats * 2;		// in_totalSizeOfVertexFloats = 3 vertexes; multiply by 2 to get the total amount w/ vertex attrib for vertex color
+		int modeVertexTupleWidth = in_totalSizeOfVertexFloats;		// in_totalSizeOfVertexFloats = 3 vertexes; multiply by 2 to get the total amount w/ vertex attrib for vertex color
 		GLFloatPtr.reset(new GLfloat[modeVertexTupleWidth]);
 	}
 	*/
@@ -372,8 +373,11 @@ void RenderCollection::CombineManifestArraysFromT1Factory(EnclaveManifestFactory
 	{
 		EnclaveManifestFactoryT1Storage *StoragePtr = &factoryRef->StorageArray[x];			// get the pointer to the storage unit
 		totalfloats += StoragePtr->VertexArrayCount;										// increment totalfloats by VertexArrayCount from the pointed-to enclave
+		
 
 		/*
+
+		// NEW PROTOTYPE TESTING -- set totalfloats to appropriate value
 		if (currentRenderMode == 1)
 		{
 			totalfloats += StoragePtr->VertexArrayCount;
