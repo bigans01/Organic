@@ -323,7 +323,7 @@ int main()
 	//Organic.AddOrganicCell(mainthreadpoolref);
 	//Organic.AddOrganicCell(mainthreadpoolref2);
 
-	OrganicSystem Organic(2, 3, 13, 1024, 768);					// number of factories, T1 buffer size, T2 buffer size, pixel width, pixel height
+	OrganicSystem Organic(3, 3, 13, 1024, 768);					// number of factories, T1 buffer size, T2 buffer size, pixel width, pixel height
 	//Organic.AddOrganicCell(mainthreadpoolref);
 	//Organic.AddOrganicCell(mainthreadpoolref2);
 	//Organic.AddOrganicCell(mainthreadpoolref3);
@@ -429,6 +429,8 @@ int main()
 	/* Non-central blueprints (should be tested with release mode only, in 2/3 threads mode) */
 	
 	
+
+	
 	for (int x = 2; x < 7; x++)
 	{
 		for (int z = -2; z >= -7; z--)
@@ -490,6 +492,8 @@ int main()
 	flatKeyToAdd.y = 0;
 	flatKeyToAdd.z = 4;
 	Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, testBlueprint3);
+	
+
 
 	/*
 	for (int x = 0; x < 5000; x++)
@@ -858,7 +862,7 @@ int main()
 
 		auto finish3 = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<double> elapsed3 = finish3 - start3;
-		//std::cout << "Frame render time (without draw call) : " << elapsed3.count() << endl;
+		std::cout << "Frame render time (without draw call) : " << elapsed3.count() << endl;
 	} 
 	while (glfwGetKey(Organic.OGLM.GLwindow, GLFW_KEY_ESCAPE) != GLFW_PRESS &&	// loop until escape key is pressed in OpenGL window
 		glfwWindowShouldClose(Organic.OGLM.GLwindow) == 0);

@@ -28,6 +28,7 @@ class RenderCollectionMatrix
 {
 	private:
 		friend class OrganicSystem;
+		friend class OrganicGLManager;
 		std::unordered_map<EnclaveKeyDef::EnclaveKey, RenderCollection, EnclaveKeyDef::KeyHasher> RenderMatrix;			// the unordered map of RenderCollections.
 		ManifestCollectionMatrix *ManifestCollectionMatrixPtr = NULL;															// pointer to the ManifestCollectionMatrix, where the ManifestCollections will be found.
 		EnclaveCollectionMatrix *EnclaveCollectionMatrixPtr = NULL;

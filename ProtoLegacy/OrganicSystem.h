@@ -137,7 +137,7 @@ private:
 	int oldWorkPriority = 0;													// the last priority mode that was set
 	int T1_OGLMcubesize = 0;													// determines the size, in radius of cubes, of T1 and T2 OGLM arrays
 	int T2_OGLMcubesize = 0;
-	void SetRenderMode(int x);																																					// sets the RenderMode variable in the OGLM object
+	int	 SetRenderMode(int x);													// sets the RenderMode variable in the OGLM object; returns tuple length (for use with draw call meta)
 	void SelectShader();														// selects shaders in OGLM, based on OGLM's currently set render mode
 	void SetupCellMeta();														// cycles through each cell and adds the appropriate factory pointer to each
 	int CreateThreads(int in_numberOfThreads);

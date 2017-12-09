@@ -22,6 +22,8 @@ class OGLMDrawCallMeta
 		//int* DCMD_RemainingVertexSpace = NULL;
 		//int* DCMD_TT1_GL_BufferOffset = NULL;
 		//int* DCMD_TT2_GL_BufferOffset = NULL;
+		int currentRendermode = 0;
+		int vertexTupleByteLength = 0;
 
 		std::unique_ptr<int[]> DCMD_SubBufferContents;
 		std::unique_ptr<int[]> DCMD_SubBufferLocation;
@@ -50,6 +52,7 @@ class OGLMDrawCallMeta
 		int array_length;
 		int subBufferByteSize;
 
+		void setVertexTupleWidth(int in_width);
 		void setGLintDynamicArrays(int in_cubeSize, int in_subBufferSize);
 		void addToListAndSort(EnclaveKeyDef::EnclaveKey in_key, int in_subBufferIndex, int in_vertexArrayByteSize, int in_subBufferByteSize);
 		void sendTerrainT1RequestToDelegator(EnclaveKeyDef::EnclaveKey in_key, int in_subBufferIndex, int in_vertexArrayByteSize, int in_subBufferByteSize);

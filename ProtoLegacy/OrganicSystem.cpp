@@ -24,6 +24,7 @@ OrganicSystem::OrganicSystem(int numberOfFactories, int T1_bufferCubeSize, int T
 	OGLM.SendPointerToBufferManager(tempGLManagerPtr);	// send the pointer to the buffer manager, so that it may use it to set up its buffer arrays
 	OGLM.SetupBufferManagerArrays(T1_bufferCubeSize, T2_bufferCubeSize);	// setup the buffer manager's dynamic arrays for both T1 and T2 terrain types
 	OGLM.setWindowSize(windowWidth, windowHeight);		// set OpenGL window size
+	OGLM.organicSystemPtr = this;
 	OGLM.OrganicBufferManager.OGLMRMC.createContainerArrays(T1_bufferCubeSize, T2_bufferCubeSize);	// create the T1 and T2 dynamic array in the OGLMRMC; the arrays will be populated at a later time, once the location of the camera/player is known
 	OGLM.createRenderableCollectionList(T2_bufferCubeSize);	// create the dynamic array that stores a list of renderable collections; the max number of renderable collections is equal to bufferCubeSize cubed.
 	OGLM.OrganicBufferManager.DCMPtr = &OGLM.renderableCollectionList;	// set the OrganicBufferManager's DCMPtr (a pointer to an instance of OGLMDrawCallMeta)
@@ -37,7 +38,8 @@ OrganicSystem::OrganicSystem(int numberOfFactories, int T1_bufferCubeSize, int T
 	OCManager.setOrganicCellLimitsListPtr(tempOrganicCellLimitsListPtr);	// set the pointer to the OrganicCellLimits object, in the OCManager
 	OCManager.setOrganicSystemPtr(this);				// pass the reference to this instance of OrganicSystem to the OCManager
 	OCManager.populateCellMapsOnEngineStart();						// populate the cell maps in OCManager, based on the current number of cells available, and the chosen workPriority
-	SetRenderMode(1);												// set render mode (0 = vertex only single color, 1 = vertex + vertex shaded triangles) 
+	int tupleWidth = SetRenderMode(1);												// set render mode (0 = vertex only single color, 1 = vertex + vertex shaded triangles) 
+	OGLM.renderableCollectionList.setVertexTupleWidth(tupleWidth);	// set the appropriate tuple width
 	SetGraphicsAPI();												// setup the graphics API (OpenGL context, etc)
 																			//auto start3 = std::chrono::high_resolution_clock::now();				// benchmark testing only
 
@@ -1403,18 +1405,22 @@ void OrganicSystem::SetGraphicsAPI()
 
 }
 
-void OrganicSystem::SetRenderMode(int x)
+int OrganicSystem::SetRenderMode(int x)
 {
 	if (x == 0)			// mode 0: fragment shader only
 	{
 		OGLM.renderMode = 0;		// sets to default terrain render mode
 		//OGLM.selectShader();		// selects the default shader (because renderMode was set to 0)
+		int vertexTupleWidth = 12;
+		return vertexTupleWidth;
 	}
 
 	if (x == 1)
 	{
 		OGLM.renderMode = 1;		// sets to vertex shading terrain render mode (non textured)
 		//OGLM.selectShader();
+		int vertexTupleWidth = 24;
+		return vertexTupleWidth;
 	}
 }
 
@@ -2708,7 +2714,7 @@ void OrganicSystem::WaitForPhase2Promises()
 			//cout << "Sending key:" << metaToSend.collectionKey.x << ", " << metaToSend.collectionKey.y << ", " << metaToSend.collectionKey.z << endl;
 			OGLM.sendRenderCollectionDataToBuffer(metaToSend, renderCollectionPtr);				// send the vertex data to buffer
 			// NEW PROTOTYPE TESTING -- VC data send needs to be disabled.
-			OGLM.sendRenderCollectionVCDataToBuffer(metaToSend, renderCollectionPtr);			// send the vertex color data to buffer						
+			// OGLM.sendRenderCollectionVCDataToBuffer(metaToSend, renderCollectionPtr);			// send the vertex color data to buffer						
 			PopOrganicMorphMetaQueue();															// RAII, lock_guard pop
 		}
 	}

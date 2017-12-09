@@ -236,17 +236,18 @@ void RenderCollection::CombineManifestArrays(mutex& mutexval)
 	//std::cout << "Render Collection test, step 2 " << elapsed4.count() << "): " <<  endl;
 	//GLfloat *glfloatptr;
 
+	/*
 	AllocateNewArraysViaLockGuard(totaltrianglestorender * 9, std::ref(mutexval));
 	RenderCollectionArraySize = totaltrianglestorender * 4 * 9;
-
-	/*
+	*/
+	
 	// NEW PROTOTYPE TESTING -- pass appropriate array size to AllocateNewArraysViaLockGuard
 	if (currentRenderMode == 1)
 	{
 		AllocateNewArraysViaLockGuard((totaltrianglestorender * 9)*2, std::ref(mutexval));
 		RenderCollectionArraySize = (totaltrianglestorender * 9 * 2) * 4;
 	}
-	*/
+	
 
 	//cout << "value of RenderCollectionArraySize: " << RenderCollectionArraySize << endl;
 	int index = 0;
@@ -269,6 +270,8 @@ void RenderCollection::CombineManifestArrays(mutex& mutexval)
 		int pointedBegin = 0;
 		for (int bb = 0; bb < (ManMatrixIter->second.TotalEnclaveTriangles) * 3; bb++)
 		{
+
+			/*
 
 			//GLFloatPtr[currentBegin] = tempGLptr[pointedBegin + 2];									// for first coord, x
 			//GLFloatPtr[currentBegin - 1] = tempGLptr[pointedBegin + 1];									// for first coord, x
@@ -301,9 +304,9 @@ void RenderCollection::CombineManifestArrays(mutex& mutexval)
 			currentBegin += 3;
 			pointedBegin += 3;
 
-
+			*/
 			// NEW PROTOTYPE TESTING -- create appropriate array size
-			/*
+			
 			if (currentRenderMode == 1)
 			{
 				GLFloatPtr[currentBegin + 2] = ManMatrixIter->second.EnclaveGLPtr[pointedBegin + 2];									// for first coord, x
@@ -317,7 +320,7 @@ void RenderCollection::CombineManifestArrays(mutex& mutexval)
 				currentBegin += 6;		// iterating by 6 per VBO array element
 				pointedBegin += 3;		// only iterating by 3 per manifest array
 			}
-			*/
+			
 
 		}
 
@@ -341,20 +344,22 @@ void RenderCollection::AllocateNewArraysViaLockGuard(int in_totalSizeOfVertexFlo
 {
 	std::lock_guard<std::mutex> lock(mutexval);
 	//cout << "GL float check begin...; total floats is: " << totalfloats << "Total Enclaves is: " << TotalEnclavesInFactory << endl;
+
+	/*
 	GLFloatPtr.reset(new GLfloat[in_totalSizeOfVertexFloats]);
 	VertexColorArrayPtr.reset(new GLfloat[in_totalSizeOfVertexFloats]);
-
+	*/
 	// NEW PROTOTYPE TESTING:	Step 3: create appropriate array size
 
 	//cout << "Testing: (vertex attribute total size) " << in_totalSizeOfVertexFloats << endl;
 	//cout << "Testing: (vertex attribute total size) " << (in_totalSizeOfVertexFloats/3)*2 << endl;
-	/*
+	
 	if (currentRenderMode == 1)
 	{
 		int modeVertexTupleWidth = in_totalSizeOfVertexFloats;		// in_totalSizeOfVertexFloats = 3 vertexes; multiply by 2 to get the total amount w/ vertex attrib for vertex color
 		GLFloatPtr.reset(new GLfloat[modeVertexTupleWidth]);
 	}
-	*/
+	
 
 }
 
@@ -371,19 +376,22 @@ void RenderCollection::CombineManifestArraysFromT1Factory(EnclaveManifestFactory
 
 	for (int x = 0; x < TotalEnclavesInFactory; x++)
 	{
-		EnclaveManifestFactoryT1Storage *StoragePtr = &factoryRef->StorageArray[x];			// get the pointer to the storage unit
-		totalfloats += StoragePtr->VertexArrayCount;										// increment totalfloats by VertexArrayCount from the pointed-to enclave
-		
 
 		/*
+		EnclaveManifestFactoryT1Storage *StoragePtr = &factoryRef->StorageArray[x];			// get the pointer to the storage unit
+		totalfloats += StoragePtr->VertexArrayCount;										// increment totalfloats by VertexArrayCount from the pointed-to enclave
+		*/
+
+		
 
 		// NEW PROTOTYPE TESTING -- set totalfloats to appropriate value
 		if (currentRenderMode == 1)
 		{
+			EnclaveManifestFactoryT1Storage *StoragePtr = &factoryRef->StorageArray[x];			// get the pointer to the storage unit
 			totalfloats += StoragePtr->VertexArrayCount;
 			totalfloats += StoragePtr->VertexColorArrayCount;
 		}
-		*/
+		
 	}
 	//cout << "total triangles to render will be: " << totalfloats << endl;
 
@@ -416,7 +424,7 @@ void RenderCollection::CombineManifestArraysFromT1Factory(EnclaveManifestFactory
 		//GLfloat dumbval3 = StoragePtr->VertexArray[pointedBegin+2];
 		//cout << "test  " << dumbval << ", " << dumbval2 << ", " << dumbval3 << endl;
 		GLFloatPtr[currentBegin] = dumbval;
-		VertexColorArrayPtr[currentBegin] = dumbval2;
+		//VertexColorArrayPtr[currentBegin] = dumbval2;
 		//cout << "Render 2 entry:" << endl;
 		//cout << "Key output: " << StoragePtr->StorageKey.x << ", " << StoragePtr->StorageKey.y << "," << StoragePtr->StorageKey.z << " | " << dumbval << endl ;
 		enclaveDataStart[x].DFKey = StoragePtr->StorageKey;
@@ -425,6 +433,8 @@ void RenderCollection::CombineManifestArraysFromT1Factory(EnclaveManifestFactory
 
 		for (int y = 0; y < (currentEnclaveTriangles) * 3; y++)			// (currentEnclaveTriangles) * 3
 		{
+
+			/*
 			GLFloatPtr[currentBegin] = StoragePtr->VertexArray[pointedBegin];
 			GLFloatPtr[currentBegin + 1] = StoragePtr->VertexArray[pointedBegin + 1];
 			GLFloatPtr[currentBegin + 2] = StoragePtr->VertexArray[pointedBegin + 2];
@@ -435,10 +445,10 @@ void RenderCollection::CombineManifestArraysFromT1Factory(EnclaveManifestFactory
 
 			currentBegin += 3;
 			pointedBegin += 3;
-
+			*/
 
 			// NEW PROTOTYPE TESTING -- create appropriate array size
-			/*
+			
 			if (currentRenderMode == 1)
 			{
 				GLFloatPtr[currentBegin] = StoragePtr->VertexArray[pointedBegin];
@@ -452,7 +462,7 @@ void RenderCollection::CombineManifestArraysFromT1Factory(EnclaveManifestFactory
 				currentBegin += 6;			// iterating by 6 per VBO array element
 				pointedBegin += 3;			// only iterating by 3 per manifest array
 			}
-			*/
+			
 
 		}
 

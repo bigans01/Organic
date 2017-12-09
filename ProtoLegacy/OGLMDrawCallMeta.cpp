@@ -30,7 +30,10 @@ void OGLMDrawCallMeta::setGLintDynamicArrays(int in_cubeSize, int in_subBufferSi
 	subBufferByteSize = in_subBufferSize;
 }
 
-
+void OGLMDrawCallMeta::setVertexTupleWidth(int in_width)
+{
+	vertexTupleByteLength = in_width;
+}
 
 void OGLMDrawCallMeta::addToListAndSort(EnclaveKeyDef::EnclaveKey in_key, int in_subBufferIndex, int in_vertexArrayByteSize, int in_subBufferByteSize)
 {
@@ -56,8 +59,8 @@ void OGLMDrawCallMeta::addToListAndSort(EnclaveKeyDef::EnclaveKey in_key, int in
 				TT1_SubBufferContents[indexValueOfFirstEmpty] = 1;
 				TT1_CollectionKeys[indexValueOfFirstEmpty] = in_key;								// set the key, in the corresponding current element of dynamic array
 				TT1_SubBufferLocation[indexValueOfFirstEmpty] = in_subBufferIndex;					// set the location, in the corresponding current element of dynamic array
-				TT1_GL_BufferOffset[indexValueOfFirstEmpty] = in_subBufferIndex * (in_subBufferByteSize / 12);				// set the vertex offset of the beginning of the sub buffer, in the corresponding current element of dynamic array
-				TT1_GL_VertexArraySize[indexValueOfFirstEmpty] = in_vertexArrayByteSize / 12;		// set the number of vertexes in the sub buffer, in the corresponding current element of dynamic array
+				TT1_GL_BufferOffset[indexValueOfFirstEmpty] = in_subBufferIndex * (in_subBufferByteSize / vertexTupleByteLength);				// set the vertex offset of the beginning of the sub buffer, in the corresponding current element of dynamic array
+				TT1_GL_VertexArraySize[indexValueOfFirstEmpty] = in_vertexArrayByteSize / vertexTupleByteLength;		// set the number of vertexes in the sub buffer, in the corresponding current element of dynamic array
 
 				// set the values at x
 				TT1_SubBufferContents[x] = temp_TT1_SubBufferContents;
@@ -68,6 +71,7 @@ void OGLMDrawCallMeta::addToListAndSort(EnclaveKeyDef::EnclaveKey in_key, int in
 
 				indexValueOfFirstEmpty++;
 				numberOfRenderableCollections++;
+				// std::cout << "Added to list: sub buffer: " << in_subBufferIndex << "actual offset: " << in_subBufferIndex * (in_subBufferByteSize / 12) << " vertex count: " << in_vertexArrayByteSize / 12 << std::endl;
 			}
 
 			// check to see if the sub buffer contains terrain data
@@ -125,6 +129,7 @@ void OGLMDrawCallMeta::sendTerrainT1RequestToDelegator(EnclaveKeyDef::EnclaveKey
 			// needs new statement for when contents are not empty (i.e., already contains T1 data) (11/13/2017)
 		}
 	}
+	// std::cout << "Delegator inserted values: element number: " << in_subBufferIndex << "   actual offset: " << in_subBufferIndex * (in_subBufferByteSize / 12) << std::endl;
 }
 
 void OGLMDrawCallMeta::setInitialDynamicArrayData(EnclaveKeyDef::EnclaveKey centerCollectionKey)

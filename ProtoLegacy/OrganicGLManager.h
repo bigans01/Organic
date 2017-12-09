@@ -54,6 +54,7 @@ private:
 	GLuint OrganicGLLightingBufferID2 = 0;											// OpenGL: third potential single buffer; currently in testing only. (not being generated as of (10/11/2017))
 	GLuint OrganicGLVertexBufferArray[10];										// OpenGL: array of potential buffers
 	GLuint OrganicMVPHandle = 0;													// OpenGL: pointer/handle to the MVP matrix result
+	OrganicSystem* organicSystemPtr;											// DEBUG ONLY
 	OGLMBufferManager OrganicBufferManager;										// the instance of OGLMBufferManager that this OrganicGLManager object will use
 	GLfloat *OrganicGLarrayPTR = NULL;													// (temporary) OpenGL: used to point to a dynamic array containing vertex data
 	//const int OGLMVertexSubBufferSize = 1024 * 1024;								// the size of the data buffer for each RenderCollection; 
@@ -61,7 +62,7 @@ private:
 	const int cltnFaceVertexColorTotalBytes = 73728;
 	const int cltnFaceTextureCoordTotalBytes = 49152;
 	const int cltnFaceNormalCoordTotalBytes = 73728;
-	const int cltnFaceStorageCount = 8;					// NEW PROTOTYPE TESTING -- set this value to 4
+	const int cltnFaceStorageCount = 4;					// NEW PROTOTYPE TESTING -- set this value to 4
 
 
 
@@ -84,10 +85,10 @@ private:
 
 	//const int OGLMVertexSubBufferSize = cltnFaceStorageCount * ((cltnFaceVertexCoordTotalBytes*2)+ cltnFaceVertexCoordTotalBytes);	// size of all vertex data for a sub element = number of collection faces * 73728;
 	// NEW PROTOTYPE TESTING -- set totalfloats to appropriate value
-	//int OGLMVertexSubBufferSize = cltnFaceStorageCount *  (cltnFaceVertexCoordTotalBytes * 2);
+	//int OGLMVertexSubBufferSize = cltnFaceStorageCount *  (cltnFaceVertexCoordTotalBytes * 2); // 
 
-	//int OGLMVertexSubBufferSize = cltnFaceStorageCount *  ((cltnFaceVertexCoordTotalBytes * 2) + cltnFaceTextureCoordTotalBytes);
-	int OGLMVertexSubBufferSize = cltnFaceStorageCount * cltnFaceVertexCoordTotalBytes;	// size of all vertex data for a sub element = number of collection faces * 73728;
+	int OGLMVertexSubBufferSize = cltnFaceStorageCount *  ((cltnFaceVertexCoordTotalBytes * 2) + cltnFaceTextureCoordTotalBytes);
+	//int OGLMVertexSubBufferSize = cltnFaceStorageCount * cltnFaceVertexCoordTotalBytes;	// size of all vertex data for a sub element = number of collection faces * 73728;
 	int OGLMTexUVSubBufferSize = cltnFaceStorageCount * cltnFaceTextureCoordTotalBytes;	// size of all UV texture coordinate data for a sub element = number of collection faces * 49152
 
 

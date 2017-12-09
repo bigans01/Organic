@@ -3,6 +3,7 @@
 #include <iostream>
 #include <chrono>
 #include "OrganicGLManager.h"
+#include "OrganicSystem.h"
 
 OrganicGLManager::OrganicGLManager()
 {
@@ -203,7 +204,7 @@ void OrganicGLManager::InitializeOpenGL()
 		// bufferStorage for vertexes
 
 
-
+		/*
 		glGenBuffers(1, &OrganicGLVertexCoordVBOID);								// generate 10 buffers, bind it to the arrayOrganicGLVertexBufferArray
 		glEnableVertexAttribArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexCoordVBOID);					// binds the previously created buffer to be a GL_ARRAY_BUFFER
@@ -235,10 +236,10 @@ void OrganicGLManager::InitializeOpenGL()
 								//For instance, if the data begins at byte 10000, you would put (void*)10000 in the array you are reading.
 								//
 		);
+		*/
 
 
-
-		/*
+		
 		// NEW PROTOTYPE TESTING -- Step 1, set appropriate vertex attributess
 		// glUseProgram(OrganicMode1ProgramID);	// use appropriate program
 		glGenBuffers(1, &OrganicGLVertexCoordVBOID);
@@ -249,7 +250,7 @@ void OrganicGLManager::InitializeOpenGL()
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*6, (void*)0);	// vertex point data: begins at 0
 		glEnableVertexAttribArray(1);
 		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*6, (void*)12 ); // color point data: begins at byte 12
-		*/
+		
 
 	}
 
@@ -349,18 +350,42 @@ void OrganicGLManager::RenderReadyArrays()
 	//----> OPTION 1: traditional multi draw
 	//for (int x = 0; x < 5; x++)
 	//{
-		glMultiDrawArrays(GL_TRIANGLES, renderableCollectionList.TT1_GL_BufferOffset.get(), renderableCollectionList.TT1_GL_VertexArraySize.get(), renderableCollectionList.numberOfRenderableCollections);
+		//glMultiDrawArrays(GL_TRIANGLES, renderableCollectionList.TT1_GL_BufferOffset.get(), renderableCollectionList.TT1_GL_VertexArraySize.get(), renderableCollectionList.numberOfRenderableCollections);
 	//}
 
 
 	//cout << renderableCollectionList.numberOfRenderableCollections << endl;
 
+	// PROTOTYPE DEBUG LINES -- using key -1, 0, 0
 
+	/*
+	glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexCoordVBOID); // bind to primary VBO
+	EnclaveKeyDef::EnclaveKey debugKey, debugKey2;
+	debugKey.x = -1;
+	debugKey.y = 0;
+	debugKey.z = 0;
+	RenderCollection* tempRenderColl = &organicSystemPtr->RenderCollections.RenderMatrix[debugKey];
+	int foundindex = 0;
+	for (int x = 0; x < renderableCollectionList.numberOfRenderableCollections; x++)
+	{
+		if (renderableCollectionList.TT1_CollectionKeys[x] == debugKey)
+		{
+			//cout << "key found!" << endl;
+			foundindex = x;
+		}
+	}
+	*/
+
+	//glBufferSubData(GL_ARRAY_BUFFER, 0, tempRenderColl->RenderCollectionArraySize, tempRenderColl->GLFloatPtr.get());
+	//glBufferSubData(GL_ARRAY_BUFFER, OGLMVertexSubBufferSize, tempRenderColl->RenderCollectionArraySize, tempRenderColl->GLFloatPtr.get());
+
+	//glDrawArrays(GL_TRIANGLES, renderableCollectionList.TT1_GL_BufferOffset[foundindex], renderableCollectionList.TT1_GL_VertexArraySize[foundindex]);
+	//glDrawArrays(GL_TRIANGLES, OGLMVertexSubBufferSize / 24, (tempRenderColl->RenderCollectionArraySize) / 6);
 
 
 	//----> OPTION 2: use multidraw arrays
 	
-	/*
+	
 	// test struct
 	struct DETest
 	{
@@ -380,8 +405,11 @@ void OrganicGLManager::RenderReadyArrays()
 	}
 	glBindBuffer(GL_DRAW_INDIRECT_BUFFER, OrganicGLIndirectBufferID);
 	glBufferData(GL_DRAW_INDIRECT_BUFFER, sizeof(GLuint)*4* renderableCollectionList.numberOfRenderableCollections, testingStruct.get(), GL_DYNAMIC_DRAW);		// important note: size of struct is actually 8 (4 x 2) bytes, not 16 (4 x 4) like normal ints
-	glMultiDrawArraysIndirect(GL_TRIANGLES, (GLvoid*)0, renderableCollectionList.numberOfRenderableCollections, 0);
-	*/
+
+	//for (int x = 0; x < 5; x++)
+	//{
+		glMultiDrawArraysIndirect(GL_TRIANGLES, (GLvoid*)0, renderableCollectionList.numberOfRenderableCollections, 0);
+	//}
 
 
 	
@@ -417,7 +445,7 @@ void OrganicGLManager::ShutdownOpenGL()
 	{
 		// Cleanup VBOs for renderMode 0
 		glDeleteBuffers(1, &OrganicGLVertexCoordVBOID);
-		glDeleteBuffers(1, &OrganicGLVertexSecondaryVBOID);		// NEW PROTOTYPE TESTING -- remove this line for testing 
+		//glDeleteBuffers(1, &OrganicGLVertexSecondaryVBOID);		// NEW PROTOTYPE TESTING -- remove this line for testing 
 		//glDeleteBuffers(1, &OrganicGLVertexBufferArray[1]);	// OrganicGLVertexBufferArray[0], OrganicGLVertexCoordVBOID
 		glDeleteVertexArrays(1, &OrganicGLVertexArrayID);
 
@@ -425,7 +453,7 @@ void OrganicGLManager::ShutdownOpenGL()
 		glDeleteProgram(OrganicMode1ProgramID);
 
 		glDisableVertexAttribArray(0);
-		glDisableVertexAttribArray(1);							// NEW PROTOTYPE TESTING -- remove this line for testing
+		glDisableVertexAttribArray(1);							
 		glfwTerminate();										// Close OpenGL window and terminate GLFW
 	}
 }
@@ -511,6 +539,7 @@ void OrganicGLManager::sendRenderCollectionDataToBuffer(OrganicMorphMeta inMorph
 {
 	renderableCollectionList.sendTerrainT1RequestToDelegator(inMorphMeta.collectionKey, inMorphMeta.subBufferIndex, renderCollPtr->RenderCollectionArraySize, OGLMVertexSubBufferSize);	// send to T1 delegator; delegator will move any occupied data in the sub buffer to another appropriate location
 	glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexCoordVBOID);
+	// cout << "sending to buffer: SubBufferIndex: " << inMorphMeta.subBufferIndex << "  Actual offset: " << inMorphMeta.subBufferIndex*OGLMVertexSubBufferSize << endl;
 	glBufferSubData(GL_ARRAY_BUFFER, inMorphMeta.subBufferIndex*OGLMVertexSubBufferSize, renderCollPtr->RenderCollectionArraySize, renderCollPtr->GLFloatPtr.get());
 	//renderableCollectionList.sendTerrainT1RequestToDelegator(inMorphMeta.collectionKey, inMorphMeta.subBufferIndex, renderCollPtr->RenderCollectionArraySize, OGLMVertexSubBufferSize);
 	//cout << "collection sent to buffer..." << inMorphMeta.collectionKey.x << ", " << inMorphMeta.collectionKey.y << ", " << inMorphMeta.collectionKey.z << endl;
