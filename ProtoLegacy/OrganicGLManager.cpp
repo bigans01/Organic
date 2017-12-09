@@ -156,20 +156,7 @@ void OrganicGLManager::InitializeOpenGL()
 	glGenVertexArrays(1, &OrganicGLVertexArrayID);
 	glBindVertexArray(OrganicGLVertexArrayID);			// sets this as the current VAO to use
 
-																										
-																										
 
-																										
-																										
-																										
-
-																										
-
-																										
-																										
-																										
-																										
-																										
 	// indirect draw buffer
 	glGenBuffers(1, &OrganicGLIndirectBufferID);
 	glBindBuffer(GL_DRAW_INDIRECT_BUFFER, OrganicGLIndirectBufferID);
@@ -182,9 +169,9 @@ void OrganicGLManager::InitializeOpenGL()
 	{
 		// bufferStorage for vertexes
 		glGenBuffers(1, &OrganicGLVertexCoordVBOID);								// generate 10 buffers, bind it to the arrayOrganicGLVertexBufferArray
-		glEnableVertexAttribArray(0);												// enable vertex attrib array for attribute 0
 		glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexCoordVBOID);					// binds the previously created buffer to be a GL_ARRAY_BUFFER
 		glBufferStorage(GL_ARRAY_BUFFER, OGLMVertexSubBufferSize * numberOfBuffers, NULL, bufferStorageflags);	
+		glEnableVertexAttribArray(0);												// enable vertex attrib array for attribute 0
 		//glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexCoordVBOID);				// OrganicGLVertexBufferArray[0], OrganicGLVertexCoordVBOID
 		glVertexAttribPointer(
 			0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
@@ -202,9 +189,9 @@ void OrganicGLManager::InitializeOpenGL()
 	if (renderMode == 1)
 	{
 		// bufferStorage for vertexes
-
-
 		/*
+
+		// OLD CODE, non inter-leaved
 		glGenBuffers(1, &OrganicGLVertexCoordVBOID);								// generate 10 buffers, bind it to the arrayOrganicGLVertexBufferArray
 		glEnableVertexAttribArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexCoordVBOID);					// binds the previously created buffer to be a GL_ARRAY_BUFFER
@@ -238,8 +225,6 @@ void OrganicGLManager::InitializeOpenGL()
 		);
 		*/
 
-
-		
 		// NEW PROTOTYPE TESTING -- Step 1, set appropriate vertex attributess
 		// glUseProgram(OrganicMode1ProgramID);	// use appropriate program
 		glGenBuffers(1, &OrganicGLVertexCoordVBOID);
@@ -247,6 +232,7 @@ void OrganicGLManager::InitializeOpenGL()
 		glBufferStorage(GL_ARRAY_BUFFER, OGLMVertexSubBufferSize * numberOfBuffers, NULL, bufferStorageflags);
 		// interleaving, total stride amount is 24 bytes
 		glEnableVertexAttribArray(0);
+		// sizeof(GLfloat)*6
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*6, (void*)0);	// vertex point data: begins at 0
 		glEnableVertexAttribArray(1);
 		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*6, (void*)12 ); // color point data: begins at byte 12
@@ -353,12 +339,9 @@ void OrganicGLManager::RenderReadyArrays()
 		//glMultiDrawArrays(GL_TRIANGLES, renderableCollectionList.TT1_GL_BufferOffset.get(), renderableCollectionList.TT1_GL_VertexArraySize.get(), renderableCollectionList.numberOfRenderableCollections);
 	//}
 
-
-	//cout << renderableCollectionList.numberOfRenderableCollections << endl;
-
-	// PROTOTYPE DEBUG LINES -- using key -1, 0, 0
-
 	/*
+	// PROTOTYPE DEBUG LINES -- using key -1, 0, 0
+	//cout << renderableCollectionList.numberOfRenderableCollections << endl;
 	glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexCoordVBOID); // bind to primary VBO
 	EnclaveKeyDef::EnclaveKey debugKey, debugKey2;
 	debugKey.x = -1;
@@ -374,14 +357,14 @@ void OrganicGLManager::RenderReadyArrays()
 			foundindex = x;
 		}
 	}
-	*/
+	
 
 	//glBufferSubData(GL_ARRAY_BUFFER, 0, tempRenderColl->RenderCollectionArraySize, tempRenderColl->GLFloatPtr.get());
 	//glBufferSubData(GL_ARRAY_BUFFER, OGLMVertexSubBufferSize, tempRenderColl->RenderCollectionArraySize, tempRenderColl->GLFloatPtr.get());
 
 	//glDrawArrays(GL_TRIANGLES, renderableCollectionList.TT1_GL_BufferOffset[foundindex], renderableCollectionList.TT1_GL_VertexArraySize[foundindex]);
 	//glDrawArrays(GL_TRIANGLES, OGLMVertexSubBufferSize / 24, (tempRenderColl->RenderCollectionArraySize) / 6);
-
+	*/
 
 	//----> OPTION 2: use multidraw arrays
 	
