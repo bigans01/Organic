@@ -235,10 +235,14 @@ void OrganicGLManager::InitializeOpenGL()
 
 		/*
 		// NEW PROTOTYPE TESTING -- Step 1, set appropriate vertex attributess
-		glUseProgram(OrganicMode1ProgramID);	// use appropriate program
+		// glUseProgram(OrganicMode1ProgramID);	// use appropriate program
+		glGenBuffers(1, &OrganicGLVertexCoordVBOID);
 		glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexCoordVBOID); // bind to primary VBO
+		glBufferStorage(GL_ARRAY_BUFFER, OGLMVertexSubBufferSize * numberOfBuffers, NULL, bufferStorageflags);
 		// interleaving, total stride amount is 24 bytes
+		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*6, (void*)0);	// vertex point data: begins at 0
+		glEnableVertexAttribArray(1);
 		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*6, (void*)12 ); // color point data: begins at byte 12
 		*/
 
