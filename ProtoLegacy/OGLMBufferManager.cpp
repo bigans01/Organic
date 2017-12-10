@@ -708,8 +708,20 @@ void OGLMBufferManager::MorphT1TerrainBufferNorth()
 		{
 			for (int z = T1_cubesize - 1; z > 0; z--)
 			{
+				EnclaveKeyDef::EnclaveKey keyToShift = OGLMRMC.T1_renderMetaContainerArray[T1_translateXYZToSingle(x, y, z - 1)].ElementCollectionKey;	// get the value of the collection key at x,y,z
+				OGLMRMC.T1_renderMetaContainerArray[T1_translateXYZToSingle(x, y, z)].ElementCollectionKey = keyToShift;
 
+				int valueToShift = OGLMRMC.T1_renderMetaContainerArray[T1_translateXYZToSingle(x, y, z - 1)].ElementSingularXYZValue;
+				OGLMRMC.T1_renderMetaContainerArray[T1_translateXYZToSingle(x, y, z)].ElementSingularXYZValue = valueToShift;
+
+				int ContainsUsedT1KeyValueToShift = OGLMRMC.T1_renderMetaContainerArray[T1_translateXYZToSingle(x, y, z - 1)].ContainsUsedT1Key;
+				OGLMRMC.T1_renderMetaContainerArray[T1_translateXYZToSingle(x, y, z)].ContainsUsedT1Key = ContainsUsedT1KeyValueToShift;
 			}
+			OGLMRenderMetaContainerElementT2 currentT2Element = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(T2_LowerNWLocation + x, T2_LowerNWLocation + y, T2_LowerNWLocation)];
+			OGLMRMC.T1_renderMetaContainerArray[T1_translateXYZToSingle(x, y, 0)].ElementCollectionKey = currentT2Element.ElementCollectionKey;			// transfer copies from  T2 to T1
+			OGLMRMC.T1_renderMetaContainerArray[T1_translateXYZToSingle(x, y, 0)].ElementSingularXYZValue = currentT2Element.ElementSingularXYZValue;	// ""
+			OGLMRMC.T1_renderMetaContainerArray[T1_translateXYZToSingle(x, y, 0)].ContainsUsedT1Key = currentT2Element.ContainsUsedT2Key;
+
 		}
 
 	}

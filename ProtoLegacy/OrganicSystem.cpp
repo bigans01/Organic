@@ -1242,7 +1242,7 @@ void OrganicSystem::JobMaterializeCollectionFromFactoryViaMorph(MDJobMaterialize
 
 }
 
-void OrganicSystem::JobMaterializeCollectionFromMM(MDJobMaterializeCollection* mdjob, mutex& mutexval)
+EnclaveKeyDef::EnclaveKey OrganicSystem::JobMaterializeCollectionFromMM(MDJobMaterializeCollection* mdjob, mutex& mutexval)
 {
 	EnclaveCollectionBlueprintMatrix *BlueprintMatrixRef = mdjob->MDBlueprintMatrixRef;		// set Blueprint matrix ref
 	EnclaveCollectionMatrix *EnclaveCollectionsRef = mdjob->MDEnclaveCollectionsRef;		// set a ref to the EnclaveCollection matrix		
@@ -1328,7 +1328,8 @@ void OrganicSystem::JobMaterializeCollectionFromMM(MDJobMaterializeCollection* m
 	// Phase 3: create render array
 	RenderCollectionsRef->CreateRenderArrayFromManifestCollection(Key1, std::ref(mutexval), mdjobRenderMode);						// creates the to-be rendered array, from a MM
 																									
-
+	EnclaveKeyDef::EnclaveKey dumbReturnKey;
+	return dumbReturnKey;
 }
 
 void OrganicSystem::JobCalibrateBlueprintBordersFromFactory(EnclaveKeyDef::EnclaveKey Key1, EnclaveManifestFactoryT1 *FactoryRef)
@@ -2657,7 +2658,7 @@ void OrganicSystem::CheckForT1CollectionPrep()
 
 void OrganicSystem::WaitForPhase2Promises()
 {
-	std::vector<std::future<void>>::iterator T1_futureListIterator;								// iterator for the list of futures
+	std::vector<std::future<EnclaveKeyDef::EnclaveKey>>::iterator T1_futureListIterator;								// iterator for the list of futures
 	std::vector<std::future<void>>::iterator T2_futureListIterator;
 
 	// check for T2 promises 
@@ -2878,7 +2879,7 @@ void OrganicSystem::SubmitT1TerrainJob(OrganicMorphMeta in_popKey, std::map<int,
 {
 	std::lock_guard<std::mutex> lock(heapmutex);
 	OrganicMorphMetaToSendToBuffer.push(in_popKey);	// insert a value into the buffer work queue
-	std::future<void> pop_1 = in_iterator->second->threadPtr->submit5(&OrganicSystem::JobMaterializeCollectionFromMM, this, in_tempMDJobRef, std::ref(heapmutex));
+	std::future<EnclaveKeyDef::EnclaveKey> pop_1 = in_iterator->second->threadPtr->submit5(&OrganicSystem::JobMaterializeCollectionFromMM, this, in_tempMDJobRef, std::ref(heapmutex));
 	FL_T1CollectionsProcessed.push_back(std::move(pop_1));
 }
 
