@@ -117,8 +117,8 @@ void OGLMDrawCallMeta::sendTerrainT1RequestToDelegator(EnclaveKeyDef::EnclaveKey
 			if (DCMD_SubBufferContents[x] == 0)
 			{
 				//std::cout << "Remaining vertices: " << DCMD_RemainingVertexSpace[x] << std::endl;
-				DCMD_RemainingVertexSpace[x] = DCMD_RemainingVertexSpace[x] - (in_vertexArrayByteSize / 12);	// subtract the vertexes being added to the array, from the total amount remaining and store the result
-				DCMD_TT1_GL_BufferOffset[x] = in_subBufferIndex * (in_subBufferByteSize / 12);					// store the starting vertex of the TT1 data in the sub buffer
+				DCMD_RemainingVertexSpace[x] = DCMD_RemainingVertexSpace[x] - (in_vertexArrayByteSize / vertexTupleByteLength);	// subtract the vertexes being added to the array, from the total amount remaining and store the result
+				DCMD_TT1_GL_BufferOffset[x] = in_subBufferIndex * (in_subBufferByteSize / vertexTupleByteLength);					// store the starting vertex of the TT1 data in the sub buffer
 				//sendTerrainT1RequestToDelegator(in_key, in_subBufferIndex, in_vertexArrayByteSize, in_subBufferByteSize);
 				addToListAndSort(in_key, in_subBufferIndex, in_vertexArrayByteSize, in_subBufferByteSize);
 				DCMD_SubBufferContents[x] = 1;
@@ -154,15 +154,15 @@ void OGLMDrawCallMeta::setInitialDynamicArrayData(EnclaveKeyDef::EnclaveKey cent
 				// setup DCMD arrays
 				DCMD_SubBufferContents[currentIndexValue] = 0;								// set this flag to 0 
 				DCMD_SubBufferLocation[currentIndexValue] = currentIndexValue;				// set the sub buffer location to the current index value
-				DCMD_RemainingVertexSpace[currentIndexValue] = (subBufferByteSize / 12);	// set the initial amount of vertexes remaining to the buffer size
-				DCMD_TT1_GL_BufferOffset[currentIndexValue] = currentIndexValue * (subBufferByteSize / 12);	// set the start location of this sub buffer's first TT1 vertex to be the currentIndexValue * (subBufferByteSize / 12 )
-				DCMD_TT2_GL_BufferOffset[currentIndexValue] = currentIndexValue * (subBufferByteSize / 12); // set the start location of this sub buffer's first TT2 vertex to be the currentIndexValue * (subBufferByteSize / 12 ) (will change later when TT2 data is inserted)
+				DCMD_RemainingVertexSpace[currentIndexValue] = (subBufferByteSize / vertexTupleByteLength);	// set the initial amount of vertexes remaining to the buffer size
+				DCMD_TT1_GL_BufferOffset[currentIndexValue] = currentIndexValue * (subBufferByteSize / vertexTupleByteLength);	// set the start location of this sub buffer's first TT1 vertex to be the currentIndexValue * (subBufferByteSize / 12 )
+				DCMD_TT2_GL_BufferOffset[currentIndexValue] = currentIndexValue * (subBufferByteSize / vertexTupleByteLength); // set the start location of this sub buffer's first TT2 vertex to be the currentIndexValue * (subBufferByteSize / 12 ) (will change later when TT2 data is inserted)
 
 				// setup TT1 arrays
 				TT1_SubBufferContents[currentIndexValue] = 0;					// 0 indicates that there is currently nothing in this buffer
 				TT1_CollectionKeys[currentIndexValue] = elementCollectionKey;	// the collection key
 				TT1_SubBufferLocation[currentIndexValue] = currentIndexValue;	// the index value to put into the Location
-				TT1_GL_BufferOffset[currentIndexValue] = currentIndexValue * (subBufferByteSize / 12);
+				TT1_GL_BufferOffset[currentIndexValue] = currentIndexValue * (subBufferByteSize / vertexTupleByteLength);
 				TT1_GL_VertexArraySize[currentIndexValue] = 0;
 
 

@@ -38,14 +38,10 @@ OrganicSystem::OrganicSystem(int numberOfFactories, int T1_bufferCubeSize, int T
 	OCManager.setOrganicCellLimitsListPtr(tempOrganicCellLimitsListPtr);	// set the pointer to the OrganicCellLimits object, in the OCManager
 	OCManager.setOrganicSystemPtr(this);				// pass the reference to this instance of OrganicSystem to the OCManager
 	OCManager.populateCellMapsOnEngineStart();						// populate the cell maps in OCManager, based on the current number of cells available, and the chosen workPriority
-	int tupleWidth = SetRenderMode(1);												// set render mode (0 = vertex only single color, 1 = vertex + vertex shaded triangles) 
+	int tupleWidth = SetRenderMode(1);												// set render mode (0 = vertex only single color, 1 = vertex + vertex shaded triangles); this is requried before calling SetGraphicsAPI, which sets up OpenGL buffers, VBO tuples, etc
 	OGLM.renderableCollectionList.setVertexTupleWidth(tupleWidth);	// set the appropriate tuple width
-	SetGraphicsAPI();												// setup the graphics API (OpenGL context, etc)
-																			//auto start3 = std::chrono::high_resolution_clock::now();				// benchmark testing only
-
-																			// send all processed collections to OPEN GL	
+	SetGraphicsAPI();												// setup the graphics API (OpenGL context, etc)																			
 	SelectShader();													// select the appropriate shader
-
 }
 
 OrganicSystem::~OrganicSystem()

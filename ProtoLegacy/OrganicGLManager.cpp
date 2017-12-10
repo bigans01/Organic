@@ -126,30 +126,6 @@ void OrganicGLManager::InitializeOpenGL()
 	|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| */
 
 
-
-
-	// ::::::::::::::::MULTI BUFFER STYLE::::::::::::::::::
-	//glGenBuffers(10, OrganicGLVertexBufferArray);								// generates 10 buffers, and puts their refrences into the OrganicGLVertexBufferArray
-	//glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexBufferArray[0]);				// binds the array at index 0 to be the currently referenced buffer
-
-	// ::::::::::::::::SINGLE BUFFER STYLE::::::::::::::::::
-	//glGenBuffers(1, &OrganicGLVertexCoordVBOID);								// generate 1 single buffer, bind it to OrganicGLVertexCoordVBOID; this is different from the above line.
-	//glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexCoordVBOID);					// binds the previously created buffer to be a GL_ARRAY_BUFFER
-
-	//glBufferData(GL_ARRAY_BUFFER, 1024, OrganicGLarrayPTR, GL_DYNAMIC_DRAW);		// Old method; no longer utilized.
-	// 3000000000
-	//unsigned long int bufferSize = OGLMVertexSubBufferSize * numberOfBuffers;
-	//cout << "Total buffer size: " << OGLMVertexSubBufferSize * numberOfBuffers << endl;
-	//cout << "Total buffer size: " << bufferSize << endl;
-	//GLbitfield flags = GL_DYNAMIC_STORAGE_BIT;
-	//GLbitfield flags = GL_DYNAMIC_STORAGE_BIT | GL_MAP_PERSISTENT_BIT;
-	//GLbitfield flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
-	//GLbitfield flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT | GL_DYNAMIC_STORAGE_BIT;
-	//GLbitfield flags = GL_DYNAMIC_STORAGE_BIT | GL_MAP_WRITE_BIT | GL_MAP_READ_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
-
-
-
-
 	// --- REQUIRED - allocate mandatory buffers and objects
 
 	// Create Vertex Array Object
@@ -168,8 +144,9 @@ void OrganicGLManager::InitializeOpenGL()
 	if (renderMode == 0)
 	{
 		// bufferStorage for vertexes
-		glGenBuffers(1, &OrganicGLVertexCoordVBOID);								// generate 10 buffers, bind it to the arrayOrganicGLVertexBufferArray
-		glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexCoordVBOID);					// binds the previously created buffer to be a GL_ARRAY_BUFFER
+		glGenBuffers(1, &OrganicGLVertexCoordVBOID);											// generate 10 buffers, bind it to the arrayOrganicGLVertexBufferArray
+		glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexCoordVBOID);								// binds the previously created buffer to be a GL_ARRAY_BUFFER
+		OGLMVertexSubBufferSize = cltnFaceStorageCount *  (cltnFaceVertexCoordTotalBytes);
 		glBufferStorage(GL_ARRAY_BUFFER, OGLMVertexSubBufferSize * numberOfBuffers, NULL, bufferStorageflags);	
 		glEnableVertexAttribArray(0);												// enable vertex attrib array for attribute 0
 		//glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexCoordVBOID);				// OrganicGLVertexBufferArray[0], OrganicGLVertexCoordVBOID
@@ -229,6 +206,7 @@ void OrganicGLManager::InitializeOpenGL()
 		// glUseProgram(OrganicMode1ProgramID);	// use appropriate program
 		glGenBuffers(1, &OrganicGLVertexCoordVBOID);
 		glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexCoordVBOID); // bind to primary VBO
+		OGLMVertexSubBufferSize = cltnFaceStorageCount *  (cltnFaceVertexCoordTotalBytes * 2); // 
 		glBufferStorage(GL_ARRAY_BUFFER, OGLMVertexSubBufferSize * numberOfBuffers, NULL, bufferStorageflags);
 		// interleaving, total stride amount is 24 bytes
 		glEnableVertexAttribArray(0);
@@ -264,23 +242,6 @@ void OrganicGLManager::InitializeOpenGL()
 			glMapBufferRange(GL_ARRAY_BUFFER, 10, sizeof(glm::vec3) * 1, mapFlags)
 			);
 	*/
-
-
-	//GLenum err;
-	//err = glGetError();
-	//cout << "potential error is: " << err << endl;
-
-
-
-	//glGenBuffers(1, &OrganicGLIndirectBufferID);
-	//glBindBuffer(GL_DRAW_INDIRECT_BUFFER, OrganicGLIndirectBufferID);
-
-
-	//glGenBuffers(1, &OrganicGLVertexNormalID);
-	//glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexNormalID);
-	//glBufferStorage(GL_ARRAY_BUFFER, OGLMVertexSubBufferSize * numberOfBuffers, NULL, GL_DYNAMIC_STORAGE_BIT);
-
-
 
 	/* ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
@@ -524,18 +485,7 @@ void OrganicGLManager::sendRenderCollectionDataToBuffer(OrganicMorphMeta inMorph
 	glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexCoordVBOID);
 	// cout << "sending to buffer: SubBufferIndex: " << inMorphMeta.subBufferIndex << "  Actual offset: " << inMorphMeta.subBufferIndex*OGLMVertexSubBufferSize << endl;
 	glBufferSubData(GL_ARRAY_BUFFER, inMorphMeta.subBufferIndex*OGLMVertexSubBufferSize, renderCollPtr->RenderCollectionArraySize, renderCollPtr->GLFloatPtr.get());
-	//renderableCollectionList.sendTerrainT1RequestToDelegator(inMorphMeta.collectionKey, inMorphMeta.subBufferIndex, renderCollPtr->RenderCollectionArraySize, OGLMVertexSubBufferSize);
-	//cout << "collection sent to buffer..." << inMorphMeta.collectionKey.x << ", " << inMorphMeta.collectionKey.y << ", " << inMorphMeta.collectionKey.z << endl;
-	//cout << "size: " << renderCollPtr->RenderCollectionArraySize << endl;
-	//EnclaveKeyDef::EnclaveKey firstRenderableEnclaveKey = renderCollPtr->EnclaveCollectionPtr->RenderableEnclaves[0];		// use for the below
-	//EnclaveKeyDef::EnclaveKey collectionKey = renderCollPtr->EnclaveCollectionPtr->EnclaveArray[firstRenderableEnclaveKey.x][firstRenderableEnclaveKey.y][firstRenderableEnclaveKey.z].CollectionKey;
-	// cout << "(Vertex data) Test; originating collection key:  " << collectionKey.x << ", " << collectionKey.y << ", " << collectionKey.z << endl;
-	//glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexCoordVBOID);				// OrganicGLVertexBufferArray[0], OrganicGLVertexCoordVBOID
-	//glBufferSubData(GL_ARRAY_BUFFER, RMContainer.CurrentIndex*OGLMVertexSubBufferSize, renderCollPtr->RenderCollectionArraySize, renderCollPtr->GLFloatPtr);
-	//RMContainer.RenderMetaArray[RMContainer.CurrentIndex].MetaIndex = RMContainer.CurrentIndex;
-	//RMContainer.RenderMetaArray[RMContainer.CurrentIndex].ArraySize = renderCollPtr->RenderCollectionArraySize;
-	//RMContainer.CurrentIndex++;
-	//RMContainer.TotalRenderable++;
+
 }
 
 void OrganicGLManager::sendRenderCollectionDataToBufferOnGameLoad(RenderCollection *renderCollPtr)
@@ -563,13 +513,7 @@ void OrganicGLManager::sendRenderCollectionVCDataToBuffer(OrganicMorphMeta inMor
 		glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexSecondaryVBOID);
 		glBufferSubData(GL_ARRAY_BUFFER, inMorphMeta.subBufferIndex*OGLMVertexSubBufferSize, renderCollPtr->RenderCollectionArraySize, renderCollPtr->VertexColorArrayPtr.get());
 	}
-	//glBufferSubData(GL_ARRAY_BUFFER, subBufferIndex*OGLMVertexSubBufferSize, renderCollPtr->RenderCollectionArraySize, renderCollPtr->VertexColorArrayPtr);
-	//glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexSecondaryVBOID);
-	//glBufferSubData(GL_ARRAY_BUFFER, RMContainer.CurrentIndex*OGLMVertexSubBufferSize, renderCollPtr->RenderCollectionArraySize, renderCollPtr->VertexColorArrayPtr);
-	//RMContainer.RenderMetaArray[RMContainer.CurrentIndex].MetaIndex = RMContainer.CurrentIndex;						
-	//RMContainer.RenderMetaArray[RMContainer.CurrentIndex].ArraySize = renderCollPtr->RenderCollectionArraySize;
-	//RMContainer.CurrentIndex++;
-	//RMContainer.TotalRenderable++;
+
 }
 
 void OrganicGLManager::sendRenderCollectionVCDataTOBufferOnGameLoad(RenderCollection *renderCollPtr)
@@ -590,21 +534,6 @@ void OrganicGLManager::selectShader()
 	if (renderMode == 0)										// Default terrain shader program: only puts colors on fragments.
 	{
 		glUseProgram(OrganicMode0ProgramID);
-
-		/*
-		glEnableVertexAttribArray(0);										//select the buffer we will be using
-		glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexCoordVBOID);				// OrganicGLVertexBufferArray[0], OrganicGLVertexCoordVBOID
-		glVertexAttribPointer(
-			0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-			3,                  // size
-			GL_FLOAT,           // type
-			GL_FALSE,           // normalized?
-			0,                  // stride
-			(void*)0            // array buffer offset. Number following (void*) indicates offset point to begin reading from in the pointed-to buffer, measured in bytes;
-								// For instance, if the data begins at byte 10000, you would put (void*)10000 in the array you are reading.
-								
-		);
-		*/
 	}
 
 	if (renderMode == 1)

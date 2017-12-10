@@ -586,7 +586,7 @@ void OGLMBufferManager::MorphT2TerrainBufferSouth()
 void OGLMBufferManager::MorphT1TerrainBufferWest()
 {
 	std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveCollectionBlueprint, EnclaveKeyDef::KeyHasher>::iterator blueprintMapIterator;			// iterator for blueprint checking
-	int T2_LowerNWLocation = (T2_cubesize / 2) - (T1_cubesize / 2); // get the T2 lower NW location, to begin appropriate incrementing of index to find below
+	int T2_LowerNWLocation = (T2_cubesize / 2) - (T1_cubesize / 2); // get the T2 lower NW location, to begin appropriate incrementing of index to find below (going negative x)
 	for (int y = 0; y < T1_cubesize; y++)
 	{
 		for (int z = 0; z < T1_cubesize; z++)
@@ -614,10 +614,10 @@ void OGLMBufferManager::MorphT1TerrainBufferWest()
 			if (blueprintMapIterator != blueprintMatrixPtr->BlueprintMap.end())					// if it isn't equal to end, it was found.
 			{
 				cout << "blueprint found! (T1 shift) " << endl;
-				//EnclaveKeyDef::EnclaveKey tempKey = OGLMRMC.T1_renderMetaContainerArray[T1_translateXYZToSingle(0, 0, 0)].ElementCollectionKey;
-				//EnclaveKeyDef::EnclaveKey tempKey2 = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(T2_LowerNWLocation, T2_LowerNWLocation, T2_LowerNWLocation)].ElementCollectionKey;
-				//cout << "New value of element at 0,0,0 in T1 array is:" << tempKey.x << ", " << tempKey.y << ", " << tempKey.z << endl;
-				//cout << "New value of element at 5,5,5 in T2 array is:" << tempKey2.x << ", " << tempKey2.y << ", " << tempKey2.z << endl;
+				EnclaveKeyDef::EnclaveKey tempKey = OGLMRMC.T1_renderMetaContainerArray[T1_translateXYZToSingle(0, 0, 0)].ElementCollectionKey;
+				EnclaveKeyDef::EnclaveKey tempKey2 = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(T2_LowerNWLocation, T2_LowerNWLocation, T2_LowerNWLocation)].ElementCollectionKey;
+				cout << "(WEST SHIFT) New value of element at " << T2_cubesize - 1 << " , " << 0 << ", " << 0 << " in T1 array is:" << tempKey.x << ", " << tempKey.y << ", " << tempKey.z << endl;
+				cout << "(WEST SHIFT) New value of element at " << T2_LowerNWLocation << " , " << T2_LowerNWLocation << ", " << T2_LowerNWLocation << " in T2 array is:" << tempKey2.x << ", " << tempKey2.y << ", " << tempKey2.z << endl;
 
 			}
 			else
@@ -635,7 +635,7 @@ void OGLMBufferManager::MorphT1TerrainBufferWest()
 void OGLMBufferManager::MorphT1TerrainBufferEast()
 {
 	std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveCollectionBlueprint, EnclaveKeyDef::KeyHasher>::iterator blueprintMapIterator;			// iterator for blueprint checking
-	int T2_LowerNELocationX = (T2_cubesize / 2) + (T1_cubesize / 2); // get the T2 lower NE location, to begin appropriate incrementing of index to find below
+	int T2_LowerNELocationX = (T2_cubesize / 2) + (T1_cubesize / 2); // get the T2 lower NE location, to begin appropriate incrementing of index to find below (going positive x)
 	int T2_LowerNELocationY = (T2_cubesize / 2) - (T1_cubesize / 2);
 	int T2_LowerNELocationZ = (T2_cubesize / 2) - (T1_cubesize / 2);
 	for (int y = 0; y < T1_cubesize; y++)
@@ -700,7 +700,19 @@ void OGLMBufferManager::MorphT1TerrainBufferAbove()
 
 void OGLMBufferManager::MorphT1TerrainBufferNorth()
 {
+	std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveCollectionBlueprint, EnclaveKeyDef::KeyHasher>::iterator blueprintMapIterator;			// iterator for blueprint checking
+	int T2_LowerNWLocation = (T2_cubesize / 2) - (T1_cubesize / 2); // get the T2 lower NW location, to begin appropriate incrementing of index to find below (going negative z)
+	for (int y = 0; y < T1_cubesize; y++)
+	{
+		for (int x = 0; x < T1_cubesize; x++)
+		{
+			for (int z = T1_cubesize - 1; z > 0; z--)
+			{
 
+			}
+		}
+
+	}
 }
 
 void OGLMBufferManager::MorphT1TerrainBufferSouth()
