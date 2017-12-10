@@ -1329,6 +1329,7 @@ EnclaveKeyDef::EnclaveKey OrganicSystem::JobMaterializeCollectionFromMM(MDJobMat
 	RenderCollectionsRef->CreateRenderArrayFromManifestCollection(Key1, std::ref(mutexval), mdjobRenderMode);						// creates the to-be rendered array, from a MM
 																									
 	EnclaveKeyDef::EnclaveKey dumbReturnKey;
+	dumbReturnKey.x = NULL;			// return NULL if no key was found StateMatrixPtr
 	return dumbReturnKey;
 }
 
@@ -2689,6 +2690,11 @@ void OrganicSystem::WaitForPhase2Promises()
 		for (int x = 0; x < collectionsToProcess; x++)
 		{
 			T1_futureListIterator->wait();
+			EnclaveKeyDef::EnclaveKey testoutputKey = T1_futureListIterator->get();
+			if (testoutputKey.x == NULL)
+			{
+				//cout << "hoo doggy its NULL!" << endl;
+			}
 			//cout << "wait complete..." << endl;
 			T1_futureListIterator++;
 		}

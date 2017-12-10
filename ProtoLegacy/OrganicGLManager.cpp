@@ -352,12 +352,44 @@ void OrganicGLManager::RenderReadyArrays()
 
 	//for (int x = 0; x < 5; x++)
 	//{
-		glMultiDrawArraysIndirect(GL_TRIANGLES, (GLvoid*)0, renderableCollectionList.numberOfRenderableCollections, 0);
+	glMultiDrawArraysIndirect(GL_TRIANGLES, (GLvoid*)0, renderableCollectionList.numberOfRenderableCollections, 0);
 	//}
 
+	// single draw call testing
 
-	
-
+	/*
+	int totalDrawCallByteSize = 0;
+	//GLsizei finalSize = 0;
+	if (testBufferMode == 0)
+	{
+		// do things
+			// total size of all vertex data
+		for (int x = 0; x < renderableCollectionList.numberOfRenderableCollections; x++)
+		{
+			totalDrawCallByteSize += (renderableCollectionList.TT1_GL_VertexArraySize[x] * 24)/4;
+		}
+		megaFloatBuffer.reset(new GLfloat[totalDrawCallByteSize]);
+		int currentFloatToInsertAt = 0;
+		for (int x = 0; x < renderableCollectionList.numberOfRenderableCollections; x++)
+		{
+			EnclaveKeyDef::EnclaveKey tempKeyToFind = renderableCollectionList.TT1_CollectionKeys[x];
+			RenderCollection* tempRenderColl = &organicSystemPtr->RenderCollections.RenderMatrix[tempKeyToFind];
+			int currentRenderCollectionFloatSize = (tempRenderColl->RenderCollectionArraySize / 4);
+			for (int y = 0; y < currentRenderCollectionFloatSize; y++)
+			{
+				megaFloatBuffer[currentFloatToInsertAt++] = tempRenderColl->GLFloatPtr[y];
+			}
+		}
+		testBufferMode = 1;
+		glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexCoordVBOID); // bind to primary VBO
+		glBufferSubData(GL_ARRAY_BUFFER, 0, totalDrawCallByteSize * 4, megaFloatBuffer.get());
+		cout << "FINAL DRAW CALL SIZE IS: " << (totalDrawCallByteSize * 4) / 24 << endl;
+		finalTestSize = GLsizei((totalDrawCallByteSize * 4) / 24);
+		//finalSize = 600000;
+	}
+	glDrawArrays(GL_TRIANGLES, 0, finalTestSize);		// (totalDrawCallByteSize*4)/24
+																		// (totalDrawCallByteSize*4)/192
+	*/
 	
 	//std::cout << "RUN MULTI JOB 1 ELAPSED ITERATOR TIME: " << elapsed4.count() << std::endl;
 
@@ -369,7 +401,7 @@ void OrganicGLManager::RenderReadyArrays()
 	glfwPollEvents();													// listen for input to the current OpenGL context window
 
 	std::chrono::duration<double> GLelapsed = GLend - GLstart;
-	//std::cout << "Frame render Time: (actual draw call call) " << GLelapsed.count() << std::endl;
+	std::cout << "Frame render Time: (actual draw call call) " << GLelapsed.count() << std::endl;
 }
 
 void OrganicGLManager::ShutdownOpenGL()

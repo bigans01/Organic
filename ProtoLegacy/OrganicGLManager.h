@@ -41,6 +41,9 @@ private:
 	friend class OrganicSystem;
 	friend class OGLMBufferManager;
 	int renderMode = 0;
+	int testBufferMode = 0;
+	int finalTestSize = 0;
+	unique_ptr<GLfloat[]> megaFloatBuffer;
 	GLuint OrganicMode0ProgramID = 0;													// OpenGL: pointer/handle to the program used for shading	
 	GLuint OrganicMode1ProgramID = 0;
 
