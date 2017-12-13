@@ -35,19 +35,71 @@ void OGLMDrawCallMeta::setVertexTupleWidth(int in_width)
 	vertexTupleByteLength = in_width;
 }
 
+void OGLMDrawCallMeta::removeHighLODAndSort(EnclaveKeyDef::EnclaveKey in_enclaveKey)
+{
+	//std::cout << "BEGIN number of renderable collections: " << numberOfRenderableCollections << std::endl;
+	int lastElementIndex = (numberOfRenderableCollections - 1);
+	for (int x = 0; x < numberOfRenderableCollections; x++)
+	{
+		if (TT1_CollectionKeys[x] == in_enclaveKey)
+		{
+			//if (TT1_SubBufferContents[x] == 1)
+			//{
+				std::cout << "Key found! removing: (" << x << ") "  << TT1_CollectionKeys[x].x << ", " << TT1_CollectionKeys[x].y << ", " << TT1_CollectionKeys[x].z << std::endl;
+
+				int temp_TT1_SubBufferContents = TT1_SubBufferContents[x];
+				EnclaveKeyDef::EnclaveKey temp_TT1_CollectionKey = TT1_CollectionKeys[x];
+				int temp_TT1_SubBufferLocation = TT1_SubBufferLocation[x];
+				int temp_TT1_GL_BufferOffset = TT1_GL_BufferOffset[x];
+				int temp_TT1_GL_VertexArraySize = TT1_GL_VertexArraySize[x];
+
+				TT1_SubBufferContents[x] = TT1_SubBufferContents[lastElementIndex]; 
+				TT1_CollectionKeys[x] = TT1_CollectionKeys[lastElementIndex];
+				TT1_SubBufferLocation[x] = TT1_SubBufferLocation[lastElementIndex];
+				TT1_GL_BufferOffset[x] = TT1_GL_BufferOffset[lastElementIndex];
+				TT1_GL_VertexArraySize[x] = TT1_GL_VertexArraySize[lastElementIndex];
+
+				//TT1_SubBufferContents[lastElementIndex] = 0;
+				//TT1_CollectionKeys[lastElementIndex].x = 0;
+				//TT1_CollectionKeys[lastElementIndex].y = 0;
+				//TT1_CollectionKeys[lastElementIndex].z = 0;
+				//TT1_SubBufferLocation[lastElementIndex] = 0;
+
+				//TT1_GL_VertexArraySize[lastElementIndex] = 0;
+
+				TT1_SubBufferContents[lastElementIndex] = 0;		// temp_TT1_SubBufferContents
+				TT1_CollectionKeys[lastElementIndex] = temp_TT1_CollectionKey;
+				TT1_SubBufferLocation[lastElementIndex] = temp_TT1_SubBufferLocation;
+				TT1_GL_BufferOffset[lastElementIndex] = temp_TT1_GL_BufferOffset;
+				TT1_GL_VertexArraySize[lastElementIndex] = temp_TT1_GL_VertexArraySize;
+
+				numberOfRenderableCollections--;	// deduct the number of renderable collections
+				indexValueOfFirstEmpty--;			// deduct first empty value
+				break;
+			//}
+
+
+		}
+	}
+	//std::cout << "END number of renderable collections: " << numberOfRenderableCollections << std::endl;
+}
+
 void OGLMDrawCallMeta::addToListAndSort(EnclaveKeyDef::EnclaveKey in_key, int in_subBufferIndex, int in_vertexArrayByteSize, int in_subBufferByteSize)
 {
 	// search for an element in the list
 	int doesElementExist = 0;
-	
+	//std::cout << "test of sub buffer index is: " << in_subBufferIndex << std::endl;
 	for (int x = 0; x < array_length; x++)
 	{
+		
 		// find the corresponding location of the sub-buffer's ID (with a range of 0 to array_length)
 		if (TT1_SubBufferLocation[x] == in_subBufferIndex)
 		{
+			//std::cout << "sub buffer index pass " << std::endl;
 			// check to see if the sub buffer is completely empty.
 			if (TT1_SubBufferContents[x] == 0)
 			{
+				//std::cout << "sub buffer contents pass " << std::endl;
 				// set up temp swap variables
 				int temp_TT1_SubBufferContents = TT1_SubBufferContents[indexValueOfFirstEmpty];
 				EnclaveKeyDef::EnclaveKey temp_TT1_CollectionKey = TT1_CollectionKeys[indexValueOfFirstEmpty];
@@ -69,6 +121,7 @@ void OGLMDrawCallMeta::addToListAndSort(EnclaveKeyDef::EnclaveKey in_key, int in
 				TT1_GL_BufferOffset[x] = temp_TT1_GL_BufferOffset;				// set the vertex offset of the beginning of the sub buffer, in the corresponding current element of dynamic array
 				TT1_GL_VertexArraySize[x] = temp_TT1_GL_VertexArraySize;		// set the number of vertexes in the sub buffer, in the corresponding current element of dynamic array
 
+				//std::cout << "index value of first empty is: " << indexValueOfFirstEmpty << std::endl;
 				indexValueOfFirstEmpty++;
 				numberOfRenderableCollections++;
 				// std::cout << "Added to list: sub buffer: " << in_subBufferIndex << "actual offset: " << in_subBufferIndex * (in_subBufferByteSize / 12) << " vertex count: " << in_vertexArrayByteSize / 12 << std::endl;
@@ -107,7 +160,7 @@ void OGLMDrawCallMeta::addToListAndSort(EnclaveKeyDef::EnclaveKey in_key, int in
 	*/
 }
 
-void OGLMDrawCallMeta::sendTerrainT1RequestToDelegator(EnclaveKeyDef::EnclaveKey in_key, int in_subBufferIndex, int in_vertexArrayByteSize, int in_subBufferByteSize)
+void OGLMDrawCallMeta::sendTerrainT1AddRequestToDelegator(EnclaveKeyDef::EnclaveKey in_key, int in_subBufferIndex, int in_vertexArrayByteSize, int in_subBufferByteSize)
 {
 	for (int x = 0; x < array_length; x++)
 	{
@@ -119,9 +172,9 @@ void OGLMDrawCallMeta::sendTerrainT1RequestToDelegator(EnclaveKeyDef::EnclaveKey
 				//std::cout << "Remaining vertices: " << DCMD_RemainingVertexSpace[x] << std::endl;
 				DCMD_RemainingVertexSpace[x] = DCMD_RemainingVertexSpace[x] - (in_vertexArrayByteSize / vertexTupleByteLength);	// subtract the vertexes being added to the array, from the total amount remaining and store the result
 				DCMD_TT1_GL_BufferOffset[x] = in_subBufferIndex * (in_subBufferByteSize / vertexTupleByteLength);					// store the starting vertex of the TT1 data in the sub buffer
-				//sendTerrainT1RequestToDelegator(in_key, in_subBufferIndex, in_vertexArrayByteSize, in_subBufferByteSize);
+				//sendTerrainT1AddRequestToDelegator(in_key, in_subBufferIndex, in_vertexArrayByteSize, in_subBufferByteSize);
 				addToListAndSort(in_key, in_subBufferIndex, in_vertexArrayByteSize, in_subBufferByteSize);
-				DCMD_SubBufferContents[x] = 1;
+				DCMD_SubBufferContents[x] = 0;
 				//std::cout << "Vertices subtracted: " << (in_vertexArrayByteSize / 12) << std::endl;
 				//std::cout << "Remaining verties (2): " << DCMD_RemainingVertexSpace[x] << std::endl;
 			}
@@ -130,6 +183,11 @@ void OGLMDrawCallMeta::sendTerrainT1RequestToDelegator(EnclaveKeyDef::EnclaveKey
 		}
 	}
 	// std::cout << "Delegator inserted values: element number: " << in_subBufferIndex << "   actual offset: " << in_subBufferIndex * (in_subBufferByteSize / 12) << std::endl;
+}
+
+void OGLMDrawCallMeta::sendTerrainT1RemoveRequestToDelegator(EnclaveKeyDef::EnclaveKey in_key, int in_subBufferIndex)
+{
+
 }
 
 void OGLMDrawCallMeta::setInitialDynamicArrayData(EnclaveKeyDef::EnclaveKey centerCollectionKey)

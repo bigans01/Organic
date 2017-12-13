@@ -24,7 +24,7 @@ Notes:	this will very likely be modified continuously throughout development.
 
 #include "EnclaveKeyDef.h"
 #include "OGLMDrawCallMeta.h"
-#include "OGLMRenderMetaContainer.h"5
+#include "OGLMRenderMetaContainer.h"
 #include "OrganicMorphMeta.h"
 #include "EnclaveCollectionBlueprintMatrix.h"
 

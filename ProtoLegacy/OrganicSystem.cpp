@@ -454,14 +454,17 @@ void OrganicSystem::MaterializeAllCollectionsInRenderList()
 
 	EnclaveKeyDef::EnclaveKey centerKey = OGLM.OrganicBufferManager.currentCenterCollectionKey;
 
+	cout << "++++++" << endl;
 	cout << "Materialize Collections V2: " << centerKey.x << ", " << centerKey.y << ", " << centerKey.x << ", " << endl;
-
-	
+	cout << "Center element value is: " << T2_centerElementIndexValue.x << ", " << T2_centerElementIndexValue.y << ", " << T2_centerElementIndexValue.z << endl;
+	cout << "++++++" << endl;
 	std::vector<EnclaveKeyDef::EnclaveKey>::iterator collectionListIter = renderCollectionList.KeyVector.begin();	// set iterator to be the beginning of the list.
 	for (collectionListIter; collectionListIter != renderCollectionList.KeyVector.end(); ++collectionListIter)		// loop through each key
 	{
 		EnclaveKeyDef::EnclaveKey listKey = *collectionListIter;	// set the temp listKey
 		
+		// -7, 0, 0
+		int tempelement = 0; 
 		// Type 1 (T1) terrain checks...add the key to the list of of T1 keys to be rendered, if the key exists within the T1 field
 		if (abs(listKey.x - centerKey.x) <= T1_axis_size		&&		abs(listKey.y - centerKey.y) <= T1_axis_size		&&		abs(listKey.z - centerKey.z) <= T1_axis_size)	// if the absolute difference between the listKey and the CenterKey is <= the T1_size, it will go into the T1 dynamic array (condition must be met for x y AND z).
 		{
@@ -488,15 +491,25 @@ void OrganicSystem::MaterializeAllCollectionsInRenderList()
 			//cout << "Terrain type 1 (T1) List key added! " << listKey.x << ", " << listKey.y << ", " << listKey.z << endl;
 		}
 		
+		//if (listKey.x == -7 && listKey.y == 0 && listKey.z == 0)
+		//{
+			//cout << "list key would be: " << listKey.x << endl;
+			//cout << "center key would be: " << centerKey.x << endl;
+		//}
+
 		// Type 2 (T2) terrain checks
-		else
+		else if (abs(listKey.x - centerKey.x) <= T2_axis_size		&&		abs(listKey.y - centerKey.y) <= T2_axis_size		&&		abs(listKey.z - centerKey.z) <= T2_axis_size)
 		{
+
+
 			//cout << "Crash test 0 (T2)" << endl;
 			// part A: perform updates in T1 dynamic array
 			int currentT2BufferElement = OGLM.OrganicBufferManager.T2_translateXYZToSingle(T2_centerElementIndexValue.x + (listKey.x - centerKey.x),
-																						   T2_centerElementIndexValue.y + (listKey.y - centerKey.y),
-																						   T2_centerElementIndexValue.z + (listKey.z - centerKey.z));
+				T2_centerElementIndexValue.y + (listKey.y - centerKey.y),
+				T2_centerElementIndexValue.z + (listKey.z - centerKey.z));
+			tempelement = currentT2BufferElement;
 			OGLM.OrganicBufferManager.OGLMRMC.T2_renderMetaContainerArray[currentT2BufferElement].ContainsUsedT2Key = 1;								// indicate that this element actually contains a used key
+
 
 			// part B: get "true" OpenGL buffer value for this element
 			int trueBufferElement = OGLM.OrganicBufferManager.T2_translateXYZToSingle(T2_centerElementIndexValue.x + (listKey.x - centerKey.x),
@@ -510,8 +523,38 @@ void OrganicSystem::MaterializeAllCollectionsInRenderList()
 			tempMorphMeta.collectionKey = listKey;
 			T2CollectionProcessingQueue.push(tempMorphMeta);
 			//cout << "Terrain type 2 (T2) List key added! " << listKey.x << ", " << listKey.y << ", " << listKey.z << endl;
+			/*
+			if (listKey.x == 6 && listKey.y == 0 & listKey.z == -3)
+			{
+				//cout << "----testing other values: " << endl;
+				cout << T2_centerElementIndexValue.x << " + (" << (listKey.x - centerKey.x) << endl;
+				cout << T2_centerElementIndexValue.y << " + (" << (listKey.y - centerKey.y) << endl;
+				cout << T2_centerElementIndexValue.z << " + (" << (listKey.z - centerKey.z) << endl;
 
+				cout << T2_centerElementIndexValue.x << " + (" << listKey.x << " - " << centerKey.x << ")" << endl;
+				cout << T2_centerElementIndexValue.y << " + (" << listKey.y << " - " << centerKey.y << ")" << endl;
+				cout << T2_centerElementIndexValue.z << " + (" << listKey.z << " - " << centerKey.z << ")" << endl;
+
+				//cout << "Translate to T2 (actual key): " << OGLM.OrganicBufferManager.T2_translateXYZToSingle(T2_centerElementIndexValue.x + (listKey.x - centerKey.x),
+					//T2_centerElementIndexValue.y + (listKey.y - centerKey.y),
+					//T2_centerElementIndexValue.z + (listKey.z - centerKey.z));
+
+				//cout << "Translate to T2 (actual key): " << OGLM.OrganicBufferManager.T2_translateXYZToSingle(T2_centerElementIndexValue.x + (listKey.x - centerKey.x),
+					//T2_centerElementIndexValue.y + (listKey.y - centerKey.y),
+					//T2_centerElementIndexValue.z + (listKey.z - centerKey.z));
+
+
+				//cout << "key is registered!!!!!! (T2 type)" << endl;
+				//cout << "MATERIALIZE ELEMENT VALUE IS:" << currentT2BufferElement << endl;
+				int correctElement = OGLM.OrganicBufferManager.T2_translateXYZToSingle(6, 0, -3);
+				//cout << "VAlUE SHOULD BE: " << correctElement << endl;
+			}
+			*/
 		}
+
+		// 767
+		// cout << "VALUE OF 767 IS: (" << tempelement << ") (" << listKey.x << ", " << listKey.y << ", " << listKey.z << ") " << OGLM.OrganicBufferManager.OGLMRMC.T2_renderMetaContainerArray[767].ContainsUsedT2Key << endl;
+		
 
 	}
 
@@ -532,6 +575,8 @@ void OrganicSystem::MaterializeAllCollectionsInRenderList()
 	std::chrono::duration<double> newduration = newend - newstart;
 
 	cout << "Collection loading complete...elapsed time: " << newduration.count() << endl;
+	EnclaveKeyDef::EnclaveKey dumboutputKey = OGLM.OrganicBufferManager.OGLMRMC.T2_renderMetaContainerArray[OGLM.OrganicBufferManager.T2_translateXYZToSingle(5, 1, -5)].ElementCollectionKey;
+	cout << "TESTING OF ELEMENT VALUE: " << dumboutputKey.x << ", " << dumboutputKey.y << ", " << dumboutputKey.z << endl;
 }
 
 void OrganicSystem::SetupFutureCollectionMM(int x, int y, int z)
@@ -2661,12 +2706,14 @@ void OrganicSystem::WaitForPhase2Promises()
 {
 	std::vector<std::future<EnclaveKeyDef::EnclaveKey>>::iterator T1_futureListIterator;								// iterator for the list of futures
 	std::vector<std::future<void>>::iterator T2_futureListIterator;
+	int hasT2 = 0;
+
 
 	// check for T2 promises 
 	//cout << "checking t2 promises..." << endl;
 	if (FL_T2CollectionsProcessed.size() > 0)	// check if there are any futures to wait for
 	{
-	
+		hasT2 = 1;
 		//cout << "T2 size greater than 0, proceeding..." << "(size is " << FL_T2CollectionsProcessed.size() << ") " << endl;
 		T2_futureListIterator = FL_T2CollectionsProcessed.begin();
 		int collectionsToProcess = int(FL_T2CollectionsProcessed.size());
@@ -2747,6 +2794,14 @@ void OrganicSystem::WaitForPhase2Promises()
 	}
 
 	
+	if (hasT2 == 1)
+	{
+		for (int x = 0; x < OGLM.renderableCollectionList.numberOfRenderableCollections; x++)
+		{
+			EnclaveKeyDef::EnclaveKey tempKey = OGLM.renderableCollectionList.TT1_CollectionKeys[x];
+			// cout << "new render key list: (" << x <<  ") " << tempKey.x << ", " << tempKey.y << ", " << tempKey.z << endl;
+		}
+	}
 
 }
 
@@ -2823,6 +2878,18 @@ void OrganicSystem::CheckProcessingQueue()
 
 
 	// Type 2 set up
+	// remove old collections
+	if (!T2CollectionRemovalQueue.empty())
+	{
+		int removalSize = T2CollectionRemovalQueue.size();
+		for (int x = 0; x < removalSize; x++)
+		{
+			OrganicMorphMeta removalKey = T2CollectionRemovalQueue.front();
+			T2CollectionRemovalQueue.pop();
+			OGLM.OrganicBufferManager.DCMPtr->removeHighLODAndSort(removalKey.collectionKey);
+		}
+	}
+
 	for (int x = 0; x < numberOfThreads2; x++)
 	{
 		if (!T2CollectionProcessingQueue.empty())	// only do the following if the queue isn't empty
@@ -2830,6 +2897,11 @@ void OrganicSystem::CheckProcessingQueue()
 			OrganicMorphMeta popKey = T2CollectionProcessingQueue.front();	// get the front
 			T2CollectionProcessingQueue.pop();								// pop the queue
 			T2_OMMVector.push_back(popKey);									// push it to OMMVector
+			//if (popKey.containsPreviousKey == 1)
+			//{
+				//cout << "collection needs to be removed from draw call. (" << popKey.oldCollectionKey.x << ", " << popKey.oldCollectionKey.y << ", " << popKey.oldCollectionKey.z << ") " << endl;
+				//OGLM.OrganicBufferManager.DCMPtr->removeHighLODAndSort(popKey.oldCollectionKey);
+			//}
 			EnclaveKeyDef::EnclaveKey tempKey = popKey.collectionKey;		// get the collection key of the popKey
 			//cout << "  OGLM render mode is: " << OGLM.renderMode << endl;
 			MDJobMaterializeCollection tempMDJob(tempKey, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew), OGLM.renderMode);	//... use it to make a temp MDJob

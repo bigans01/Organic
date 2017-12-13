@@ -55,8 +55,10 @@ class OGLMDrawCallMeta
 		void setVertexTupleWidth(int in_width);
 		void setGLintDynamicArrays(int in_cubeSize, int in_subBufferSize);
 		void addToListAndSort(EnclaveKeyDef::EnclaveKey in_key, int in_subBufferIndex, int in_vertexArrayByteSize, int in_subBufferByteSize);
-		void sendTerrainT1RequestToDelegator(EnclaveKeyDef::EnclaveKey in_key, int in_subBufferIndex, int in_vertexArrayByteSize, int in_subBufferByteSize);
+		void sendTerrainT1AddRequestToDelegator(EnclaveKeyDef::EnclaveKey in_key, int in_subBufferIndex, int in_vertexArrayByteSize, int in_subBufferByteSize);
+		void sendTerrainT1RemoveRequestToDelegator(EnclaveKeyDef::EnclaveKey in_key, int in_subBufferIndex);
 		void setInitialDynamicArrayData(EnclaveKeyDef::EnclaveKey centerCollectionKey);
+		void removeHighLODAndSort(EnclaveKeyDef::EnclaveKey in_enclaveKey);
 };
 
 #endif

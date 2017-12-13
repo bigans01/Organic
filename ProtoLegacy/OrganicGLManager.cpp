@@ -72,6 +72,10 @@ void OrganicGLManager::InitializeOpenGL()
 
 	// Enable depth test
 	glEnable(GL_DEPTH_TEST);
+
+	// triangle culling
+	//glEnable(GL_CULL_FACE);
+
 	// Accept fragment if it closer to the camera than the former one
 	glDepthFunc(GL_LESS);
 
@@ -401,7 +405,7 @@ void OrganicGLManager::RenderReadyArrays()
 	glfwPollEvents();													// listen for input to the current OpenGL context window
 
 	std::chrono::duration<double> GLelapsed = GLend - GLstart;
-	std::cout << "Frame render Time: (actual draw call call) " << GLelapsed.count() << std::endl;
+	//std::cout << "Frame render Time: (actual draw call call) " << GLelapsed.count() << std::endl;
 }
 
 void OrganicGLManager::ShutdownOpenGL()
@@ -513,7 +517,7 @@ void OrganicGLManager::computeMatricesFromInputs()
 
 void OrganicGLManager::sendRenderCollectionDataToBuffer(OrganicMorphMeta inMorphMeta, RenderCollection* renderCollPtr)
 {
-	renderableCollectionList.sendTerrainT1RequestToDelegator(inMorphMeta.collectionKey, inMorphMeta.subBufferIndex, renderCollPtr->RenderCollectionArraySize, OGLMVertexSubBufferSize);	// send to T1 delegator; delegator will move any occupied data in the sub buffer to another appropriate location
+	renderableCollectionList.sendTerrainT1AddRequestToDelegator(inMorphMeta.collectionKey, inMorphMeta.subBufferIndex, renderCollPtr->RenderCollectionArraySize, OGLMVertexSubBufferSize);	// send to T1 delegator; delegator will move any occupied data in the sub buffer to another appropriate location
 	glBindBuffer(GL_ARRAY_BUFFER, OrganicGLVertexCoordVBOID);
 	// cout << "sending to buffer: SubBufferIndex: " << inMorphMeta.subBufferIndex << "  Actual offset: " << inMorphMeta.subBufferIndex*OGLMVertexSubBufferSize << endl;
 	glBufferSubData(GL_ARRAY_BUFFER, inMorphMeta.subBufferIndex*OGLMVertexSubBufferSize, renderCollPtr->RenderCollectionArraySize, renderCollPtr->GLFloatPtr.get());
@@ -531,7 +535,7 @@ void OrganicGLManager::sendRenderCollectionDataToBufferOnGameLoad(RenderCollecti
 	glBufferSubData(GL_ARRAY_BUFFER, subBufferIndex*OGLMVertexSubBufferSize, renderCollPtr->RenderCollectionArraySize, renderCollPtr->GLFloatPtr.get());
 	//OrganicBufferManager.OGLMRMC.T2_renderMetaContainerArray[subBufferIndex].ElementRenderCollectionMeta.ArraySize = renderCollPtr->RenderCollectionArraySize;		// set the array size of this collection (in bytes; need to divide by 12 later on), in the appropriate element in OGLMRMC's dynamic array (T2_renderMetaContainerArray)
 	OrganicBufferManager.OGLMRMC.T2_renderMetaContainerArray[subBufferIndex].ElementSingularXYZValue = subBufferIndex;		// set the initial sub buffer index for this element (needed for when this sub buffer needs to be recycled during a morph)
-	renderableCollectionList.sendTerrainT1RequestToDelegator(collectionKey, subBufferIndex, renderCollPtr->RenderCollectionArraySize, OGLMVertexSubBufferSize);	// add this to the renderable collection list
+	renderableCollectionList.sendTerrainT1AddRequestToDelegator(collectionKey, subBufferIndex, renderCollPtr->RenderCollectionArraySize, OGLMVertexSubBufferSize);	// add this to the renderable collection list
 	cout << "Test; originating collection key:  " << collectionKey.x << ", " << collectionKey.y << ", " << collectionKey.z << endl;
 
 }

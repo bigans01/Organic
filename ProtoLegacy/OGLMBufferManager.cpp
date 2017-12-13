@@ -156,6 +156,7 @@ void OGLMBufferManager::determineMorphDirections()
 
 void OGLMBufferManager::MorphTerrainBuffers()
 {
+	//cout << "MORPHING CHECK: " << OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(0, y, z)].ContainsUsedT2Key;
 	// check negative x and positive x, respectively
 	auto carvestart = std::chrono::high_resolution_clock::now();
 
@@ -224,7 +225,10 @@ void OGLMBufferManager::MorphT2TerrainBufferWest()
 			{
 				tempMorphMeta.oldCollectionKey = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(T2_cubesize - 1, y, z)].ElementCollectionKey;	// set the old key
 				tempMorphMeta.containsPreviousKey = 1;		// set the flag indicating that there is an old key
-				cout << "previous key was set!" << endl;
+				cout << "previous key was set! (MOVED WEST) attempting removal send..." << endl;
+				OrganicMorphMeta removalMeta;
+				removalMeta.collectionKey = tempMorphMeta.oldCollectionKey;
+				organicSystemPtr->T2CollectionRemovalQueue.push(removalMeta);		// send to be removed
 			}
 
 			for (int x = T2_cubesize - 1; x > 0; x--)
@@ -291,9 +295,17 @@ void OGLMBufferManager::MorphT2TerrainBufferEast()
 			int currentContainsUsedT2KeyValue = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(0, y, z)].ContainsUsedT2Key;
 			if (OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(0, y, z)].ContainsUsedT2Key == 1)	// check to see if there was already an EnclaveCollection stored in the T2_renderMetaContainerArrayElement
 			{
+				cout << "y value is " << y << endl;
+				cout << "Z value is " << z << endl;
+				cout << "ELEMENT ID IS: " << OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(0, y, z)].ElementSingularXYZValue << endl;
+				cout << "SINGULAR XYZ IS: " << currentFirstSingularXYZValueInRow << endl;
 				tempMorphMeta.oldCollectionKey = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(0, y, z)].ElementCollectionKey;	// set the old key
 				tempMorphMeta.containsPreviousKey = 1;		// set the flag indicating that there is an old key
-				cout << "previous key was set!" << endl;
+				cout << "original key 9: " << currentLastKeyInRow.x << ", " << currentLastKeyInRow.y << ", " << currentLastKeyInRow.z << endl;
+				cout << "previous key was set! (MOVED EAST)" << tempMorphMeta.oldCollectionKey.x << ", " << tempMorphMeta.oldCollectionKey.y << ", " << tempMorphMeta.oldCollectionKey.z << endl;
+				OrganicMorphMeta removalMeta;
+				removalMeta.collectionKey = tempMorphMeta.oldCollectionKey;
+				organicSystemPtr->T2CollectionRemovalQueue.push(removalMeta);		// send to be removed
 			}
 
 			for (int x = 0; x < T2_cubesize - 1; x++)
@@ -325,6 +337,7 @@ void OGLMBufferManager::MorphT2TerrainBufferEast()
 			}
 			else
 			{
+				
 				//cout << "blueprint not found in OrganicSystem!" << endl;
 			}
 			//cout << "new key value for -x shift is: " << currentLastKeyInRow.x << ", " << currentLastKeyInRow.y << ", " << currentLastKeyInRow.z << endl;

@@ -412,7 +412,7 @@ int main()
 
 	flatKeyToAdd.x = 0;
 	flatKeyToAdd.y = 0;
-	flatKeyToAdd.z = -2;
+	flatKeyToAdd.z = 2;
 	//Organic.AddKeyToRenderList(flatKeyToAdd);
 	//Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, flatBlueprint);
 
@@ -431,19 +431,38 @@ int main()
 	
 
 	
+	
 	for (int x = 2; x < 7; x++)
 	{
-		for (int z = -2; z >= -7; z--)
+		for (int z = 0; z >= -7; z--)
 		{
-			flatKeyToAdd.x = x;
-			flatKeyToAdd.y = 0;
-			flatKeyToAdd.z = z;
-			Organic.AddKeyToRenderList(flatKeyToAdd);
+			EnclaveKeyDef::EnclaveKey key2;
+			key2.x = 6;
+			key2.y = 0;
+			key2.z = 0;
+			Organic.AddKeyToRenderList(key2);
 			Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, flatBlueprint);
 		}
 	}
+	
 
 
+	//flatKeyToAdd.x = 2;
+	//flatKeyToAdd.y = 0;
+	//flatKeyToAdd.z = -6;
+	//Organic.AddKeyToRenderList(flatKeyToAdd);
+	//Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, flatBlueprint);
+
+
+
+	//flatKeyToAdd.x = -7;
+	//flatKeyToAdd.y = 0;
+	//flatKeyToAdd.z = -7;
+	//Organic.AddKeyToRenderList(flatKeyToAdd);
+	//Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, flatBlueprint);
+	
+	
+		
 	for (int x = 1; x >= -6; x--)
 	{
 		for (int z = -2; z >= -7; z--)
@@ -455,6 +474,8 @@ int main()
 			Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, flatBlueprint);
 		}
 	}
+	
+
 	
 	for (int z = -1; z <= 0; z++)
 	{
@@ -472,28 +493,39 @@ int main()
 	flatKeyToAdd.y = 0;
 	flatKeyToAdd.z = 0;
 	Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, flatBlueprint);
+	Organic.AddKeyToRenderList(flatKeyToAdd);
 
 	flatKeyToAdd.x = -7;
 	flatKeyToAdd.y = 0;
 	flatKeyToAdd.z = 1;
 	Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, testBlueprint3);
+	Organic.AddKeyToRenderList(flatKeyToAdd);
 
 	flatKeyToAdd.x = -7;
 	flatKeyToAdd.y = 0;
 	flatKeyToAdd.z = 2;
 	Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, testBlueprint3);
+	Organic.AddKeyToRenderList(flatKeyToAdd);
 
 	flatKeyToAdd.x = -7;
 	flatKeyToAdd.y = 0;
 	flatKeyToAdd.z = 3;
 	Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, testBlueprint3);
+	Organic.AddKeyToRenderList(flatKeyToAdd);
 
 	flatKeyToAdd.x = -7;
 	flatKeyToAdd.y = 0;
 	flatKeyToAdd.z = 4;
 	Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, testBlueprint3);
+	Organic.AddKeyToRenderList(flatKeyToAdd);
 	
-
+	// DEBUG TESTING BLUEPRINT IS HERE
+	flatKeyToAdd.x = 6;
+	flatKeyToAdd.y = 0;
+	flatKeyToAdd.z = 0;
+	Organic.AddKeyToRenderList(flatKeyToAdd);
+	Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, flatBlueprint);
+	
 
 	/*
 	for (int x = 0; x < 5000; x++)
@@ -584,7 +616,7 @@ int main()
 
 	int shiftval = 1;
 	shiftval <<= 7;
-	cout << "test bit shift: " << shiftval << endl;
+	//cout << "test bit shift: " << shiftval << endl;
 
 	/*
 	EnclaveKeyDef::EnclaveKey NEWkey1, NEWkey2, NEWkey3, NEWkey4, NEWkey5, NEWkey6, NEWkey7, NEWkey8;
@@ -637,6 +669,7 @@ int main()
 	*/
 
 	Organic.MaterializeAllCollectionsInRenderList();
+	//cout << "TESTING OF ELEMENT VALUE: " << OGLM.OrganicBufferManager.OGLMRMC.T2_renderMetaContainerArray[currentT2BufferElement].ContainsUsedT2Key
 	//Organic.MaterializeAllCollectionsInRenderList(0);			// 0 = use a set of Factories, 1 = use a ManifestMatrix style
 
 
@@ -691,7 +724,7 @@ int main()
 	//std::cout << "Elapsed time (Massive Unveil Poly call: , " << count << "): " << elapsed.count() << endl;
 
 	auto start7 = std::chrono::high_resolution_clock::now();
-	cout << "debug line 2" << endl;
+	std::cout << "debug line 2" << endl;
 	//RenderCollections.CreateRenderArrayFromManifestCollection(testkey2);										//change here... OLD: testkey
 	auto finish7 = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> elapsed7 = finish7 - start7;
@@ -702,7 +735,7 @@ int main()
 
 	//Enclave *tempEnclave = &EnclaveCollections.GetEnclaveFromXYZ(69, 0, 0);				// MUST be a pointer, to not get a copy!!
 	//tempEnclave = &EnclaveCollections.GetEnclaveFromXYZ(0, 0, 0);											//change here... OLD: tempEnclave = &EnclaveCollections.GetEnclaveFromXYZ(77, 0, 0);		
-	cout << "Before new unveil call... " << endl;
+	std::cout << "Before new unveil call... " << endl;
 	//tempEnclave->UnveilSinglePolyWithMtrl(3, 2, 0, 0, 1, 0, 40, 0);
 
 	auto start2 = std::chrono::high_resolution_clock::now();
@@ -812,10 +845,10 @@ int main()
 
 	glm::vec3* originVecPtr = &originVec;
 	glm::vec3* directionVecPtr = &directionVec;
-	cout << "-----------------------------------cursor target testing..." << endl;
+	std::cout << "-----------------------------------cursor target testing..." << endl;
 	//Organic.DetermineMouseCursorTargets2(originVecPtr, directionVecPtr, 10);	// Step 3: determine targetable blocks 
 
-	cout << "----SMART POINTER TESTING----" << endl;
+	std::cout << "----SMART POINTER TESTING----" << endl;
 	auto targetsbegin = std::chrono::high_resolution_clock::now();
 	//Organic.DetermineMouseCursorTargets2(originVecPtr, directionVecPtr, 10);
 	//unique_ptr<GLfloat[]> testptr = make_unique<GLfloat[]>(1000);
@@ -826,7 +859,7 @@ int main()
 
 	auto targetsend = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> targetselapsed = targetsend - targetsbegin;
-	cout << "Smart pointer time: " << targetselapsed.count() << ", testvalue is: " << testptr[0] <<  endl;
+	std::cout << "Smart pointer time: " << targetselapsed.count() << ", testvalue is: " << testptr[0] <<  endl;
 
 
 
@@ -834,12 +867,12 @@ int main()
 	GLfloat* testptr2 = new GLfloat[1000];
 	auto targetsend2 = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> targetselapsed2 = targetsend2 - targetsbegin2;
-	cout << "Dynamic array pointer time: " << targetselapsed2.count() << ", testvalue is: " << testptr2[0] << endl;
+	std::cout << "Dynamic array pointer time: " << targetselapsed2.count() << ", testvalue is: " << testptr2[0] << endl;
 	delete[] testptr2;
 
 	//std::cout << "Elapsed time (Terrain targeting): " << targetselapsed.count() << endl;
 
-	cout << "-----------------------collection list: " << endl;
+	std::cout << "-----------------------collection list: " << endl;
 	//Organic.ListEnclaveCollectionsInMatrix();
 
 	do {
@@ -870,9 +903,9 @@ int main()
 
 	Organic.GLCleanup();			// cleanup OpenGL window, buffers, arrays, etc
 
-	cout << "Press any number key to end.";
+	std::cout << "Press any number key to end.";
 	int somevalue;
-	cin >> somevalue;
+	std::cin >> somevalue;
 
 
 	
