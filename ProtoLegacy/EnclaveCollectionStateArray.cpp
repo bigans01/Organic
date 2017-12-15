@@ -4,8 +4,57 @@
 #include <chrono>
 #include "EnclaveCollectionStateArray.h"
 
+void EnclaveCollectionStateArray::CreateAndInitializeStateMatrix(int inCubesize, float in_worldXcoord, float in_worldYcoord, float in_worldZcoord, EnclaveKeyDef::EnclaveKey in_centerKey)
+{
+	CreateStateMatrix(inCubesize);	// create the matrix
+
+									// set the location of the center of this matrix, for later use
+	centerXYZsingle = translateXYZToSingle(centerCollectionStateOffset, centerCollectionStateOffset, centerCollectionStateOffset);	// converts to a single value
+
+																																	// 0-initialize all elements of the dynamic array (should only need to be done once, but may change later (10/1/2017) )
+	for (int x = 0; x < cubesize; x++)
+	{
+		for (int y = 0; y < cubesize; y++)
+		{
+			for (int z = 0; z < cubesize; z++)
+			{
+				EnclaveCollectionState tempState;
+				tempState.isActive = 0;
+				int currentIndex = translateXYZToSingle(x, y, z);
+				StateMtxPtr[currentIndex] = tempState;
+				//StateMtxPtr[x][y][z] = tempState;	// set them  all initially to 0 
+			}
+		}
+	}
+	cout << "-----state array initialization call-----; center key is: (" << in_centerKey.x << ", " << in_centerKey.y << "," << in_centerKey.z << ")" << endl;
+	// loop through each of the 27 elements; the beginning key to search for will be equal to the centerKey minus 1 on all axis. 
+	EnclaveKeyDef::EnclaveKey beginSearchKey;
+	beginSearchKey.x = in_centerKey.x - centerCollectionStateOffset;
+	beginSearchKey.y = in_centerKey.y - centerCollectionStateOffset;
+	beginSearchKey.z = in_centerKey.z - centerCollectionStateOffset;
+	for (int xx = 0; xx < 3; xx++)
+	{
+		for (int yy = 0; yy < 3; yy++)
+		{
+			for (int zz = 0; zz < 3; zz++)
+			{
+				EnclaveKeyDef::EnclaveKey currentSearchKey = beginSearchKey;
+				currentSearchKey.x += xx;
+				currentSearchKey.y += yy;
+				currentSearchKey.z += zz;
+				int currentIndex = translateXYZToSingle(xx, yy, zz);
+				EnclaveCollectionState* centerState = &StateMtxPtr[currentIndex];
+				// cout << "Key inserted: " << currentSearchKey.x << ", " << currentSearchKey.y << ", " << currentSearchKey.z << ") " << endl;
+				centerState->ActualCollectionKey = currentSearchKey;
+			}
+		}
+	}
+
+}
+
 void EnclaveCollectionStateArray::SetCenterCollection(EnclaveKeyDef::EnclaveKey centerKey, EnclaveCollectionMatrix* collectionMatrixPtr)
 {
+	cout << "---------SET CENTER COLLECTION WAS CALLED----------" << endl;
 	// 0-initialize all 27 elements in the array (should only need to be done once, but may change later (9/29/2017) )
 	for (int x = 0; x < 3; x++)
 	{
@@ -151,6 +200,29 @@ int EnclaveCollectionStateArray::translateXYZToSingle(int x, int y, int z)
 	int y_axis = y * (cubesize);			// ...this would be 8
 											/*Summary: takes in the x/y/z to get the exact location in the buffers for this value */
 	return x_axis + y_axis + x;
+}
+
+int EnclaveCollectionStateArray::findIndexOfKeyToUpdate(EnclaveKeyDef::EnclaveKey in_Key)
+{
+	cout << "OH MAN (" << in_Key.x << ", " << in_Key.y << ", " << in_Key.z << ") " << endl;
+	int numberOfElements = (cubesize*cubesize*cubesize);
+	for (int x = 0; x < numberOfElements; x++)
+	{
+		EnclaveKeyDef::EnclaveKey tempKey = StateMtxPtr[x].ActualCollectionKey;
+		//cout << "Key at (" << x << ") is: " << tempKey.x << ", " << tempKey.y << ", " << tempKey.z << endl;
+		//cout << StateMtxPtr[x].isActive << endl;
+		//int key_x = tempKey->x;
+		//if (StateMtxPtr[x].ActualCollectionKey == in_Key)
+		//if (StateMtxPtr[x].ActualCollectionKey.x == 2)
+		if (StateMtxPtr[x].ActualCollectionKey == in_Key)
+		{
+			cout << "T1 matrix key found!! (" << in_Key.x << ", " << in_Key.y << ", " << in_Key.z << ") " << x << endl;
+			return x;
+		}
+	}
+	
+	return -1;
+	
 }
 
 void EnclaveCollectionStateArray::ShiftCenterCollection(EnclaveKeyDef::EnclaveKey previousKey, EnclaveKeyDef::EnclaveKey currentKey, EnclaveCollectionMatrix* collectionMatrixPtr)

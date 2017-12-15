@@ -342,7 +342,7 @@ int main()
 	//cout << "debug test 2" << endl;
 	Organic.SetWorldCoordinates(-3.0f, 30.0f, -1.0f);
 	//Organic.SetupWorldArea(-3.0f, 30.0f, -1.0f);
-	
+	Organic.InitializeCollectionStateArray(-3.0f, 30.0f, -1.0f);			// initialize state array; (world coords required)
 
 	// cout << "debug test 3" << endl;
 	EnclaveManifestFactoryT1* factoryRef;

@@ -26,7 +26,10 @@ private:
 	void SetCenterCollectionDynamic(EnclaveKeyDef::EnclaveKey centerKey, EnclaveCollectionMatrix* collectionMatrixPtr);
 	int translateXYZToSingle(int x, int y, int z);
 	void CreateStateMatrix(int inCubesize);
+	void CreateAndInitializeStateMatrix(int inCubesize, float in_worldXcoord, float in_worldYcoord, float in_worldZcoord, EnclaveKeyDef::EnclaveKey in_centerKey);
 	void ShiftCenterCollection(EnclaveKeyDef::EnclaveKey previousKey, EnclaveKeyDef::EnclaveKey currentKey, EnclaveCollectionMatrix* collectionMatrixPtr);
+	int findIndexOfKeyToUpdate(EnclaveKeyDef::EnclaveKey in_Key);
+
 };
 
 #endif

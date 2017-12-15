@@ -108,6 +108,7 @@ public:
 	void WaitForPhase2Promises();																																				// waits for promises to finish in phase 2
 	void ListEnclaveCollectionsInMatrix();
 	void setPhaseinDCM();
+	void InitializeCollectionStateArray(float x, float y, float z);										// initialize collection state array prior to initial game-load Collection processing; pass in world x/y/z coordinates
 private:
 
 	thread_pool* organicThreadIndex[16];										// contains an array of up to 16 thread pool pointers
@@ -152,6 +153,7 @@ private:
 																								this task will run on the same thread on which it is called (will not utilize thread pool)*/
 	void SetupFutureCollectionMM(int x, int y, int z);											// sets up all future data structures that will be needed for an EnclaveCollection that is produced using a ManifestMatrix
 	void SetupFutureCollectionMM(EnclaveKeyDef::EnclaveKey tempKey);							// does the same as SetupFuturecollectionMM, but uses an EnclaveKey as input.
+	
 
 	// multithreading Job declarations begin here
 	void JobMaterializeMultiCollectionFromMM(MDListJobMaterializeCollection* mdjob, mutex& mutexval, int ThreadID);																// materializes multiple collections from the ground up, utilizing a manifest matrix.

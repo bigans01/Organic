@@ -1289,13 +1289,14 @@ void OrganicSystem::JobMaterializeCollectionFromFactoryViaMorph(MDJobMaterialize
 
 EnclaveKeyDef::EnclaveKey OrganicSystem::JobMaterializeCollectionFromMM(MDJobMaterializeCollection* mdjob, mutex& mutexval)
 {
-	EnclaveCollectionBlueprintMatrix *BlueprintMatrixRef = mdjob->MDBlueprintMatrixRef;		// set Blueprint matrix ref
-	EnclaveCollectionMatrix *EnclaveCollectionsRef = mdjob->MDEnclaveCollectionsRef;		// set a ref to the EnclaveCollection matrix		
-	RenderCollectionMatrix *RenderCollectionsRef = mdjob->MDRenderCollectionsRef;			// set a ref to the RenderCollection matrix
+	EnclaveCollectionBlueprintMatrix* BlueprintMatrixRef = mdjob->MDBlueprintMatrixRef;		// set Blueprint matrix ref
+	EnclaveCollectionMatrix* EnclaveCollectionsRef = mdjob->MDEnclaveCollectionsRef;		// set a ref to the EnclaveCollection matrix		
+	RenderCollectionMatrix* RenderCollectionsRef = mdjob->MDRenderCollectionsRef;			// set a ref to the RenderCollection matrix
 
 	EnclaveKeyDef::EnclaveKey Key1 = mdjob->MDKey;												// set the EnclaveKey for this loop iteration	
-	EnclaveCollectionBlueprint *blueprintptr = &BlueprintMatrixRef->BlueprintMap[Key1];						// set a pointer to the appropriate blueprint
-	EnclaveCollection *CollectionRef = mdjob->MDEnclaveCollectionPtr;							// set a pointer to the actual EnclaveCollection
+	EnclaveCollectionBlueprint* blueprintptr = &BlueprintMatrixRef->BlueprintMap[Key1];						// set a pointer to the appropriate blueprint
+	EnclaveCollection* CollectionRef = mdjob->MDEnclaveCollectionPtr;							// set a pointer to the actual EnclaveCollection
+	EnclaveCollectionStateArray* stateArrayPtr = mdjob->MDStateArrayPtr;
 	int mdjobRenderMode = mdjob->currentRenderMode;					// NEW
 
 	mutexval.lock();																					/*thread safety:		*/
@@ -1374,7 +1375,9 @@ EnclaveKeyDef::EnclaveKey OrganicSystem::JobMaterializeCollectionFromMM(MDJobMat
 	RenderCollectionsRef->CreateRenderArrayFromManifestCollection(Key1, std::ref(mutexval), mdjobRenderMode);						// creates the to-be rendered array, from a MM
 																									
 	EnclaveKeyDef::EnclaveKey dumbReturnKey;
-	dumbReturnKey.x = NULL;			// return NULL if no key was found StateMatrixPtr
+	stateArrayPtr->findIndexOfKeyToUpdate(Key1);
+
+	dumbReturnKey.x = NULL;			// return NULL if no key was found StateMtxPtr
 	return dumbReturnKey;
 }
 
@@ -2204,6 +2207,20 @@ void OrganicSystem::ListEnclaveCollectionsInMatrix()
 	}
 }
 
+void OrganicSystem::InitializeCollectionStateArray(float x, float y, float z)
+{
+	EnclaveKeyDef::EnclaveKey keyToPass;
+	CursorPathTraceContainer x_container, y_container, z_container;
+	x_container = EnclaveCollections.GetCursorCoordTrace(x);
+	y_container = EnclaveCollections.GetCursorCoordTrace(y);
+	z_container = EnclaveCollections.GetCursorCoordTrace(z);
+	keyToPass.x = int(x_container.CollectionCoord);
+	keyToPass.y = int(y_container.CollectionCoord);
+	keyToPass.z = int(z_container.CollectionCoord);
+
+	CollectionStateArray.CreateAndInitializeStateMatrix(T1_OGLMcubesize, x, y, z, keyToPass);
+}
+
 void OrganicSystem::SetupWorldArea(float x, float y, float z)
 {
 	// first, set up world camera
@@ -2239,7 +2256,7 @@ void OrganicSystem::SetupWorldArea(float x, float y, float z)
 
 	// set up the center collection and its neighbors
 	EnclaveCollectionMatrix* matrixPtr = &EnclaveCollections;
-	CollectionStateArray.CreateStateMatrix(T1_OGLMcubesize);		// ensure the state matrix is equal to the appropriate size (do not hardcode!)
+	//CollectionStateArray.CreateStateMatrix(T1_OGLMcubesize);		// ensure the state matrix is equal to the appropriate size (do not hardcode!)
 	CollectionStateArray.SetCenterCollectionDynamic(CameraCollectionKey, matrixPtr);
 	CollectionStateArray.SetCenterCollection(CameraCollectionKey, matrixPtr);
 
@@ -2867,7 +2884,8 @@ void OrganicSystem::CheckProcessingQueue()
 			EnclaveKeyDef::EnclaveKey tempKey = popKey.collectionKey;		// get the collection key of the popKey
 			passCollectionPtrNew = &EnclaveCollections.EnclaveCollectionMap[tempKey];
 			passManifestPtrNew = &ManifestCollections.ManiCollectionMap[tempKey];	// get the manifest collection pointer to pass (instantiates a new instance of a ManifestCollection if it doesn't exist already)
-			MDJobMaterializeCollection tempMDJob(tempKey, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew), OGLM.renderMode);	//... use it to make a temp MDJob
+			EnclaveCollectionStateArray* stateArrayPtr = &CollectionStateArray;
+			MDJobMaterializeCollection tempMDJob(tempKey, std::ref(passBlueprintMatrixPtr), std::ref(passEnclaveCollectionPtr), std::ref(passManifestCollPtr), std::ref(passRenderCollMatrixPtr), std::ref(passCollectionPtrNew), std::ref(passManifestPtrNew), OGLM.renderMode, std::ref(stateArrayPtr));	//... use it to make a temp MDJob
 			OrganicMDJobVectorT1.push_back(tempMDJob);
 			T1_jobCount++;
 			//cout << "T1 job added!" << endl;
