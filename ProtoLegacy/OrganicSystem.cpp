@@ -2969,6 +2969,11 @@ void OrganicSystem::SubmitT2TerrainJob(OrganicMorphMeta in_popKey, std::map<int,
 	FL_T2CollectionsProcessed.push_back(std::move(pop_1));
 }
 
+void OrganicSystem::setPhaseinDCM()
+{
+	OGLM.OrganicBufferManager.setPhaseInDCM();
+}
+
 void OrganicSystem::DivideTickWork()
 {
 	/*

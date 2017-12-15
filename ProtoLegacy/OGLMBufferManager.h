@@ -74,6 +74,9 @@ private:
 	void MorphT1TerrainBufferNorth();
 	void MorphT1TerrainBufferSouth();
 
+	// testing/debug only
+	void setPhaseInDCM();
+
 
 };
 

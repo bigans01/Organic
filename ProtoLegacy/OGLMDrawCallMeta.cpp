@@ -37,6 +37,16 @@ void OGLMDrawCallMeta::setVertexTupleWidth(int in_width)
 
 void OGLMDrawCallMeta::removeHighLODAndSort(EnclaveKeyDef::EnclaveKey in_enclaveKey)
 {
+	/*
+	std::cout << "---------------------------------CURRENT CONTENTS-------------------------------" << std::endl;
+	for (int xx = 0; xx < numberOfRenderableCollections; xx++)
+	{
+		std::cout << "Key: (" << xx << ") " << TT1_CollectionKeys[xx].x << ", " << TT1_CollectionKeys[xx].y << ", " << TT1_CollectionKeys[xx].z << ") | SubBuffer: " << TT1_SubBufferLocation[xx] << " | BufferOffset: " << TT1_GL_BufferOffset[xx] << " Nubmer of Vertexes: " << TT1_GL_VertexArraySize[xx] << std::endl;
+
+	}
+
+	std::cout << "---------------------------------BEGIN REMOVAL-------------------------------" << std::endl;
+	*/
 	//std::cout << "BEGIN number of renderable collections: " << numberOfRenderableCollections << std::endl;
 	int lastElementIndex = (numberOfRenderableCollections - 1);
 	for (int x = 0; x < numberOfRenderableCollections; x++)
@@ -75,9 +85,20 @@ void OGLMDrawCallMeta::removeHighLODAndSort(EnclaveKeyDef::EnclaveKey in_enclave
 
 				numberOfRenderableCollections--;	// deduct the number of renderable collections
 				indexValueOfFirstEmpty--;			// deduct first empty value
+				
+				/*
+				for (int xx = 0; xx < numberOfRenderableCollections; xx++)
+				{
+					std::cout << "Key: (" << xx << ") " << TT1_CollectionKeys[xx].x << ", " << TT1_CollectionKeys[xx].y << ", " << TT1_CollectionKeys[xx].z << ") | SubBuffer: " << TT1_SubBufferLocation[xx] << " | BufferOffset: " << TT1_GL_BufferOffset[xx] << " Nubmer of Vertexes: " << TT1_GL_VertexArraySize[xx] << std::endl;
+					
+				}
+				std::cout << "Last element key is now: " << TT1_CollectionKeys[lastElementIndex].x << ", " << TT1_CollectionKeys[lastElementIndex].y << ", " << TT1_CollectionKeys[lastElementIndex].z << ", " << std::endl;
+				std::cout << "-----------------------" << std::endl;
+				*/
 				break;
 			//}
 
+				
 
 		}
 	}
@@ -87,77 +108,103 @@ void OGLMDrawCallMeta::removeHighLODAndSort(EnclaveKeyDef::EnclaveKey in_enclave
 void OGLMDrawCallMeta::addToListAndSort(EnclaveKeyDef::EnclaveKey in_key, int in_subBufferIndex, int in_vertexArrayByteSize, int in_subBufferByteSize)
 {
 	// search for an element in the list
+
+	/*
+	if (isPhaseInitial == 1)
+	{
+		std::cout << std::endl;
+		std::cout << ">>>>>>>>>>>>>>>>>>>>>>>> now attempting add... Key being added is: (" << in_key.x << ", " << in_key.y << ", " << in_key.z << ") | Sub buffer is: " << in_subBufferIndex << std::endl;
+		std::cout << "pre-add array contents: " << std::endl;
+		for (int xx = 0; xx < numberOfRenderableCollections; xx++)
+		{
+			std::cout << "Key: (" << xx << ") " << TT1_CollectionKeys[xx].x << ", " << TT1_CollectionKeys[xx].y << ", " << TT1_CollectionKeys[xx].z << ") | SubBuffer: " << TT1_SubBufferLocation[xx] << " | BufferOffset: " << TT1_GL_BufferOffset[xx] << " Nubmer of Vertexes: " << TT1_GL_VertexArraySize[xx] << " | Buffer Contents: " << TT1_SubBufferContents[xx] << std::endl;
+
+		}
+		std::cout << std::endl;
+
+		// TRY THIS: if f < indexValueofFirstEmpty
+
+		// scan to see if its in the already renderable list
+		for (int f = 0; f < array_length; f++)
+		{
+			if (in_subBufferIndex == TT1_SubBufferLocation[f])
+			{
+				if (f <= numberOfRenderableCollections)
+				//if (f == indexValueOfFirstEmpty)
+				{
+					std::cout << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Sub buffer Key is within already rendered list!!!! ((3)) (" << f << ") " << " index of first empty is ( " << indexValueOfFirstEmpty << ") " << std::endl;
+				}
+			}
+		}
+
+	}
+	*/
+
+
 	int doesElementExist = 0;
 	//std::cout << "test of sub buffer index is: " << in_subBufferIndex << std::endl;
 	for (int x = 0; x < array_length; x++)
 	{
 		
 		// find the corresponding location of the sub-buffer's ID (with a range of 0 to array_length)
-		if (TT1_SubBufferLocation[x] == in_subBufferIndex)
+		if (TT1_SubBufferLocation[x] == in_subBufferIndex )
 		{
-			//std::cout << "sub buffer index pass " << std::endl;
-			// check to see if the sub buffer is completely empty.
-			if (TT1_SubBufferContents[x] == 0)
-			{
-				//std::cout << "sub buffer contents pass " << std::endl;
-				// set up temp swap variables
-				int temp_TT1_SubBufferContents = TT1_SubBufferContents[indexValueOfFirstEmpty];
-				EnclaveKeyDef::EnclaveKey temp_TT1_CollectionKey = TT1_CollectionKeys[indexValueOfFirstEmpty];
-				int temp_TT1_SubBufferLocation = TT1_SubBufferLocation[indexValueOfFirstEmpty];
-				int temp_TT1_GL_BufferOffset = TT1_GL_BufferOffset[indexValueOfFirstEmpty];
-				int temp_TT1_GL_VertexArraySize = TT1_GL_VertexArraySize[indexValueOfFirstEmpty];
 
-				// set the values at the first empty index
-				TT1_SubBufferContents[indexValueOfFirstEmpty] = 1;
-				TT1_CollectionKeys[indexValueOfFirstEmpty] = in_key;								// set the key, in the corresponding current element of dynamic array
-				TT1_SubBufferLocation[indexValueOfFirstEmpty] = in_subBufferIndex;					// set the location, in the corresponding current element of dynamic array
-				TT1_GL_BufferOffset[indexValueOfFirstEmpty] = in_subBufferIndex * (in_subBufferByteSize / vertexTupleByteLength);				// set the vertex offset of the beginning of the sub buffer, in the corresponding current element of dynamic array
-				TT1_GL_VertexArraySize[indexValueOfFirstEmpty] = in_vertexArrayByteSize / vertexTupleByteLength;		// set the number of vertexes in the sub buffer, in the corresponding current element of dynamic array
+				if (TT1_SubBufferContents[x] == 0)
+				{
+					//std::cout << "sub buffer contents pass " << std::endl;
+					// set up temp swap variables
+					int temp_TT1_SubBufferContents = TT1_SubBufferContents[indexValueOfFirstEmpty];
+					EnclaveKeyDef::EnclaveKey temp_TT1_CollectionKey = TT1_CollectionKeys[indexValueOfFirstEmpty];
+					int temp_TT1_SubBufferLocation = TT1_SubBufferLocation[indexValueOfFirstEmpty];
+					int temp_TT1_GL_BufferOffset = TT1_GL_BufferOffset[indexValueOfFirstEmpty];
+					int temp_TT1_GL_VertexArraySize = TT1_GL_VertexArraySize[indexValueOfFirstEmpty];
 
-				// set the values at x
-				TT1_SubBufferContents[x] = temp_TT1_SubBufferContents;
-				TT1_CollectionKeys[x] = temp_TT1_CollectionKey;														// set the key, in the corresponding current element of dynamic array
-				TT1_SubBufferLocation[x] = temp_TT1_SubBufferLocation;											// set the location, in the corresponding current element of dynamic array
-				TT1_GL_BufferOffset[x] = temp_TT1_GL_BufferOffset;				// set the vertex offset of the beginning of the sub buffer, in the corresponding current element of dynamic array
-				TT1_GL_VertexArraySize[x] = temp_TT1_GL_VertexArraySize;		// set the number of vertexes in the sub buffer, in the corresponding current element of dynamic array
+					// set the values at the first empty index
+					TT1_SubBufferContents[indexValueOfFirstEmpty] = 1;
+					TT1_CollectionKeys[indexValueOfFirstEmpty] = in_key;								// set the key, in the corresponding current element of dynamic array
+					TT1_SubBufferLocation[indexValueOfFirstEmpty] = in_subBufferIndex;					// set the location, in the corresponding current element of dynamic array
+					TT1_GL_BufferOffset[indexValueOfFirstEmpty] = in_subBufferIndex * (in_subBufferByteSize / vertexTupleByteLength);				// set the vertex offset of the beginning of the sub buffer, in the corresponding current element of dynamic array
+					TT1_GL_VertexArraySize[indexValueOfFirstEmpty] = in_vertexArrayByteSize / vertexTupleByteLength;		// set the number of vertexes in the sub buffer, in the corresponding current element of dynamic array
 
-				//std::cout << "index value of first empty is: " << indexValueOfFirstEmpty << std::endl;
-				indexValueOfFirstEmpty++;
-				numberOfRenderableCollections++;
-				// std::cout << "Added to list: sub buffer: " << in_subBufferIndex << "actual offset: " << in_subBufferIndex * (in_subBufferByteSize / 12) << " vertex count: " << in_vertexArrayByteSize / 12 << std::endl;
-			}
+					// set the values at x
+					if (indexValueOfFirstEmpty != x)		// <<<< THIS WAS FIX; don't do unnecessary REPLACE!
+					{
+						TT1_SubBufferContents[x] = temp_TT1_SubBufferContents;
+						TT1_CollectionKeys[x] = temp_TT1_CollectionKey;														// set the key, in the corresponding current element of dynamic array
+						TT1_SubBufferLocation[x] = temp_TT1_SubBufferLocation;											// set the location, in the corresponding current element of dynamic array
+						TT1_GL_BufferOffset[x] = temp_TT1_GL_BufferOffset;				// set the vertex offset of the beginning of the sub buffer, in the corresponding current element of dynamic array
+						TT1_GL_VertexArraySize[x] = temp_TT1_GL_VertexArraySize;		// set the number of vertexes in the sub buffer, in the corresponding current element of dynamic array
+					}
+					//std::cout << "index value of first empty is: " << indexValueOfFirstEmpty << std::endl;
+					indexValueOfFirstEmpty++;
+					numberOfRenderableCollections++;
+					// std::cout << "Added to list: sub buffer: " << in_subBufferIndex << "actual offset: " << in_subBufferIndex * (in_subBufferByteSize / 12) << " vertex count: " << in_vertexArrayByteSize / 12 << std::endl;
+				}
 
-			// check to see if the sub buffer contains terrain data
-			else if (TT1_SubBufferContents[x] == 1)
-			{
-				// will just replace the data in this buffer
-			}
+				// check to see if the sub buffer contains terrain data
+				else if (TT1_SubBufferContents[x] == 1)
+				{
+					// will just replace the data in this buffer
+				}
 
-			// check to see if the sub buffer contains cursor (targeting block) data
-			else if (TT1_SubBufferContents[x] == 2)
-			{
-				// will move the existing data to the next empty buffer, and will replace this buffer with the data specified by the input parameter
-			}
+				// check to see if the sub buffer contains cursor (targeting block) data
+				else if (TT1_SubBufferContents[x] == 2)
+				{
+					// will move the existing data to the next empty buffer, and will replace this buffer with the data specified by the input parameter
+				}
 
-			// check to see if the sub buffer contains type 2 terrain data
-			else if (TT1_SubBufferContents[x] == 3)
-			{
-				// will move the existing data to the next empty buffer, and replace this buffer with the data specified by the  input parameter
-			}
+				// check to see if the sub buffer contains type 2 terrain data
+				else if (TT1_SubBufferContents[x] == 3)
+				{
+					// will move the existing data to the next empty buffer, and replace this buffer with the data specified by the  input parameter
+				}
+			//}
+
 		}
+		
 	}
-	//std::cout << "Index value of First empty: " << DCM_CollectionKeys[indexValueOfFirstEmpty].x << ", " << DCM_CollectionKeys[indexValueOfFirstEmpty].y << ", " << DCM_CollectionKeys[indexValueOfFirstEmpty].z << std::endl;
-	/*
-	if (doesElementExist == 0)
-	{
-		DCM_SubBufferContents[numberOfRenderableCollections] = 1;
-		DCM_CollectionKeys[numberOfRenderableCollections] = in_key;														// set the key, in the corresponding current element of dynamic array
-		DCM_SubBufferLocation[numberOfRenderableCollections] = in_subBufferIndex;											// set the location, in the corresponding current element of dynamic array
-		DCM_GL_BufferOffset[numberOfRenderableCollections] = in_subBufferIndex * (in_subBufferByteSize / 12);				// set the vertex offset of the beginning of the sub buffer, in the corresponding current element of dynamic array
-		DCM_GL_VertexArraySize[numberOfRenderableCollections] = in_vertexArrayByteSize / 12;		// set the number of vertexes in the sub buffer, in the corresponding current element of dynamic array
-		numberOfRenderableCollections++;		// increment the number of renderable collections
-	}
-	*/
+
 }
 
 void OGLMDrawCallMeta::sendTerrainT1AddRequestToDelegator(EnclaveKeyDef::EnclaveKey in_key, int in_subBufferIndex, int in_vertexArrayByteSize, int in_subBufferByteSize)

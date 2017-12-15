@@ -462,7 +462,7 @@ int main()
 	//Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, flatBlueprint);
 	
 	
-		
+	/*
 	for (int x = 1; x >= -6; x--)
 	{
 		for (int z = -2; z >= -7; z--)
@@ -474,8 +474,9 @@ int main()
 			Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, flatBlueprint);
 		}
 	}
-	
+	*/
 
+	
 	
 	for (int z = -1; z <= 0; z++)
 	{
@@ -523,6 +524,12 @@ int main()
 	flatKeyToAdd.x = 6;
 	flatKeyToAdd.y = 0;
 	flatKeyToAdd.z = 0;
+	Organic.AddKeyToRenderList(flatKeyToAdd);
+	Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, flatBlueprint);
+
+	flatKeyToAdd.x = 6;
+	flatKeyToAdd.y = 0;
+	flatKeyToAdd.z = -1;
 	Organic.AddKeyToRenderList(flatKeyToAdd);
 	Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, flatBlueprint);
 	
@@ -874,6 +881,8 @@ int main()
 
 	std::cout << "-----------------------collection list: " << endl;
 	//Organic.ListEnclaveCollectionsInMatrix();
+
+	Organic.setPhaseinDCM();
 
 	do {
 		auto start3 = std::chrono::high_resolution_clock::now();

@@ -295,14 +295,14 @@ void OGLMBufferManager::MorphT2TerrainBufferEast()
 			int currentContainsUsedT2KeyValue = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(0, y, z)].ContainsUsedT2Key;
 			if (OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(0, y, z)].ContainsUsedT2Key == 1)	// check to see if there was already an EnclaveCollection stored in the T2_renderMetaContainerArrayElement
 			{
-				cout << "y value is " << y << endl;
-				cout << "Z value is " << z << endl;
-				cout << "ELEMENT ID IS: " << OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(0, y, z)].ElementSingularXYZValue << endl;
-				cout << "SINGULAR XYZ IS: " << currentFirstSingularXYZValueInRow << endl;
+				//cout << "y value is " << y << endl;
+				//cout << "Z value is " << z << endl;
+				//cout << "ELEMENT ID IS: " << OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(0, y, z)].ElementSingularXYZValue << endl;
+				//cout << "SINGULAR XYZ IS: " << currentFirstSingularXYZValueInRow << endl;
 				tempMorphMeta.oldCollectionKey = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(0, y, z)].ElementCollectionKey;	// set the old key
 				tempMorphMeta.containsPreviousKey = 1;		// set the flag indicating that there is an old key
-				cout << "original key 9: " << currentLastKeyInRow.x << ", " << currentLastKeyInRow.y << ", " << currentLastKeyInRow.z << endl;
-				cout << "previous key was set! (MOVED EAST)" << tempMorphMeta.oldCollectionKey.x << ", " << tempMorphMeta.oldCollectionKey.y << ", " << tempMorphMeta.oldCollectionKey.z << endl;
+				//cout << "original key 9: " << currentLastKeyInRow.x << ", " << currentLastKeyInRow.y << ", " << currentLastKeyInRow.z << endl;
+				//cout << "previous key was set! (MOVED EAST)" << tempMorphMeta.oldCollectionKey.x << ", " << tempMorphMeta.oldCollectionKey.y << ", " << tempMorphMeta.oldCollectionKey.z << endl;
 				OrganicMorphMeta removalMeta;
 				removalMeta.collectionKey = tempMorphMeta.oldCollectionKey;
 				organicSystemPtr->T2CollectionRemovalQueue.push(removalMeta);		// send to be removed
@@ -787,4 +787,9 @@ int OGLMBufferManager::determineRenderDataSubBufferKey(EnclaveKeyDef::EnclaveKey
 	int XYZtoSingleResult = T2_translateXYZToSingle(x_offset, y_offset, z_offset);
 	cout << "XYZ to single: " << T2_translateXYZToSingle(x_offset, y_offset, z_offset) << endl;
 	return XYZtoSingleResult;
+}
+
+void OGLMBufferManager::setPhaseInDCM()
+{
+	DCMPtr->isPhaseInitial = 1;
 }

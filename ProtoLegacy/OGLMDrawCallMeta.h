@@ -13,6 +13,9 @@ class OGLMDrawCallMeta
 {
 	public:
 		int someval = 50;
+		// debug only
+		int isPhaseInitial = 0;
+		// end debug only
 	private:
 		friend class OrganicGLManager;
 		friend class OrganicSystem;
@@ -51,6 +54,8 @@ class OGLMDrawCallMeta
 		int array_cubesize;
 		int array_length;
 		int subBufferByteSize;
+
+		
 
 		void setVertexTupleWidth(int in_width);
 		void setGLintDynamicArrays(int in_cubeSize, int in_subBufferSize);

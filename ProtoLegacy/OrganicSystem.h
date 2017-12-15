@@ -107,6 +107,7 @@ public:
 	void DivideTickWork();																																						// determines how to divide the work among worker threads for this game tick
 	void WaitForPhase2Promises();																																				// waits for promises to finish in phase 2
 	void ListEnclaveCollectionsInMatrix();
+	void setPhaseinDCM();
 private:
 
 	thread_pool* organicThreadIndex[16];										// contains an array of up to 16 thread pool pointers
@@ -178,7 +179,8 @@ private:
 	void SubmitT2TerrainJob(OrganicMorphMeta in_popKey, std::map<int, OrganicCell*>::iterator in_iterator, MDJobMaterializeCollection* in_tempMDJobRef);
 	void PopOrganicMorphMetaQueue();
 	
-
+	// debug only
+	
 };
 
 #endif
