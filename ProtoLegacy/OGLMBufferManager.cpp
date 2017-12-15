@@ -377,6 +377,9 @@ void OGLMBufferManager::MorphT2TerrainBufferBelow()
 				tempMorphMeta.oldCollectionKey = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, T2_cubesize - 1, z)].ElementCollectionKey;
 				tempMorphMeta.containsPreviousKey = 1;
 				cout << "previous key was set!" << endl;
+				OrganicMorphMeta removalMeta;
+				removalMeta.collectionKey = tempMorphMeta.oldCollectionKey;
+				organicSystemPtr->T2CollectionRemovalQueue.push(removalMeta);		// send to be removed
 			}
 			for (int y = T2_cubesize - 1; y > 0; y--)
 			{
@@ -437,6 +440,9 @@ void OGLMBufferManager::MorphT2TerrainBufferAbove()
 				tempMorphMeta.oldCollectionKey = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, 0, z)].ElementCollectionKey;
 				tempMorphMeta.containsPreviousKey = 1;
 				cout << "previous key was set!" << endl;
+				OrganicMorphMeta removalMeta;
+				removalMeta.collectionKey = tempMorphMeta.oldCollectionKey;
+				organicSystemPtr->T2CollectionRemovalQueue.push(removalMeta);		// send to be removed
 			}
 			for (int y = 0; y < T2_cubesize - 1; y++)
 			{
@@ -494,6 +500,9 @@ void OGLMBufferManager::MorphT2TerrainBufferNorth()
 				tempMorphMeta.oldCollectionKey = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, T2_cubesize - 1)].ElementCollectionKey;
 				tempMorphMeta.containsPreviousKey = 1;
 				cout << "previous key was set!" << endl;
+				OrganicMorphMeta removalMeta;
+				removalMeta.collectionKey = tempMorphMeta.oldCollectionKey;
+				organicSystemPtr->T2CollectionRemovalQueue.push(removalMeta);		// send to be removed
 			}
 			for (int z = T2_cubesize - 1; z > 0; z--)
 			{
@@ -557,6 +566,9 @@ void OGLMBufferManager::MorphT2TerrainBufferSouth()
 				tempMorphMeta.oldCollectionKey = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(x, y, 0)].ElementCollectionKey;
 				tempMorphMeta.containsPreviousKey = 1;
 				cout << "previous key was set!" << endl;
+				OrganicMorphMeta removalMeta;
+				removalMeta.collectionKey = tempMorphMeta.oldCollectionKey;
+				organicSystemPtr->T2CollectionRemovalQueue.push(removalMeta);		// send to be removed
 			}
 			for (int z = 0; z < T2_cubesize - 1; z++)
 			{

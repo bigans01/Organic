@@ -462,7 +462,7 @@ int main()
 	//Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, flatBlueprint);
 	
 	
-	/*
+	
 	for (int x = 1; x >= -6; x--)
 	{
 		for (int z = -2; z >= -7; z--)
@@ -474,7 +474,7 @@ int main()
 			Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, flatBlueprint);
 		}
 	}
-	*/
+	
 
 	
 	
@@ -521,6 +521,9 @@ int main()
 	Organic.AddKeyToRenderList(flatKeyToAdd);
 	
 	// DEBUG TESTING BLUEPRINT IS HERE
+
+
+	// ----- X AXIS TEST
 	flatKeyToAdd.x = 6;
 	flatKeyToAdd.y = 0;
 	flatKeyToAdd.z = 0;
@@ -530,6 +533,13 @@ int main()
 	flatKeyToAdd.x = 6;
 	flatKeyToAdd.y = 0;
 	flatKeyToAdd.z = -1;
+	Organic.AddKeyToRenderList(flatKeyToAdd);
+	Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, flatBlueprint);
+
+	// ----- Y AXIS TEST
+	flatKeyToAdd.x = -1;
+	flatKeyToAdd.y = 0;
+	flatKeyToAdd.z = -8;
 	Organic.AddKeyToRenderList(flatKeyToAdd);
 	Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, flatBlueprint);
 	
