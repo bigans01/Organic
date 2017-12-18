@@ -2819,7 +2819,7 @@ void OrganicSystem::WaitForPhase2Promises()
 	// empty T1
 	if (FL_T1CollectionsProcessed.size() > 0)
 	{
-		cout << "clearing T1 queue..." << endl;
+		// cout << "clearing T1 queue..." << endl;
 		FL_T1CollectionsProcessed.clear();
 		OrganicMDJobVectorT1.clear();
 	}

@@ -55,7 +55,7 @@ void OGLMDrawCallMeta::removeHighLODAndSort(EnclaveKeyDef::EnclaveKey in_enclave
 		{
 			//if (TT1_SubBufferContents[x] == 1)
 			//{
-				std::cout << "Key found! removing: (" << x << ") "  << TT1_CollectionKeys[x].x << ", " << TT1_CollectionKeys[x].y << ", " << TT1_CollectionKeys[x].z << std::endl;
+				// std::cout << "Key found! removing: (" << x << ") "  << TT1_CollectionKeys[x].x << ", " << TT1_CollectionKeys[x].y << ", " << TT1_CollectionKeys[x].z << std::endl;
 
 				int temp_TT1_SubBufferContents = TT1_SubBufferContents[x];
 				EnclaveKeyDef::EnclaveKey temp_TT1_CollectionKey = TT1_CollectionKeys[x];
