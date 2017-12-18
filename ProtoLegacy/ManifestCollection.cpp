@@ -69,8 +69,11 @@ void ManifestCollection::AddManifestToMatrix(int x, int y, int z, EnclaveKeyDef:
 	OrganicTextureDictionary *tempDictionaryRef = &CollectionMatrixRef->OrganicPointer->TextureDictionary;
 	OrganicVtxColorDictionary *tempColorDictionaryRef = &CollectionMatrixRef->OrganicPointer->VertexColorDictionary;
 	EnclaveManifest tempmanifest(x, y, z, tempDictionaryRef, tempColorDictionaryRef, renderMode);
+	//cout << "|||| LOCK GUARD BEGIN " << endl;
 	AllocateManifestViaLockGuard(tempkey, &tempmanifest, HeapMutex);
+	//cout << "|||| LOCK GUARD END " << endl;
 	ManMatrix[tempkey].AttachToEnclave(CollectionMatrixRef->GetEnclaveFromCollection(Key, x, y, z), HeapMutex);
+	//cout << "|||| ATTACH TO ENCLAVE END " << endl;
 	//cout << "test value of triangles:: (" << tempkey.x << ", " << tempkey.y << ", " << tempkey.z << ") " << ManMatrix[tempkey].TotalEnclaveTriangles << endl;
 }
 

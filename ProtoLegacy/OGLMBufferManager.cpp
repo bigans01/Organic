@@ -638,11 +638,16 @@ void OGLMBufferManager::MorphT1TerrainBufferWest()
 			blueprintMapIterator = blueprintMatrixPtr->BlueprintMap.find(currentT2Element.ElementCollectionKey);		// attempt to find the blueprint
 			if (blueprintMapIterator != blueprintMatrixPtr->BlueprintMap.end())					// if it isn't equal to end, it was found.
 			{
-				cout << "blueprint found! (T1 shift) " << endl;
+				cout << "blueprint found! (T1 shift) (" << currentT2Element.ElementCollectionKey.x << ", " << currentT2Element.ElementCollectionKey.y << ", " << currentT2Element.ElementCollectionKey.z << ") " << endl;
 				EnclaveKeyDef::EnclaveKey tempKey = OGLMRMC.T1_renderMetaContainerArray[T1_translateXYZToSingle(0, 0, 0)].ElementCollectionKey;
 				EnclaveKeyDef::EnclaveKey tempKey2 = OGLMRMC.T2_renderMetaContainerArray[T2_translateXYZToSingle(T2_LowerNWLocation, T2_LowerNWLocation, T2_LowerNWLocation)].ElementCollectionKey;
 				cout << "(WEST SHIFT) New value of element at " << T2_cubesize - 1 << " , " << 0 << ", " << 0 << " in T1 array is:" << tempKey.x << ", " << tempKey.y << ", " << tempKey.z << endl;
 				cout << "(WEST SHIFT) New value of element at " << T2_LowerNWLocation << " , " << T2_LowerNWLocation << ", " << T2_LowerNWLocation << " in T2 array is:" << tempKey2.x << ", " << tempKey2.y << ", " << tempKey2.z << endl;
+				OrganicMorphMeta tempMorphMeta;
+				tempMorphMeta.subBufferIndex = currentT2Element.ElementSingularXYZValue;
+				tempMorphMeta.collectionKey = currentT2Element.ElementCollectionKey;
+				tempMorphMeta.needsMMSetup = 1;
+				organicSystemPtr->T1CollectionProcessingQueue.push(tempMorphMeta);
 
 			}
 			else

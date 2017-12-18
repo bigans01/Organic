@@ -129,7 +129,7 @@ private:
 	std::queue<OrganicMorphMeta> T1CollectionProcessingQueue;					// a queue that stores Type 1 collection keys that need to be processed
 	std::queue<OrganicMorphMeta> T2CollectionProcessingQueue;					// a queue that stores Type 2 collection keys that need to be processed
 	std::queue<OrganicMorphMeta> T2CollectionRemovalQueue;						// contains a list of collections to be removed
-	std::vector<std::future<EnclaveKeyDef::EnclaveKey>> FL_T1CollectionsProcessed;					// a vector of futures for any processed (completed) T1 collections
+	std::vector<std::future<int>> FL_T1CollectionsProcessed;					// a vector of futures for any processed (completed) T1 collections
 	std::vector<std::future<void>> FL_T2CollectionsProcessed;					// a vector of futures for any processed (completed) T2 collections
 	std::vector<MDJobMaterializeCollection> OrganicMDJobVectorT1;				// contains a list of T1 materialize collection jobs
 	std::vector<MDJobMaterializeCollection> OrganicMDJobVectorT2;				// contains a list of T2 materialize collection jobs
@@ -160,7 +160,7 @@ private:
 	void JobMaterializeMultiCollectionFromFactory(MDListJobMaterializeCollection mdjob, mutex& mutexval, EnclaveManifestFactoryT1 *FactoryRef, int ThreadID);					// materializes multiple collections from the ground up, utilizing a factory.
 	void JobMaterializeMultiCollectionFromFactory2(MDListJobMaterializeCollection* mdjob, mutex& mutexval, EnclaveManifestFactoryT1 *FactoryRef, int ThreadID);					// materializes multiple collections from the ground up, utilizing a factory. (testing only, may be erased)
 	void JobMaterializeCollectionFromFactoryViaMorph(MDJobMaterializeCollection* mdjob, mutex& mutexval, EnclaveManifestFactoryT1 *FactoryRef);
-	EnclaveKeyDef::EnclaveKey JobMaterializeCollectionFromMM(MDJobMaterializeCollection* mdjob, mutex& mutexval);
+	int JobMaterializeCollectionFromMM(MDJobMaterializeCollection* mdjob, mutex& mutexval);
 	void JobRematerializeSingleExistingCollectionFromFactory(EnclaveKeyDef::EnclaveKey Key1,																					// rematerializes a single collection on a currently loaded EnclaveCollection, from a Factory
 		EnclaveCollection *CollectionRef,
 		EnclaveManifestFactoryT1 *FactoryRef,

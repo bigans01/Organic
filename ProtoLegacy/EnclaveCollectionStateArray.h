@@ -28,6 +28,7 @@ private:
 	void CreateStateMatrix(int inCubesize);
 	void CreateAndInitializeStateMatrix(int inCubesize, float in_worldXcoord, float in_worldYcoord, float in_worldZcoord, EnclaveKeyDef::EnclaveKey in_centerKey);
 	void ShiftCenterCollection(EnclaveKeyDef::EnclaveKey previousKey, EnclaveKeyDef::EnclaveKey currentKey, EnclaveCollectionMatrix* collectionMatrixPtr);
+	void UpdateCollectionStatus(int elementIndex, int status, EnclaveCollection* in_enclaveCollectionPtr);
 	int findIndexOfKeyToUpdate(EnclaveKeyDef::EnclaveKey in_Key);
 
 };

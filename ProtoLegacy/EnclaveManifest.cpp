@@ -308,12 +308,14 @@ void EnclaveManifest::AttachToEnclave(Enclave &in_ptr, mutex& heapmutex)
 			}
 		}
 		//cout << "after new... (3)" << endl;
+
 		if (IsRenderCollectionRefSet == 1)
 		{
 			//cout << "HOO AHHH" << endl;
 			//cout << "after new... (4)" << endl;
-			RenderCollectionRef->UpdateManifestArray(this->UniqueKey);
+			//RenderCollectionRef->UpdateManifestArray(this->UniqueKey);
 		}
+		// cout << "Attach end...." << endl;
 		//delete[] EnclaveManifestRenderables;
 		//delete[] EnclaveGLPtr;
 		/*
@@ -328,6 +330,10 @@ void EnclaveManifest::AttachToEnclave(Enclave &in_ptr, mutex& heapmutex)
 		}
 		*/
 	}
+	//else
+	//{
+		//cout << "WARNING!!!!! " << endl;
+	//}
 }
 
 FloatTupleXYZ EnclaveManifest::SingleToMulti(int input)

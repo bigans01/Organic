@@ -1158,6 +1158,7 @@ Enclave& EnclaveCollectionMatrix::GetEnclaveFromCollection(EnclaveKeyDef::Enclav
 	tempkey.x = x;
 	tempkey.y = y;
 	tempkey.z = z;
+	// cout << "|||| GET ENCLAVE PRe-RETURN (" << Key.x << ", " << Key.y << ", " << Key.z << ") " << endl;
 	return EnclaveCollectionMap[Key].EnclaveArray[x][y][z];				// fetch the Collection at Key, and return the enclave at x y z.
 }
 

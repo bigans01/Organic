@@ -1287,8 +1287,9 @@ void OrganicSystem::JobMaterializeCollectionFromFactoryViaMorph(MDJobMaterialize
 
 }
 
-EnclaveKeyDef::EnclaveKey OrganicSystem::JobMaterializeCollectionFromMM(MDJobMaterializeCollection* mdjob, mutex& mutexval)
+int OrganicSystem::JobMaterializeCollectionFromMM(MDJobMaterializeCollection* mdjob, mutex& mutexval)
 {
+	//cout << "T1 job called!!! " << endl;
 	EnclaveCollectionBlueprintMatrix* BlueprintMatrixRef = mdjob->MDBlueprintMatrixRef;		// set Blueprint matrix ref
 	EnclaveCollectionMatrix* EnclaveCollectionsRef = mdjob->MDEnclaveCollectionsRef;		// set a ref to the EnclaveCollection matrix		
 	RenderCollectionMatrix* RenderCollectionsRef = mdjob->MDRenderCollectionsRef;			// set a ref to the RenderCollection matrix
@@ -1298,7 +1299,6 @@ EnclaveKeyDef::EnclaveKey OrganicSystem::JobMaterializeCollectionFromMM(MDJobMat
 	EnclaveCollection* CollectionRef = mdjob->MDEnclaveCollectionPtr;							// set a pointer to the actual EnclaveCollection
 	EnclaveCollectionStateArray* stateArrayPtr = mdjob->MDStateArrayPtr;
 	int mdjobRenderMode = mdjob->currentRenderMode;					// NEW
-
 	mutexval.lock();																					/*thread safety:		*/
 	ManifestCollection *ManifestCollectionRef = mdjob->MDManifestCollectionPtr;			// set pointer in thread-safe code; another ManifestCollection could be allocating an EnclaveManifest on heap at same time.
 	mutexval.unlock();																					// unlock when finished
@@ -1342,7 +1342,6 @@ EnclaveKeyDef::EnclaveKey OrganicSystem::JobMaterializeCollectionFromMM(MDJobMat
 		}
 	}
 
-
 	int manifestCounter = CollectionRef->totalRenderableEnclaves;	// set the manifestCounter equal to the number of renderable manifests from the EnclaveCollection ref
 	auto start5 = std::chrono::high_resolution_clock::now();	// optional performance testing values
 	EnclaveKeyDef::EnclaveKey innerTempKey;		// create a variable to store a temporary key
@@ -1364,6 +1363,7 @@ EnclaveKeyDef::EnclaveKey OrganicSystem::JobMaterializeCollectionFromMM(MDJobMat
 		//cout << "innerTempKey: " << innerTempKey.x << ", " << innerTempKey.y << ", " << innerTempKey.z << endl;
 		ManifestCollectionRef->AddManifestToMatrix(innerTempKey.x, innerTempKey.y, innerTempKey.z, Key1, mdjobRenderMode, std::ref(mutexval));
 	}
+
 	auto finish5 = std::chrono::high_resolution_clock::now();									// optional, for debugging
 	std::chrono::duration<double> elapsed5 = finish5 - start5;									// ""
 
@@ -1373,12 +1373,9 @@ EnclaveKeyDef::EnclaveKey OrganicSystem::JobMaterializeCollectionFromMM(MDJobMat
 
 	// Phase 3: create render array
 	RenderCollectionsRef->CreateRenderArrayFromManifestCollection(Key1, std::ref(mutexval), mdjobRenderMode);						// creates the to-be rendered array, from a MM
-																									
-	EnclaveKeyDef::EnclaveKey dumbReturnKey;
-	stateArrayPtr->findIndexOfKeyToUpdate(Key1);
+	int findResult = stateArrayPtr->findIndexOfKeyToUpdate(Key1);
+	return findResult;
 
-	dumbReturnKey.x = NULL;			// return NULL if no key was found StateMtxPtr
-	return dumbReturnKey;
 }
 
 void OrganicSystem::JobCalibrateBlueprintBordersFromFactory(EnclaveKeyDef::EnclaveKey Key1, EnclaveManifestFactoryT1 *FactoryRef)
@@ -2068,10 +2065,12 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 	//cout << "Chunk: (" << CameraChunkKey.x << ", " << CameraChunkKey.y << ", " << CameraChunkKey.z << ") Block: (" << CameraBlockKey.x << ", " << CameraBlockKey.y << ", " << CameraBlockKey.z << ") " << endl;
 	// cout << "Block: (" << CameraBlockKey.x << ", " << CameraBlockKey.y << ", " << CameraBlockKey.z << ") " << endl;
 
+
 	int indexval = CollectionStateArray.translateXYZToSingle(CollectionStateArray.centerCollectionStateOffset, CollectionStateArray.centerCollectionStateOffset, CollectionStateArray.centerCollectionStateOffset);	// get the center of the dynamic array
 	EnclaveCollectionStateArray* stateArrayPtr = &CollectionStateArray;
 	OrganicBlockTarget* blockTargetPtr = &blockTargetMeta;
 	EnclaveBlockRayTracker rayTracker(x_container, y_container, z_container, CollectionStateArray.StateMtxPtr, stateArrayPtr, indexval, blockTargetPtr);
+	
 	//cout << "traverse pass" << endl;
 	int maxTravelAttempts = length;		// set travel (traversal) attempts to 10
 	int travelAttempts = 0;				// set counter to 0
@@ -2179,6 +2178,7 @@ void OrganicSystem::DetermineMouseCursorTargets2(glm::vec3* originVector, glm::v
 			//cout << "attempt limit reached." << endl;
 		}
 	}
+
 	
 	/*
 	if (trackResult == 0)
@@ -2721,7 +2721,7 @@ void OrganicSystem::CheckForT1CollectionPrep()
 
 void OrganicSystem::WaitForPhase2Promises()
 {
-	std::vector<std::future<EnclaveKeyDef::EnclaveKey>>::iterator T1_futureListIterator;								// iterator for the list of futures
+	std::vector<std::future<int>>::iterator T1_futureListIterator;								// iterator for the list of futures
 	std::vector<std::future<void>>::iterator T2_futureListIterator;
 	int hasT2 = 0;
 
@@ -2754,11 +2754,25 @@ void OrganicSystem::WaitForPhase2Promises()
 		for (int x = 0; x < collectionsToProcess; x++)
 		{
 			T1_futureListIterator->wait();
-			EnclaveKeyDef::EnclaveKey testoutputKey = T1_futureListIterator->get();
-			if (testoutputKey.x == NULL)
+			
+			int resultOutput = T1_futureListIterator->get();
+			//cout << "result output is: " << resultOutput << endl;
+			if (resultOutput != -1)
 			{
-				//cout << "hoo doggy its NULL!" << endl;
+				//cout << "hoo doggy its NOT NULL!" << endl;
+				EnclaveKeyDef::EnclaveKey currentElementKey = CollectionStateArray.StateMtxPtr[resultOutput].ActualCollectionKey;
+				/*
+				std::unordered_map<EnclaveKeyDef::EnclaveKey, EnclaveCollection, EnclaveKeyDef::KeyHasher>::iterator collectionFindIter;
+				collectionFindIter = EnclaveCollections.EnclaveCollectionMap.find(currentElementKey);
+				if (collectionFindIter != EnclaveCollections.EnclaveCollectionMap.end())
+				{
+					cout << "Enclave Collection already found!" << endl;
+				}
+				*/
+				EnclaveCollection* enclaveCollectionPtr = &EnclaveCollections.EnclaveCollectionMap[currentElementKey];
+				CollectionStateArray.UpdateCollectionStatus(resultOutput, 1, enclaveCollectionPtr);
 			}
+			
 			//cout << "wait complete..." << endl;
 			T1_futureListIterator++;
 		}
@@ -2805,7 +2819,7 @@ void OrganicSystem::WaitForPhase2Promises()
 	// empty T1
 	if (FL_T1CollectionsProcessed.size() > 0)
 	{
-		//cout << "clearing T1 queue..." << endl;
+		cout << "clearing T1 queue..." << endl;
 		FL_T1CollectionsProcessed.clear();
 		OrganicMDJobVectorT1.clear();
 	}
@@ -2878,8 +2892,14 @@ void OrganicSystem::CheckProcessingQueue()
 	{
 		if (!T1CollectionProcessingQueue.empty())
 		{
+			//cout << "Preparing to pop! " << endl;
 			OrganicMorphMeta popKey = T1CollectionProcessingQueue.front();  // get the front
 			T1CollectionProcessingQueue.pop();							    // pop the queue
+			if (popKey.needsMMSetup == 1)
+			{
+				//cout << "||||||||||||||||||||||||||||||||||||||||| >>>>>>>>>>>>>> NEEDS MM SETUP!" << endl;
+				SetupFutureCollectionMM(popKey.collectionKey);					
+			}
 			T1_OMMVector.push_back(popKey);								    // push it to OMMVector
 			EnclaveKeyDef::EnclaveKey tempKey = popKey.collectionKey;		// get the collection key of the popKey
 			passCollectionPtrNew = &EnclaveCollections.EnclaveCollectionMap[tempKey];
@@ -2906,6 +2926,7 @@ void OrganicSystem::CheckProcessingQueue()
 			T2CollectionRemovalQueue.pop();
 			OGLM.OrganicBufferManager.DCMPtr->removeHighLODAndSort(removalKey.collectionKey);
 		}
+		//cout << "Remove high LOD complete." << endl;
 	}
 
 	for (int x = 0; x < numberOfThreads2; x++)
@@ -2934,6 +2955,7 @@ void OrganicSystem::CheckProcessingQueue()
 	if (T1_jobCount > 0)
 	{
 		T1_OMMVectorIterator = T1_OMMVector.begin();
+		// cout << "T1 OMM vector size: " << T1_OMMVector.size() << endl;
 		T1_MDJobVectorIterator = OrganicMDJobVectorT1.begin();
 		for (int x = 0; x < T1_jobCount; x++)
 		{
@@ -2944,7 +2966,7 @@ void OrganicSystem::CheckProcessingQueue()
 			T1_MDJobVectorIterator++;
 			T1terrainCellMapIter++;
 		}
-
+		//cout << "T1 thread size" << int(OCManager.t1CellMap.size()) << endl;
 		//cout << ">>>> T1 CheckProcessingQueue end (1)..." << endl;
 	}
 	
@@ -2975,7 +2997,7 @@ void OrganicSystem::SubmitT1TerrainJob(OrganicMorphMeta in_popKey, std::map<int,
 {
 	std::lock_guard<std::mutex> lock(heapmutex);
 	OrganicMorphMetaToSendToBuffer.push(in_popKey);	// insert a value into the buffer work queue
-	std::future<EnclaveKeyDef::EnclaveKey> pop_1 = in_iterator->second->threadPtr->submit5(&OrganicSystem::JobMaterializeCollectionFromMM, this, in_tempMDJobRef, std::ref(heapmutex));
+	std::future<int> pop_1 = in_iterator->second->threadPtr->submit5(&OrganicSystem::JobMaterializeCollectionFromMM, this, in_tempMDJobRef, std::ref(heapmutex));
 	FL_T1CollectionsProcessed.push_back(std::move(pop_1));
 }
 
@@ -3036,7 +3058,9 @@ void OrganicSystem::DivideTickWork()
 	// ****NEW MODE CHECKS****
 	// set conditions for priority 0
 	//cout << "divide tick work call..." << endl;
-	if (!T1CollectionProcessingQueue.empty() && !T2CollectionProcessingQueue.empty())		// condition for mode 0: T1 and T2 cannot be empty.
+	if ((!T1CollectionProcessingQueue.empty() && !T2CollectionProcessingQueue.empty())
+		||
+		(!T1CollectionProcessingQueue.empty() && T2CollectionProcessingQueue.empty()))		// condition for mode 0: T1 and T2 cannot be empty.
 	{
 		// check if previously set work priority is equal to 0; if this is true, do 
 		if (workPriority == 0)
@@ -3052,6 +3076,7 @@ void OrganicSystem::DivideTickWork()
 		}
 	}
 
+	/**/
 	// set conditions for priority 1
 	else if (T1CollectionProcessingQueue.empty() && !T2CollectionProcessingQueue.empty())	// condition for mode 1: T1 is empty, but T2 is not
 	{

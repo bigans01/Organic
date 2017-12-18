@@ -202,9 +202,18 @@ int EnclaveCollectionStateArray::translateXYZToSingle(int x, int y, int z)
 	return x_axis + y_axis + x;
 }
 
+void EnclaveCollectionStateArray::UpdateCollectionStatus(int elementIndex, int status, EnclaveCollection* in_enclaveCollectionPtr)
+{
+	int numberOfElements = (cubesize*cubesize*cubesize);
+	StateMtxPtr[elementIndex].isActive = 1;
+	StateMtxPtr[elementIndex].collectionPtr = in_enclaveCollectionPtr;
+	// EnclaveKeyDef::EnclaveKey currentElementKey = StateMtxPtr[elementIndex].ActualCollectionKey;
+	// cout << "Collection status updated! " << StateMtxPtr[elementIndex].ActualCollectionKey.x << ", " << StateMtxPtr[elementIndex].ActualCollectionKey.y << ", " << StateMtxPtr[elementIndex].ActualCollectionKey.z << endl;
+}
+
 int EnclaveCollectionStateArray::findIndexOfKeyToUpdate(EnclaveKeyDef::EnclaveKey in_Key)
 {
-	cout << "OH MAN (" << in_Key.x << ", " << in_Key.y << ", " << in_Key.z << ") " << endl;
+	// cout << "OH MAN (" << in_Key.x << ", " << in_Key.y << ", " << in_Key.z << ") " << endl;
 	int numberOfElements = (cubesize*cubesize*cubesize);
 	for (int x = 0; x < numberOfElements; x++)
 	{
@@ -216,7 +225,7 @@ int EnclaveCollectionStateArray::findIndexOfKeyToUpdate(EnclaveKeyDef::EnclaveKe
 		//if (StateMtxPtr[x].ActualCollectionKey.x == 2)
 		if (StateMtxPtr[x].ActualCollectionKey == in_Key)
 		{
-			cout << "T1 matrix key found!! (" << in_Key.x << ", " << in_Key.y << ", " << in_Key.z << ") " << x << endl;
+			// cout << "T1 matrix key found!! (" << in_Key.x << ", " << in_Key.y << ", " << in_Key.z << ") " << x << endl;
 			return x;
 		}
 	}

@@ -542,6 +542,12 @@ int main()
 	flatKeyToAdd.z = -8;
 	Organic.AddKeyToRenderList(flatKeyToAdd);
 	Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, flatBlueprint);
+
+	flatKeyToAdd.x = -1;
+	flatKeyToAdd.y = 0;
+	flatKeyToAdd.z = 6;
+	Organic.AddKeyToRenderList(flatKeyToAdd);
+	Organic.AddBlueprint(flatKeyToAdd.x, flatKeyToAdd.y, flatKeyToAdd.z, flatBlueprint);
 	
 
 	/*

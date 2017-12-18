@@ -24,6 +24,7 @@ public:
 	EnclaveKeyDef::EnclaveKey collectionKey;		// the collection key to be inserted
 	int containsPreviousKey = 0;					// determines if there was a previous key in the sub buffer
 	EnclaveKeyDef::EnclaveKey oldCollectionKey;		// the previous collection key (determined by OGLMBufferManager, during a call to MorphTerrainBuffers)
+	int needsMMSetup = 0;
 };
 
 #endif

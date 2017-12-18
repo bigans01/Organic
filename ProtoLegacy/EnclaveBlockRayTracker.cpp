@@ -272,12 +272,14 @@ int EnclaveBlockRayTracker::MoveNorth()
 				{
 					targetVertexData->hasAcquiredTarget = 1;
 					fillBlockTargetVertexData(blockSingularValue);
+					//cout << "north acquired. (1) " << endl;
 					return 1;
 				}
 			}
 		}
 		else
 		{
+			//cout << "north NOT acquired (1)" << endl;
 			return 0;
 		}
 	}// --------------------------------------------------
@@ -299,6 +301,7 @@ int EnclaveBlockRayTracker::MoveNorth()
 					{
 						targetVertexData->hasAcquiredTarget = 1;
 						fillBlockTargetVertexData(blockSingularValue);
+						//cout << "north acquired. (2) " << endl;
 						return 1;
 					}
 				}
@@ -306,33 +309,42 @@ int EnclaveBlockRayTracker::MoveNorth()
 			else
 			{
 				blockKey.z = 3;
+				//cout << "north NOT acquired (2)" << endl;
 				return 0;
 			}
 		}
 		else
 		{
+			//cout << "Entering final ELSE, part 1 " << endl;
 			// enclave key's y is equal to 0
 			//int tempIndexVal = currentCollectionStateArray->translateXYZToSingle(currentCollectionStateArray->centerCollectionStateOffset, currentCollectionStateArray->centerCollectionStateOffset, currentCollectionStateArray->centerCollectionStateOffset - 1); // determine value for z - 1
 			arrayKey.z -= 1;
 			int tempIndexVal = currentCollectionStateArray->translateXYZToSingle(arrayKey.x, arrayKey.y, arrayKey.z);
 			currentCollectionState = &currentCollectionStateArray->StateMtxPtr[tempIndexVal];
+			//cout << "Entering final ELSE, part 2 " << endl;
 			if (currentCollectionState->isActive == 1)															// check if its active
 			{
+				//cout << "Entering final ELSE, A part 1 " << endl;
 				currentCollectionPtr = currentCollectionState->collectionPtr;									// if it is active, set the pointer
 				collectionKey.z -= 1;																			// decrement collectionKey.z value by 1
 				enclaveKey.z = 7;																				// set enclave key's z value to be 7 (since we entered a new Collection by going north) 
 				blockKey.z = 3;																					// set block key's z value to also be 3 (since it entered a new Enclave by going north)
 				enclavePtr = &currentCollectionPtr->EnclaveArray[enclaveKey.x][enclaveKey.y][7];
+				//cout << "Entering final ELSE, A part 2 " << endl;
 				isCurrentCollectionActive = 1;
 				int numBlocks = enclavePtr->TotalRenderable;													// check the newly entered enclave, for the TotalRenderable
 				int blockSingularValue = enclavePtr->EnclaveCoordsToSingle(blockKey.x, blockKey.y, blockKey.z);	// get the singular value
+				//cout << "Entering final ELSE, A part 3 " << endl;
 				//cout << "Moved NORTH (new collection entry): current location; Enclave key: (" << enclaveKey.x << ", " << enclaveKey.y << ", " << enclaveKey.z << ")  || Block key: (" << blockKey.x << ", " << blockKey.y << ", " << blockKey.z << ")" << endl;
+				//cout << "Number of blocks in newly entered enclave is: " << numBlocks << endl;
 				for (int xx = 0; xx < numBlocks; xx++)			// check if the enclave contains any blocks
 				{
 					if (enclavePtr->Sorted.PolyArrayIndex[xx] == blockSingularValue)
 					{
+						//cout << "final ELSE return 1 BEGIN" << endl;
 						targetVertexData->hasAcquiredTarget = 1;
 						fillBlockTargetVertexData(blockSingularValue);
+						//cout << "final ELSE return 1 END" << endl;
 						return 1;
 					}
 				}
@@ -344,11 +356,13 @@ int EnclaveBlockRayTracker::MoveNorth()
 				collectionKey.z -= 1;																	// decrement collectionKey value by 1
 				enclaveKey.z = 7;
 				blockKey.z = 3;
+				//cout << "final ELSE return, no collection found" << endl;
 				isCurrentCollectionActive = 0;
 			}
 
 		}
 	}
+	//cout << "final ELSE return 0" << endl;
 	return 0;			// return 0 if no block found
 }
 
